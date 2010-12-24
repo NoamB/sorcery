@@ -15,8 +15,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "simple_auth"
   gem.homepage = "http://github.com/NoamB/simple_auth"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = "Simple authentication for Rails 3 applications"
+  gem.description = "Provides common authentication needs such as signing in/out, activating by email, resetting password and deleting accounts."
   gem.email = "nbenari@gmail.com"
   gem.authors = ["Noam"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
@@ -40,7 +40,23 @@ end
 require 'cucumber/rake/task'
 Cucumber::Rake::Task.new(:features)
 
-task :default => :spec
+
 
 require 'yard'
 YARD::Rake::YardocTask.new
+
+
+#task :default => :spec
+desc 'Default: Run all specs.'
+task :default => :all_specs
+
+desc "Run all specs"
+task :all_specs do
+  Dir['spec/**/Rakefile'].each do |rakefile|
+    directory_name = File.dirname(rakefile)
+    sh <<-CMD
+      cd #{directory_name}
+      bundle exec rake
+    CMD
+  end
+end
