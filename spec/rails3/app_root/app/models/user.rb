@@ -1,3 +1,3 @@
 class User < ActiveRecord::Base
-  #activate_simple_auth!
+  activate_simple_auth!
 end

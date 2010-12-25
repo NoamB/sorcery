@@ -7,8 +7,28 @@ describe User, "when app has plugin loaded" do
   end
 end
 
-describe User, "when activated with simple_auth" do
-  it "should respond to the plugin added instance methods" do
-    pending
+describe User, "plugin activation" do
+  it "should enable configuration option 'username_attribute_name'" do
+    SimpleAuth::ORM::Config.username_attribute_name.should equal(:username)
+    
+    class User
+      activate_simple_auth! do |config|
+        config.username_attribute_name = :email
+      end
+    end
+    
+    SimpleAuth::ORM::Config.username_attribute_name.should equal(:email)
   end
+end
+
+describe User, "when activated with simple_auth" do
+  it "should respond to class method authentic?" do
+    ActiveRecord::Base.should_not respond_to(:authentic?)
+    User.should respond_to(:authentic?)
+  end
+  
+  # it "authentic? should return true if credentials are good" do
+  #   @user = users(:noam)
+  #   User.authentic?(@user.username, 'secret').should be_true
+  # end
 end
