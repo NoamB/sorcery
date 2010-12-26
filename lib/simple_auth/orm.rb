@@ -11,7 +11,16 @@ module SimpleAuth
         
         self.class_eval do
           def self.authentic?(username, password)
-            where("#{Config.username_attribute_name} = ? AND #{Config.crypted_password_attribute_name} = ?", username, Digest::MD5.hexdigest(password)).first
+            where("#{Config.username_attribute_name} = ? AND #{Config.crypted_password_attribute_name} = ?", username, encrypt(password)).first
+          end
+          
+          protected
+          
+          def self.encrypt(*tokens)
+            case Config.encryption_algorithm
+              when :md5  then CryptoProviders::MD5.encrypt(*tokens)
+              when :sha1 then CryptoProviders::SHA1.encrypt(*tokens)
+            end
           end
         end
       end
