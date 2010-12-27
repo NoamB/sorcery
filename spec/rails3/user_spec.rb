@@ -76,6 +76,10 @@ describe User, "when activated with simple_auth" do
 end
 
 describe "special encryption cases" do
+  before(:all) do
+    @text = "Some Text!"
+  end
+  
   after(:each) do
     SimpleAuth::ORM::Config.reset_to_defaults!
   end
@@ -102,7 +106,30 @@ describe "special encryption cases" do
   
   it "if encryption algo is aes256, it should set key to crypto provider" do
     plugin_set_config_property(:encryption_algorithm, :aes256)
+    plugin_set_config_property(:encryption_key, nil)
+    expect{User.encrypt(@text)}.to raise_error(ArgumentError)
     plugin_set_config_property(:encryption_key, "asd234dfs423fddsmndsflktsdf32343")
-    SimpleAuth::CryptoProviders::AES256.encrypt("Some Text").should_not raise_error(ArgumentError)
+    expect{User.encrypt(@text)}.to_not raise_error(ArgumentError)
   end
+  
+  it "if encryption algo is md5 it should work" do
+    plugin_set_config_property(:encryption_algorithm, :md5)
+    User.encrypt(@text).should == SimpleAuth::CryptoProviders::MD5.encrypt(@text)
+  end
+  
+  it "if encryption algo is sha1 it should work" do
+    plugin_set_config_property(:encryption_algorithm, :sha1)
+    User.encrypt(@text).should == SimpleAuth::CryptoProviders::SHA1.encrypt(@text)
+  end
+  
+  it "if encryption algo is sha256 it should work" do
+    plugin_set_config_property(:encryption_algorithm, :sha256)
+    User.encrypt(@text).should == SimpleAuth::CryptoProviders::SHA256.encrypt(@text)
+  end
+  
+  it "if encryption algo is sha512 it should work" do
+    plugin_set_config_property(:encryption_algorithm, :sha512)
+    User.encrypt(@text).should == SimpleAuth::CryptoProviders::SHA512.encrypt(@text)
+  end
+  
 end

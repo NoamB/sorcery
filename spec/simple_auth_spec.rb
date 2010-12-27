@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe "Crypto Providers" do
+describe "Crypto Providers wrappers" do
 
   describe SimpleAuth::CryptoProviders::MD5 do
     
