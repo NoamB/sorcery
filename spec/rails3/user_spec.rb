@@ -1,5 +1,4 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-require 'digest/md5'
 
 describe User, "when app has plugin loaded" do
   it "should respond to the plugin activation class method" do
@@ -21,11 +20,8 @@ describe User, "plugin configuration" do
     SimpleAuth::ORM::Config.reset_to_defaults!
   end
   
-  it "should enable configuration option 'username_attribute_name'" do
-    SimpleAuth::ORM::Config.username_attribute_name.should equal(:username)
-    
+  it "should enable configuration option 'username_attribute_name'" do    
     plugin_set_config_property(:username_attribute_name, :email)
-    
     SimpleAuth::ORM::Config.username_attribute_name.should equal(:email)
   end
   
@@ -33,38 +29,80 @@ describe User, "plugin configuration" do
     pending
   end
   
-  it "should enable configuration option 'crypted_password_attribute_name'" do
-    SimpleAuth::ORM::Config.crypted_password_attribute_name.should equal(:crypted_password)
-    
+  it "should enable configuration option 'crypted_password_attribute_name'" do    
     plugin_set_config_property(:crypted_password_attribute_name, :password)
-    
     SimpleAuth::ORM::Config.crypted_password_attribute_name.should equal(:password)
   end
   
-  it "should enable configuration option 'encryption_algorithm'" do
-    SimpleAuth::ORM::Config.encryption_algorithm.should equal(:md5)
-    
+  it "should enable configuration option 'encryption_algorithm'" do    
     plugin_set_config_property(:encryption_algorithm, :none)
-    
     SimpleAuth::ORM::Config.encryption_algorithm.should equal(:none)
+  end
+  
+  it "should enable configuration option 'encryption_key'" do    
+    plugin_set_config_property(:encryption_key, 'asdadas424234242')
+    SimpleAuth::ORM::Config.encryption_key.should == 'asdadas424234242'
+  end
+  
+  it "should enable configuration option 'custom_encryption_provider'" do    
+    plugin_set_config_property(:encryption_algorithm, :custom)
+    plugin_set_config_property(:custom_encryption_provider, Array)
+    SimpleAuth::ORM::Config.custom_encryption_provider.should equal(Array)
   end
 end
 
 describe User, "when activated with simple_auth" do
+  
+  it "should respond to the class method encrypt" do
+    User.should respond_to(:encrypt)
+  end
+  
   it "should respond to class method authentic?" do
     ActiveRecord::Base.should_not respond_to(:authentic?)
     User.should respond_to(:authentic?)
   end
   
   it "authentic? should return true if credentials are good" do
-    @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :crypted_password => Digest::MD5.hexdigest('secret'))
+    @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :crypted_password => User.encrypt('secret'))
     @user.save!
     User.authentic?(@user.send(SimpleAuth::ORM::Config.username_attribute_name), 'secret').should be_true
   end
   
   it "authentic? should return false if credentials are bad" do
-    @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :crypted_password => Digest::MD5.hexdigest('secret'))
+    @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :crypted_password => User.encrypt('secret'))
     @user.save!
     User.authentic?(@user.send(SimpleAuth::ORM::Config.username_attribute_name), 'wrong!').should be_false
+  end
+end
+
+describe "special encryption cases" do
+  after(:each) do
+    SimpleAuth::ORM::Config.reset_to_defaults!
+  end
+  
+  it "should work with no password encryption" do
+    plugin_set_config_property(:encryption_algorithm, :none)
+    @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :crypted_password => 'secret')
+    @user.save!
+    User.authentic?(@user.send(SimpleAuth::ORM::Config.username_attribute_name), 'secret').should be_true
+  end
+  
+  it "should work with custom password encryption" do
+    class MyCrypto
+      def self.encrypt(*tokens)
+        tokens.flatten.join('').gsub(/e/,'A')
+      end
+    end
+    plugin_set_config_property(:encryption_algorithm, :custom)
+    plugin_set_config_property(:custom_encryption_provider, MyCrypto)
+    @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :crypted_password => MyCrypto.encrypt('secret'))
+    @user.save!
+    User.authentic?(@user.send(SimpleAuth::ORM::Config.username_attribute_name), 'secret').should be_true
+  end
+  
+  it "if encryption algo is aes256, it should set key to crypto provider" do
+    plugin_set_config_property(:encryption_algorithm, :aes256)
+    plugin_set_config_property(:encryption_key, "asd234dfs423fddsmndsflktsdf32343")
+    SimpleAuth::CryptoProviders::AES256.encrypt("Some Text").should_not raise_error(ArgumentError)
   end
 end

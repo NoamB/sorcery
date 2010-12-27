@@ -1,7 +1,7 @@
 require "digest/sha2"
 
-module Authlogic
-  # The acts_as_authentic method has a crypto_provider option. This allows you to use any type of encryption you like.
+module SimpleAuth
+  # The activate_simple_auth method has a custom_crypto_provider configuration option. This allows you to use any type of encryption you like.
   # Just create a class with a class level encrypt and matches? method. See example below.
   #
   # === Example
@@ -23,11 +23,11 @@ module Authlogic
     # = Sha256
     #
     # Uses the Sha256 hash algorithm to encrypt passwords.
-    class Sha256
+    class SHA256
       class << self
         attr_accessor :join_token
         
-        # The number of times to loop through the encryption. This is ten because that is what restful_authentication defaults to.
+        # The number of times to loop through the encryption.
         def stretches
           @stretches ||= 20
         end
@@ -43,6 +43,11 @@ module Authlogic
         # Does the crypted password match the tokens? Uses the same tokens that were used to encrypt.
         def matches?(crypted, *tokens)
           encrypt(*tokens) == crypted
+        end
+        
+        def reset_to_defaults!
+          @stretches = 20
+          @join_token = nil
         end
       end
     end
