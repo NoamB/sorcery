@@ -16,7 +16,7 @@ module SimpleAuth
     # store the key with the lock.
     class AES256
       class << self
-        attr_writer :key, :iv
+        attr_writer :key
     
         def encrypt(*tokens)
           aes.encrypt
@@ -33,10 +33,11 @@ module SimpleAuth
         end
     
         private
-          def aes
-            raise ArgumentError.new("#{name} expects a 32 bytes long key. Please use SimpleAuth::ORM::Config.encryption_key to set it.") if ( @key.nil? || @key == "" )
-            @aes ||= OpenSSL::Cipher::Cipher.new("AES-256-ECB")
-          end
+        
+        def aes
+          raise ArgumentError.new("#{name} expects a 32 bytes long key. Please use SimpleAuth::ORM::Config.encryption_key to set it.") if ( @key.nil? || @key == "" )
+          @aes ||= OpenSSL::Cipher::Cipher.new("AES-256-ECB")
+        end
       end
     end
   end

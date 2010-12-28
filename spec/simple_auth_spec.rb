@@ -147,6 +147,36 @@ describe "Crypto Providers wrappers" do
       aes.key = @key
       (aes.update(@digest.unpack("m").first) + aes.final).should == "Noam Ben-Ari"
     end
+
+  end
+  
+  describe SimpleAuth::CryptoProviders::BCrypt do
+    
+    before(:all) do
+      @digest = BCrypt::Password.create('Noam Ben-Ari', :cost => 10)
+    end
+    
+    after(:each) do
+      SimpleAuth::CryptoProviders::BCrypt.reset_to_defaults!
+    end
+    
+    it "should be comparable with original secret" do
+      BCrypt::Password.new(SimpleAuth::CryptoProviders::BCrypt.encrypt('Noam Ben-Ari')).should == 'Noam Ben-Ari'
+    end
+    
+    it "works with multiple costs" do
+      SimpleAuth::CryptoProviders::BCrypt.cost = 3
+      BCrypt::Password.new(SimpleAuth::CryptoProviders::BCrypt.encrypt('Noam Ben-Ari')).should == 'Noam Ben-Ari'
+    end
+    
+    it "matches? returns true when matches" do
+      SimpleAuth::CryptoProviders::BCrypt.matches?(@digest, 'Noam Ben-Ari').should be_true
+    end
+    
+    it "matches? returns false when no match" do
+      SimpleAuth::CryptoProviders::BCrypt.matches?(@digest, 'Some Dude').should be_false
+    end
+    
   end
   
 end

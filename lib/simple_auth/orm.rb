@@ -26,6 +26,7 @@ module SimpleAuth
             when :sha256 then CryptoProviders::SHA256.encrypt(*tokens)
             when :sha512 then CryptoProviders::SHA512.encrypt(*tokens)
             when :aes256 then CryptoProviders::AES256.encrypt(*tokens)
+            when :bcrypt then CryptoProviders::BCrypt.encrypt(*tokens)
             when :custom then Config.custom_encryption_provider.encrypt(*tokens)
             end
           end
