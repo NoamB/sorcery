@@ -7,7 +7,7 @@ describe User, "when app has plugin loaded" do
   end
 end
 
-def plugin_set_config_property(property, value)
+def plugin_set_orm_config_property(property, value)
   User.class_eval do
     activate_simple_auth! do |config|
       config.send("#{property}=".to_sym, value)
@@ -21,32 +21,28 @@ describe User, "plugin configuration" do
   end
   
   it "should enable configuration option 'username_attribute_name'" do    
-    plugin_set_config_property(:username_attribute_name, :email)
+    plugin_set_orm_config_property(:username_attribute_name, :email)
     SimpleAuth::ORM::Config.username_attribute_name.should equal(:email)
   end
   
-  it "should verify/make 'username_attribute_name' is unique in the DB" do
-    pending
-  end
-  
   it "should enable configuration option 'crypted_password_attribute_name'" do    
-    plugin_set_config_property(:crypted_password_attribute_name, :password)
+    plugin_set_orm_config_property(:crypted_password_attribute_name, :password)
     SimpleAuth::ORM::Config.crypted_password_attribute_name.should equal(:password)
   end
   
   it "should enable configuration option 'encryption_algorithm'" do    
-    plugin_set_config_property(:encryption_algorithm, :none)
+    plugin_set_orm_config_property(:encryption_algorithm, :none)
     SimpleAuth::ORM::Config.encryption_algorithm.should equal(:none)
   end
   
   it "should enable configuration option 'encryption_key'" do    
-    plugin_set_config_property(:encryption_key, 'asdadas424234242')
+    plugin_set_orm_config_property(:encryption_key, 'asdadas424234242')
     SimpleAuth::ORM::Config.encryption_key.should == 'asdadas424234242'
   end
   
   it "should enable configuration option 'custom_encryption_provider'" do    
-    plugin_set_config_property(:encryption_algorithm, :custom)
-    plugin_set_config_property(:custom_encryption_provider, Array)
+    plugin_set_orm_config_property(:encryption_algorithm, :custom)
+    plugin_set_orm_config_property(:custom_encryption_provider, Array)
     SimpleAuth::ORM::Config.custom_encryption_provider.should equal(Array)
   end
 end
@@ -85,7 +81,7 @@ describe "special encryption cases" do
   end
   
   it "should work with no password encryption" do
-    plugin_set_config_property(:encryption_algorithm, :none)
+    plugin_set_orm_config_property(:encryption_algorithm, :none)
     @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :crypted_password => 'secret')
     @user.save!
     User.authentic?(@user.send(SimpleAuth::ORM::Config.username_attribute_name), 'secret').should be_true
@@ -97,38 +93,38 @@ describe "special encryption cases" do
         tokens.flatten.join('').gsub(/e/,'A')
       end
     end
-    plugin_set_config_property(:encryption_algorithm, :custom)
-    plugin_set_config_property(:custom_encryption_provider, MyCrypto)
+    plugin_set_orm_config_property(:encryption_algorithm, :custom)
+    plugin_set_orm_config_property(:custom_encryption_provider, MyCrypto)
     @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :crypted_password => MyCrypto.encrypt('secret'))
     @user.save!
     User.authentic?(@user.send(SimpleAuth::ORM::Config.username_attribute_name), 'secret').should be_true
   end
   
   it "if encryption algo is aes256, it should set key to crypto provider" do
-    plugin_set_config_property(:encryption_algorithm, :aes256)
-    plugin_set_config_property(:encryption_key, nil)
+    plugin_set_orm_config_property(:encryption_algorithm, :aes256)
+    plugin_set_orm_config_property(:encryption_key, nil)
     expect{User.encrypt(@text)}.to raise_error(ArgumentError)
-    plugin_set_config_property(:encryption_key, "asd234dfs423fddsmndsflktsdf32343")
+    plugin_set_orm_config_property(:encryption_key, "asd234dfs423fddsmndsflktsdf32343")
     expect{User.encrypt(@text)}.to_not raise_error(ArgumentError)
   end
   
   it "if encryption algo is md5 it should work" do
-    plugin_set_config_property(:encryption_algorithm, :md5)
+    plugin_set_orm_config_property(:encryption_algorithm, :md5)
     User.encrypt(@text).should == SimpleAuth::CryptoProviders::MD5.encrypt(@text)
   end
   
   it "if encryption algo is sha1 it should work" do
-    plugin_set_config_property(:encryption_algorithm, :sha1)
+    plugin_set_orm_config_property(:encryption_algorithm, :sha1)
     User.encrypt(@text).should == SimpleAuth::CryptoProviders::SHA1.encrypt(@text)
   end
   
   it "if encryption algo is sha256 it should work" do
-    plugin_set_config_property(:encryption_algorithm, :sha256)
+    plugin_set_orm_config_property(:encryption_algorithm, :sha256)
     User.encrypt(@text).should == SimpleAuth::CryptoProviders::SHA256.encrypt(@text)
   end
   
   it "if encryption algo is sha512 it should work" do
-    plugin_set_config_property(:encryption_algorithm, :sha512)
+    plugin_set_orm_config_property(:encryption_algorithm, :sha512)
     User.encrypt(@text).should == SimpleAuth::CryptoProviders::SHA512.encrypt(@text)
   end
   

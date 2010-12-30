@@ -18,4 +18,5 @@ ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate")
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures  = false
+  config.include RSpec::Rails::ControllerExampleGroup, :example_group => { :file_path => /_controller_spec.rb$/ }#:file_path => /\bspec[\\\/]controllers[\\\/]/ }
 end

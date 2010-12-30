@@ -1,9 +1,10 @@
-require 'digest/md5'
-require 'active_support'
-
 module SimpleAuth
   module ORM
-    extend ::ActiveSupport::Concern
+    def self.included(klass)
+      klass.class_eval do
+        extend ClassMethods
+      end
+    end
     
     module ClassMethods
       def activate_simple_auth!
