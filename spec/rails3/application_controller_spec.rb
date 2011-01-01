@@ -46,19 +46,19 @@ describe ApplicationController, "when activated with simple_auth" do
       match '/test_logout', :to => "application#test_logout"
     end
     
-    @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :crypted_password => User.encrypt('secret'))
+    @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :password => 'secret', :password_confirmation => 'secret')
     @user.save!
   end
   
-  it "should respond to the class method login" do
+  it "should respond to the instance method login" do
     should respond_to(:login)
   end
   
-  it "should respond to the class method logout" do
+  it "should respond to the instance method logout" do
     should respond_to(:logout)
   end
   
-  it "should respond to the class method logged_in?" do
+  it "should respond to the instance method logged_in?" do
     should respond_to(:logged_in?)
   end
   

@@ -15,8 +15,16 @@ module SimpleAuth
         end
         
         self.class_eval do
+          #include InstanceMethods
+          
+          if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
+            require 'simple_auth/orm/plugins/active_record'
+            include Plugins::ActiveRecord
+          end
+          
           def self.authentic?(username, password)
-            where("#{Config.username_attribute_name} = ? AND #{Config.crypted_password_attribute_name} = ?", username, encrypt(password)).first
+            user = where("#{Config.username_attribute_name} = ?", username).first
+            user if user && (user.send(Config.crypted_password_attribute_name) == encrypt(password))
           end
                     
           def self.encrypt(*tokens)
@@ -35,20 +43,29 @@ module SimpleAuth
       end
     end
     
+    module InstanceMethods
+    end
+    
     module Config
       class << self
         attr_accessor :username_attribute_name, 
+                      :password_attribute_name,
+                      :confirm_password,
+                      :password_confirmation_attribute_name,
                       :crypted_password_attribute_name,
                       :encryption_algorithm,
                       :custom_encryption_provider,
                       :encryption_key
         
         def reset_to_defaults!
-          @username_attribute_name         = :username
-          @crypted_password_attribute_name = :crypted_password
-          @encryption_algorithm            = :md5
-          @custom_encryption_provider      = nil
-          @encryption_key                  = nil
+          @username_attribute_name              = :username
+          @password_attribute_name              = :password
+          @confirm_password                     = true
+          @password_confirmation_attribute_name = :password_confirmation
+          @crypted_password_attribute_name      = :crypted_password
+          @encryption_algorithm                 = :sha256
+          @custom_encryption_provider           = nil
+          @encryption_key                       = nil
         end
       
       end
