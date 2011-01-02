@@ -8,7 +8,8 @@ module SimpleAuth
     end
     
     initializer "extend Controller with simple_auth" do |app|
-      ActionController::Base.send(:include, SimpleAuth::Controller) if defined?(ActionController)
+      ActionController::Base.send(:include, SimpleAuth::Controller)
+      ActionController::Base.activate_simple_auth!
     end
   end
 end

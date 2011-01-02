@@ -1,4 +1,9 @@
 module SimpleAuth
+  # TODO: autoloads here?
+  
+  # TODO: central config
+  
+  
   require 'simple_auth/crypto_providers'
   require 'simple_auth/orm'
   require 'simple_auth/controller'
