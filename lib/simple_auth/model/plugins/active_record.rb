@@ -1,5 +1,5 @@
 module SimpleAuth
-  module ORM
+  module Model
     module Plugins
       module ActiveRecord
         def self.included(klass)

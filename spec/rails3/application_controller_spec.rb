@@ -17,12 +17,17 @@ end
  
 describe ApplicationController, "plugin configuration" do
   after(:each) do
-    SimpleAuth::Controller::Config.reset_to_defaults!
+    SimpleAuth::Controller::Config.reset!
   end
   
   it "should enable configuration option 'session_attribute_name'" do    
     plugin_set_controller_config_property(:session_attribute_name, :my_session)
     SimpleAuth::Controller::Config.session_attribute_name.should equal(:my_session)
+  end
+  
+  it "should enable configuration option 'cookies_attribute_name'" do    
+    plugin_set_controller_config_property(:cookies_attribute_name, :my_cookies)
+    SimpleAuth::Controller::Config.cookies_attribute_name.should equal(:my_cookies)
   end
 
 end

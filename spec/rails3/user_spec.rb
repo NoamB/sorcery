@@ -22,50 +22,50 @@ end
 
 describe User, "plugin configuration" do
   after(:each) do
-    SimpleAuth::ORM::Config.reset_to_defaults!
+    SimpleAuth::Model::Config.reset!
   end
   
   it "should enable configuration option 'username_attribute_name'" do    
     plugin_set_orm_config_property(:username_attribute_name, :email)
-    SimpleAuth::ORM::Config.username_attribute_name.should equal(:email)
+    SimpleAuth::Model::Config.username_attribute_name.should equal(:email)
   end
   
   it "should enable configuration option 'password_attribute_name'" do
     plugin_set_orm_config_property(:password_attribute_name, :mypassword)
-    SimpleAuth::ORM::Config.password_attribute_name.should equal(:mypassword)
+    SimpleAuth::Model::Config.password_attribute_name.should equal(:mypassword)
   end
   
   it "should enable configuration option 'confirm_password'" do
     plugin_set_orm_config_property(:confirm_password, false)
-    SimpleAuth::ORM::Config.confirm_password.should equal(false)
+    SimpleAuth::Model::Config.confirm_password.should equal(false)
     plugin_set_orm_config_property(:confirm_password, true)
-    SimpleAuth::ORM::Config.confirm_password.should equal(true)
+    SimpleAuth::Model::Config.confirm_password.should equal(true)
   end
   
   it "should enable configuration option 'password_confirmation_attribute_name'" do
     plugin_set_orm_config_property(:password_confirmation_attribute_name, :mypassword_conf)
-    SimpleAuth::ORM::Config.password_confirmation_attribute_name.should equal(:mypassword_conf)
+    SimpleAuth::Model::Config.password_confirmation_attribute_name.should equal(:mypassword_conf)
   end
   
   it "should enable configuration option 'crypted_password_attribute_name'" do    
     plugin_set_orm_config_property(:crypted_password_attribute_name, :password)
-    SimpleAuth::ORM::Config.crypted_password_attribute_name.should equal(:password)
+    SimpleAuth::Model::Config.crypted_password_attribute_name.should equal(:password)
   end
   
   it "should enable configuration option 'encryption_algorithm'" do    
     plugin_set_orm_config_property(:encryption_algorithm, :none)
-    SimpleAuth::ORM::Config.encryption_algorithm.should equal(:none)
+    SimpleAuth::Model::Config.encryption_algorithm.should equal(:none)
   end
   
   it "should enable configuration option 'encryption_key'" do    
     plugin_set_orm_config_property(:encryption_key, 'asdadas424234242')
-    SimpleAuth::ORM::Config.encryption_key.should == 'asdadas424234242'
+    SimpleAuth::Model::Config.encryption_key.should == 'asdadas424234242'
   end
   
   it "should enable configuration option 'custom_encryption_provider'" do    
     plugin_set_orm_config_property(:encryption_algorithm, :custom)
     plugin_set_orm_config_property(:custom_encryption_provider, Array)
-    SimpleAuth::ORM::Config.custom_encryption_provider.should equal(Array)
+    SimpleAuth::Model::Config.custom_encryption_provider.should equal(Array)
   end
   
 end
@@ -86,12 +86,12 @@ describe User, "when activated with simple_auth" do
   
   it "authentic? should return true if credentials are good" do
     create_new_user
-    User.authentic?(@user.send(SimpleAuth::ORM::Config.username_attribute_name), 'secret').should be_true
+    User.authentic?(@user.send(SimpleAuth::Model::Config.username_attribute_name), 'secret').should be_true
   end
   
   it "authentic? should return false if credentials are bad" do
     create_new_user
-    User.authentic?(@user.send(SimpleAuth::ORM::Config.username_attribute_name), 'wrong!').should be_false
+    User.authentic?(@user.send(SimpleAuth::Model::Config.username_attribute_name), 'wrong!').should be_false
   end
   
 end
@@ -103,14 +103,14 @@ describe User, "registration" do
   
   it "should encrypt password when a new user is saved" do
     create_new_user
-    @user.send(SimpleAuth::ORM::Config.crypted_password_attribute_name).should == User.encrypt('secret')
+    @user.send(SimpleAuth::Model::Config.crypted_password_attribute_name).should == User.encrypt('secret')
   end
   
   it "should not encrypt the password twice when a user is updated" do
     create_new_user
     @user.email = "blup@bla.com"
     @user.save!
-    @user.send(SimpleAuth::ORM::Config.crypted_password_attribute_name).should == User.encrypt('secret')
+    @user.send(SimpleAuth::Model::Config.crypted_password_attribute_name).should == User.encrypt('secret')
   end
   
   it "should replace the crypted_password in case a new password is set" do
@@ -118,7 +118,7 @@ describe User, "registration" do
     @user.password = 'new_secret'
     @user.password_confirmation = 'new_secret'
     @user.save!
-    @user.send(SimpleAuth::ORM::Config.crypted_password_attribute_name).should == User.encrypt('new_secret')
+    @user.send(SimpleAuth::Model::Config.crypted_password_attribute_name).should == User.encrypt('new_secret')
   end
 end
 
@@ -128,7 +128,7 @@ describe User, "password confirmation" do
   end
   
   after(:each) do
-    SimpleAuth::ORM::Config.reset_to_defaults!
+    SimpleAuth::Model::Config.reset!
   end
   
   it "should not register a user with mismatching password fields" do
@@ -150,13 +150,13 @@ describe User, "special encryption cases" do
   end
   
   after(:each) do
-    SimpleAuth::ORM::Config.reset_to_defaults!
+    SimpleAuth::Model::Config.reset!
   end
   
   it "should work with no password encryption" do
     plugin_set_orm_config_property(:encryption_algorithm, :none)
     create_new_user
-    User.authentic?(@user.send(SimpleAuth::ORM::Config.username_attribute_name), 'secret').should be_true
+    User.authentic?(@user.send(SimpleAuth::Model::Config.username_attribute_name), 'secret').should be_true
   end
   
   it "should work with custom password encryption" do
@@ -168,7 +168,7 @@ describe User, "special encryption cases" do
     plugin_set_orm_config_property(:encryption_algorithm, :custom)
     plugin_set_orm_config_property(:custom_encryption_provider, MyCrypto)
     create_new_user
-    User.authentic?(@user.send(SimpleAuth::ORM::Config.username_attribute_name), 'secret').should be_true
+    User.authentic?(@user.send(SimpleAuth::Model::Config.username_attribute_name), 'secret').should be_true
   end
   
   it "if encryption algo is aes256, it should set key to crypto provider" do

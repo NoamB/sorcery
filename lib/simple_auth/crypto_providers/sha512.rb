@@ -45,7 +45,7 @@ module SimpleAuth
           encrypt(*tokens) == crypted
         end
         
-        def reset_to_defaults!
+        def reset!
           @stretches = 20
           @join_token = nil
         end

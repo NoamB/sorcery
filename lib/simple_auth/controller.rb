@@ -39,14 +39,16 @@ module SimpleAuth
     
     module Config
       class << self
-        attr_accessor :session_attribute_name
+        attr_accessor :session_attribute_name,
+                      :cookies_attribute_name
         
-        def reset_to_defaults!
+        def reset!
           @session_attribute_name = :session
+          @cookies_attribute_name = :cookies
         end
       
       end
-      reset_to_defaults!
+      reset!
     end
   end
 end

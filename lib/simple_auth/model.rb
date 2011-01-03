@@ -1,5 +1,5 @@
 module SimpleAuth
-  module ORM
+  module Model
     def self.included(klass)
       klass.class_eval do
         extend ClassMethods
@@ -15,12 +15,7 @@ module SimpleAuth
         end
         
         self.class_eval do
-          #include InstanceMethods
-          
-          if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
-            require 'simple_auth/orm/plugins/active_record'
-            include Plugins::ActiveRecord
-          end
+          include Plugins::ActiveRecord if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
           
           def self.authentic?(username, password)
             user = where("#{Config.username_attribute_name} = ?", username).first
@@ -43,9 +38,6 @@ module SimpleAuth
       end
     end
     
-    module InstanceMethods
-    end
-    
     module Config
       class << self
         attr_accessor :username_attribute_name, 
@@ -57,7 +49,7 @@ module SimpleAuth
                       :custom_encryption_provider,
                       :encryption_key
         
-        def reset_to_defaults!
+        def reset!
           @username_attribute_name              = :username
           @password_attribute_name              = :password
           @confirm_password                     = true
@@ -69,7 +61,7 @@ module SimpleAuth
         end
       
       end
-      reset_to_defaults!
+      reset!
     end
   end
 end

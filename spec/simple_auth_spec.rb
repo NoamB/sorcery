@@ -5,7 +5,7 @@ describe "Crypto Providers wrappers" do
   describe SimpleAuth::CryptoProviders::MD5 do
     
     after(:each) do
-      SimpleAuth::CryptoProviders::MD5.reset_to_defaults!
+      SimpleAuth::CryptoProviders::MD5.reset!
     end
     
     it "encrypt works via wrapper like normal lib" do
@@ -35,7 +35,7 @@ describe "Crypto Providers wrappers" do
     end
     
     after(:each) do
-      SimpleAuth::CryptoProviders::SHA1.reset_to_defaults!
+      SimpleAuth::CryptoProviders::SHA1.reset!
     end
     
     it "encrypt works via wrapper like normal lib" do
@@ -65,7 +65,7 @@ describe "Crypto Providers wrappers" do
     end
     
     after(:each) do
-      SimpleAuth::CryptoProviders::SHA256.reset_to_defaults!
+      SimpleAuth::CryptoProviders::SHA256.reset!
     end
     
     it "encrypt works via wrapper like normal lib" do
@@ -95,7 +95,7 @@ describe "Crypto Providers wrappers" do
     end
     
     after(:each) do
-      SimpleAuth::CryptoProviders::SHA512.reset_to_defaults!
+      SimpleAuth::CryptoProviders::SHA512.reset!
     end
     
     it "encrypt works via wrapper like normal lib" do
@@ -157,7 +157,7 @@ describe "Crypto Providers wrappers" do
     end
     
     after(:each) do
-      SimpleAuth::CryptoProviders::BCrypt.reset_to_defaults!
+      SimpleAuth::CryptoProviders::BCrypt.reset!
     end
     
     it "should be comparable with original secret" do

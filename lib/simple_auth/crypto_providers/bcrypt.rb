@@ -72,7 +72,7 @@ module SimpleAuth
           end
         end
         
-        def reset_to_defaults!
+        def reset!
           @cost = 10
         end
         
