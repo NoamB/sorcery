@@ -25,9 +25,9 @@ describe User, "plugin configuration" do
     SimpleAuth::Model::Config.reset!
   end
   
-  it "should enable configuration option 'username_attribute_name'" do    
+  it "should enable configuration option 'username_attribute_name'" do
     plugin_set_orm_config_property(:username_attribute_name, :email)
-    SimpleAuth::Model::Config.username_attribute_name.should equal(:email)
+    SimpleAuth::Model::Config.username_attribute_name.should equal(:email)    
   end
   
   it "should enable configuration option 'password_attribute_name'" do
@@ -47,22 +47,22 @@ describe User, "plugin configuration" do
     SimpleAuth::Model::Config.password_confirmation_attribute_name.should equal(:mypassword_conf)
   end
   
-  it "should enable configuration option 'crypted_password_attribute_name'" do    
+  it "should enable configuration option 'crypted_password_attribute_name'" do
     plugin_set_orm_config_property(:crypted_password_attribute_name, :password)
     SimpleAuth::Model::Config.crypted_password_attribute_name.should equal(:password)
   end
   
-  it "should enable configuration option 'encryption_algorithm'" do    
+  it "should enable configuration option 'encryption_algorithm'" do
     plugin_set_orm_config_property(:encryption_algorithm, :none)
     SimpleAuth::Model::Config.encryption_algorithm.should equal(:none)
   end
   
-  it "should enable configuration option 'encryption_key'" do    
+  it "should enable configuration option 'encryption_key'" do
     plugin_set_orm_config_property(:encryption_key, 'asdadas424234242')
     SimpleAuth::Model::Config.encryption_key.should == 'asdadas424234242'
   end
   
-  it "should enable configuration option 'custom_encryption_provider'" do    
+  it "should enable configuration option 'custom_encryption_provider'" do
     plugin_set_orm_config_property(:encryption_algorithm, :custom)
     plugin_set_orm_config_property(:custom_encryption_provider, Array)
     SimpleAuth::Model::Config.custom_encryption_provider.should equal(Array)
