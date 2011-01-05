@@ -6,14 +6,6 @@ describe ApplicationController, "when app has plugin loaded" do
     ApplicationController.should respond_to(:activate_simple_auth!)
   end
 end
-
-def plugin_set_controller_config_property(property, value)
-  ApplicationController.class_eval do
-    activate_simple_auth! do |config|
-      config.send("#{property}=".to_sym, value)
-    end
-  end
-end
  
 describe ApplicationController, "plugin configuration" do
   after(:each) do
@@ -34,25 +26,7 @@ end
 
 describe ApplicationController, "when activated with simple_auth" do
   before(:all) do
-    ApplicationController.class_eval do
-      def test_login
-        @user = login(params[:username], params[:password])
-        render :text => ""
-      end
-      
-      def test_logout
-        logout
-        render :text => ""
-      end
-    end
-    
-    AppRoot::Application.routes.draw do
-      match '/test_login', :to => "application#test_login"
-      match '/test_logout', :to => "application#test_logout"
-    end
-    
-    @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :password => 'secret', :password_confirmation => 'secret')
-    @user.save!
+    create_new_user
   end
   
   it "should respond to the instance method login" do

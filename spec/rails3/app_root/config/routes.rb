@@ -1,4 +1,6 @@
 AppRoot::Application.routes.draw do
+  match '/test_login', :to => "application#test_login"
+  match '/test_logout', :to => "application#test_logout"
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
