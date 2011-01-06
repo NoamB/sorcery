@@ -5,7 +5,7 @@ module SimpleAuth
     # This encryption method is reversible if you have the supplied key. So in order to use this encryption method you must supply it with a key first.
     # In an initializer, or before your application initializes, you should do the following:
     #
-    #   SimpleAuth::ORM::ConfigAES256.key = "my 32 bytes long key"
+    #   SimpleAuth::Model::ConfigAES256.key = "my 32 bytes long key"
     #
     # My final comment is that this is a strong encryption method, but its main weakness is that its reversible. If you do not need to reverse the hash
     # then you should consider Sha512 or BCrypt instead.
@@ -35,7 +35,7 @@ module SimpleAuth
         private
         
         def aes
-          raise ArgumentError.new("#{name} expects a 32 bytes long key. Please use SimpleAuth::ORM::Config.encryption_key to set it.") if ( @key.nil? || @key == "" )
+          raise ArgumentError.new("#{name} expects a 32 bytes long key. Please use SimpleAuth::Model::Config.encryption_key to set it.") if ( @key.nil? || @key == "" )
           @aes ||= OpenSSL::Cipher::Cipher.new("AES-256-ECB")
         end
       end

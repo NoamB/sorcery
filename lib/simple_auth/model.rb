@@ -8,14 +8,9 @@ module SimpleAuth
     
     module ClassMethods
       def activate_simple_auth!
-        yield Config if block_given?
-        
-        if Config.encryption_algorithm == :aes256
-          CryptoProviders::AES256.key = Config.encryption_key
-        end
-        
         self.class_eval do
-          include Plugins::ActiveRecord if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
+          include Submodules::PasswordConfirmation
+          include Adapters::ActiveRecord if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
           
           def self.authentic?(username, password)
             user = where("#{Config.username_attribute_name} = ?", username).first
@@ -34,7 +29,16 @@ module SimpleAuth
             when :custom then Config.custom_encryption_provider.encrypt(*tokens)
             end
           end
+          
+          private
+          
+          # useful for tests
+          def self.simple_auth_config
+            Config
+          end
         end
+        
+        yield Config if block_given?
       end
     end
     
@@ -42,22 +46,41 @@ module SimpleAuth
       class << self
         attr_accessor :username_attribute_name, 
                       :password_attribute_name,
-                      :confirm_password,
-                      :password_confirmation_attribute_name,
+                      :confirm_password, # TODO: remove and use the optional inclusion of password_confirmation module as a boolean instead.
                       :crypted_password_attribute_name,
-                      :encryption_algorithm,
-                      :custom_encryption_provider,
+                      :custom_encryption_provider
+                              
+        attr_reader   :encryption_algorithm,
                       :encryption_key
+                      
+        def encryption_algorithm=(algo)
+          @encryption_algorithm = algo
+          set_encryption_key_to_provider
+        end
+        
+        def encryption_key=(key)
+          @encryption_key = key
+          set_encryption_key_to_provider
+        end
+        
+        def set_encryption_key_to_provider
+          CryptoProviders::AES256.key = @encryption_key if @encryption_algorithm == :aes256
+        end
+        
+        DEFAULT_VALUES = {
+          :@username_attribute_name              => :username,
+          :@password_attribute_name              => :password,
+          :@confirm_password                     => true,
+          :@crypted_password_attribute_name      => :crypted_password,
+          :@encryption_algorithm                 => :sha256,
+          :@custom_encryption_provider           => nil,
+          :@encryption_key                       => nil
+        }
         
         def reset!
-          @username_attribute_name              = :username
-          @password_attribute_name              = :password
-          @confirm_password                     = true
-          @password_confirmation_attribute_name = :password_confirmation
-          @crypted_password_attribute_name      = :crypted_password
-          @encryption_algorithm                 = :sha256
-          @custom_encryption_provider           = nil
-          @encryption_key                       = nil
+          DEFAULT_VALUES.each do |k,v|
+            instance_variable_set(k,v)
+          end       
         end
       
       end

@@ -1,8 +1,11 @@
 module SimpleAuth
   autoload :Model,      'simple_auth/model'
   module Model
-    module Plugins
-      autoload :ActiveRecord, 'simple_auth/model/plugins/active_record'
+    module Adapters
+      autoload :ActiveRecord, 'simple_auth/model/adapters/active_record'
+    end
+    module Submodules
+      autoload :PasswordConfirmation, 'simple_auth/model/submodules/password_confirmation'
     end
   end
   autoload :Controller, 'simple_auth/controller'

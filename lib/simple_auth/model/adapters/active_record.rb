@@ -1,6 +1,6 @@
 module SimpleAuth
   module Model
-    module Plugins
+    module Adapters
       module ActiveRecord
         def self.included(klass)
           klass.class_eval do

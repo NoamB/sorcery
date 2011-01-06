@@ -30,9 +30,7 @@ end
 
 def plugin_set_model_config_property(property, value)
   User.class_eval do
-    activate_simple_auth! do |config|
-      config.send("#{property}=".to_sym, value)
-    end
+    simple_auth_config.send("#{property}=".to_sym, value)
   end
 end
 
