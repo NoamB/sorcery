@@ -24,20 +24,39 @@ end
 #----------------------------------------------------------------
 
 def create_new_user
-  @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :password => 'secret', :password_confirmation => 'secret')
+  user_attributes_hash = {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
+  user_attributes_hash.merge!(:password_confirmation => 'secret') if SimpleAuth::Model::Config.submodules.include?(:password_confirmation)
+  @user = User.new(user_attributes_hash)
   @user.save!
 end
 
-def plugin_set_model_config_property(property, value)
+def plugin_model_configure(submodules = [], options = {})
+  reload_user_class
+  
+  User.activate_simple_auth!(*submodules) do |config|
+    options.each do |k,v|
+      config.send(:"#{property}=", value)
+    end
+  end
+end
+
+def plugin_set_model_config_property(property, *values)
   User.class_eval do
-    simple_auth_config.send("#{property}=".to_sym, value)
+    simple_auth_config.send(:"#{property}=", *values)
   end
 end
 
 def plugin_set_controller_config_property(property, value)
   ApplicationController.class_eval do
     activate_simple_auth! do |config|
-      config.send("#{property}=".to_sym, value)
+      config.send(:"#{property}=", value)
     end
   end
+end
+
+private
+
+def reload_user_class
+  Object.send(:remove_const,:User)
+  load 'user.rb'
 end

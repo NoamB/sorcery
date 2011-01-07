@@ -12,6 +12,11 @@ describe User, "plugin configuration" do
     SimpleAuth::Model::Config.reset!
   end
   
+  it "should enable submodules in parameters" do
+    plugin_model_configure([:password_confirmation])
+    SimpleAuth::Model::Config.should respond_to(:password_confirmation_attribute_name)
+  end
+  
   it "should enable configuration option 'username_attribute_name'" do
     plugin_set_model_config_property(:username_attribute_name, :email)
     SimpleAuth::Model::Config.username_attribute_name.should equal(:email)    
@@ -20,13 +25,6 @@ describe User, "plugin configuration" do
   it "should enable configuration option 'password_attribute_name'" do
     plugin_set_model_config_property(:password_attribute_name, :mypassword)
     SimpleAuth::Model::Config.password_attribute_name.should equal(:mypassword)
-  end
-  
-  it "should enable configuration option 'confirm_password'" do
-    plugin_set_model_config_property(:confirm_password, false)
-    SimpleAuth::Model::Config.confirm_password.should equal(false)
-    plugin_set_model_config_property(:confirm_password, true)
-    SimpleAuth::Model::Config.confirm_password.should equal(true)
   end
   
   it "should enable configuration option 'password_confirmation_attribute_name'" do
@@ -84,6 +82,10 @@ describe User, "when activated with simple_auth" do
 end
 
 describe User, "registration" do
+  before(:all) do
+    plugin_model_configure
+  end
+  
   before(:each) do
     User.delete_all
   end
@@ -103,9 +105,19 @@ describe User, "registration" do
   it "should replace the crypted_password in case a new password is set" do
     create_new_user
     @user.password = 'new_secret'
-    @user.password_confirmation = 'new_secret'
     @user.save!
     @user.send(SimpleAuth::Model::Config.crypted_password_attribute_name).should == User.encrypt('new_secret')
+  end
+  
+  describe "with password_confirmation module" do
+    it "should replace the crypted_password in case a new password is set" do
+      plugin_model_configure([:password_confirmation])
+      create_new_user
+      @user.password = 'new_secret'
+      @user.password_confirmation = 'new_secret'
+      @user.save!
+      @user.send(SimpleAuth::Model::Config.crypted_password_attribute_name).should == User.encrypt('new_secret')
+    end
   end
 end
 
@@ -119,7 +131,7 @@ describe User, "password confirmation" do
   end
   
   it "should not register a user with mismatching password fields" do
-    plugin_set_model_config_property(:confirm_password, true)
+    plugin_model_configure([:password_confirmation])
     @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :password => 'secret', :password_confirmation => 'secrer')
     @user.valid?.should == false
     @user.save.should == false

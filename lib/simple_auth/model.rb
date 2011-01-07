@@ -7,9 +7,18 @@ module SimpleAuth
     end
     
     module ClassMethods
-      def activate_simple_auth!
+      def activate_simple_auth!(*submodules)
+        Config.submodules = submodules
         self.class_eval do
-          include Submodules::PasswordConfirmation
+          submodules.each do |mod|
+            include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
+            #include Submodules::PasswordConfirmation
+          end
+        end
+        
+        yield Config if block_given?
+        
+        self.class_eval do
           include Adapters::ActiveRecord if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
           
           def self.authentic?(username, password)
@@ -37,16 +46,14 @@ module SimpleAuth
             Config
           end
         end
-        
-        yield Config if block_given?
       end
     end
     
     module Config
       class << self
-        attr_accessor :username_attribute_name, 
+        attr_accessor :submodules,
+                      :username_attribute_name, 
                       :password_attribute_name,
-                      :confirm_password, # TODO: remove and use the optional inclusion of password_confirmation module as a boolean instead.
                       :crypted_password_attribute_name,
                       :custom_encryption_provider
                               
@@ -70,7 +77,6 @@ module SimpleAuth
         DEFAULT_VALUES = {
           :@username_attribute_name              => :username,
           :@password_attribute_name              => :password,
-          :@confirm_password                     => true,
           :@crypted_password_attribute_name      => :crypted_password,
           :@encryption_algorithm                 => :sha256,
           :@custom_encryption_provider           => nil,

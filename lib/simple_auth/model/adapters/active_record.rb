@@ -5,9 +5,9 @@ module SimpleAuth
         def self.included(klass)
           klass.class_eval do
             attr_accessor Config.password_attribute_name
-            attr_accessor Config.password_confirmation_attribute_name if Config.confirm_password
+            attr_accessor Config.password_confirmation_attribute_name if Config.submodules.include?(:password_confirmation)
 
-            validate :password_confirmed if Config.confirm_password
+            validate :password_confirmed if Config.submodules.include?(:password_confirmation)
             before_save :encrypt_password
 
             def encrypt_password
