@@ -23,9 +23,13 @@ end
 
 #----------------------------------------------------------------
 
+class TestUser < ActiveRecord::Base
+  activate_simple_auth!
+end
+
 def create_new_user
   user_attributes_hash = {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
-  user_attributes_hash.merge!(:password_confirmation => 'secret') if SimpleAuth::Model::Config.submodules.include?(:password_confirmation)
+  user_attributes_hash.merge!(:password_confirmation => 'secret') if User.simple_auth_config.submodules.include?(:password_confirmation)
   @user = User.new(user_attributes_hash)
   @user.save!
 end

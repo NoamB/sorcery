@@ -9,48 +9,53 @@ end
 
 describe User, "plugin configuration" do
   after(:each) do
-    SimpleAuth::Model::Config.reset!
+    User.simple_auth_config.reset!
   end
   
   it "should enable submodules in parameters" do
     plugin_model_configure([:password_confirmation])
-    SimpleAuth::Model::Config.should respond_to(:password_confirmation_attribute_name)
+    User.simple_auth_config.should respond_to(:password_confirmation_attribute_name)
   end
   
   it "should enable configuration option 'username_attribute_name'" do
     plugin_set_model_config_property(:username_attribute_name, :email)
-    SimpleAuth::Model::Config.username_attribute_name.should equal(:email)    
+    User.simple_auth_config.username_attribute_name.should equal(:email)    
   end
   
   it "should enable configuration option 'password_attribute_name'" do
     plugin_set_model_config_property(:password_attribute_name, :mypassword)
-    SimpleAuth::Model::Config.password_attribute_name.should equal(:mypassword)
+    User.simple_auth_config.password_attribute_name.should equal(:mypassword)
   end
   
   it "should enable configuration option 'password_confirmation_attribute_name'" do
     plugin_set_model_config_property(:password_confirmation_attribute_name, :mypassword_conf)
-    SimpleAuth::Model::Config.password_confirmation_attribute_name.should equal(:mypassword_conf)
+    User.simple_auth_config.password_confirmation_attribute_name.should equal(:mypassword_conf)
   end
   
   it "should enable configuration option 'crypted_password_attribute_name'" do
     plugin_set_model_config_property(:crypted_password_attribute_name, :password)
-    SimpleAuth::Model::Config.crypted_password_attribute_name.should equal(:password)
+    User.simple_auth_config.crypted_password_attribute_name.should equal(:password)
   end
   
   it "should enable configuration option 'encryption_algorithm'" do
     plugin_set_model_config_property(:encryption_algorithm, :none)
-    SimpleAuth::Model::Config.encryption_algorithm.should equal(:none)
+    User.simple_auth_config.encryption_algorithm.should equal(:none)
   end
   
   it "should enable configuration option 'encryption_key'" do
     plugin_set_model_config_property(:encryption_key, 'asdadas424234242')
-    SimpleAuth::Model::Config.encryption_key.should == 'asdadas424234242'
+    User.simple_auth_config.encryption_key.should == 'asdadas424234242'
   end
   
   it "should enable configuration option 'custom_encryption_provider'" do
     plugin_set_model_config_property(:encryption_algorithm, :custom)
     plugin_set_model_config_property(:custom_encryption_provider, Array)
-    SimpleAuth::Model::Config.custom_encryption_provider.should equal(Array)
+    User.simple_auth_config.custom_encryption_provider.should equal(Array)
+  end
+  
+  it "should enable two classes to have different configurations" do
+    plugin_set_model_config_property(:username_attribute_name, :email)
+    TestUser.simple_auth_config.username_attribute_name.should equal(:username)
   end
   
 end
@@ -71,12 +76,12 @@ describe User, "when activated with simple_auth" do
   
   it "authentic? should return true if credentials are good" do
     create_new_user
-    User.authentic?(@user.send(SimpleAuth::Model::Config.username_attribute_name), 'secret').should be_true
+    User.authentic?(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
   end
   
   it "authentic? should return false if credentials are bad" do
     create_new_user
-    User.authentic?(@user.send(SimpleAuth::Model::Config.username_attribute_name), 'wrong!').should be_false
+    User.authentic?(@user.send(User.simple_auth_config.username_attribute_name), 'wrong!').should be_false
   end
   
 end
@@ -92,21 +97,21 @@ describe User, "registration" do
   
   it "should encrypt password when a new user is saved" do
     create_new_user
-    @user.send(SimpleAuth::Model::Config.crypted_password_attribute_name).should == User.encrypt('secret')
+    @user.send(User.simple_auth_config.crypted_password_attribute_name).should == User.encrypt('secret')
   end
   
   it "should not encrypt the password twice when a user is updated" do
     create_new_user
     @user.email = "blup@bla.com"
     @user.save!
-    @user.send(SimpleAuth::Model::Config.crypted_password_attribute_name).should == User.encrypt('secret')
+    @user.send(User.simple_auth_config.crypted_password_attribute_name).should == User.encrypt('secret')
   end
   
   it "should replace the crypted_password in case a new password is set" do
     create_new_user
     @user.password = 'new_secret'
     @user.save!
-    @user.send(SimpleAuth::Model::Config.crypted_password_attribute_name).should == User.encrypt('new_secret')
+    @user.send(User.simple_auth_config.crypted_password_attribute_name).should == User.encrypt('new_secret')
   end
   
   describe "with password_confirmation module" do
@@ -116,7 +121,7 @@ describe User, "registration" do
       @user.password = 'new_secret'
       @user.password_confirmation = 'new_secret'
       @user.save!
-      @user.send(SimpleAuth::Model::Config.crypted_password_attribute_name).should == User.encrypt('new_secret')
+      @user.send(User.simple_auth_config.crypted_password_attribute_name).should == User.encrypt('new_secret')
     end
   end
 end
@@ -127,7 +132,7 @@ describe User, "password confirmation" do
   end
   
   after(:each) do
-    SimpleAuth::Model::Config.reset!
+    User.simple_auth_config.reset!
   end
   
   it "should not register a user with mismatching password fields" do
@@ -149,13 +154,13 @@ describe User, "special encryption cases" do
   end
   
   after(:each) do
-    SimpleAuth::Model::Config.reset!
+    User.simple_auth_config.reset!
   end
   
   it "should work with no password encryption" do
     plugin_set_model_config_property(:encryption_algorithm, :none)
     create_new_user
-    User.authentic?(@user.send(SimpleAuth::Model::Config.username_attribute_name), 'secret').should be_true
+    User.authentic?(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
   end
   
   it "should work with custom password encryption" do
@@ -167,7 +172,7 @@ describe User, "special encryption cases" do
     plugin_set_model_config_property(:encryption_algorithm, :custom)
     plugin_set_model_config_property(:custom_encryption_provider, MyCrypto)
     create_new_user
-    User.authentic?(@user.send(SimpleAuth::Model::Config.username_attribute_name), 'secret').should be_true
+    User.authentic?(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
   end
   
   it "if encryption algo is aes256, it should set key to crypto provider" do
