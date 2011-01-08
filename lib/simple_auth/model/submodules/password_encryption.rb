@@ -37,7 +37,7 @@ module SimpleAuth
         end
         
         module ClassMethods
-          def authentic?(username, password)
+          def authenticate(username, password)
             user = where("#{@simple_auth_config.username_attribute_name} = ?", username).first
             user if user && (user.send(@simple_auth_config.crypted_password_attribute_name) == encrypt(password))
           end

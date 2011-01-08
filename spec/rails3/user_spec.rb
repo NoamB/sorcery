@@ -71,19 +71,19 @@ describe User, "when activated with simple_auth" do
     User.delete_all
   end
   
-  it "should respond to class method authentic?" do
-    ActiveRecord::Base.should_not respond_to(:authentic?)
-    User.should respond_to(:authentic?)
+  it "should respond to class method authenticate" do
+    ActiveRecord::Base.should_not respond_to(:authenticate)
+    User.should respond_to(:authenticate)
   end
   
-  it "authentic? should return true if credentials are good" do
+  it "authenticate should return true if credentials are good" do
     create_new_user
-    User.authentic?(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
+    User.authenticate(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
   end
   
-  it "authentic? should return false if credentials are bad" do
+  it "authenticate should return false if credentials are bad" do
     create_new_user
-    User.authentic?(@user.send(User.simple_auth_config.username_attribute_name), 'wrong!').should be_false
+    User.authenticate(@user.send(User.simple_auth_config.username_attribute_name), 'wrong!').should be_false
   end
   
   describe "with PasswordEncryption" do
@@ -179,7 +179,7 @@ describe User, "special encryption cases" do
   it "should work with no password encryption" do
     plugin_set_model_config_property(:encryption_algorithm, :none)
     create_new_user
-    User.authentic?(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
+    User.authenticate(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
   end
   
   it "should work with custom password encryption" do
@@ -191,7 +191,7 @@ describe User, "special encryption cases" do
     plugin_set_model_config_property(:encryption_algorithm, :custom)
     plugin_set_model_config_property(:custom_encryption_provider, MyCrypto)
     create_new_user
-    User.authentic?(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
+    User.authenticate(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
   end
   
   it "if encryption algo is aes256, it should set key to crypto provider" do

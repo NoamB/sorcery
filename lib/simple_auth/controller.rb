@@ -18,7 +18,7 @@ module SimpleAuth
     
     module InstanceMethods
       def login(username,password)
-        user = User.authentic?(username,password)
+        user = User.authenticate(username,password)
         if user
           reset_session # protect from session fixation attacks
           session[:user_id] = user.id

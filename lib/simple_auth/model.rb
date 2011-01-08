@@ -35,7 +35,7 @@ module SimpleAuth
         @simple_auth_config
       end
       
-      def authentic?(username, password)
+      def authenticate(username, password)
         user = where("#{@simple_auth_config.username_attribute_name} = ?", username).first
         user if user && (user.send(@simple_auth_config.password_attribute_name) == password)
       end
