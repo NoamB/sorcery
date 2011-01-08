@@ -6,6 +6,7 @@ module SimpleAuth
     end
     module Submodules
       autoload :PasswordConfirmation, 'simple_auth/model/submodules/password_confirmation'
+      autoload :PasswordEncryption, 'simple_auth/model/submodules/password_encryption'
     end
   end
   autoload :Controller, 'simple_auth/controller'

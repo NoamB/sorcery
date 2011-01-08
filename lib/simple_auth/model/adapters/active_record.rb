@@ -10,7 +10,7 @@ module SimpleAuth
             attr_accessor @simple_auth_config.password_confirmation_attribute_name if @simple_auth_config.submodules.include?(:password_confirmation)
 
             validate :password_confirmed if @simple_auth_config.submodules.include?(:password_confirmation)
-            before_save :encrypt_password
+            before_save :encrypt_password if @simple_auth_config.submodules.include?(:password_encryption)
           end
         end
         
