@@ -2,61 +2,57 @@ module SimpleAuth
   module Model
     def self.included(klass)
       klass.class_eval do
-        include InstanceMethods
-        extend ClassMethods
+        class << self
+          def activate_simple_auth!(*submodules)
+            @simple_auth_config = Config.new
+            @simple_auth_config.submodules = submodules
+            self.class_eval do
+              submodules.each do |mod|
+                include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
+              end
+            end
+
+            yield @config if block_given?
+
+            self.class_eval do
+              include Adapters::ActiveRecord if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
+              extend ClassMethods
+              include InstanceMethods
+            end
+          end
+        end
       end
     end
     
     module InstanceMethods
-      
+      def simple_auth_config
+        self.class.simple_auth_config
+      end
     end
     
     module ClassMethods
       def simple_auth_config
-        @config
+        @simple_auth_config
       end
       
-      def activate_simple_auth!(*submodules)
-        @config = Config.new
-        @config.submodules = submodules
-        self.class_eval do
-          submodules.each do |mod|
-            include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
-            #include Submodules::PasswordConfirmation
-          end
-        end
-        
-        yield @config if block_given?
-        
-        self.class_eval do
-          include Adapters::ActiveRecord if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
-          
-          def self.authentic?(username, password)
-            user = where("#{@config.username_attribute_name} = ?", username).first
-            user if user && (user.send(@config.crypted_password_attribute_name) == encrypt(password))
-          end
-                    
-          def self.encrypt(*tokens)
-            case @config.encryption_algorithm
-            when :none then tokens.first
-            when :md5  then CryptoProviders::MD5.encrypt(*tokens)
-            when :sha1 then CryptoProviders::SHA1.encrypt(*tokens)
-            when :sha256 then CryptoProviders::SHA256.encrypt(*tokens)
-            when :sha512 then CryptoProviders::SHA512.encrypt(*tokens)
-            when :aes256 then CryptoProviders::AES256.encrypt(*tokens)
-            when :bcrypt then CryptoProviders::BCrypt.encrypt(*tokens)
-            when :custom then @config.custom_encryption_provider.encrypt(*tokens)
-            end
-          end
-          
-          private
-          
-          # useful for tests
-          def self.simple_auth_config
-            @config
-          end
+      def authentic?(username, password)
+        user = where("#{@simple_auth_config.username_attribute_name} = ?", username).first
+        user if user && (user.send(@simple_auth_config.crypted_password_attribute_name) == encrypt(password))
+      end
+                
+      def encrypt(*tokens)
+        case @simple_auth_config.encryption_algorithm
+        when :none then tokens.first
+        when :md5  then CryptoProviders::MD5.encrypt(*tokens)
+        when :sha1 then CryptoProviders::SHA1.encrypt(*tokens)
+        when :sha256 then CryptoProviders::SHA256.encrypt(*tokens)
+        when :sha512 then CryptoProviders::SHA512.encrypt(*tokens)
+        when :aes256 then CryptoProviders::AES256.encrypt(*tokens)
+        when :bcrypt then CryptoProviders::BCrypt.encrypt(*tokens)
+        when :custom then @simple_auth_config.custom_encryption_provider.encrypt(*tokens)
         end
       end
+      
     end
 
     # Each class which calls 'activate_simple_auth!' receives an instance of this class.
