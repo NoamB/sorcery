@@ -1,4 +1,10 @@
 module SimpleAuth
+  # This module handles all plugin operation which are related to the Model layer in the MVC pattern.
+  # It should be included into the ORM base class.
+  # In the case of Rails this is usually ActiveRecord (actually, in that case, the plugin does this automatically).
+  #
+  # When included it defines a single method: 'activate_simple_auth!' which when called adds the other capabilities to the class.
+  # This method is also the place to configure the plugin in the Model layer.
   module Model
     def self.included(klass)
       klass.class_eval do
@@ -7,7 +13,7 @@ module SimpleAuth
             @simple_auth_config = Config.new
             @simple_auth_config.submodules = submodules
             self.class_eval do
-              extend ClassMethods # included here to be overriden by submodules
+              extend ClassMethods # included here, before submodules, so they can be overriden by them.
               include InstanceMethods
               submodules.each do |mod|
                 include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
@@ -25,16 +31,22 @@ module SimpleAuth
     end
     
     module InstanceMethods
+      # Returns the class instance variable for configuration, when called by an instance.
       def simple_auth_config
         self.class.simple_auth_config
       end
     end
     
     module ClassMethods
+      # Returns the class instance variable for configuration, when called by the class itself.
       def simple_auth_config
         @simple_auth_config
       end
       
+      # The default authentication method.
+      # Takes a username and password,
+      # Finds the user by the username and compares the user's password to the one supplied to the method.
+      # returns the user if success, nil otherwise.
       def authenticate(username, password)
         user = where("#{@simple_auth_config.username_attribute_name} = ?", username).first
         user if user && (user.send(@simple_auth_config.password_attribute_name) == password)
@@ -43,6 +55,7 @@ module SimpleAuth
 
     # Each class which calls 'activate_simple_auth!' receives an instance of this class.
     # This enables two different classes to use this plugin with different configurations.
+    # Every submodule which gets loaded may add accessors to this class so that all options will be configure from a single place.
     class Config
       attr_accessor :submodules,
                     :username_attribute_name, 
@@ -55,7 +68,8 @@ module SimpleAuth
         }
         reset!
       end     
-            
+           
+      # Resets all configuration options to their default values.
       def reset!
         @defaults.each do |k,v|
           instance_variable_set(k,v)

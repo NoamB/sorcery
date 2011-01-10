@@ -7,7 +7,8 @@ describe User, "when app has plugin loaded" do
   end
 end
 
-describe User, "plugin configuration" do
+# ----------------- PLUGIN CONFIGURATION -----------------------
+describe User, "loaded plugin configuration" do
   after(:each) do
     User.simple_auth_config.reset!
   end
@@ -15,6 +16,7 @@ describe User, "plugin configuration" do
   it "should enable submodules in parameters" do
     plugin_model_configure([:password_confirmation])
     User.simple_auth_config.should respond_to(:password_confirmation_attribute_name)
+    plugin_model_configure()
   end
   
   it "should enable configuration option 'username_attribute_name'" do
@@ -27,9 +29,15 @@ describe User, "plugin configuration" do
     User.simple_auth_config.password_attribute_name.should equal(:mypassword)
   end
   
-  it "should enable configuration option 'password_confirmation_attribute_name'" do
-    plugin_set_model_config_property(:password_confirmation_attribute_name, :mypassword_conf)
-    User.simple_auth_config.password_confirmation_attribute_name.should equal(:mypassword_conf)
+  describe "with PasswordConfirmation" do
+    before(:all) do
+      plugin_model_configure([:password_confirmation])
+    end
+    
+    it "should enable configuration option 'password_confirmation_attribute_name'" do
+      plugin_set_model_config_property(:password_confirmation_attribute_name, :mypassword_conf)
+      User.simple_auth_config.password_confirmation_attribute_name.should equal(:mypassword_conf)
+    end
   end
   
   describe "with PasswordEncryption" do
@@ -66,6 +74,7 @@ describe User, "plugin configuration" do
   
 end
 
+# ----------------- PLUGIN ACTIVATED -----------------------
 describe User, "when activated with simple_auth" do
   before(:each) do
     User.delete_all
@@ -97,6 +106,7 @@ describe User, "when activated with simple_auth" do
   end
 end
 
+# ----------------- REGISTRATION -----------------------
 describe User, "registration" do
   before(:all) do
     plugin_model_configure
@@ -141,9 +151,9 @@ describe User, "registration" do
       end
     end
   end
-  
 end
 
+# ----------------- PASSWORD CONFIRMATION -----------------------
 describe User, "password confirmation" do
   before(:each) do
     User.delete_all
@@ -162,6 +172,7 @@ describe User, "password confirmation" do
   end
 end
 
+# ----------------- PASSWORD ENCRYPTION -----------------------
 describe User, "special encryption cases" do
   before(:all) do
     plugin_model_configure([:password_encryption])

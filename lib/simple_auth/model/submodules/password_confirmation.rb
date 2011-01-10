@@ -1,6 +1,8 @@
 module SimpleAuth
   module Model
     module Submodules
+      # This submodule adds the ability to verify that the user filled the password twice,
+      # and that both times were the same string.
       module PasswordConfirmation
         def self.included(base)
           base.simple_auth_config.class_eval do

@@ -1,6 +1,8 @@
 module SimpleAuth
   module Model
     module Adapters
+      # The ActiveRecord adapter adds all server-side validations, callbacks, and other goodies to the user class,
+      # depending on included submodules.
       module ActiveRecord
         def self.included(base)
           base.class_eval do
