@@ -11,7 +11,7 @@ module SimpleAuth
 
             attr_reader   :encryption_algorithm,
                           :encryption_key
-                          
+                    
             def encryption_algorithm=(algo)
               @encryption_algorithm = algo
               set_encryption_key_to_provider
@@ -34,6 +34,12 @@ module SimpleAuth
                              :@encryption_key                       => nil)
             reset!
           end
+          
+          #base.send(:include, InstanceMethods)
+        end
+        
+        module InstanceMethods
+          
         end
         
         module ClassMethods

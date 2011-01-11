@@ -8,7 +8,7 @@ module SimpleAuth
           base.class_eval do
             include InstanceMethods
             
-            attr_accessor @simple_auth_config.password_attribute_name
+            attr_accessor @simple_auth_config.password_attribute_name if @simple_auth_config.submodules.include?(:password_encryption)
             attr_accessor @simple_auth_config.password_confirmation_attribute_name if @simple_auth_config.submodules.include?(:password_confirmation)
 
             validate :password_confirmed if @simple_auth_config.submodules.include?(:password_confirmation)

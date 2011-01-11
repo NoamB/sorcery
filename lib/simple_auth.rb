@@ -1,12 +1,12 @@
 module SimpleAuth
   autoload :Model,      'simple_auth/model'
   module Model
-    module Adapters
-      autoload :ActiveRecord, 'simple_auth/model/adapters/active_record'
-    end
     module Submodules
       autoload :PasswordConfirmation, 'simple_auth/model/submodules/password_confirmation'
       autoload :PasswordEncryption, 'simple_auth/model/submodules/password_encryption'
+    end
+    module Adapters
+      autoload :ActiveRecord, 'simple_auth/model/adapters/active_record'
     end
   end
   autoload :Controller, 'simple_auth/controller'
