@@ -8,6 +8,7 @@ module SimpleAuth
           base.class_eval do
             include InstanceMethods
             
+            # TODO: when to declare accessor?
             attr_accessor @simple_auth_config.password_attribute_name if @simple_auth_config.submodules.include?(:password_encryption)
             attr_accessor @simple_auth_config.password_confirmation_attribute_name if @simple_auth_config.submodules.include?(:password_confirmation)
 

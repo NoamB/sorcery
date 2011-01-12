@@ -12,9 +12,6 @@ require 'rspec/rails'
 # Undo changes to RAILS_ENV
 silence_warnings {RAILS_ENV = ENV['RAILS_ENV']}
 
-# Run the migrations
-ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate")
-
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures  = false
@@ -38,7 +35,7 @@ def plugin_model_configure(submodules = [], options = {})
   reload_user_class
   
   User.activate_simple_auth!(*submodules) do |config|
-    options.each do |k,v|
+    options.each do |property,value|
       config.send(:"#{property}=", value)
     end
   end
