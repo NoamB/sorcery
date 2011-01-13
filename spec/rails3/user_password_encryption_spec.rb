@@ -40,7 +40,24 @@ describe "User with password_encryption submodule" do
       plugin_set_model_config_property(:custom_encryption_provider, Array)
       User.simple_auth_config.custom_encryption_provider.should equal(Array)
     end
+    
+    it "should enable configuration option 'salt'" do
+      salt = "4534gfdg5635g"
+      plugin_set_model_config_property(:salt, salt)
+      User.simple_auth_config.salt.should equal(salt)
+    end
   
+    it "should enable configuration option 'salt_join_token'" do
+      salt_join_token = "--%%*&-"
+      plugin_set_model_config_property(:salt_join_token, salt_join_token)
+      User.simple_auth_config.salt_join_token.should equal(salt_join_token)
+    end
+    
+    it "should enable configuration option 'stretches'" do
+      stretches = 15
+      plugin_set_model_config_property(:stretches, stretches)
+      User.simple_auth_config.stretches.should equal(stretches)
+    end
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
@@ -139,6 +156,14 @@ describe "User with password_encryption submodule" do
       plugin_set_model_config_property(:encryption_key, nil)
       expect{User.encrypt(@text)}.to raise_error(ArgumentError)
       plugin_set_model_config_property(:encryption_key, "asd234dfs423fddsmndsflktsdf32343")
+      expect{User.encrypt(@text)}.to_not raise_error(ArgumentError)
+    end
+    
+    it "if encryption algo is aes256, it should set key to crypto provider, even if attributes are set in reverse" do
+      plugin_set_model_config_property(:encryption_key, nil)
+      plugin_set_model_config_property(:encryption_algorithm, :none)
+      plugin_set_model_config_property(:encryption_key, "asd234dfs423fddsmndsflktsdf32343")
+      plugin_set_model_config_property(:encryption_algorithm, :aes256)
       expect{User.encrypt(@text)}.to_not raise_error(ArgumentError)
     end
   

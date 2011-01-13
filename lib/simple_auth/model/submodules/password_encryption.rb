@@ -7,23 +7,32 @@ module SimpleAuth
           
           base.simple_auth_config.class_eval do
             attr_accessor :crypted_password_attribute_name,
-                          :custom_encryption_provider
-
-            attr_reader   :encryption_algorithm,
+                          :salt,
+                          :salt_join_token,
+                          :stretches,
                           :encryption_key
+
+            attr_reader   :encryption_provider,
+                          :custom_encryption_provider,
+                          :encryption_algorithm
+                          
                     
             def encryption_algorithm=(algo)
               @encryption_algorithm = algo
-              set_encryption_key_to_provider
+              @encryption_provider = case @encryption_algorithm
+              when :none   then nil
+              when :md5    then CryptoProviders::MD5
+              when :sha1   then CryptoProviders::SHA1
+              when :sha256 then CryptoProviders::SHA256
+              when :sha512 then CryptoProviders::SHA512
+              when :aes256 then CryptoProviders::AES256
+              when :bcrypt then CryptoProviders::BCrypt
+              when :custom then @custom_encryption_provider
+              end
             end
-
-            def encryption_key=(key)
-              @encryption_key = key
-              set_encryption_key_to_provider
-            end
-
-            def set_encryption_key_to_provider
-              CryptoProviders::AES256.key = @encryption_key if @encryption_algorithm == :aes256
+            
+            def custom_encryption_provider=(provider)
+              @custom_encryption_provider = @encryption_provider = provider
             end
           end
           
@@ -31,7 +40,9 @@ module SimpleAuth
             @defaults.merge!(:@crypted_password_attribute_name      => :crypted_password,
                              :@encryption_algorithm                 => :sha256,
                              :@custom_encryption_provider           => nil,
-                             :@encryption_key                       => nil)
+                             :@encryption_key                       => nil,
+                             :@salt                                 => nil,
+                             :@salt_join_token                      => nil)
             reset!
           end
           
@@ -49,16 +60,12 @@ module SimpleAuth
           end
           
           def encrypt(*tokens)
-            case @simple_auth_config.encryption_algorithm
-            when :none then tokens.first
-            when :md5  then CryptoProviders::MD5.encrypt(*tokens)
-            when :sha1 then CryptoProviders::SHA1.encrypt(*tokens)
-            when :sha256 then CryptoProviders::SHA256.encrypt(*tokens)
-            when :sha512 then CryptoProviders::SHA512.encrypt(*tokens)
-            when :aes256 then CryptoProviders::AES256.encrypt(*tokens)
-            when :bcrypt then CryptoProviders::BCrypt.encrypt(*tokens)
-            when :custom then @simple_auth_config.custom_encryption_provider.encrypt(*tokens)
-            end
+            return tokens.first if @simple_auth_config.encryption_provider.nil?
+            
+            @simple_auth_config.encryption_provider.stretches = @simple_auth_config.stretches if @simple_auth_config.encryption_provider.respond_to?(:stretches)
+            @simple_auth_config.encryption_provider.join_token = @simple_auth_config.salt_join_token if @simple_auth_config.encryption_provider.respond_to?(:join_token)
+            CryptoProviders::AES256.key = @simple_auth_config.encryption_key if @simple_auth_config.encryption_algorithm == :aes256
+            @simple_auth_config.encryption_provider.encrypt(*tokens)
           end
         end
       end
