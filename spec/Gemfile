@@ -7,4 +7,5 @@ group :development do
   gem 'bcrypt-ruby', :require => 'bcrypt'
   gem 'rspec'
   gem 'ruby-debug19'
+  gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency
 end

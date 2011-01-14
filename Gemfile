@@ -15,4 +15,5 @@ group :development do
   gem "cucumber", ">= 0"
   gem "bundler", "~> 1.0.0"
   gem "jeweler", "~> 1.5.2"
+  gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency
 end
