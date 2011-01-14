@@ -24,6 +24,11 @@ describe "User with password_encryption submodule" do
       plugin_set_model_config_property(:crypted_password_attribute_name, :password)
       User.simple_auth_config.crypted_password_attribute_name.should equal(:password)
     end
+    
+    it "should enable configuration option 'salt_attribute_name'" do
+      plugin_set_model_config_property(:salt_attribute_name, :my_salt)
+      User.simple_auth_config.salt_attribute_name.should equal(:my_salt)
+    end
 
     it "should enable configuration option 'encryption_algorithm'" do
       plugin_set_model_config_property(:encryption_algorithm, :none)
@@ -39,12 +44,6 @@ describe "User with password_encryption submodule" do
       plugin_set_model_config_property(:encryption_algorithm, :custom)
       plugin_set_model_config_property(:custom_encryption_provider, Array)
       User.simple_auth_config.custom_encryption_provider.should equal(Array)
-    end
-    
-    it "should enable configuration option 'salt'" do
-      salt = "4534gfdg5635g"
-      plugin_set_model_config_property(:salt, salt)
-      User.simple_auth_config.salt.should equal(salt)
     end
   
     it "should enable configuration option 'salt_join_token'" do
@@ -187,6 +186,31 @@ describe "User with password_encryption submodule" do
       User.encrypt(@text).should == SimpleAuth::CryptoProviders::SHA512.encrypt(@text)
     end
   
+    it "salt should be random for each user and saved in db" do
+      plugin_set_model_config_property(:salt_attribute_name, :salt)
+      create_new_user
+      @user.salt.should_not be_nil
+    end
+    
+    it "if salt is set should use it to encrypt" do
+      plugin_set_model_config_property(:salt_attribute_name, :salt)
+      plugin_set_model_config_property(:encryption_algorithm, :sha512)
+      create_new_user
+      @user.crypted_password.should_not == SimpleAuth::CryptoProviders::SHA512.encrypt('secret')
+      @user.crypted_password.should == SimpleAuth::CryptoProviders::SHA512.encrypt('secret',@user.salt)
+    end
+    
+    it "if salt_join_token is set should use it to encrypt" do
+      plugin_set_model_config_property(:salt_attribute_name, :salt)
+      plugin_set_model_config_property(:salt_join_token, "-@=>")
+      plugin_set_model_config_property(:encryption_algorithm, :sha512)
+      create_new_user
+      @user.crypted_password.should_not == SimpleAuth::CryptoProviders::SHA512.encrypt('secret')
+      SimpleAuth::CryptoProviders::SHA512.join_token = ""
+      @user.crypted_password.should_not == SimpleAuth::CryptoProviders::SHA512.encrypt('secret',@user.salt)
+      SimpleAuth::CryptoProviders::SHA512.join_token = User.simple_auth_config.salt_join_token
+      @user.crypted_password.should == SimpleAuth::CryptoProviders::SHA512.encrypt('secret',@user.salt)
+    end
   end
   
 end

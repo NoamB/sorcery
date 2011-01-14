@@ -20,7 +20,12 @@ module SimpleAuth
         module InstanceMethods
           def encrypt_password
             config = simple_auth_config
-            self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name))) if self.new_record? || self.password
+            salt = ""
+            if !config.salt_attribute_name.nil?
+              salt = Time.now.to_s
+              self.send(:"#{config.salt_attribute_name}=", salt)
+            end
+            self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name),salt)) if self.new_record? || self.password
           end
 
           def password_confirmed

@@ -7,12 +7,12 @@ module SimpleAuth
           
           base.simple_auth_config.class_eval do
             attr_accessor :crypted_password_attribute_name,
-                          :salt,
                           :salt_join_token,
+                          :salt_attribute_name,
                           :stretches,
                           :encryption_key
 
-            attr_reader   :encryption_provider,
+            attr_reader   :encryption_provider, # only getter
                           :custom_encryption_provider,
                           :encryption_algorithm
                           
@@ -41,8 +41,9 @@ module SimpleAuth
                              :@encryption_algorithm                 => :sha256,
                              :@custom_encryption_provider           => nil,
                              :@encryption_key                       => nil,
-                             :@salt                                 => nil,
-                             :@salt_join_token                      => nil)
+                             :@salt_join_token                      => "",
+                             :@salt_attribute_name                  => :salt,
+                             :@stretches                            => nil)
             reset!
           end
           
@@ -56,14 +57,15 @@ module SimpleAuth
         module ClassMethods
           def authenticate(username, password)
             user = where("#{@simple_auth_config.username_attribute_name} = ?", username).first
-            user if user && (user.send(@simple_auth_config.crypted_password_attribute_name) == encrypt(password))
+            salt = user.send(@simple_auth_config.salt_attribute_name) if !@simple_auth_config.salt_attribute_name.nil?
+            user if user && (user.send(@simple_auth_config.crypted_password_attribute_name)) == encrypt(password,salt)
           end
           
           def encrypt(*tokens)
             return tokens.first if @simple_auth_config.encryption_provider.nil?
             
-            @simple_auth_config.encryption_provider.stretches = @simple_auth_config.stretches if @simple_auth_config.encryption_provider.respond_to?(:stretches)
-            @simple_auth_config.encryption_provider.join_token = @simple_auth_config.salt_join_token if @simple_auth_config.encryption_provider.respond_to?(:join_token)
+            @simple_auth_config.encryption_provider.stretches = @simple_auth_config.stretches if @simple_auth_config.encryption_provider.respond_to?(:stretches) && @simple_auth_config.stretches
+            @simple_auth_config.encryption_provider.join_token = @simple_auth_config.salt_join_token if @simple_auth_config.encryption_provider.respond_to?(:join_token) && @simple_auth_config.salt_join_token
             CryptoProviders::AES256.key = @simple_auth_config.encryption_key if @simple_auth_config.encryption_algorithm == :aes256
             @simple_auth_config.encryption_provider.encrypt(*tokens)
           end
