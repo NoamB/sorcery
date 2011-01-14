@@ -13,11 +13,20 @@ module SimpleAuth
             attr_accessor @simple_auth_config.password_confirmation_attribute_name if @simple_auth_config.submodules.include?(:password_confirmation)
 
             validate :password_confirmed if @simple_auth_config.submodules.include?(:password_confirmation)
+            before_save :setup_activation if @simple_auth_config.submodules.include?(:user_activation)
             before_save :encrypt_password if @simple_auth_config.submodules.include?(:password_encryption)
           end
         end
         
         module InstanceMethods
+          def activate!
+            config = simple_auth_config
+            self.send(:"#{config.activation_code_attribute_name}=", nil)
+            self.send(:"#{config.activation_state_attribute_name}=", "active")
+          end
+          
+          protected
+          
           def encrypt_password
             config = simple_auth_config
             salt = ""
@@ -33,6 +42,13 @@ module SimpleAuth
             if self.send(config.password_attribute_name) && self.send(config.password_attribute_name) != self.send(config.password_confirmation_attribute_name)
               self.errors.add(:base,"password and password_confirmation do not match!")
             end
+          end
+          
+          def setup_activation
+            config = simple_auth_config
+            generated_activation_code = CryptoProviders::SHA1.encrypt( Time.now.to_s.split(//).sort_by {rand}.join )
+            self.send(:"#{config.activation_code_attribute_name}=", generated_activation_code)
+            self.send(:"#{config.activation_state_attribute_name}=", "pending")
           end
         end
         

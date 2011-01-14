@@ -1,0 +1,55 @@
+require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+
+describe "User with activation submodule" do
+  before(:all) do
+    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+  end
+  
+  after(:all) do
+    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+  end
+
+  # ----------------- PLUGIN CONFIGURATION -----------------------
+  describe User, "loaded plugin configuration" do
+    before(:all) do
+      plugin_model_configure([:user_activation])
+    end
+  
+    after(:each) do
+      User.simple_auth_config.reset!
+    end
+  
+    it "should enable configuration option 'activation_state_attribute_name'" do
+      plugin_set_model_config_property(:activation_state_attribute_name, :status)
+      User.simple_auth_config.activation_state_attribute_name.should equal(:status)    
+    end
+    
+    it "should enable configuration option 'activation_code_attribute_name'" do
+      plugin_set_model_config_property(:activation_code_attribute_name, :code)
+      User.simple_auth_config.activation_code_attribute_name.should equal(:code)    
+    end
+    
+    it "should generate an activation code on registration" do
+      create_new_user
+      @user.activation_code.should_not be_nil
+    end
+    
+    it "should initialize user state to 'pending'" do
+      create_new_user
+      @user.activation_state.should == "pending"
+    end
+    
+    it "should respond to 'activate!'" do
+      create_new_user
+      @user.should respond_to(:activate!)
+    end
+    
+    it "should clear activation code and change state to 'active' on activation" do
+      create_new_user
+      @user.activate!
+      @user.activation_code.should be_nil
+      @user.activation_state.should == "active"
+    end
+  end
+
+end
