@@ -18,7 +18,7 @@ describe "User with activation submodule" do
     after(:each) do
       User.simple_auth_config.reset!
     end
-  
+    
     it "should enable configuration option 'activation_state_attribute_name'" do
       plugin_set_model_config_property(:activation_state_attribute_name, :status)
       User.simple_auth_config.activation_state_attribute_name.should equal(:status)    
@@ -27,6 +27,27 @@ describe "User with activation submodule" do
     it "should enable configuration option 'activation_code_attribute_name'" do
       plugin_set_model_config_property(:activation_code_attribute_name, :code)
       User.simple_auth_config.activation_code_attribute_name.should equal(:code)    
+    end
+    
+    it "should enable configuration option 'simple_auth_mailer'" do
+      plugin_set_model_config_property(:simple_auth_mailer, TestMailer)
+      User.simple_auth_config.simple_auth_mailer.should equal(TestMailer)    
+    end
+    
+    it "should enable configuration option 'activation_email_method_name'" do
+      plugin_set_model_config_property(:activation_email_method_name, :my_activation_email)
+      User.simple_auth_config.activation_email_method_name.should equal(:my_activation_email)
+    end
+  end
+
+  # ----------------- ACTIVATION PROCESS -----------------------
+  describe User, "activation process" do
+    before(:all) do
+      plugin_model_configure([:user_activation])
+    end
+  
+    after(:each) do
+      User.simple_auth_config.reset!
     end
     
     it "should generate an activation code on registration" do
@@ -49,6 +70,12 @@ describe "User with activation submodule" do
       @user.activate!
       @user.activation_code.should be_nil
       @user.activation_state.should == "active"
+    end
+    
+    it "should send the user an activation email" do
+      old_size = ActionMailer::Base.deliveries.size
+      create_new_user
+      ActionMailer::Base.deliveries.size.should == old_size + 1
     end
   end
 

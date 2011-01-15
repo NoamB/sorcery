@@ -37,6 +37,11 @@ describe "User with no submodules (core)" do
       plugin_set_model_config_property(:password_attribute_name, :mypassword)
       User.simple_auth_config.password_attribute_name.should equal(:mypassword)
     end
+    
+    it "should enable configuration option 'email_attribute_name'" do
+      plugin_set_model_config_property(:email_attribute_name, :my_email)
+      User.simple_auth_config.email_attribute_name.should equal(:my_email)
+    end
   
     describe "with PasswordConfirmation" do
       before(:all) do

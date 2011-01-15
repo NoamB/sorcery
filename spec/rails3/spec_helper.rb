@@ -37,6 +37,10 @@ class TestUser < ActiveRecord::Base
   activate_simple_auth!
 end
 
+class TestMailer < ActionMailer::Base
+  
+end
+
 def create_new_user
   user_attributes_hash = {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
   user_attributes_hash.merge!(:password_confirmation => 'secret') if User.simple_auth_config.submodules.include?(:password_confirmation)

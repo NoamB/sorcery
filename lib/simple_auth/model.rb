@@ -59,12 +59,14 @@ module SimpleAuth
     class Config
       attr_accessor :submodules,
                     :username_attribute_name, 
-                    :password_attribute_name
+                    :password_attribute_name,
+                    :email_attribute_name
       
       def initialize
         @defaults = {
           :@username_attribute_name              => :username,
-          :@password_attribute_name              => :password
+          :@password_attribute_name              => :password,
+          :@email_attribute_name                 => :email
         }
         reset!
       end     

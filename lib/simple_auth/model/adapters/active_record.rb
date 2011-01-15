@@ -15,6 +15,7 @@ module SimpleAuth
             validate :password_confirmed if @simple_auth_config.submodules.include?(:password_confirmation)
             before_save :setup_activation if @simple_auth_config.submodules.include?(:user_activation)
             before_save :encrypt_password if @simple_auth_config.submodules.include?(:password_encryption)
+            after_save :send_activation_email if @simple_auth_config.submodules.include?(:user_activation)
           end
         end
         
@@ -49,6 +50,11 @@ module SimpleAuth
             generated_activation_code = CryptoProviders::SHA1.encrypt( Time.now.to_s.split(//).sort_by {rand}.join )
             self.send(:"#{config.activation_code_attribute_name}=", generated_activation_code)
             self.send(:"#{config.activation_state_attribute_name}=", "pending")
+          end
+          
+          def send_activation_email
+            config = simple_auth_config
+            config.simple_auth_mailer.send(config.activation_email_method_name,self,config).deliver
           end
         end
         
