@@ -34,9 +34,14 @@ describe "User with activation submodule" do
       User.simple_auth_config.simple_auth_mailer.should equal(TestMailer)    
     end
     
-    it "should enable configuration option 'activation_email_method_name'" do
-      plugin_set_model_config_property(:activation_email_method_name, :my_activation_email)
-      User.simple_auth_config.activation_email_method_name.should equal(:my_activation_email)
+    it "should enable configuration option 'activation_needed_email_method_name'" do
+      plugin_set_model_config_property(:activation_needed_email_method_name, :my_activation_email)
+      User.simple_auth_config.activation_needed_email_method_name.should equal(:my_activation_email)
+    end
+    
+    it "should enable configuration option 'activation_success_email_method_name'" do
+      plugin_set_model_config_property(:activation_success_email_method_name, :my_activation_email)
+      User.simple_auth_config.activation_success_email_method_name.should equal(:my_activation_email)
     end
   end
 

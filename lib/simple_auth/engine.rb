@@ -2,7 +2,7 @@ require 'simple_auth'
 require 'rails'
 
 module SimpleAuth  
-  class Engine < Rails::Engine
+  class Engine < Rails::Engine  
     initializer "extend Model with simple_auth" do |app|
       ActiveRecord::Base.send(:include, SimpleAuth::Model) if defined?(ActiveRecord)
     end

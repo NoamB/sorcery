@@ -1,5 +1,5 @@
 module SimpleAuth
-  autoload :Model,      'simple_auth/model'
+  autoload :Model, 'simple_auth/model'
   module Model
     module Submodules
       autoload :PasswordConfirmation, 'simple_auth/model/submodules/password_confirmation'

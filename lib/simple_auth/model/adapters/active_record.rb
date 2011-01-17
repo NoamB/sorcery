@@ -8,7 +8,6 @@ module SimpleAuth
           base.class_eval do
             include InstanceMethods
             
-            # TODO: when to declare accessor?
             attr_accessor @simple_auth_config.password_attribute_name if @simple_auth_config.submodules.include?(:password_encryption)
             attr_accessor @simple_auth_config.password_confirmation_attribute_name if @simple_auth_config.submodules.include?(:password_confirmation)
 
@@ -54,7 +53,10 @@ module SimpleAuth
           
           def send_activation_email
             config = simple_auth_config
-            config.simple_auth_mailer.send(config.activation_email_method_name,self,config).deliver
+            mail = config.simple_auth_mailer.send(config.activation_needed_email_method_name,self)
+            if defined?(ActionMailer) and config.simple_auth_mailer.superclass == ActionMailer::Base
+              mail.deliver
+            end
           end
         end
         
