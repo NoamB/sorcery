@@ -9,6 +9,7 @@ describe "User with no submodules (core)" do
     ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
   end
   
+  # ----------------- PLUGIN LOADED -----------------------
   describe ApplicationController, "when app has plugin loaded" do
     it "should respond to the plugin activation class method" do
       ActionController::Base.should respond_to(:activate_simple_auth!)
@@ -16,6 +17,7 @@ describe "User with no submodules (core)" do
     end
   end
  
+  # ----------------- PLUGIN CONFIGURATION -----------------------
   describe ApplicationController, "plugin configuration" do
     after(:each) do
       SimpleAuth::Controller::Config.reset!
@@ -33,6 +35,7 @@ describe "User with no submodules (core)" do
 
   end
 
+  # ----------------- PLUGIN ACTIVATED -----------------------
   describe ApplicationController, "when activated with simple_auth" do
     before(:all) do
       create_new_user
