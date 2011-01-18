@@ -82,6 +82,30 @@ describe "User with activation submodule" do
       create_new_user
       ActionMailer::Base.deliveries.size.should == old_size + 1
     end
+    
+    it "subsequent saves do not send activation email" do
+      create_new_user
+      old_size = ActionMailer::Base.deliveries.size
+      @user.username = "Shauli"
+      @user.save!
+      ActionMailer::Base.deliveries.size.should == old_size
+    end
+    
+    it "should send the user an activation success email on successful activation" do
+      create_new_user
+      old_size = ActionMailer::Base.deliveries.size
+      @user.activate!
+      ActionMailer::Base.deliveries.size.should == old_size + 1
+    end
+    
+    it "subsequent saves do not send activation success email" do
+      create_new_user
+      @user.activate!
+      old_size = ActionMailer::Base.deliveries.size
+      @user.username = "Shauli"
+      @user.save!
+      ActionMailer::Base.deliveries.size.should == old_size
+    end
   end
 
 end

@@ -12,9 +12,9 @@ module SimpleAuth
             attr_accessor @simple_auth_config.password_confirmation_attribute_name if @simple_auth_config.submodules.include?(:password_confirmation)
 
             validate :password_confirmed if @simple_auth_config.submodules.include?(:password_confirmation)
-            before_save :setup_activation if @simple_auth_config.submodules.include?(:user_activation)
+            before_create :setup_activation if @simple_auth_config.submodules.include?(:user_activation)
             before_save :encrypt_password if @simple_auth_config.submodules.include?(:password_encryption)
-            after_save :send_activation_email if @simple_auth_config.submodules.include?(:user_activation)
+            after_create :send_activation_needed_email! if @simple_auth_config.submodules.include?(:user_activation)
           end
         end
         
@@ -23,6 +23,7 @@ module SimpleAuth
             config = simple_auth_config
             self.send(:"#{config.activation_code_attribute_name}=", nil)
             self.send(:"#{config.activation_state_attribute_name}=", "active")
+            send_activation_success_email!
           end
           
           protected
@@ -51,9 +52,17 @@ module SimpleAuth
             self.send(:"#{config.activation_state_attribute_name}=", "pending")
           end
           
-          def send_activation_email
+          def send_activation_needed_email!
             config = simple_auth_config
             mail = config.simple_auth_mailer.send(config.activation_needed_email_method_name,self)
+            if defined?(ActionMailer) and config.simple_auth_mailer.superclass == ActionMailer::Base
+              mail.deliver
+            end
+          end
+          
+          def send_activation_success_email!
+            config = simple_auth_config
+            mail = config.simple_auth_mailer.send(config.activation_success_email_method_name,self)
             if defined?(ActionMailer) and config.simple_auth_mailer.superclass == ActionMailer::Base
               mail.deliver
             end
