@@ -1,5 +1,5 @@
 module SimpleAuth
-  # This module handles all plugin operation which are related to the Model layer in the MVC pattern.
+  # This module handles all plugin operations which are related to the Model layer in the MVC pattern.
   # It should be included into the ORM base class.
   # In the case of Rails this is usually ActiveRecord (actually, in that case, the plugin does this automatically).
   #
@@ -19,8 +19,8 @@ module SimpleAuth
                 include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
               end
             end
-
-            yield @config if block_given?
+            
+            yield @simple_auth_config if block_given?
 
             self.class_eval do
               include Adapters::ActiveRecord if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)

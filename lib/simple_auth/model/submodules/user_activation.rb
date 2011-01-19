@@ -17,7 +17,7 @@ module SimpleAuth
           base.simple_auth_config.instance_eval do
             @defaults.merge!(:@activation_state_attribute_name => :activation_state,
                              :@activation_code_attribute_name  => :activation_code,
-                             :@simple_auth_mailer              => ::SimpleAuthMailer,
+                             :@simple_auth_mailer              => nil,
                              :@activation_needed_email_method_name  => :activation_needed_email,
                              :@activation_success_email_method_name => :activation_success_email)
             reset!

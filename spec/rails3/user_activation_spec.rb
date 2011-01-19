@@ -1,4 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/app_root/app/mailers/simple_auth_mailer')
 
 describe "User with activation submodule" do
   before(:all) do
@@ -12,7 +13,7 @@ describe "User with activation submodule" do
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe User, "loaded plugin configuration" do
     before(:all) do
-      plugin_model_configure([:user_activation])
+      plugin_model_configure([:user_activation], :simple_auth_mailer => ::SimpleAuthMailer)
     end
   
     after(:each) do
@@ -48,11 +49,7 @@ describe "User with activation submodule" do
   # ----------------- ACTIVATION PROCESS -----------------------
   describe User, "activation process" do
     before(:all) do
-      plugin_model_configure([:user_activation])
-    end
-  
-    after(:each) do
-      User.simple_auth_config.reset!
+      plugin_model_configure([:user_activation], :simple_auth_mailer => ::SimpleAuthMailer)
     end
     
     it "should generate an activation code on registration" do

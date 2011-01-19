@@ -1,7 +1,10 @@
 require 'simple_auth'
 require 'rails'
 
-module SimpleAuth  
+module SimpleAuth
+  # The SimpleAuth engine takes care of extending ActiveRecord (if used) and ActionController,
+  # With the plugin logic.
+  # ActionController is also automatically activated with the plugin to save you the trouble.
   class Engine < Rails::Engine  
     initializer "extend Model with simple_auth" do |app|
       ActiveRecord::Base.send(:include, SimpleAuth::Model) if defined?(ActiveRecord)

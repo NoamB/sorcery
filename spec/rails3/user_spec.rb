@@ -14,6 +14,12 @@ describe "User with no submodules (core)" do
       ActiveRecord::Base.should respond_to(:activate_simple_auth!)
       User.should respond_to(:activate_simple_auth!)
     end
+    
+    it "plugin activation should yield config to block" do
+      User.activate_simple_auth! do |config|
+        config.class.should == ::SimpleAuth::Model::Config 
+      end
+    end
   end
 
   # ----------------- PLUGIN CONFIGURATION -----------------------
