@@ -22,6 +22,12 @@ module SimpleAuth
                              :@activation_success_email_method_name => :activation_success_email)
             reset!
           end
+          
+          post_validation_proc = Proc.new do |config|
+            msg = "To use user_activation submodule, you must define a mailer (config.simple_auth_mailer = YourMailerClass)."
+            raise ArgumentError, msg if config.simple_auth_mailer == nil
+          end
+          base.simple_auth_config.add_post_config_validation(post_validation_proc)
         end
         
       end

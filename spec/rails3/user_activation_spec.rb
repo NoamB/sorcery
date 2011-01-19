@@ -18,6 +18,7 @@ describe "User with activation submodule" do
   
     after(:each) do
       User.simple_auth_config.reset!
+      plugin_model_configure([:user_activation], :simple_auth_mailer => ::SimpleAuthMailer)
     end
     
     it "should enable configuration option 'activation_state_attribute_name'" do
@@ -43,6 +44,10 @@ describe "User with activation submodule" do
     it "should enable configuration option 'activation_success_email_method_name'" do
       plugin_set_model_config_property(:activation_success_email_method_name, :my_activation_email)
       User.simple_auth_config.activation_success_email_method_name.should equal(:my_activation_email)
+    end
+    
+    it "if mailer is nil on activation, throw exception!" do
+      expect{plugin_model_configure([:user_activation])}.to raise_error(ArgumentError)
     end
   end
 

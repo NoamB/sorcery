@@ -22,6 +22,8 @@ module SimpleAuth
             
             yield @simple_auth_config if block_given?
 
+            @simple_auth_config.post_config_validations.each { |pcv| pcv.call(@simple_auth_config) }
+            
             self.class_eval do
               include Adapters::ActiveRecord if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
             end
@@ -62,7 +64,10 @@ module SimpleAuth
                     :password_attribute_name,
                     :email_attribute_name
       
+      attr_reader   :post_config_validations
+      
       def initialize
+        @post_config_validations = []
         @defaults = {
           :@username_attribute_name              => :username,
           :@password_attribute_name              => :password,
@@ -76,6 +81,10 @@ module SimpleAuth
         @defaults.each do |k,v|
           instance_variable_set(k,v)
         end       
+      end
+      
+      def add_post_config_validation(proc)
+        @post_config_validations << proc
       end
     end
     
