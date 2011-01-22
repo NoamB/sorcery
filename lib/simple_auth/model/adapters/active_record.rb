@@ -6,11 +6,15 @@ module SimpleAuth
       module ActiveRecord
         def self.included(base)
           base.class_eval do
-              
+            # This proc
+            clear_reset_password_code_proc = Proc.new {|record| record.valid? && record.send(:"#{simple_auth_config.password_attribute_name}_changed?")}
+            
             if @simple_auth_config.submodules.include?(:password_encryption)
               attr_accessor @simple_auth_config.password_attribute_name
               include PasswordEncryptionMethods
-              before_save :encrypt_password
+              clear_reset_password_code_proc = Proc.new {|record| record.valid? && record.send(simple_auth_config.password_attribute_name)} if @simple_auth_config.submodules.include?(:password_reset)
+              before_save :encrypt_password, :if => Proc.new {|record| record.new_record? || record.send(simple_auth_config.password_attribute_name)}
+              after_save :clear_virtual_password, :if => Proc.new {|record| record.valid? && record.send(simple_auth_config.password_attribute_name)}
             end
             
             if @simple_auth_config.submodules.include?(:password_confirmation)
@@ -24,7 +28,21 @@ module SimpleAuth
               before_create :setup_activation
               after_create :send_activation_needed_email!
             end
-
+            
+            if @simple_auth_config.submodules.include?(:password_reset)
+              include PasswordResetMethods
+              before_save :clear_reset_password_code, :if =>clear_reset_password_code_proc
+            end
+            
+            protected
+            
+            def generic_send_email(method)
+              config = simple_auth_config
+              mail = config.simple_auth_mailer.send(config.send(method),self)
+              if defined?(ActionMailer) and config.simple_auth_mailer.superclass == ActionMailer::Base
+                mail.deliver
+              end
+            end
           end
         end
         
@@ -60,19 +78,11 @@ module SimpleAuth
           end
         
           def send_activation_needed_email!
-            config = simple_auth_config
-            mail = config.simple_auth_mailer.send(config.activation_needed_email_method_name,self)
-            if defined?(ActionMailer) and config.simple_auth_mailer.superclass == ActionMailer::Base
-              mail.deliver
-            end
+            generic_send_email(:activation_needed_email_method_name)
           end
         
           def send_activation_success_email!
-            config = simple_auth_config
-            mail = config.simple_auth_mailer.send(config.activation_success_email_method_name,self)
-            if defined?(ActionMailer) and config.simple_auth_mailer.superclass == ActionMailer::Base
-              mail.deliver
-            end
+            generic_send_email(:activation_success_email_method_name)
           end
         end
         
@@ -88,9 +98,35 @@ module SimpleAuth
               salt = Time.now.to_s
               self.send(:"#{config.salt_attribute_name}=", salt)
             end
-            self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name),salt)) if self.new_record? || self.password
+            self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name),salt))
           end
 
+          def clear_virtual_password
+            config = simple_auth_config
+            self.send(:"#{config.password_attribute_name}=", nil)
+          end
+        end
+        
+        module PasswordResetMethods
+          def reset_password!
+            config = simple_auth_config
+            self.send(:"#{config.reset_password_code_attribute_name}=", generate_random_code)
+            self.class.transaction do
+              self.save!
+              generic_send_email(:reset_password_email_method_name)
+            end
+          end
+          
+          protected
+          
+          def clear_reset_password_code
+            config = simple_auth_config
+            self.send(:"#{config.reset_password_code_attribute_name}=", nil)
+          end
+          
+          def generate_random_code
+            return Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+          end
         end
           
       end

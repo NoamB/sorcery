@@ -5,6 +5,7 @@ module SimpleAuth
       autoload :PasswordConfirmation, 'simple_auth/model/submodules/password_confirmation'
       autoload :PasswordEncryption, 'simple_auth/model/submodules/password_encryption'
       autoload :UserActivation, 'simple_auth/model/submodules/user_activation'
+      autoload :PasswordReset, 'simple_auth/model/submodules/password_reset'
     end
     module Adapters
       autoload :ActiveRecord, 'simple_auth/model/adapters/active_record'

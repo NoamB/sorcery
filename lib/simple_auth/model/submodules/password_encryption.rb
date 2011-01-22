@@ -55,6 +55,7 @@ module SimpleAuth
         end
         
         module ClassMethods
+          # TODO: move to active_record
           def authenticate(username, password)
             user = where("#{@simple_auth_config.username_attribute_name} = ?", username).first
             salt = user.send(@simple_auth_config.salt_attribute_name) if !@simple_auth_config.salt_attribute_name.nil?

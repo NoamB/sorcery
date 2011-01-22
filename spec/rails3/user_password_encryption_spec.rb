@@ -91,6 +91,33 @@ describe "User with password_encryption submodule" do
       @user.send(User.simple_auth_config.crypted_password_attribute_name).should == User.encrypt('secret')
     end
 
+    it "should clear the virtual password field if the encryption process worked" do
+      create_new_user
+      @user.password.should be_nil
+    end
+    
+    it "should not clear the virtual password field if save failed due to validity" do
+      create_new_user
+      User.class_eval do
+        validates_format_of :email, :with => /^(.)+@(.)+$/, :if => Proc.new {|r| r.email}, :message => "is invalid"
+      end
+      @user.password = 'blupush'
+      @user.email = 'asd'
+      @user.save
+      @user.password.should_not be_nil
+    end
+    
+    it "should not clear the virtual password field if save failed due to exception" do
+      create_new_user
+      @user.password = 'blupush'
+      @user.email = nil
+      begin
+        @user.save # triggers SQL exception since email field is defined not null.
+      rescue
+      end
+      @user.password.should_not be_nil
+    end
+    
     it "should not encrypt the password twice when a user is updated" do
       create_new_user
       @user.email = "blup@bla.com"

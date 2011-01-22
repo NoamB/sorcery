@@ -83,6 +83,7 @@ module SimpleAuth
         end       
       end
       
+      # Here submodules can add procs that will run after the user configuration params are set.
       def add_post_config_validation(proc)
         @post_config_validations << proc
       end

@@ -4,6 +4,7 @@ module SimpleAuth
       # This submodule adds the ability to make the user activate his account via email
       # or any other way in which he can recieve an activation code.
       # with the activation code the user may activate his account.
+      # When using this submodule, supplying a mailer is mandatory.
       module UserActivation
         def self.included(base)
           base.simple_auth_config.class_eval do
