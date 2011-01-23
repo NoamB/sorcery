@@ -32,6 +32,7 @@ RSpec.configure do |config|
 end
 
 #----------------------------------------------------------------
+require File.join(File.dirname(__FILE__), 'app_root','app','models','user')
 
 class TestUser < ActiveRecord::Base
   activate_simple_auth!
@@ -39,6 +40,17 @@ end
 
 class TestMailer < ActionMailer::Base
   
+end
+
+module SimpleAuth
+  module Model
+    module Submodules
+      module TestSubmodule
+        def my_instance_method
+        end
+      end
+    end
+  end
 end
 
 def create_new_user
@@ -49,9 +61,11 @@ def create_new_user
 end
 
 def plugin_model_configure(submodules = [], options = {})
+  ::SimpleAuth::Controller::Config.submodules = submodules
+
   reload_user_class
   
-  User.activate_simple_auth!(*submodules) do |config|
+  User.activate_simple_auth! do |config|
     options.each do |property,value|
       config.send(:"#{property}=", value)
     end

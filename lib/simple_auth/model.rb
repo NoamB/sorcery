@@ -9,13 +9,13 @@ module SimpleAuth
     def self.included(klass)
       klass.class_eval do
         class << self
-          def activate_simple_auth!(*submodules)
+          def activate_simple_auth!
             @simple_auth_config = Config.new
-            @simple_auth_config.submodules = submodules
             self.class_eval do
               extend ClassMethods # included here, before submodules, so they can be overriden by them.
               include InstanceMethods
-              submodules.each do |mod|
+              @simple_auth_config.submodules = ::SimpleAuth::Controller::Config.submodules
+              @simple_auth_config.submodules.each do |mod|
                 include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
               end
             end

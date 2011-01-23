@@ -7,7 +7,8 @@ module SimpleAuth
     end
     
     module ClassMethods
-      def activate_simple_auth!
+      def activate_simple_auth!(*submodules)
+        ::SimpleAuth::Controller::Config.submodules = submodules
         yield Config if block_given?
         
         self.class_eval do
@@ -48,7 +49,8 @@ module SimpleAuth
     
     module Config
       class << self
-        attr_accessor :session_attribute_name,
+        attr_accessor :submodules,
+                      :session_attribute_name,
                       :cookies_attribute_name
         
         def reset!

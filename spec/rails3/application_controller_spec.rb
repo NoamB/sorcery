@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe "User with no submodules (core)" do
+describe ApplicationController do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
   end
@@ -15,14 +15,41 @@ describe "User with no submodules (core)" do
       ActionController::Base.should respond_to(:activate_simple_auth!)
       ApplicationController.should respond_to(:activate_simple_auth!)
     end
+    
+    it "plugin activation should yield config to block" do
+      ApplicationController.activate_simple_auth! do |config|
+        config.should == ::SimpleAuth::Controller::Config 
+      end
+    end
+    
+    it "config.should respond to 'submodules='" do
+      ApplicationController.activate_simple_auth! do |config|
+        config.should respond_to(:submodules=)
+      end
+    end
   end
  
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe ApplicationController, "plugin configuration" do
+    before(:all) do
+      plugin_model_configure()
+    end
+    
     after(:each) do
       SimpleAuth::Controller::Config.reset!
+      plugin_model_configure()
     end
   
+    it "submodule configuration should effect model" do
+      ApplicationController.activate_simple_auth! do |config|
+        config.submodules = [:test_submodule] 
+      end
+      User.class_eval do
+        activate_simple_auth!
+      end
+      User.new.should respond_to(:my_instance_method)
+    end
+    
     it "should enable configuration option 'session_attribute_name'" do    
       plugin_set_controller_config_property(:session_attribute_name, :my_session)
       SimpleAuth::Controller::Config.session_attribute_name.should equal(:my_session)
@@ -32,7 +59,7 @@ describe "User with no submodules (core)" do
       plugin_set_controller_config_property(:cookies_attribute_name, :my_cookies)
       SimpleAuth::Controller::Config.cookies_attribute_name.should equal(:my_cookies)
     end
-
+    
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
