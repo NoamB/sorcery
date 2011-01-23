@@ -34,6 +34,10 @@ module SimpleAuth
               before_save :clear_reset_password_code, :if =>clear_reset_password_code_proc
             end
             
+            if @simple_auth_config.submodules.include?(:remember_me)
+              include RememberMeMethods
+            end
+            
             protected
             
             def generic_send_email(method)
@@ -124,11 +128,32 @@ module SimpleAuth
             self.send(:"#{config.reset_password_code_attribute_name}=", nil)
           end
           
+          # TODO: duplicate
           def generate_random_code
             return Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
           end
         end
+        
+        module RememberMeMethods
+          def remember_me!
+            config = simple_auth_config
+            self.send(:"#{config.remember_me_token_attribute_name}=", generate_random_code)
+            self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", Time.now + config.remember_me_for)
+            self.save!
+          end
           
+          def forget_me!
+            config = simple_auth_config
+            self.send(:"#{config.remember_me_token_attribute_name}=", nil)
+            self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", nil)
+            self.save!
+          end
+          
+          # TODO: duplicate
+          def generate_random_code
+            return Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+          end
+        end
       end
     end
   end

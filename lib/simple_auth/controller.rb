@@ -35,6 +35,15 @@ module SimpleAuth
       def logged_in?
         session[:user_id]
       end
+      
+      # def remember_me!
+      #   logged_in_user.remember_me!
+      #   self.send(:"#{cookies_attribute_name}[]=", :remember_me_token, { :value => logged_in_user.remember_me_token, :expires => logged_in_user.remember_me_token_expires_at })
+      # end
+      # 
+      # def forget_me!
+      #   logged_in_user.forget_me!
+      # end
     end
     
     module Config
