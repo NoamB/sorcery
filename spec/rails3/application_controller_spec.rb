@@ -32,12 +32,12 @@ describe ApplicationController do
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe ApplicationController, "plugin configuration" do
     before(:all) do
-      plugin_model_configure()
+      plugin_model_configure
     end
     
     after(:each) do
       SimpleAuth::Controller::Config.reset!
-      plugin_model_configure()
+      plugin_model_configure
     end
   
     it "submodule configuration should effect model" do
@@ -79,6 +79,10 @@ describe ApplicationController do
     it "should respond to the instance method logged_in?" do
       should respond_to(:logged_in?)
     end
+    
+    it "should respond to the instance method logged_in_user" do
+      should respond_to(:logged_in_user)
+    end
   
     it "login(username,password) should return the user when success and set the session with user.id" do
       get :test_login, :username => 'gizmo', :password => 'secret'
@@ -106,6 +110,42 @@ describe ApplicationController do
     it "logged_in? should return false if not logged in" do
       session[:user_id] = nil
       subject.logged_in?.should be_false
+    end
+    
+    it "logged_in_user should return the user instance if logged in" do
+      create_new_user
+      session[:user_id] = @user.id
+      subject.logged_in_user.should == @user
+    end
+    
+    it "logged_in_user should return false if not logged in" do
+      session[:user_id] = nil
+      subject.logged_in_user.should == false
+    end
+  end
+  
+  # ----------------- REMEMBER ME -----------------------
+  describe ApplicationController, "with remember me features" do
+    before(:all) do
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
+      plugin_controller_configure([:remember_me])
+      plugin_model_configure([:remember_me])
+      create_new_user
+    end
+    
+    after(:all) do
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/remember_me")
+    end
+    
+    it "should set cookie on remember_me!" do
+      post :test_login_with_remember, :username => 'gizmo', :password => 'secret'
+      cookies["remember_me_token"].should == assigns[:logged_in_user].remember_me_token
+    end
+    
+    it "should clear cookie on forget_me!" do
+      cookies["remember_me_token"] == 'asd54234dsfsd43534'
+      get :test_logout
+      cookies["remember_me_token"].should == nil
     end
   end
 end

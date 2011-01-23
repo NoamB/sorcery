@@ -8,11 +8,14 @@ module SimpleAuth
     
     module ClassMethods
       def activate_simple_auth!(*submodules)
-        ::SimpleAuth::Controller::Config.submodules = submodules
+        Config.submodules = submodules
         yield Config if block_given?
         
         self.class_eval do
           include InstanceMethods
+          if Config.submodules.include?(:remember_me)
+            include RememberMeMethods
+          end
         end
       end
     end
@@ -37,14 +40,27 @@ module SimpleAuth
         session[:user_id]
       end
       
-      # def remember_me!
-      #   logged_in_user.remember_me!
-      #   self.send(:"#{cookies_attribute_name}[]=", :remember_me_token, { :value => logged_in_user.remember_me_token, :expires => logged_in_user.remember_me_token_expires_at })
-      # end
-      # 
-      # def forget_me!
-      #   logged_in_user.forget_me!
-      # end
+      def logged_in_user
+        @logged_in_user ||= login_from_session unless @logged_in_user == false # || login_from_basic_auth || login_from_cookie)
+      end
+      
+      protected
+      
+      def login_from_session
+        (User.find_by_id(session[:user_id]) if session[:user_id]) || false
+      end
+    end
+    
+    module RememberMeMethods
+      def remember_me!
+        logged_in_user.remember_me!
+        send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = { :value => logged_in_user.remember_me_token, :expires => logged_in_user.remember_me_token_expires_at }        
+      end
+      
+      def forget_me!
+        logged_in_user.forget_me!
+        self.send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = nil
+      end
     end
     
     module Config

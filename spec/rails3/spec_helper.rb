@@ -80,8 +80,16 @@ end
 
 def plugin_set_controller_config_property(property, value)
   ApplicationController.class_eval do
-    activate_simple_auth! do |config|
-      config.send(:"#{property}=", value)
+    ::SimpleAuth::Controller::Config.send(:"#{property}=", value)
+  end
+end
+
+def plugin_controller_configure(submodules = [], options = {})
+  ApplicationController.class_eval do
+    activate_simple_auth!(*submodules) do |config|
+      options.each do |property,value|
+        config.send(:"#{property}=", value)
+      end
     end
   end
 end

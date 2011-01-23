@@ -10,4 +10,11 @@ class ApplicationController < ActionController::Base
     logout
     render :text => ""
   end
+  
+  def test_login_with_remember
+    @user = login(params[:username], params[:password])
+    remember_me!
+    
+    render :text => ""
+  end
 end
