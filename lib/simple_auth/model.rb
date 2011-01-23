@@ -51,7 +51,7 @@ module SimpleAuth
       # returns the user if success, nil otherwise.
       def authenticate(username, password)
         user = where("#{@simple_auth_config.username_attribute_name} = ?", username).first
-        user if user && (user.send(@simple_auth_config.password_attribute_name) == password)
+        user if user && @simple_auth_config.pre_authenticate_validations.all? {|proc| proc.call(user, @simple_auth_config)} && (user.send(@simple_auth_config.password_attribute_name) == password)
       end
     end
 
@@ -64,10 +64,12 @@ module SimpleAuth
                     :password_attribute_name,
                     :email_attribute_name
       
-      attr_reader   :post_config_validations
+      attr_reader   :post_config_validations,
+                    :pre_authenticate_validations
       
       def initialize
         @post_config_validations = []
+        @pre_authenticate_validations = []
         @defaults = {
           :@username_attribute_name              => :username,
           :@password_attribute_name              => :password,
@@ -86,6 +88,10 @@ module SimpleAuth
       # Here submodules can add procs that will run after the user configuration params are set.
       def add_post_config_validation(proc)
         @post_config_validations << proc
+      end
+      
+      def add_pre_authenticate_validation(proc)
+        @pre_authenticate_validations << proc
       end
     end
     

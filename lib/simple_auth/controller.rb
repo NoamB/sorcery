@@ -41,13 +41,23 @@ module SimpleAuth
       end
       
       def logged_in_user
-        @logged_in_user ||= login_from_session unless @logged_in_user == false # || login_from_basic_auth || login_from_cookie)
+        @logged_in_user ||= login_from_session || login_from_cookie unless @logged_in_user == false # || login_from_basic_auth || )
       end
       
       protected
       
       def login_from_session
-        (User.find_by_id(session[:user_id]) if session[:user_id]) || false
+        @logged_in_user = (User.find_by_id(session[:user_id]) if session[:user_id]) || false
+      end
+      
+      def login_from_cookie
+        user = send(:"#{Config.cookies_attribute_name}")[:remember_me_token] && User.find_by_remember_me_token(send(:"#{Config.cookies_attribute_name}")[:remember_me_token])
+        if user && user.remember_me_token?
+          send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = { :value => user.remember_token, :expires => user.remember_token_expires_at }
+          @logged_in_user = user
+        else
+          @logged_in_user = false
+        end
       end
     end
     
@@ -59,7 +69,7 @@ module SimpleAuth
       
       def forget_me!
         logged_in_user.forget_me!
-        self.send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = nil
+        send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = nil
       end
     end
     

@@ -55,11 +55,12 @@ module SimpleAuth
         end
         
         module ClassMethods
-          # TODO: move to active_record
           def authenticate(username, password)
             user = where("#{@simple_auth_config.username_attribute_name} = ?", username).first
-            salt = user.send(@simple_auth_config.salt_attribute_name) if !@simple_auth_config.salt_attribute_name.nil?
-            user if user && (user.send(@simple_auth_config.crypted_password_attribute_name)) == encrypt(password,salt)
+            if user
+              salt = user.send(@simple_auth_config.salt_attribute_name) if !@simple_auth_config.salt_attribute_name.nil?
+            end
+            user if user && @simple_auth_config.pre_authenticate_validations.all? {|proc| proc.call(user, @simple_auth_config)} && (user.send(@simple_auth_config.crypted_password_attribute_name)) == encrypt(password,salt)
           end
           
           def encrypt(*tokens)

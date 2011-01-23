@@ -110,4 +110,21 @@ describe "User with activation submodule" do
     end
   end
 
+  describe User, "prevent non-active login feature" do
+    before(:all) do
+      plugin_model_configure([:user_activation], :simple_auth_mailer => ::SimpleAuthMailer)
+    end
+    
+    it "should not allow a non-active user to authenticate" do
+      create_new_user
+      User.authenticate(@user.username,'secret').should be_false
+    end
+    
+    it "should allow a non-active user to authenticate if configured so" do
+      create_new_user
+      plugin_set_model_config_property(:prevent_non_active_users_to_login, false)
+      User.authenticate(@user.username,'secret').should be_true
+    end
+  end
+  
 end
