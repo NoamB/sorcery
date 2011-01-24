@@ -18,6 +18,26 @@ module SimpleAuth
             reset!
           end
           
+          base.class_eval do
+            def remember_me!
+              config = simple_auth_config
+              self.send(:"#{config.remember_me_token_attribute_name}=", generate_random_code)
+              self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", Time.now + config.remember_me_for)
+              self.save!
+            end
+
+            def forget_me!
+              config = simple_auth_config
+              self.send(:"#{config.remember_me_token_attribute_name}=", nil)
+              self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", nil)
+              self.save!
+            end
+
+            # TODO: duplicate
+            def generate_random_code
+              return Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+            end
+          end
         end
         
       end

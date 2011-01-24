@@ -2,6 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "User with no submodules (core)" do
   before(:all) do
+    plugin_model_configure
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
   end
   

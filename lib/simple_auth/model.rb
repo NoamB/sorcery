@@ -23,10 +23,6 @@ module SimpleAuth
             yield @simple_auth_config if block_given?
 
             @simple_auth_config.post_config_validations.each { |pcv| pcv.call(@simple_auth_config) }
-            
-            self.class_eval do
-              include Adapters::ActiveRecord if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
-            end
           end
         end
       end
@@ -36,6 +32,16 @@ module SimpleAuth
       # Returns the class instance variable for configuration, when called by an instance.
       def simple_auth_config
         self.class.simple_auth_config
+      end
+      
+      protected
+      
+      def generic_send_email(method)
+        config = simple_auth_config
+        mail = config.simple_auth_mailer.send(config.send(method),self)
+        if defined?(ActionMailer) and config.simple_auth_mailer.superclass == ActionMailer::Base
+          mail.deliver
+        end
       end
     end
     

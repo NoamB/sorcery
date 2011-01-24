@@ -1,4 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/app_root/app/mailers/simple_auth_mailer')
 
 describe "User with password_encryption submodule" do
   before(:all) do
@@ -238,6 +239,28 @@ describe "User with password_encryption submodule" do
       SimpleAuth::CryptoProviders::SHA512.join_token = User.simple_auth_config.salt_join_token
       @user.crypted_password.should == SimpleAuth::CryptoProviders::SHA512.encrypt('secret',@user.salt)
     end
+    
   end
   
+  describe User, "prevent non-active login feature" do
+    before(:all) do
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+      plugin_model_configure([:password_encryption, :user_activation], :simple_auth_mailer => ::SimpleAuthMailer)
+    end
+
+    after(:all) do
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+    end
+
+    it "should not allow a non-active user to authenticate" do
+      create_new_user
+      User.authenticate(@user.username,'secret').should be_false
+    end
+
+    it "should allow a non-active user to authenticate if configured so" do
+      create_new_user
+      plugin_set_model_config_property(:prevent_non_active_users_to_login, false)
+      User.authenticate(@user.username,'secret').should be_true
+    end
+  end
 end

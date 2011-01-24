@@ -47,11 +47,33 @@ module SimpleAuth
             reset!
           end
           
-          #base.send(:include, InstanceMethods)
+          base.class_eval do
+            attr_accessor @simple_auth_config.password_attribute_name
+            before_save :encrypt_password, :if => Proc.new {|record| record.new_record? || record.send(simple_auth_config.password_attribute_name)}
+            after_save :clear_virtual_password, :if => Proc.new {|record| record.valid? && record.send(simple_auth_config.password_attribute_name)}
+          end
+          base.send(:include, InstanceMethods)
         end
         
         module InstanceMethods
+
           
+          protected
+          
+          def encrypt_password
+            config = simple_auth_config
+            salt = ""
+            if !config.salt_attribute_name.nil?
+              salt = Time.now.to_s
+              self.send(:"#{config.salt_attribute_name}=", salt)
+            end
+            self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name),salt))
+          end
+
+          def clear_virtual_password
+            config = simple_auth_config
+            self.send(:"#{config.password_attribute_name}=", nil)
+          end
         end
         
         module ClassMethods

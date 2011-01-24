@@ -26,6 +26,35 @@ module SimpleAuth
             reset!
           end
           
+          base.class_eval do
+            before_create :setup_activation
+            after_create :send_activation_needed_email!
+            
+            def activate!
+              config = simple_auth_config
+              self.send(:"#{config.activation_code_attribute_name}=", nil)
+              self.send(:"#{config.activation_state_attribute_name}=", "active")
+              send_activation_success_email!
+            end
+
+            protected
+
+            def setup_activation
+              config = simple_auth_config
+              generated_activation_code = CryptoProviders::SHA1.encrypt( Time.now.to_s.split(//).sort_by {rand}.join )
+              self.send(:"#{config.activation_code_attribute_name}=", generated_activation_code)
+              self.send(:"#{config.activation_state_attribute_name}=", "pending")
+            end
+
+            def send_activation_needed_email!
+              generic_send_email(:activation_needed_email_method_name)
+            end
+
+            def send_activation_success_email!
+              generic_send_email(:activation_success_email_method_name)
+            end
+          end
+          
           # make sure a mailer is defined
           post_validation_proc = Proc.new do |config|
             msg = "To use user_activation submodule, you must define a mailer (config.simple_auth_mailer = YourMailerClass)."
