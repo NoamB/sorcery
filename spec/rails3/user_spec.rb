@@ -12,13 +12,13 @@ describe "User with no submodules (core)" do
 
   describe User, "when app has plugin loaded" do
     it "should respond to the plugin activation class method" do
-      ActiveRecord::Base.should respond_to(:activate_simple_auth!)
-      User.should respond_to(:activate_simple_auth!)
+      ActiveRecord::Base.should respond_to(:activate_sorcery!)
+      User.should respond_to(:activate_sorcery!)
     end
     
     it "plugin activation should yield config to block" do
-      User.activate_simple_auth! do |config|
-        config.class.should == ::SimpleAuth::Model::Config 
+      User.activate_sorcery! do |config|
+        config.class.should == ::Sorcery::Model::Config 
       end
     end
   end
@@ -26,28 +26,28 @@ describe "User with no submodules (core)" do
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe User, "loaded plugin configuration" do
     after(:each) do
-      User.simple_auth_config.reset!
+      User.sorcery_config.reset!
     end
   
     it "should enable submodules in parameters" do
       plugin_model_configure([:password_confirmation])
-      User.simple_auth_config.should respond_to(:password_confirmation_attribute_name)
+      User.sorcery_config.should respond_to(:password_confirmation_attribute_name)
       plugin_model_configure()
     end
   
     it "should enable configuration option 'username_attribute_name'" do
       plugin_set_model_config_property(:username_attribute_name, :email)
-      User.simple_auth_config.username_attribute_name.should equal(:email)    
+      User.sorcery_config.username_attribute_name.should equal(:email)    
     end
   
     it "should enable configuration option 'password_attribute_name'" do
       plugin_set_model_config_property(:password_attribute_name, :mypassword)
-      User.simple_auth_config.password_attribute_name.should equal(:mypassword)
+      User.sorcery_config.password_attribute_name.should equal(:mypassword)
     end
     
     it "should enable configuration option 'email_attribute_name'" do
       plugin_set_model_config_property(:email_attribute_name, :my_email)
-      User.simple_auth_config.email_attribute_name.should equal(:my_email)
+      User.sorcery_config.email_attribute_name.should equal(:my_email)
     end
   
     describe "with PasswordConfirmation" do
@@ -56,24 +56,24 @@ describe "User with no submodules (core)" do
       end
     
       after(:each) do
-        User.simple_auth_config.reset!
+        User.sorcery_config.reset!
       end
     
       it "should enable configuration option 'password_confirmation_attribute_name'" do
         plugin_set_model_config_property(:password_confirmation_attribute_name, :mypassword_conf)
-        User.simple_auth_config.password_confirmation_attribute_name.should equal(:mypassword_conf)
+        User.sorcery_config.password_confirmation_attribute_name.should equal(:mypassword_conf)
       end
     end
 
     it "should enable two classes to have different configurations" do
       plugin_set_model_config_property(:username_attribute_name, :email)
-      TestUser.simple_auth_config.username_attribute_name.should equal(:username)
+      TestUser.sorcery_config.username_attribute_name.should equal(:username)
     end
   
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
-  describe User, "when activated with simple_auth" do
+  describe User, "when activated with sorcery" do
     before(:all) do
       plugin_model_configure
     end
@@ -89,12 +89,12 @@ describe "User with no submodules (core)" do
   
     it "authenticate should return true if credentials are good" do
       create_new_user
-      User.authenticate(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'secret').should be_true
     end
   
     it "authenticate should return false if credentials are bad" do
       create_new_user
-      User.authenticate(@user.send(User.simple_auth_config.username_attribute_name), 'wrong!').should be_false
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'wrong!').should be_false
     end
   
   end
@@ -122,7 +122,7 @@ describe "User with no submodules (core)" do
     end
   
     after(:each) do
-      User.simple_auth_config.reset!
+      User.sorcery_config.reset!
     end
   
     it "should not register a user with mismatching password fields" do

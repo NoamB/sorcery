@@ -12,18 +12,18 @@ describe ApplicationController do
   # ----------------- PLUGIN LOADED -----------------------
   describe ApplicationController, "when app has plugin loaded" do
     it "should respond to the plugin activation class method" do
-      ActionController::Base.should respond_to(:activate_simple_auth!)
-      ApplicationController.should respond_to(:activate_simple_auth!)
+      ActionController::Base.should respond_to(:activate_sorcery!)
+      ApplicationController.should respond_to(:activate_sorcery!)
     end
     
     it "plugin activation should yield config to block" do
-      ApplicationController.activate_simple_auth! do |config|
-        config.should == ::SimpleAuth::Controller::Config 
+      ApplicationController.activate_sorcery! do |config|
+        config.should == ::Sorcery::Controller::Config 
       end
     end
     
     it "config.should respond to 'submodules='" do
-      ApplicationController.activate_simple_auth! do |config|
+      ApplicationController.activate_sorcery! do |config|
         config.should respond_to(:submodules=)
       end
     end
@@ -36,34 +36,34 @@ describe ApplicationController do
     end
     
     after(:each) do
-      SimpleAuth::Controller::Config.reset!
+      Sorcery::Controller::Config.reset!
       plugin_model_configure
     end
   
     it "submodule configuration should effect model" do
-      ApplicationController.activate_simple_auth! do |config|
+      ApplicationController.activate_sorcery! do |config|
         config.submodules = [:test_submodule] 
       end
       User.class_eval do
-        activate_simple_auth!
+        activate_sorcery!
       end
       User.new.should respond_to(:my_instance_method)
     end
     
     it "should enable configuration option 'session_attribute_name'" do    
       plugin_set_controller_config_property(:session_attribute_name, :my_session)
-      SimpleAuth::Controller::Config.session_attribute_name.should equal(:my_session)
+      Sorcery::Controller::Config.session_attribute_name.should equal(:my_session)
     end
   
     it "should enable configuration option 'cookies_attribute_name'" do    
       plugin_set_controller_config_property(:cookies_attribute_name, :my_cookies)
-      SimpleAuth::Controller::Config.cookies_attribute_name.should equal(:my_cookies)
+      Sorcery::Controller::Config.cookies_attribute_name.should equal(:my_cookies)
     end
     
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
-  describe ApplicationController, "when activated with simple_auth" do
+  describe ApplicationController, "when activated with sorcery" do
     before(:all) do
       create_new_user
     end

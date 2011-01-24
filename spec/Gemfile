@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem "rails", '3.0.3'
-gem "simple_auth", '0.1.0', :path => '../../../'
+gem "sorcery", '0.1.0', :path => '../../../'
 
 group :development do
   gem 'bcrypt-ruby', :require => 'bcrypt'

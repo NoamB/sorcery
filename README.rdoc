@@ -1,4 +1,4 @@
-= simple_auth
+= sorcery
 
 Inspired by restful_authentication, Authlogic and Devise (in that order).
 Crypto code taken almost unchanged from Authlogic.
@@ -8,11 +8,11 @@ Crypto code taken almost unchanged from Authlogic.
 * Simple interface, but don't kill simplicity with syntactic sugar.
 * Easy Configuration, customization and extending.
 * Keep MVC cleanly separated - DB is for models, sessions are for controllers. Models stay unaware of sessions.
-* Minimal amounts of magic - keeps code easy to understand and maintain.
+* Magic, not voodoo.
 * No generated code polluting the developer's code.
 * No tons of configuration code needed to add to the User model or Controller
 
-== Contributing to simple_auth
+== Contributing to sorcery
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it

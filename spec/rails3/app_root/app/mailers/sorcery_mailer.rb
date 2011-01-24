@@ -1,4 +1,4 @@
-class SimpleAuthMailer < ActionMailer::Base
+class SorceryMailer < ActionMailer::Base
   
   default :from => "notifications@example.com"
   

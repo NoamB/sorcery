@@ -1,7 +1,7 @@
 PATH
   remote: ../../../
   specs:
-    simple_auth (0.1.0)
+    sorcery (0.1.0)
 
 GEM
   remote: http://rubygems.org/
@@ -109,6 +109,6 @@ DEPENDENCIES
   rspec
   rspec-rails
   ruby-debug19
-  simple_auth (= 0.1.0)!
   simplecov (>= 0.3.8)
+  sorcery (= 0.1.0)!
   sqlite3-ruby

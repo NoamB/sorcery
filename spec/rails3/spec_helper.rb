@@ -35,14 +35,14 @@ end
 require File.join(File.dirname(__FILE__), 'app_root','app','models','user')
 
 class TestUser < ActiveRecord::Base
-  activate_simple_auth!
+  activate_sorcery!
 end
 
 class TestMailer < ActionMailer::Base
   
 end
 
-module SimpleAuth
+module Sorcery
   module Model
     module Submodules
       module TestSubmodule
@@ -55,17 +55,17 @@ end
 
 def create_new_user
   user_attributes_hash = {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
-  user_attributes_hash.merge!(:password_confirmation => 'secret') if User.simple_auth_config.submodules.include?(:password_confirmation)
+  user_attributes_hash.merge!(:password_confirmation => 'secret') if User.sorcery_config.submodules.include?(:password_confirmation)
   @user = User.new(user_attributes_hash)
   @user.save!
 end
 
 def plugin_model_configure(submodules = [], options = {})
-  ::SimpleAuth::Controller::Config.submodules = submodules
+  ::Sorcery::Controller::Config.submodules = submodules
 
   reload_user_class
   
-  User.activate_simple_auth! do |config|
+  User.activate_sorcery! do |config|
     options.each do |property,value|
       config.send(:"#{property}=", value)
     end
@@ -74,19 +74,19 @@ end
 
 def plugin_set_model_config_property(property, *values)
   User.class_eval do
-    simple_auth_config.send(:"#{property}=", *values)
+    sorcery_config.send(:"#{property}=", *values)
   end
 end
 
 def plugin_set_controller_config_property(property, value)
   ApplicationController.class_eval do
-    ::SimpleAuth::Controller::Config.send(:"#{property}=", value)
+    ::Sorcery::Controller::Config.send(:"#{property}=", value)
   end
 end
 
 def plugin_controller_configure(submodules = [], options = {})
   ApplicationController.class_eval do
-    activate_simple_auth!(*submodules) do |config|
+    activate_sorcery!(*submodules) do |config|
       options.each do |property,value|
         config.send(:"#{property}=", value)
       end

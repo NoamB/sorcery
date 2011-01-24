@@ -7,7 +7,7 @@ SimpleCov.start
 
 
 require 'rspec'
-require 'simple_auth'
+require 'sorcery'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.

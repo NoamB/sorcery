@@ -11,10 +11,10 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "simple_auth"
-  gem.homepage = "http://github.com/NoamB/simple_auth"
+  gem.name = "sorcery"
+  gem.homepage = "http://github.com/NoamB/sorcery"
   gem.license = "MIT"
-  gem.summary = "Simple authentication for Rails 3 applications"
+  gem.summary = "Magical authentication for Rails 3 applications"
   gem.description = "Provides common authentication needs such as signing in/out, activating by email, resetting password and deleting accounts."
   gem.email = "nbenari@gmail.com"
   gem.authors = ["Noam"]

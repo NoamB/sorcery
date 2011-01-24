@@ -1,4 +1,4 @@
-module SimpleAuth
+module Sorcery
   module Controller
     def self.included(klass)
       klass.class_eval do
@@ -7,7 +7,7 @@ module SimpleAuth
     end
     
     module ClassMethods
-      def activate_simple_auth!(*submodules)
+      def activate_sorcery!(*submodules)
         Config.submodules = submodules
         yield Config if block_given?
         

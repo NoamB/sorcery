@@ -1,5 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-require File.expand_path(File.dirname(__FILE__) + '/app_root/app/mailers/simple_auth_mailer')
+require File.expand_path(File.dirname(__FILE__) + '/app_root/app/mailers/sorcery_mailer')
 
 describe "User with password_encryption submodule" do
   before(:all) do
@@ -18,50 +18,50 @@ describe "User with password_encryption submodule" do
     end
   
     after(:each) do
-      User.simple_auth_config.reset!
+      User.sorcery_config.reset!
     end
       
     it "should enable configuration option 'crypted_password_attribute_name'" do
       plugin_set_model_config_property(:crypted_password_attribute_name, :password)
-      User.simple_auth_config.crypted_password_attribute_name.should equal(:password)
+      User.sorcery_config.crypted_password_attribute_name.should equal(:password)
     end
     
     it "should enable configuration option 'salt_attribute_name'" do
       plugin_set_model_config_property(:salt_attribute_name, :my_salt)
-      User.simple_auth_config.salt_attribute_name.should equal(:my_salt)
+      User.sorcery_config.salt_attribute_name.should equal(:my_salt)
     end
 
     it "should enable configuration option 'encryption_algorithm'" do
       plugin_set_model_config_property(:encryption_algorithm, :none)
-      User.simple_auth_config.encryption_algorithm.should equal(:none)
+      User.sorcery_config.encryption_algorithm.should equal(:none)
     end
 
     it "should enable configuration option 'encryption_key'" do
       plugin_set_model_config_property(:encryption_key, 'asdadas424234242')
-      User.simple_auth_config.encryption_key.should == 'asdadas424234242'
+      User.sorcery_config.encryption_key.should == 'asdadas424234242'
     end
 
     it "should enable configuration option 'custom_encryption_provider'" do
       plugin_set_model_config_property(:encryption_algorithm, :custom)
       plugin_set_model_config_property(:custom_encryption_provider, Array)
-      User.simple_auth_config.custom_encryption_provider.should equal(Array)
+      User.sorcery_config.custom_encryption_provider.should equal(Array)
     end
   
     it "should enable configuration option 'salt_join_token'" do
       salt_join_token = "--%%*&-"
       plugin_set_model_config_property(:salt_join_token, salt_join_token)
-      User.simple_auth_config.salt_join_token.should equal(salt_join_token)
+      User.sorcery_config.salt_join_token.should equal(salt_join_token)
     end
     
     it "should enable configuration option 'stretches'" do
       stretches = 15
       plugin_set_model_config_property(:stretches, stretches)
-      User.simple_auth_config.stretches.should equal(stretches)
+      User.sorcery_config.stretches.should equal(stretches)
     end
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
-  describe User, "when activated with simple_auth" do
+  describe User, "when activated with sorcery" do
   
     before(:all) do
       plugin_model_configure([:password_encryption])
@@ -89,7 +89,7 @@ describe "User with password_encryption submodule" do
   
     it "should encrypt password when a new user is saved" do
       create_new_user
-      @user.send(User.simple_auth_config.crypted_password_attribute_name).should == User.encrypt('secret')
+      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('secret')
     end
 
     it "should clear the virtual password field if the encryption process worked" do
@@ -123,14 +123,14 @@ describe "User with password_encryption submodule" do
       create_new_user
       @user.email = "blup@bla.com"
       @user.save!
-      @user.send(User.simple_auth_config.crypted_password_attribute_name).should == User.encrypt('secret')
+      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('secret')
     end
 
     it "should replace the crypted_password in case a new password is set" do
       create_new_user
       @user.password = 'new_secret'
       @user.save!
-      @user.send(User.simple_auth_config.crypted_password_attribute_name).should == User.encrypt('new_secret')
+      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('new_secret')
     end
   
     describe "with password_confirmation module" do
@@ -140,7 +140,7 @@ describe "User with password_encryption submodule" do
         @user.password = 'new_secret'
         @user.password_confirmation = 'new_secret'
         @user.save!
-        @user.send(User.simple_auth_config.crypted_password_attribute_name).should == User.encrypt('new_secret')
+        @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('new_secret')
       end
     end
   end
@@ -157,13 +157,13 @@ describe "User with password_encryption submodule" do
     end
   
     after(:each) do
-      User.simple_auth_config.reset!
+      User.sorcery_config.reset!
     end
   
     it "should work with no password encryption" do
       plugin_set_model_config_property(:encryption_algorithm, :none)
       create_new_user
-      User.authenticate(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'secret').should be_true
     end
   
     it "should work with custom password encryption" do
@@ -175,7 +175,7 @@ describe "User with password_encryption submodule" do
       plugin_set_model_config_property(:encryption_algorithm, :custom)
       plugin_set_model_config_property(:custom_encryption_provider, MyCrypto)
       create_new_user
-      User.authenticate(@user.send(User.simple_auth_config.username_attribute_name), 'secret').should be_true
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'secret').should be_true
     end
   
     it "if encryption algo is aes256, it should set key to crypto provider" do
@@ -196,22 +196,22 @@ describe "User with password_encryption submodule" do
   
     it "if encryption algo is md5 it should work" do
       plugin_set_model_config_property(:encryption_algorithm, :md5)
-      User.encrypt(@text).should == SimpleAuth::CryptoProviders::MD5.encrypt(@text)
+      User.encrypt(@text).should == Sorcery::CryptoProviders::MD5.encrypt(@text)
     end
   
     it "if encryption algo is sha1 it should work" do
       plugin_set_model_config_property(:encryption_algorithm, :sha1)
-      User.encrypt(@text).should == SimpleAuth::CryptoProviders::SHA1.encrypt(@text)
+      User.encrypt(@text).should == Sorcery::CryptoProviders::SHA1.encrypt(@text)
     end
   
     it "if encryption algo is sha256 it should work" do
       plugin_set_model_config_property(:encryption_algorithm, :sha256)
-      User.encrypt(@text).should == SimpleAuth::CryptoProviders::SHA256.encrypt(@text)
+      User.encrypt(@text).should == Sorcery::CryptoProviders::SHA256.encrypt(@text)
     end
   
     it "if encryption algo is sha512 it should work" do
       plugin_set_model_config_property(:encryption_algorithm, :sha512)
-      User.encrypt(@text).should == SimpleAuth::CryptoProviders::SHA512.encrypt(@text)
+      User.encrypt(@text).should == Sorcery::CryptoProviders::SHA512.encrypt(@text)
     end
   
     it "salt should be random for each user and saved in db" do
@@ -224,8 +224,8 @@ describe "User with password_encryption submodule" do
       plugin_set_model_config_property(:salt_attribute_name, :salt)
       plugin_set_model_config_property(:encryption_algorithm, :sha512)
       create_new_user
-      @user.crypted_password.should_not == SimpleAuth::CryptoProviders::SHA512.encrypt('secret')
-      @user.crypted_password.should == SimpleAuth::CryptoProviders::SHA512.encrypt('secret',@user.salt)
+      @user.crypted_password.should_not == Sorcery::CryptoProviders::SHA512.encrypt('secret')
+      @user.crypted_password.should == Sorcery::CryptoProviders::SHA512.encrypt('secret',@user.salt)
     end
     
     it "if salt_join_token is set should use it to encrypt" do
@@ -233,11 +233,11 @@ describe "User with password_encryption submodule" do
       plugin_set_model_config_property(:salt_join_token, "-@=>")
       plugin_set_model_config_property(:encryption_algorithm, :sha512)
       create_new_user
-      @user.crypted_password.should_not == SimpleAuth::CryptoProviders::SHA512.encrypt('secret')
-      SimpleAuth::CryptoProviders::SHA512.join_token = ""
-      @user.crypted_password.should_not == SimpleAuth::CryptoProviders::SHA512.encrypt('secret',@user.salt)
-      SimpleAuth::CryptoProviders::SHA512.join_token = User.simple_auth_config.salt_join_token
-      @user.crypted_password.should == SimpleAuth::CryptoProviders::SHA512.encrypt('secret',@user.salt)
+      @user.crypted_password.should_not == Sorcery::CryptoProviders::SHA512.encrypt('secret')
+      Sorcery::CryptoProviders::SHA512.join_token = ""
+      @user.crypted_password.should_not == Sorcery::CryptoProviders::SHA512.encrypt('secret',@user.salt)
+      Sorcery::CryptoProviders::SHA512.join_token = User.sorcery_config.salt_join_token
+      @user.crypted_password.should == Sorcery::CryptoProviders::SHA512.encrypt('secret',@user.salt)
     end
     
   end
@@ -245,7 +245,7 @@ describe "User with password_encryption submodule" do
   describe User, "prevent non-active login feature" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
-      plugin_model_configure([:password_encryption, :user_activation], :simple_auth_mailer => ::SimpleAuthMailer)
+      plugin_model_configure([:password_encryption, :user_activation], :sorcery_mailer => ::SorceryMailer)
     end
 
     after(:all) do

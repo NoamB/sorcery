@@ -18,17 +18,17 @@ describe "User with remember_me submodule" do
     end
   
     after(:each) do
-      User.simple_auth_config.reset!
+      User.sorcery_config.reset!
     end
     
     it "should allow configuration option 'remember_me_token_attribute_name'" do
       plugin_set_model_config_property(:remember_me_token_attribute_name, :my_token)
-      User.simple_auth_config.remember_me_token_attribute_name.should equal(:my_token)
+      User.sorcery_config.remember_me_token_attribute_name.should equal(:my_token)
     end
 
     it "should allow configuration option 'remember_me_token_expires_at_attribute_name'" do
       plugin_set_model_config_property(:remember_me_token_expires_at_attribute_name, :my_expires)
-      User.simple_auth_config.remember_me_token_expires_at_attribute_name.should equal(:my_expires)
+      User.sorcery_config.remember_me_token_expires_at_attribute_name.should equal(:my_expires)
     end
     
     it "should respond to 'remember_me!'" do

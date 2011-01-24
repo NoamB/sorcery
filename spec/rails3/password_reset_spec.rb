@@ -52,7 +52,7 @@ describe "User with password_reset submodule" do
     end
   
     after(:each) do
-      User.simple_auth_config.reset!
+      User.sorcery_config.reset!
     end
     
     it "should respond to 'reset_password!'" do
@@ -62,10 +62,10 @@ describe "User with password_reset submodule" do
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
-  describe User, "when activated with simple_auth" do
+  describe User, "when activated with sorcery" do
   
     before(:all) do
-      plugin_model_configure([:password_reset], :simple_auth_mailer => ::SimpleAuthMailer)
+      plugin_model_configure([:password_reset], :sorcery_mailer => ::SorceryMailer)
     end
   
     before(:each) do
@@ -89,10 +89,10 @@ describe "User with password_reset AND password_encryption submodules" do
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
-  describe User, "when activated with simple_auth" do
+  describe User, "when activated with sorcery" do
   
     before(:all) do
-      plugin_model_configure([:password_reset, :password_encryption], :simple_auth_mailer => ::SimpleAuthMailer)
+      plugin_model_configure([:password_reset, :password_encryption], :sorcery_mailer => ::SorceryMailer)
     end
   
     before(:each) do

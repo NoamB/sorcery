@@ -1,9 +1,9 @@
 require "digest/sha1"
 
-module SimpleAuth
+module Sorcery
   module CryptoProviders
     # This class was made for the users transitioning from restful_authentication. I highly discourage using this
-    # crypto provider as it inferior to your other options. Please use any other provider offered by SimpleAuth.
+    # crypto provider as it inferior to your other options. Please use any other provider offered by Sorcery.
     class SHA1
       class << self
         def join_token

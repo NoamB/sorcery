@@ -1,12 +1,12 @@
 require "digest/md5"
  
-module SimpleAuth
+module Sorcery
   module CryptoProviders
     # This class was made for the users transitioning from md5 based systems. 
     # I highly discourage using this crypto provider as it superbly inferior 
     # to your other options.
     #
-    # Please use any other provider offered by SimpleAuth.
+    # Please use any other provider offered by Sorcery.
     class MD5
       class << self
         attr_accessor :join_token

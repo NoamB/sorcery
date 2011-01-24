@@ -1,7 +1,7 @@
 require "digest/sha2"
 
-module SimpleAuth
-  # The activate_simple_auth method has a custom_crypto_provider configuration option. This allows you to use any type of encryption you like.
+module Sorcery
+  # The activate_sorcery method has a custom_crypto_provider configuration option. This allows you to use any type of encryption you like.
   # Just create a class with a class level encrypt and matches? method. See example below.
   #
   # === Example
