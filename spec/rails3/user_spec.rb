@@ -29,12 +29,6 @@ describe "User with no submodules (core)" do
       User.sorcery_config.reset!
     end
   
-    it "should enable submodules in parameters" do
-      plugin_model_configure([:password_confirmation])
-      User.sorcery_config.should respond_to(:password_confirmation_attribute_name)
-      plugin_model_configure()
-    end
-  
     it "should enable configuration option 'username_attribute_name'" do
       plugin_set_model_config_property(:username_attribute_name, :email)
       User.sorcery_config.username_attribute_name.should equal(:email)    
@@ -48,21 +42,6 @@ describe "User with no submodules (core)" do
     it "should enable configuration option 'email_attribute_name'" do
       plugin_set_model_config_property(:email_attribute_name, :my_email)
       User.sorcery_config.email_attribute_name.should equal(:my_email)
-    end
-  
-    describe "with PasswordConfirmation" do
-      before(:all) do
-        plugin_model_configure([:password_confirmation])
-      end
-    
-      after(:each) do
-        User.sorcery_config.reset!
-      end
-    
-      it "should enable configuration option 'password_confirmation_attribute_name'" do
-        plugin_set_model_config_property(:password_confirmation_attribute_name, :mypassword_conf)
-        User.sorcery_config.password_confirmation_attribute_name.should equal(:mypassword_conf)
-      end
     end
 
     it "should enable two classes to have different configurations" do
@@ -97,40 +76,6 @@ describe "User with no submodules (core)" do
       User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'wrong!').should be_false
     end
   
-  end
-
-  # ----------------- REGISTRATION -----------------------
-  describe User, "registration" do
-    before(:all) do
-      plugin_model_configure
-    end
-  
-    before(:each) do
-      User.delete_all
-    end
-
-  end
-
-  # ----------------- PASSWORD CONFIRMATION -----------------------
-  describe User, "password confirmation" do
-    before(:all) do
-      plugin_model_configure([:password_confirmation])
-    end
-  
-    before(:each) do
-      User.delete_all
-    end
-  
-    after(:each) do
-      User.sorcery_config.reset!
-    end
-  
-    it "should not register a user with mismatching password fields" do
-      @user = User.new(:username => 'gizmo', :email => "bla@bla.com", :password => 'secret', :password_confirmation => 'secrer')
-      @user.valid?.should == false
-      @user.save.should == false
-      expect{@user.save!}.to raise_error(ActiveRecord::RecordInvalid)
-    end
   end
 
 end

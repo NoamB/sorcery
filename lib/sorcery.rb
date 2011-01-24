@@ -2,7 +2,7 @@ module Sorcery
   autoload :Model, 'sorcery/model'
   module Model
     module Submodules
-      autoload :PasswordConfirmation, 'sorcery/model/submodules/password_confirmation'
+      autoload :FieldConfirmation, 'sorcery/model/submodules/field_confirmation'
       autoload :PasswordEncryption, 'sorcery/model/submodules/password_encryption'
       autoload :UserActivation, 'sorcery/model/submodules/user_activation'
       autoload :PasswordReset, 'sorcery/model/submodules/password_reset'

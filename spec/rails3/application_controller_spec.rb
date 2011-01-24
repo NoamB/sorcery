@@ -50,12 +50,17 @@ describe ApplicationController do
       User.new.should respond_to(:my_instance_method)
     end
     
-    it "should enable configuration option 'session_attribute_name'" do    
+    it "should enable configuration option 'user_class'" do
+      plugin_set_controller_config_property(:user_class, TestUser)
+      Sorcery::Controller::Config.user_class.should equal(TestUser)
+    end
+    
+    it "should enable configuration option 'session_attribute_name'" do
       plugin_set_controller_config_property(:session_attribute_name, :my_session)
       Sorcery::Controller::Config.session_attribute_name.should equal(:my_session)
     end
-  
-    it "should enable configuration option 'cookies_attribute_name'" do    
+    
+    it "should enable configuration option 'cookies_attribute_name'" do
       plugin_set_controller_config_property(:cookies_attribute_name, :my_cookies)
       Sorcery::Controller::Config.cookies_attribute_name.should equal(:my_cookies)
     end

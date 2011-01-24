@@ -55,7 +55,7 @@ end
 
 def create_new_user
   user_attributes_hash = {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
-  user_attributes_hash.merge!(:password_confirmation => 'secret') if User.sorcery_config.submodules.include?(:password_confirmation)
+  user_attributes_hash.merge!(:password_confirmation => 'secret') if User.sorcery_config.submodules.include?(:field_confirmation)
   @user = User.new(user_attributes_hash)
   @user.save!
 end
@@ -64,6 +64,8 @@ def plugin_model_configure(submodules = [], options = {})
   ::Sorcery::Controller::Config.submodules = submodules
 
   reload_user_class
+  
+  ::Sorcery::Controller::Config.user_class = User
   
   User.activate_sorcery! do |config|
     options.each do |property,value|

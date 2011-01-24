@@ -3,7 +3,7 @@ module Sorcery
     module Submodules
       # This submodule adds the ability to verify that the user filled the password twice,
       # and that both times were the same string.
-      module PasswordConfirmation
+      module FieldConfirmation
         def self.included(base)
           # changes to the Sorcery::Model::Config class
           base.sorcery_config.class_eval do

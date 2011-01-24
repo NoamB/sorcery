@@ -13,16 +13,15 @@ module Sorcery
         
         self.class_eval do
           include InstanceMethods
-          if Config.submodules.include?(:remember_me)
-            include RememberMeMethods
-          end
+          include RememberMeMethods if Config.submodules.include?(:remember_me)
+          helper_method :logged_in_user
         end
       end
     end
     
     module InstanceMethods
       def login(username,password)
-        user = User.authenticate(username,password)
+        user = Config.user_class.authenticate(username,password)
         if user
           reset_session # protect from session fixation attacks
           session[:user_id] = user.id
@@ -51,7 +50,7 @@ module Sorcery
       end
       
       def login_from_cookie
-        user = send(:"#{Config.cookies_attribute_name}")[:remember_me_token] && User.find_by_remember_me_token(send(:"#{Config.cookies_attribute_name}")[:remember_me_token])
+        user = send(:"#{Config.cookies_attribute_name}")[:remember_me_token] && Config.user_class.find_by_remember_me_token(send(:"#{Config.cookies_attribute_name}")[:remember_me_token])
         if user && user.remember_me_token?
           send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = { :value => user.remember_token, :expires => user.remember_token_expires_at }
           @logged_in_user = user
@@ -75,11 +74,13 @@ module Sorcery
     
     module Config
       class << self
-        attr_accessor :submodules,
+        attr_accessor :user_class,
+                      :submodules,
                       :session_attribute_name,
                       :cookies_attribute_name
         
         def reset!
+          @user_class = User
           @session_attribute_name = :session
           @cookies_attribute_name = :cookies
         end
