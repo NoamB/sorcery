@@ -20,17 +20,20 @@ module SimpleAuth
           base.class_eval do
             attr_accessor @simple_auth_config.password_confirmation_attribute_name
             validate :password_confirmed
-            
-            protected
-
-            def password_confirmed
-              config = simple_auth_config
-              if self.send(config.password_attribute_name) && self.send(config.password_attribute_name) != self.send(config.password_confirmation_attribute_name)
-                self.errors.add(:base,"password and password_confirmation do not match!")
-              end
-            end
           end
           
+          base.send(:include, InstanceMethods)
+        end
+        
+        module InstanceMethods
+          protected
+
+          def password_confirmed
+            config = simple_auth_config
+            if self.send(config.password_attribute_name) && self.send(config.password_attribute_name) != self.send(config.password_confirmation_attribute_name)
+              self.errors.add(:base,"password and password_confirmation do not match!")
+            end
+          end
         end
       end
     end

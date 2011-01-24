@@ -29,30 +29,6 @@ module SimpleAuth
           base.class_eval do
             before_create :setup_activation
             after_create :send_activation_needed_email!
-            
-            def activate!
-              config = simple_auth_config
-              self.send(:"#{config.activation_code_attribute_name}=", nil)
-              self.send(:"#{config.activation_state_attribute_name}=", "active")
-              send_activation_success_email!
-            end
-
-            protected
-
-            def setup_activation
-              config = simple_auth_config
-              generated_activation_code = CryptoProviders::SHA1.encrypt( Time.now.to_s.split(//).sort_by {rand}.join )
-              self.send(:"#{config.activation_code_attribute_name}=", generated_activation_code)
-              self.send(:"#{config.activation_state_attribute_name}=", "pending")
-            end
-
-            def send_activation_needed_email!
-              generic_send_email(:activation_needed_email_method_name)
-            end
-
-            def send_activation_success_email!
-              generic_send_email(:activation_success_email_method_name)
-            end
           end
           
           # make sure a mailer is defined
@@ -67,8 +43,35 @@ module SimpleAuth
             config.prevent_non_active_users_to_login ? user.send(config.activation_state_attribute_name) == "active" : true
           end
           base.simple_auth_config.add_pre_authenticate_validation(pre_authenticate_proc)
+          
+          base.send(:include, InstanceMethods)
         end
         
+        module InstanceMethods
+          def activate!
+            config = simple_auth_config
+            self.send(:"#{config.activation_code_attribute_name}=", nil)
+            self.send(:"#{config.activation_state_attribute_name}=", "active")
+            send_activation_success_email!
+          end
+
+          protected
+
+          def setup_activation
+            config = simple_auth_config
+            generated_activation_code = CryptoProviders::SHA1.encrypt( Time.now.to_s.split(//).sort_by {rand}.join )
+            self.send(:"#{config.activation_code_attribute_name}=", generated_activation_code)
+            self.send(:"#{config.activation_state_attribute_name}=", "pending")
+          end
+
+          def send_activation_needed_email!
+            generic_send_email(:activation_needed_email_method_name)
+          end
+
+          def send_activation_success_email!
+            generic_send_email(:activation_success_email_method_name)
+          end
+        end
       end
     end
   end

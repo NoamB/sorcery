@@ -29,29 +29,32 @@ module SimpleAuth
             end
             
             before_save :clear_reset_password_code, :if =>clear_reset_password_code_proc
-            
-            def reset_password!
-              config = simple_auth_config
-              self.send(:"#{config.reset_password_code_attribute_name}=", generate_random_code)
-              self.class.transaction do
-                self.save!
-                generic_send_email(:reset_password_email_method_name)
-              end
-            end
-
-            protected
-
-            def clear_reset_password_code
-              config = simple_auth_config
-              self.send(:"#{config.reset_password_code_attribute_name}=", nil)
-            end
-
-            # TODO: duplicate
-            def generate_random_code
-              return Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
-            end
           end
           
+          base.send(:include, InstanceMethods)
+        end
+        
+        module InstanceMethods
+          def reset_password!
+            config = simple_auth_config
+            self.send(:"#{config.reset_password_code_attribute_name}=", generate_random_code)
+            self.class.transaction do
+              self.save!
+              generic_send_email(:reset_password_email_method_name)
+            end
+          end
+
+          protected
+
+          def clear_reset_password_code
+            config = simple_auth_config
+            self.send(:"#{config.reset_password_code_attribute_name}=", nil)
+          end
+
+          # TODO: duplicate
+          def generate_random_code
+            return Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+          end
         end
         
       end

@@ -57,7 +57,6 @@ module SimpleAuth
         
         module InstanceMethods
 
-          
           protected
           
           def encrypt_password
