@@ -14,7 +14,7 @@ module Sorcery
             self.class_eval do
               extend ClassMethods # included here, before submodules, so they can be overriden by them.
               include InstanceMethods
-              @sorcery_config.submodules = ::Sorcery::Controller::Config.submodules
+              @sorcery_config.submodules = ::Sorcery::Controller::Config.submodules || []
               @sorcery_config.submodules.each do |mod|
                 include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
               end
