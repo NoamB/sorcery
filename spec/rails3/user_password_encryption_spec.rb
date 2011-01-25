@@ -132,17 +132,7 @@ describe "User with password_encryption submodule" do
       @user.save!
       @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('new_secret')
     end
-  
-    describe "with password_confirmation module" do
-      it "should replace the crypted_password in case a new password is set" do
-        plugin_model_configure([:field_confirmation, :password_encryption])
-        create_new_user
-        @user.password = 'new_secret'
-        @user.password_confirmation = 'new_secret'
-        @user.save!
-        @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('new_secret')
-      end
-    end
+
   end
 
   # ----------------- PASSWORD ENCRYPTION -----------------------
