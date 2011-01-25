@@ -55,7 +55,6 @@ end
 
 def create_new_user
   user_attributes_hash = {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
-  user_attributes_hash.merge!(:password_confirmation => 'secret') if User.sorcery_config.submodules.include?(:field_confirmation)
   @user = User.new(user_attributes_hash)
   @user.save!
 end

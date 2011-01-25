@@ -24,6 +24,7 @@ module Sorcery
             
             self.class_eval do
               attr_accessor @sorcery_config.password_attribute_name
+              attr_protected @sorcery_config.crypted_password_attribute_name, @sorcery_config.salt_attribute_name
               before_save :encrypt_password, :if => Proc.new {|record| record.new_record? || record.send(sorcery_config.password_attribute_name)}
               after_save :clear_virtual_password, :if => Proc.new {|record| record.valid? && record.send(sorcery_config.password_attribute_name)}
             end
@@ -122,25 +123,7 @@ module Sorcery
                     :encryption_provider,
                     :custom_encryption_provider,
                     :encryption_algorithm                            
-                                  
-      def encryption_algorithm=(algo)
-        @encryption_algorithm = algo
-        @encryption_provider = case @encryption_algorithm
-        when :none   then nil
-        when :md5    then CryptoProviders::MD5
-        when :sha1   then CryptoProviders::SHA1
-        when :sha256 then CryptoProviders::SHA256
-        when :sha512 then CryptoProviders::SHA512
-        when :aes256 then CryptoProviders::AES256
-        when :bcrypt then CryptoProviders::BCrypt
-        when :custom then @custom_encryption_provider
-        end
-      end
 
-      def custom_encryption_provider=(provider)
-        @custom_encryption_provider = @encryption_provider = provider
-      end
-      
       def initialize
         @after_config_callbacks = []
         @before_authenticate_callbacks = []
@@ -164,6 +147,24 @@ module Sorcery
         @defaults.each do |k,v|
           instance_variable_set(k,v)
         end       
+      end
+      
+      def custom_encryption_provider=(provider)
+        @custom_encryption_provider = @encryption_provider = provider
+      end
+      
+      def encryption_algorithm=(algo)
+        @encryption_algorithm = algo
+        @encryption_provider = case @encryption_algorithm
+        when :none   then nil
+        when :md5    then CryptoProviders::MD5
+        when :sha1   then CryptoProviders::SHA1
+        when :sha256 then CryptoProviders::SHA256
+        when :sha512 then CryptoProviders::SHA512
+        when :aes256 then CryptoProviders::AES256
+        when :bcrypt then CryptoProviders::BCrypt
+        when :custom then @custom_encryption_provider
+        end
       end
       
       # Here submodules can add procs that will run after the user configuration params are set.

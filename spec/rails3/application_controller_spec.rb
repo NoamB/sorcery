@@ -65,6 +65,11 @@ describe ApplicationController do
       Sorcery::Controller::Config.cookies_attribute_name.should equal(:my_cookies)
     end
     
+    it "should enable configuration option 'not_logged_in_action'" do
+      plugin_set_controller_config_property(:not_logged_in_action, :my_action)
+      Sorcery::Controller::Config.not_logged_in_action.should equal(:my_action)
+    end
+    
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
@@ -89,26 +94,27 @@ describe ApplicationController do
       should respond_to(:logged_in_user)
     end
   
-    it "login(username,password) should return the user when success and set the session with user.id" do
-      get :test_login, :username => 'gizmo', :password => 'secret'
+    it "login(user) should return the user when success and set the session with user.id" do
+      get :test_login, :user => {:username => 'gizmo', :password => 'secret'}
       assigns[:user].should == @user
       session[:user_id].should == @user.id
     end
   
-    it "login(username,password) should return nil and not set the session when failure" do
-      get :test_login, :username => 'gizmo', :password => 'opensesame!'
+    it "login(user) should return nil and not set the session when failure" do
+      get :test_login, :user => {:username => 'gizmo', :password => 'opensesame!'}
       assigns[:user].should be_nil
       session[:user_id].should be_nil
     end
   
     it "logout should clear the session" do
-      session[:user_id] = 123
+      cookies[:remember_me_token] = nil
+      session[:user_id] = @user.id
       get :test_logout
       session[:user_id].should be_nil
     end
   
     it "logged_in? should return true if logged in" do
-      session[:user_id] = 123
+      session[:user_id] = @user.id
       subject.logged_in?.should be_true
     end
   
@@ -127,6 +133,17 @@ describe ApplicationController do
       session[:user_id] = nil
       subject.logged_in_user.should == false
     end
+    
+    it "should respond to 'authenticate'" do
+      should respond_to(:authenticate)
+    end
+    
+    it "should call the configured 'not_logged_in_action' when authenticate before_filter fails" do
+      session[:user_id] = nil
+      plugin_set_controller_config_property(:not_logged_in_action, :test_not_logged_in_action)
+      get :test_logout
+      response.body.should == "test_not_logged_in_action"
+    end
   end
   
   # ----------------- REMEMBER ME -----------------------
@@ -143,7 +160,7 @@ describe ApplicationController do
     end
     
     it "should set cookie on remember_me!" do
-      post :test_login_with_remember, :username => 'gizmo', :password => 'secret'
+      post :test_login_with_remember, :user => {:username => 'gizmo', :password => 'secret'}
       cookies["remember_me_token"].should == assigns[:logged_in_user].remember_me_token
     end
     

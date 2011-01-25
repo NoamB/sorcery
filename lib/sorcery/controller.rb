@@ -20,8 +20,15 @@ module Sorcery
     end
     
     module InstanceMethods
-      def login(username,password)
-        user = Config.user_class.authenticate(username,password)
+      def authenticate
+        if !logged_in?
+          self.send(Config.not_logged_in_action)
+        end
+      end
+      
+      def login(user)
+        config = user.sorcery_config
+        user = Config.user_class.authenticate(user.send(config.username_attribute_name), user.send(config.password_attribute_name))
         if user
           reset_session # protect from session fixation attacks
           session[:user_id] = user.id
@@ -36,7 +43,7 @@ module Sorcery
       end
       
       def logged_in?
-        session[:user_id]
+        !!logged_in_user
       end
       
       def logged_in_user
@@ -46,7 +53,7 @@ module Sorcery
       protected
       
       def login_from_session
-        @logged_in_user = (User.find_by_id(session[:user_id]) if session[:user_id]) || false
+        @logged_in_user = (Config.user_class.find_by_id(session[:user_id]) if session[:user_id]) || false
       end
       
       def login_from_cookie
@@ -77,12 +84,14 @@ module Sorcery
         attr_accessor :user_class,
                       :submodules,
                       :session_attribute_name,
-                      :cookies_attribute_name
+                      :cookies_attribute_name,
+                      :not_logged_in_action
         
         def reset!
           @user_class = User
           @session_attribute_name = :session
           @cookies_attribute_name = :cookies
+          @not_logged_in_action = :access_denied
         end
       
       end
