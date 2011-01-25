@@ -32,17 +32,17 @@ module Sorcery
           end
           
           # make sure a mailer is defined
-          post_validation_proc = Proc.new do |config|
+          validate_mailer_defined_proc = Proc.new do |config|
             msg = "To use user_activation submodule, you must define a mailer (config.sorcery_mailer = YourMailerClass)."
             raise ArgumentError, msg if config.sorcery_mailer == nil
           end
-          base.sorcery_config.add_post_config_validation(post_validation_proc)
+          base.sorcery_config.after_config(validate_mailer_defined_proc)
           
           # prevent or allow the login of non-active users
-          pre_authenticate_proc = Proc.new do |user, config|
+          prevent_non_active_login_proc = Proc.new do |user, config|
             config.prevent_non_active_users_to_login ? user.send(config.activation_state_attribute_name) == "active" : true
           end
-          base.sorcery_config.add_pre_authenticate_validation(pre_authenticate_proc)
+          base.sorcery_config.before_authenticate(prevent_non_active_login_proc)
           
           base.send(:include, InstanceMethods)
         end

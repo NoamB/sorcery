@@ -22,7 +22,13 @@ module Sorcery
             
             yield @sorcery_config if block_given?
 
-            @sorcery_config.post_config_validations.each { |pcv| pcv.call(@sorcery_config) }
+            after_config!
+          end
+          
+          protected
+          
+          def after_config!
+            @sorcery_config.after_config_callbacks.each { |acc| acc.call(@sorcery_config) }
           end
         end
       end
@@ -57,7 +63,7 @@ module Sorcery
       # returns the user if success, nil otherwise.
       def authenticate(username, password)
         user = where("#{@sorcery_config.username_attribute_name} = ?", username).first
-        user if user && @sorcery_config.pre_authenticate_validations.all? {|proc| proc.call(user, @sorcery_config)} && (user.send(@sorcery_config.password_attribute_name) == password)
+        user if user && @sorcery_config.before_authenticate_callbacks.all? {|proc| proc.call(user, @sorcery_config)} && (user.send(@sorcery_config.password_attribute_name) == password)
       end
     end
 
@@ -70,12 +76,12 @@ module Sorcery
                     :password_attribute_name,
                     :email_attribute_name
       
-      attr_reader   :post_config_validations,
-                    :pre_authenticate_validations
+      attr_reader   :after_config_callbacks,
+                    :before_authenticate_callbacks
       
       def initialize
-        @post_config_validations = []
-        @pre_authenticate_validations = []
+        @after_config_callbacks = []
+        @before_authenticate_callbacks = []
         @defaults = {
           :@username_attribute_name              => :username,
           :@password_attribute_name              => :password,
@@ -92,12 +98,12 @@ module Sorcery
       end
       
       # Here submodules can add procs that will run after the user configuration params are set.
-      def add_post_config_validation(proc)
-        @post_config_validations << proc
+      def after_config(proc)
+        @after_config_callbacks << proc
       end
       
-      def add_pre_authenticate_validation(proc)
-        @pre_authenticate_validations << proc
+      def before_authenticate(proc)
+        @before_authenticate_callbacks << proc
       end
     end
     

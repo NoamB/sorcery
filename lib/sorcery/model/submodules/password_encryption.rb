@@ -81,7 +81,7 @@ module Sorcery
             if user
               salt = user.send(@sorcery_config.salt_attribute_name) if !@sorcery_config.salt_attribute_name.nil?
             end
-            user if user && @sorcery_config.pre_authenticate_validations.all? {|proc| proc.call(user, @sorcery_config)} && (user.send(@sorcery_config.crypted_password_attribute_name)) == encrypt(password,salt)
+            user if user && @sorcery_config.before_authenticate_callbacks.all? {|proc| proc.call(user, @sorcery_config)} && (user.send(@sorcery_config.crypted_password_attribute_name)) == encrypt(password,salt)
           end
           
           def encrypt(*tokens)
