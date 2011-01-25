@@ -35,11 +35,6 @@ module Sorcery
             self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", nil)
             self.save!
           end
-
-          # TODO: duplicate
-          def generate_random_code
-            return Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
-          end
         end
       end
     end

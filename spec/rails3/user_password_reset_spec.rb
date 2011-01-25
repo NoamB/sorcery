@@ -1,38 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-reused_tests = <<-END
-  it "'reset_password!' should generate a reset_password_code" do
-    create_new_user
-    @user.reset_password_code.should be_nil
-    @user.reset_password!
-    @user.reset_password_code.should_not be_nil
-  end
-  
-  it "the reset_password_code should be random" do
-    create_new_user
-    @user.reset_password!
-    old_password_code = @user.reset_password_code
-    @user.reset_password!
-    @user.reset_password_code.should_not == old_password_code
-  end
-  
-  it "should send an email on reset" do
-    create_new_user
-    old_size = ActionMailer::Base.deliveries.size
-    @user.reset_password!
-    ActionMailer::Base.deliveries.size.should == old_size + 1
-  end
-  
-  it "when a new password is set, should delete reset_password_code" do
-    create_new_user
-    @user.reset_password!
-    @user.reset_password_code.should_not be_nil
-    @user.password = "blabulsdf"
-    @user.save!
-    @user.reset_password_code.should be_nil
-  end
-END
-
 describe "User with password_reset submodule" do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
@@ -72,34 +39,36 @@ describe "User with password_reset submodule" do
       User.delete_all
     end
 
-    eval(reused_tests)
-  end
-  
-end
-
-describe "User with password_reset AND password_encryption submodules" do
-  before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/encryption")
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/password_reset")
-  end
-  
-  after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/password_reset")
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/encryption")
-  end
-
-  # ----------------- PLUGIN ACTIVATED -----------------------
-  describe User, "when activated with sorcery" do
-  
-    before(:all) do
-      plugin_model_configure([:password_reset, :password_encryption], :sorcery_mailer => ::SorceryMailer)
-    end
-  
-    before(:each) do
-      User.delete_all
+    it "'reset_password!' should generate a reset_password_code" do
+      create_new_user
+      @user.reset_password_code.should be_nil
+      @user.reset_password!
+      @user.reset_password_code.should_not be_nil
     end
 
-    eval(reused_tests)
+    it "the reset_password_code should be random" do
+      create_new_user
+      @user.reset_password!
+      old_password_code = @user.reset_password_code
+      @user.reset_password!
+      @user.reset_password_code.should_not == old_password_code
+    end
+
+    it "should send an email on reset" do
+      create_new_user
+      old_size = ActionMailer::Base.deliveries.size
+      @user.reset_password!
+      ActionMailer::Base.deliveries.size.should == old_size + 1
+    end
+
+    it "when a new password is set, should delete reset_password_code" do
+      create_new_user
+      @user.reset_password!
+      @user.reset_password_code.should_not be_nil
+      @user.password = "blabulsdf"
+      @user.save!
+      @user.reset_password_code.should be_nil
+    end
   end
   
 end
