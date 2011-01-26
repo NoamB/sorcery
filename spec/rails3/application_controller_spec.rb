@@ -94,14 +94,14 @@ describe ApplicationController do
       should respond_to(:logged_in_user)
     end
   
-    it "login(user) should return the user when success and set the session with user.id" do
-      get :test_login, :user => {:username => 'gizmo', :password => 'secret'}
+    it "login(username,password) should return the user when success and set the session with user.id" do
+      get :test_login, :username => 'gizmo', :password => 'secret'
       assigns[:user].should == @user
       session[:user_id].should == @user.id
     end
   
-    it "login(user) should return nil and not set the session when failure" do
-      get :test_login, :user => {:username => 'gizmo', :password => 'opensesame!'}
+    it "login(username,password) should return nil and not set the session when failure" do
+      get :test_login, :username => 'gizmo', :password => 'opensesame!'
       assigns[:user].should be_nil
       session[:user_id].should be_nil
     end
@@ -160,7 +160,7 @@ describe ApplicationController do
     end
     
     it "should set cookie on remember_me!" do
-      post :test_login_with_remember, :user => {:username => 'gizmo', :password => 'secret'}
+      post :test_login_with_remember, :username => 'gizmo', :password => 'secret'
       cookies["remember_me_token"].should == assigns[:logged_in_user].remember_me_token
     end
     

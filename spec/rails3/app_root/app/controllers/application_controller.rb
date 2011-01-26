@@ -8,8 +8,7 @@ class ApplicationController < ActionController::Base
   end
   
   def test_login
-    @user = User.new(params[:user])
-    @user = login(@user)
+    @user = login(params[:username], params[:password])
     render :text => ""
   end
   
@@ -19,8 +18,7 @@ class ApplicationController < ActionController::Base
   end
   
   def test_login_with_remember
-    @user = User.new(params[:user])
-    @user = login(@user)
+    @user = login(params[:username], params[:password])
     remember_me!
     
     render :text => ""

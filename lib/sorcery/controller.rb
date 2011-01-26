@@ -26,12 +26,10 @@ module Sorcery
         end
       end
       
-      def login(user)
-        config = user.sorcery_config
-        user = Config.user_class.authenticate(user.send(config.username_attribute_name), user.send(config.password_attribute_name))
+      def login(username, password)
+        user = Config.user_class.authenticate(username, password)
         if user
-          reset_session # protect from session fixation attacks
-          session[:user_id] = user.id
+          login_user(user)
           user
         end
       end
@@ -51,6 +49,11 @@ module Sorcery
       end
       
       protected
+      
+      def login_user(user)
+        reset_session # protect from session fixation attacks
+        session[:user_id] = user.id
+      end
       
       def login_from_session
         @logged_in_user = (Config.user_class.find_by_id(session[:user_id]) if session[:user_id]) || false
