@@ -25,7 +25,7 @@ module Sorcery
             self.class_eval do
               attr_accessor @sorcery_config.password_attribute_name
               attr_protected @sorcery_config.crypted_password_attribute_name, @sorcery_config.salt_attribute_name
-              before_save :encrypt_password, :if => Proc.new {|record| record.new_record? || record.send(sorcery_config.password_attribute_name)}
+              before_save :encrypt_password, :if => Proc.new {|record| record.send(sorcery_config.password_attribute_name).present? }
               after_save :clear_virtual_password, :if => Proc.new {|record| record.valid? && record.send(sorcery_config.password_attribute_name)}
             end
             after_config!
@@ -50,11 +50,7 @@ module Sorcery
       
       def encrypt_password
         config = sorcery_config
-        salt = ""
-        if !config.salt_attribute_name.nil?
-          salt = Time.now.to_s
-          self.send(:"#{config.salt_attribute_name}=", salt)
-        end
+        self.send(:"#{config.salt_attribute_name}=", generate_random_code) if !config.salt_attribute_name.nil?
         self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name),salt))
       end
 

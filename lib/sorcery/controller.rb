@@ -23,10 +23,11 @@ module Sorcery
     end
     
     module InstanceMethods
+      # To be used as before_filter.
+      # Will trigger auto-login attempts via the call to logged_in?
+      # If all attempts to auto-login fail, the failure callback will be called.
       def authenticate
-        if !logged_in?
-          self.send(Config.not_logged_in_action)
-        end
+        self.send(Config.not_logged_in_action) if !logged_in?
       end
       
       def login(*credentials)
@@ -47,6 +48,8 @@ module Sorcery
         !!logged_in_user
       end
       
+      # attempts to auto-login from the sources defined (session, basic_auth, cookie, etc.)
+      # returns the logged in user if found, false if not (using old restful-authentication trick).
       def logged_in_user
         @logged_in_user ||= login_from_session || login_from_other_sources unless @logged_in_user == false # || login_from_basic_auth || )
       end
@@ -109,7 +112,7 @@ module Sorcery
           @user_class = User
           @session_attribute_name = :session
           @cookies_attribute_name = :cookies
-          @not_logged_in_action = :access_denied
+          @not_logged_in_action = :handle_unauthenticated
           @login_sources = []
         end
       

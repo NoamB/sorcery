@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
   
   protected
   
-  def access_denied
+  def handle_unauthenticated
     redirect_to root_path
   end
 end
