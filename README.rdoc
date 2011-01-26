@@ -1,16 +1,15 @@
 = sorcery
+Magical Authentication
 
 Inspired by restful_authentication, Authlogic and Devise (in that order).
 Crypto code taken almost unchanged from Authlogic.
 
 == Goals:
 
-* Simple interface, but don't kill simplicity with syntactic sugar.
-* Easy Configuration, customization and extending.
+* Simple & short configuration, not drowning in syntactic sugar.
 * Keep MVC cleanly separated - DB is for models, sessions are for controllers. Models stay unaware of sessions.
-* Magic, not voodoo.
-* No generated code polluting the developer's code.
-* No tons of configuration code needed to add to the User model or Controller
+* Magic yes, Voodoo no.
+* No generated code polluting the application's code.
 
 == Contributing to sorcery
  
