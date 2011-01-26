@@ -13,7 +13,10 @@ module Sorcery
         
         self.class_eval do
           include InstanceMethods
-          include RememberMeMethods if Config.submodules.include?(:remember_me)
+          if Config.submodules.include?(:remember_me)
+            include RememberMeMethods
+            Config.login_sources << :login_from_cookie
+          end
           helper_method :logged_in_user
         end
       end
@@ -26,8 +29,8 @@ module Sorcery
         end
       end
       
-      def login(username, password)
-        user = Config.user_class.authenticate(username, password)
+      def login(*credentials)
+        user = Config.user_class.authenticate(*credentials)
         if user
           login_user(user)
           user
@@ -45,7 +48,15 @@ module Sorcery
       end
       
       def logged_in_user
-        @logged_in_user ||= login_from_session || login_from_cookie unless @logged_in_user == false # || login_from_basic_auth || )
+        @logged_in_user ||= login_from_session || login_from_other_sources unless @logged_in_user == false # || login_from_basic_auth || )
+      end
+      
+      def login_from_other_sources
+        result = nil
+        Config.login_sources.find do |source|
+          result = send(source)
+        end
+        result || false
       end
       
       protected
@@ -59,15 +70,6 @@ module Sorcery
         @logged_in_user = (Config.user_class.find_by_id(session[:user_id]) if session[:user_id]) || false
       end
       
-      def login_from_cookie
-        user = send(:"#{Config.cookies_attribute_name}")[:remember_me_token] && Config.user_class.find_by_remember_me_token(send(:"#{Config.cookies_attribute_name}")[:remember_me_token])
-        if user && user.remember_me_token?
-          send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = { :value => user.remember_token, :expires => user.remember_token_expires_at }
-          @logged_in_user = user
-        else
-          @logged_in_user = false
-        end
-      end
     end
     
     module RememberMeMethods
@@ -80,6 +82,18 @@ module Sorcery
         logged_in_user.forget_me!
         send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = nil
       end
+      
+      protected
+      
+      def login_from_cookie
+        user = send(:"#{Config.cookies_attribute_name}")[:remember_me_token] && Config.user_class.find_by_remember_me_token(send(:"#{Config.cookies_attribute_name}")[:remember_me_token])
+        if user && user.remember_me_token?
+          send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = { :value => user.remember_token, :expires => user.remember_token_expires_at }
+          @logged_in_user = user
+        else
+          @logged_in_user = false
+        end
+      end
     end
     
     module Config
@@ -88,13 +102,15 @@ module Sorcery
                       :submodules,
                       :session_attribute_name,
                       :cookies_attribute_name,
-                      :not_logged_in_action
+                      :not_logged_in_action,
+                      :login_sources
         
         def reset!
           @user_class = User
           @session_attribute_name = :session
           @cookies_attribute_name = :cookies
           @not_logged_in_action = :access_denied
+          @login_sources = []
         end
       
       end

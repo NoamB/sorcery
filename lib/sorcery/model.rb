@@ -86,12 +86,13 @@ module Sorcery
       # Takes a username and password,
       # Finds the user by the username and compares the user's password to the one supplied to the method.
       # returns the user if success, nil otherwise.
-      def authenticate(username, password)
-        user = where("#{@sorcery_config.username_attribute_name} = ?", username).first
+      def authenticate(*credentials)
+        raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
+        user = where("#{@sorcery_config.username_attribute_name} = ?", credentials[0]).first
         if user
           salt = user.send(@sorcery_config.salt_attribute_name) if !@sorcery_config.salt_attribute_name.nil?
         end
-        user if user && @sorcery_config.before_authenticate_callbacks.all? {|proc| proc.call(user, @sorcery_config)} && (user.send(@sorcery_config.crypted_password_attribute_name)) == encrypt(password,salt)
+        user if user && @sorcery_config.before_authenticate_callbacks.all? {|proc| proc.call(user, @sorcery_config)} && (user.send(@sorcery_config.crypted_password_attribute_name)) == encrypt(credentials[1],salt)
       end
       
       def encrypt(*tokens)
