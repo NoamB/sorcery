@@ -76,9 +76,12 @@ describe "User with activation submodule" do
     
     it "should clear activation code and change state to 'active' on activation" do
       create_new_user
+      activation_code = @user.activation_code
       @user.activate!
-      @user.activation_code.should be_nil
-      @user.activation_state.should == "active"
+      @user2 = User.find(@user.id) # go to db to make sure it was saved and not just in memory
+      @user2.activation_code.should be_nil
+      @user2.activation_state.should == "active"
+      User.find_by_activation_code(activation_code).should be_nil
     end
     
     it "should send the user an activation email" do
