@@ -24,6 +24,16 @@ describe "User with no submodules (core)" do
     end
   end
 
+  # ----------------- PLUGIN ACTIVATION -----------------------
+  describe TestUser, "Testing activated class self-registration" do
+    it "should register itself as user_class if activated" do
+      TestUser.class_eval do
+        activate_sorcery!
+      end
+      ::Sorcery::Controller::Config.user_class.should == TestUser
+    end
+  end
+  
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe User, "loaded plugin configuration" do
     after(:each) do

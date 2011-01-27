@@ -13,6 +13,7 @@ module Sorcery
     initializer "extend Controller with sorcery" do |app|
       ActionController::Base.send(:include, Sorcery::Controller)
       ActionController::Base.activate_sorcery!
+      ActionController::Base.helper_method :logged_in_user
     end
   end
 end

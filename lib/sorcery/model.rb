@@ -14,6 +14,7 @@ module Sorcery
             self.class_eval do
               extend ClassMethods # included here, before submodules, so they can be overriden by them.
               include InstanceMethods
+              ::Sorcery::Controller::Config.user_class = self
               @sorcery_config.submodules = ::Sorcery::Controller::Config.submodules || []
               @sorcery_config.submodules.each do |mod|
                 include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
@@ -25,8 +26,8 @@ module Sorcery
             self.class_eval do
               attr_accessor @sorcery_config.password_attribute_name
               attr_protected @sorcery_config.crypted_password_attribute_name, @sorcery_config.salt_attribute_name
-              before_save :encrypt_password, :if => Proc.new {|record| record.send(sorcery_config.password_attribute_name).present? }
-              after_save :clear_virtual_password, :if => Proc.new {|record| record.valid? && record.send(sorcery_config.password_attribute_name)}
+              before_save :encrypt_password, :if => Proc.new { |record| record.send(sorcery_config.password_attribute_name).present? }
+              after_save :clear_virtual_password, :if => Proc.new { |record| record.valid? && record.send(sorcery_config.password_attribute_name).present? }
             end
             after_config!
           end
@@ -48,6 +49,8 @@ module Sorcery
       
       protected
       
+      # creates new salt and saves it.
+      # encrypts password with salt and save it.
       def encrypt_password
         config = sorcery_config
         self.send(:"#{config.salt_attribute_name}=", generate_random_code) if !config.salt_attribute_name.nil?
@@ -59,6 +62,8 @@ module Sorcery
         self.send(:"#{config.password_attribute_name}=", nil)
       end
       
+      # calls the requested email method on the configured mailer
+      # supports both the ActionMailer 3 way of calling, and the plain old Ruby object way.
       def generic_send_email(method)
         config = sorcery_config
         mail = config.sorcery_mailer.send(config.send(method),self)
@@ -67,6 +72,7 @@ module Sorcery
         end
       end
       
+      # Random code, used for salt and temporary tokens.
       def generate_random_code
         return Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
       end
@@ -85,9 +91,7 @@ module Sorcery
       def authenticate(*credentials)
         raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
         user = where("#{@sorcery_config.username_attribute_name} = ?", credentials[0]).first
-        if user
-          salt = user.send(@sorcery_config.salt_attribute_name) if !@sorcery_config.salt_attribute_name.nil?
-        end
+        salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil?
         user if user && @sorcery_config.before_authenticate_callbacks.all? {|proc| proc.call(user, @sorcery_config)} && (user.send(@sorcery_config.crypted_password_attribute_name)) == encrypt(credentials[1],salt)
       end
       
@@ -169,6 +173,7 @@ module Sorcery
         @after_config_callbacks << proc
       end
       
+      # This is used to prevent non-active users to login, for example.
       def before_authenticate(proc)
         @before_authenticate_callbacks << proc
       end

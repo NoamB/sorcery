@@ -17,7 +17,6 @@ module Sorcery
             include RememberMeMethods
             Config.login_sources << :login_from_cookie
           end
-          helper_method :logged_in_user
         end
       end
     end
