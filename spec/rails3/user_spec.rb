@@ -136,9 +136,13 @@ describe "User with no submodules (core)" do
       User.delete_all
     end
   
+    it "by default, encryption_provider should not be nil" do
+      User.sorcery_config.encryption_provider.should_not be_nil
+    end
+    
     it "should encrypt password when a new user is saved" do
       create_new_user
-      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('secret')
+      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('secret',@user.salt)
     end
 
     it "should clear the virtual password field if the encryption process worked" do
@@ -172,14 +176,14 @@ describe "User with no submodules (core)" do
       create_new_user
       @user.email = "blup@bla.com"
       @user.save!
-      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('secret')
+      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('secret',@user.salt)
     end
 
     it "should replace the crypted_password in case a new password is set" do
       create_new_user
       @user.password = 'new_secret'
       @user.save!
-      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('new_secret')
+      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('new_secret',@user.salt)
     end
 
   end
