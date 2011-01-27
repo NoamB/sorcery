@@ -24,13 +24,13 @@ class ApplicationController < ActionController::Base
     render :text => ""
   end
   
-  def test_not_logged_in_action
-    render :text => "test_not_logged_in_action"
+  def test_not_authenticated_action
+    render :text => "test_not_authenticated_action"
   end
   
   protected
   
-  def handle_unauthenticated
+  def not_authenticated
     redirect_to root_path
   end
 end

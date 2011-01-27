@@ -8,26 +8,6 @@ describe ApplicationController do
   after(:all) do
     ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
   end
-  
-  # ----------------- PLUGIN LOADED -----------------------
-  describe ApplicationController, "when app has plugin loaded" do
-    it "should respond to the plugin activation class method" do
-      ActionController::Base.should respond_to(:activate_sorcery!)
-      ApplicationController.should respond_to(:activate_sorcery!)
-    end
-    
-    it "plugin activation should yield config to block" do
-      ApplicationController.activate_sorcery! do |config|
-        config.should == ::Sorcery::Controller::Config 
-      end
-    end
-    
-    it "config.should respond to 'submodules='" do
-      ApplicationController.activate_sorcery! do |config|
-        config.should respond_to(:submodules=)
-      end
-    end
-  end
  
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe ApplicationController, "plugin configuration" do
@@ -38,16 +18,6 @@ describe ApplicationController do
     after(:each) do
       Sorcery::Controller::Config.reset!
       plugin_model_configure
-    end
-  
-    it "submodule configuration should effect model" do
-      ApplicationController.activate_sorcery! do |config|
-        config.submodules = [:test_submodule] 
-      end
-      User.class_eval do
-        activate_sorcery!
-      end
-      User.new.should respond_to(:my_instance_method)
     end
     
     it "should enable configuration option 'user_class'" do
@@ -65,9 +35,9 @@ describe ApplicationController do
       Sorcery::Controller::Config.cookies_attribute_name.should equal(:my_cookies)
     end
     
-    it "should enable configuration option 'not_logged_in_action'" do
-      plugin_set_controller_config_property(:not_logged_in_action, :my_action)
-      Sorcery::Controller::Config.not_logged_in_action.should equal(:my_action)
+    it "should enable configuration option 'not_authenticated_action'" do
+      plugin_set_controller_config_property(:not_authenticated_action, :my_action)
+      Sorcery::Controller::Config.not_authenticated_action.should equal(:my_action)
     end
     
   end
@@ -138,11 +108,11 @@ describe ApplicationController do
       should respond_to(:authenticate)
     end
     
-    it "should call the configured 'not_logged_in_action' when authenticate before_filter fails" do
+    it "should call the configured 'not_authenticated_action' when authenticate before_filter fails" do
       session[:user_id] = nil
-      plugin_set_controller_config_property(:not_logged_in_action, :test_not_logged_in_action)
+      plugin_set_controller_config_property(:not_authenticated_action, :test_not_authenticated_action)
       get :test_logout
-      response.body.should == "test_not_logged_in_action"
+      response.body.should == "test_not_authenticated_action"
     end
   end
   
@@ -150,7 +120,6 @@ describe ApplicationController do
   describe ApplicationController, "with remember me features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
-      plugin_controller_configure([:remember_me])
       plugin_model_configure([:remember_me])
       create_new_user
     end

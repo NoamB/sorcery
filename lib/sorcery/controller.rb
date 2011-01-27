@@ -2,21 +2,10 @@ module Sorcery
   module Controller
     def self.included(klass)
       klass.class_eval do
-        extend ClassMethods
-      end
-    end
-    
-    module ClassMethods
-      def activate_sorcery!(*submodules)
-        Config.submodules = submodules
-        yield Config if block_given?
-        
-        self.class_eval do
-          include InstanceMethods
-          if Config.submodules.include?(:remember_me)
-            include RememberMeMethods
-            Config.login_sources << :login_from_cookie
-          end
+        include InstanceMethods
+        if Config.submodules.include?(:remember_me)
+          include RememberMeMethods
+          Config.login_sources << :login_from_cookie
         end
       end
     end
@@ -26,7 +15,7 @@ module Sorcery
       # Will trigger auto-login attempts via the call to logged_in?
       # If all attempts to auto-login fail, the failure callback will be called.
       def authenticate
-        self.send(Config.not_logged_in_action) if !logged_in?
+        self.send(Config.not_authenticated_action) if !logged_in?
       end
       
       def login(*credentials)
@@ -104,14 +93,15 @@ module Sorcery
                       :submodules,
                       :session_attribute_name,
                       :cookies_attribute_name,
-                      :not_logged_in_action,
+                      :not_authenticated_action,
                       :login_sources
         
         def reset!
-          @user_class = User
+          @user_class = nil
+          @submodules = []
           @session_attribute_name = :session
           @cookies_attribute_name = :cookies
-          @not_logged_in_action = :handle_unauthenticated
+          @not_authenticated_action = :not_authenticated
           @login_sources = []
         end
       

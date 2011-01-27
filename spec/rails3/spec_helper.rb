@@ -60,11 +60,11 @@ def create_new_user
 end
 
 def plugin_model_configure(submodules = [], options = {})
-  ::Sorcery::Controller::Config.submodules = submodules
-
   reload_user_class
   
   ::Sorcery::Controller::Config.user_class = User
+  ::Sorcery::Controller::Config.submodules = submodules
+  ApplicationController.send(:include,::Sorcery::Controller)
   
   User.activate_sorcery! do |config|
     options.each do |property,value|
@@ -82,16 +82,6 @@ end
 def plugin_set_controller_config_property(property, value)
   ApplicationController.class_eval do
     ::Sorcery::Controller::Config.send(:"#{property}=", value)
-  end
-end
-
-def plugin_controller_configure(submodules = [], options = {})
-  ApplicationController.class_eval do
-    activate_sorcery!(*submodules) do |config|
-      options.each do |property,value|
-        config.send(:"#{property}=", value)
-      end
-    end
   end
 end
 

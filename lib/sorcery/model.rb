@@ -15,7 +15,7 @@ module Sorcery
               extend ClassMethods # included here, before submodules, so they can be overriden by them.
               include InstanceMethods
               ::Sorcery::Controller::Config.user_class = self
-              @sorcery_config.submodules = ::Sorcery::Controller::Config.submodules || []
+              @sorcery_config.submodules = ::Sorcery::Controller::Config.submodules
               @sorcery_config.submodules.each do |mod|
                 include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
               end
@@ -129,6 +129,7 @@ module Sorcery
         @after_config_callbacks = []
         @before_authenticate_callbacks = []
         @defaults = {
+          :@submodules                           => [],
           :@username_attribute_name              => :username,
           :@password_attribute_name              => :password,
           :@email_attribute_name                 => :email,

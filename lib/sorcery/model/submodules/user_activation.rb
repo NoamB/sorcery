@@ -17,12 +17,12 @@ module Sorcery
           end
           
           base.sorcery_config.instance_eval do
-            @defaults.merge!(:@activation_state_attribute_name => :activation_state,
-                             :@activation_code_attribute_name  => :activation_code,
-                             :@sorcery_mailer              => nil,
+            @defaults.merge!(:@activation_state_attribute_name      => :activation_state,
+                             :@activation_code_attribute_name       => :activation_code,
+                             :@sorcery_mailer                       => nil,
                              :@activation_needed_email_method_name  => :activation_needed_email,
                              :@activation_success_email_method_name => :activation_success_email,
-                             :@prevent_non_active_users_to_login => true)
+                             :@prevent_non_active_users_to_login    => true)
             reset!
           end
           
