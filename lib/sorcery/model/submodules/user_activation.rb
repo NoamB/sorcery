@@ -66,11 +66,11 @@ module Sorcery
           end
 
           def send_activation_needed_email!
-            generic_send_email(:activation_needed_email_method_name)
+            generic_send_email(:activation_needed_email_method_name) unless sorcery_config.activation_needed_email_method_name.nil?
           end
 
           def send_activation_success_email!
-            generic_send_email(:activation_success_email_method_name)
+            generic_send_email(:activation_success_email_method_name) unless sorcery_config.activation_success_email_method_name.nil?
           end
         end
       end

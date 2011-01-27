@@ -113,6 +113,21 @@ describe "User with activation submodule" do
       @user.save!
       ActionMailer::Base.deliveries.size.should == old_size
     end
+    
+    it "activation needed email is optional" do
+      plugin_set_model_config_property(:activation_needed_email_method_name, nil)
+      old_size = ActionMailer::Base.deliveries.size
+      create_new_user
+      ActionMailer::Base.deliveries.size.should == old_size
+    end
+    
+    it "activation success email is optional" do
+      plugin_set_model_config_property(:activation_success_email_method_name, nil)
+      create_new_user
+      old_size = ActionMailer::Base.deliveries.size
+      @user.activate!
+      ActionMailer::Base.deliveries.size.should == old_size
+    end
   end
 
   describe User, "prevent non-active login feature" do
