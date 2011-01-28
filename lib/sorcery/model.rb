@@ -27,17 +27,38 @@ module Sorcery
               attr_accessor @sorcery_config.password_attribute_name
               attr_protected @sorcery_config.crypted_password_attribute_name, @sorcery_config.salt_attribute_name
               before_save :encrypt_password, :if => Proc.new { |record| record.send(sorcery_config.password_attribute_name).present? }
-              after_save :clear_virtual_password, :if => Proc.new { |record| record.valid? && record.send(sorcery_config.password_attribute_name).present? }
+              after_save :clear_virtual_password, :if => Proc.new { |record| record.send(sorcery_config.password_attribute_name).present? }
             end
-            after_config!
-          end
-          
-          protected
-          
-          def after_config!
             @sorcery_config.after_config.each { |c| send(c) }
           end
         end
+      end
+    end
+    
+    module ClassMethods
+      # Returns the class instance variable for configuration, when called by the class itself.
+      def sorcery_config
+        @sorcery_config
+      end
+      
+      # The default authentication method.
+      # Takes a username and password,
+      # Finds the user by the username and compares the user's password to the one supplied to the method.
+      # returns the user if success, nil otherwise.
+      def authenticate(*credentials)
+        raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
+        user = where("#{@sorcery_config.username_attribute_name} = ?", credentials[0]).first
+        salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil?
+        user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && (user.send(@sorcery_config.crypted_password_attribute_name)) == encrypt(credentials[1],salt)
+      end
+      
+      def encrypt(*tokens)
+        return tokens.first if @sorcery_config.encryption_provider.nil?
+        
+        @sorcery_config.encryption_provider.stretches = @sorcery_config.stretches if @sorcery_config.encryption_provider.respond_to?(:stretches) && @sorcery_config.stretches
+        @sorcery_config.encryption_provider.join_token = @sorcery_config.salt_join_token if @sorcery_config.encryption_provider.respond_to?(:join_token) && @sorcery_config.salt_join_token
+        CryptoProviders::AES256.key = @sorcery_config.encryption_key if @sorcery_config.encryption_algorithm == :aes256
+        @sorcery_config.encryption_provider.encrypt(*tokens)
       end
     end
     
@@ -77,37 +98,9 @@ module Sorcery
         return Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
       end
     end
-    
-    module ClassMethods
-      # Returns the class instance variable for configuration, when called by the class itself.
-      def sorcery_config
-        @sorcery_config
-      end
-      
-      # The default authentication method.
-      # Takes a username and password,
-      # Finds the user by the username and compares the user's password to the one supplied to the method.
-      # returns the user if success, nil otherwise.
-      def authenticate(*credentials)
-        raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
-        user = where("#{@sorcery_config.username_attribute_name} = ?", credentials[0]).first
-        salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil?
-        user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && (user.send(@sorcery_config.crypted_password_attribute_name)) == encrypt(credentials[1],salt)
-      end
-      
-      def encrypt(*tokens)
-        return tokens.first if @sorcery_config.encryption_provider.nil?
-        
-        @sorcery_config.encryption_provider.stretches = @sorcery_config.stretches if @sorcery_config.encryption_provider.respond_to?(:stretches) && @sorcery_config.stretches
-        @sorcery_config.encryption_provider.join_token = @sorcery_config.salt_join_token if @sorcery_config.encryption_provider.respond_to?(:join_token) && @sorcery_config.salt_join_token
-        CryptoProviders::AES256.key = @sorcery_config.encryption_key if @sorcery_config.encryption_algorithm == :aes256
-        @sorcery_config.encryption_provider.encrypt(*tokens)
-      end
-    end
 
     # Each class which calls 'activate_sorcery!' receives an instance of this class.
-    # This enables two different classes to use this plugin with different configurations.
-    # Every submodule which gets loaded may add accessors to this class so that all options will be configure from a single place.
+    # Every submodule which gets loaded may add accessors to this class so that all options will be configured from a single place.
     class Config
       attr_accessor :submodules,
                     :username_attribute_name, 
