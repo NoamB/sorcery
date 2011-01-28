@@ -35,7 +35,7 @@ module Sorcery
             config = sorcery_config
             self.send(:"#{config.reset_password_code_attribute_name}=", generate_random_code)
             self.class.transaction do
-              self.save!
+              self.save!(:validate => false)
               generic_send_email(:reset_password_email_method_name)
             end
           end

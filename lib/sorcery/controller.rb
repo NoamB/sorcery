@@ -6,15 +6,8 @@ module Sorcery
         if Config.submodules.include?(:remember_me)
           include RememberMeMethods
           Config.login_sources << :login_from_cookie
-          remember_me_proc = Proc.new do |user,controller|
-            controller.remember_me!
-          end
-          Config.after_login(remember_me_proc)
-          
-          forget_me_proc = Proc.new do |user,controller|
-            controller.forget_me!
-          end
-          Config.after_logout(forget_me_proc)
+          Config.after_login << :remember_me!
+          Config.after_logout << :forget_me!
         end
       end
     end
@@ -73,11 +66,11 @@ module Sorcery
       end
       
       def after_login!
-        Config.after_login_callbacks.each {|c| c.call(logged_in_user,self)}
+        Config.after_login.each {|c| self.send(c)}
       end
       
       def after_logout!
-        Config.after_logout_callbacks.each {|c| c.call(logged_in_user,self)}
+        Config.after_logout.each {|c| self.send(c)}
       end
     end
     
@@ -112,10 +105,9 @@ module Sorcery
                       :session_attribute_name,
                       :cookies_attribute_name,
                       :not_authenticated_action,
-                      :login_sources
-        
-        attr_reader   :after_login_callbacks,
-                      :after_logout_callbacks
+                      :login_sources,
+                      :after_login,
+                      :after_logout
         
         def reset!
           @user_class = nil
@@ -124,17 +116,10 @@ module Sorcery
           @cookies_attribute_name = :cookies
           @not_authenticated_action = :not_authenticated
           @login_sources = []
-          @after_login_callbacks = []
-          @after_logout_callbacks = []
+          @after_login = []
+          @after_logout = []
         end
         
-        def after_login(proc)
-          @after_login_callbacks << proc
-        end
-        
-        def after_logout(proc)
-          @after_logout_callbacks << proc
-        end
       end
       reset!
     end
