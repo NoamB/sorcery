@@ -6,6 +6,15 @@ module Sorcery
         if Config.submodules.include?(:remember_me)
           include RememberMeMethods
           Config.login_sources << :login_from_cookie
+          remember_me_proc = Proc.new do |user,controller|
+            controller.remember_me!
+          end
+          Config.after_login(remember_me_proc)
+          
+          forget_me_proc = Proc.new do |user,controller|
+            controller.forget_me!
+          end
+          Config.after_logout(forget_me_proc)
         end
       end
     end
@@ -22,13 +31,15 @@ module Sorcery
         user = Config.user_class.authenticate(*credentials)
         if user
           login_user(user)
-          user
+          after_login!
+          logged_in_user
         end
       end
       
       def logout
         if logged_in?
           reset_session
+          after_logout!
         end
       end
       
@@ -61,6 +72,13 @@ module Sorcery
         @logged_in_user = (Config.user_class.find_by_id(session[:user_id]) if session[:user_id]) || false
       end
       
+      def after_login!
+        Config.after_login_callbacks.each {|c| c.call(logged_in_user,self)}
+      end
+      
+      def after_logout!
+        Config.after_logout_callbacks.each {|c| c.call(logged_in_user,self)}
+      end
     end
     
     module RememberMeMethods
@@ -79,7 +97,7 @@ module Sorcery
       def login_from_cookie
         user = send(:"#{Config.cookies_attribute_name}")[:remember_me_token] && Config.user_class.find_by_remember_me_token(send(:"#{Config.cookies_attribute_name}")[:remember_me_token])
         if user && user.remember_me_token?
-          send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = { :value => user.remember_token, :expires => user.remember_token_expires_at }
+          send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = { :value => user.remember_me_token, :expires => user.remember_me_token_expires_at }
           @logged_in_user = user
         else
           @logged_in_user = false
@@ -96,6 +114,9 @@ module Sorcery
                       :not_authenticated_action,
                       :login_sources
         
+        attr_reader   :after_login_callbacks,
+                      :after_logout_callbacks
+        
         def reset!
           @user_class = nil
           @submodules = []
@@ -103,8 +124,17 @@ module Sorcery
           @cookies_attribute_name = :cookies
           @not_authenticated_action = :not_authenticated
           @login_sources = []
+          @after_login_callbacks = []
+          @after_logout_callbacks = []
         end
-      
+        
+        def after_login(proc)
+          @after_login_callbacks << proc
+        end
+        
+        def after_logout(proc)
+          @after_logout_callbacks << proc
+        end
       end
       reset!
     end

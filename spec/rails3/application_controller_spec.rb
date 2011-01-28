@@ -114,6 +114,7 @@ describe ApplicationController do
       get :test_logout
       response.body.should == "test_not_authenticated_action"
     end
+    
   end
   
   # ----------------- REMEMBER ME -----------------------
@@ -134,9 +135,32 @@ describe ApplicationController do
     end
     
     it "should clear cookie on forget_me!" do
-      cookies["remember_me_token"] == 'asd54234dsfsd43534'
+      cookies["remember_me_token"] == {:value => 'asd54234dsfsd43534', :expires => 3600}
       get :test_logout
       cookies["remember_me_token"].should == nil
+    end
+    
+    it "login(username,password,remember_me) should login and remember" do
+      post :test_login_with_remember_in_login, :username => 'gizmo', :password => 'secret', :remember => "1"
+      cookies["remember_me_token"].should_not be_nil
+      cookies["remember_me_token"].should == assigns[:user].remember_me_token
+    end
+    
+    it "logout should also forget_me!" do
+      session[:user_id] = @user.id
+      get :test_logout_with_remember
+      cookies["remember_me_token"].should == nil
+    end
+    
+    it "should login_from_cookie" do
+      session[:user_id] = @user.id
+      subject.remember_me!
+      subject.instance_eval do
+        @logged_in_user = nil
+      end
+      session[:user_id] = nil
+      get :test_login_from_cookie
+      assigns[:logged_in_user].should == @user
     end
   end
 end

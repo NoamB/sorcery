@@ -1,15 +1,50 @@
 = sorcery
 Magical Authentication
 
-Inspired by restful_authentication, Authlogic and Devise (in that order).
+Inspired by restful_authentication, Authlogic and Devise.
 Crypto code taken almost unchanged from Authlogic.
 
 == Goals:
 
+This gem plugin was started out of a few personal goals which are not related to the problem solved by it at all:
+* I wanted to write something 100% TDD from start to finish.
+* I wanted to learn how to write an engine for Rails 3.
+
+In addition to the above goals, when I decided this will be an authentication plugin, and while looking at existing solutions, these goals came up:
 * Simple & short configuration, not drowning in syntactic sugar.
 * Keep MVC cleanly separated - DB is for models, sessions are for controllers. Models stay unaware of sessions.
 * Magic yes, Voodoo no.
 * No generated code polluting the application's code.
+* No built-in controllers, models, mailers, migrations or templates; Real apps will need all of these custom made.
+* Nice to have: support for more ORMs and web frameworks (Sinatra, Mongoid).
+
+== Installation:
+
+gem install sorcery
+
+== Configuration:
+
+There are 2 places to configure the plugin:
+1. config/application.rb
+
+config.sorcery.submodules = [:user_activation, :remember_me] # add the modules you want to use
+
+2. app/models/user.rb (or another model of your choice)
+
+activate_sorcery! do |config|
+  config.sorcery_mailer = MyMailer
+  config.username_attribute_name = :email
+end
+
+The configuration options vary with the modules you've chosen to use.
+
+== Basic Configuration:
+
+== User Activation Configuration:
+
+== Remember Me Configuration:
+
+== Password Reset Configuration:
 
 == Contributing to sorcery
  

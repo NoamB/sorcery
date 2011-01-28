@@ -26,14 +26,14 @@ module Sorcery
             config = sorcery_config
             self.send(:"#{config.remember_me_token_attribute_name}=", generate_random_code)
             self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", Time.now + config.remember_me_for)
-            self.save!
+            self.save!(:validate => false)
           end
 
           def forget_me!
             config = sorcery_config
             self.send(:"#{config.remember_me_token_attribute_name}=", nil)
             self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", nil)
-            self.save!
+            self.save!(:validate => false)
           end
         end
       end
