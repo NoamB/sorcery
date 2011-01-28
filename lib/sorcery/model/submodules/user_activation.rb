@@ -31,20 +31,19 @@ module Sorcery
             after_create :send_activation_needed_email!
           end
           
-          # make sure a mailer is defined
-          validate_mailer_defined_proc = Proc.new do |config|
-            msg = "To use user_activation submodule, you must define a mailer (config.sorcery_mailer = YourMailerClass)."
-            raise ArgumentError, msg if config.sorcery_mailer == nil
-          end
-          base.sorcery_config.after_config(validate_mailer_defined_proc)
+          base.sorcery_config.after_config << :validate_mailer_defined
           
-          # prevent or allow the login of non-active users
-          prevent_non_active_login_proc = Proc.new do |user, config|
-            config.prevent_non_active_users_to_login ? user.send(config.activation_state_attribute_name) == "active" : true
-          end
-          base.sorcery_config.before_authenticate(prevent_non_active_login_proc)
+          base.sorcery_config.before_authenticate << :prevent_non_active_login
           
+          base.extend(ClassMethods)
           base.send(:include, InstanceMethods)
+        end
+        
+        module ClassMethods
+          def validate_mailer_defined
+            msg = "To use user_activation submodule, you must define a mailer (config.sorcery_mailer = YourMailerClass)."
+            raise ArgumentError, msg if @sorcery_config.sorcery_mailer == nil
+          end
         end
         
         module InstanceMethods
@@ -72,6 +71,12 @@ module Sorcery
           def send_activation_success_email!
             generic_send_email(:activation_success_email_method_name) unless sorcery_config.activation_success_email_method_name.nil?
           end
+          
+          def prevent_non_active_login
+            config = sorcery_config
+            config.prevent_non_active_users_to_login ? self.send(config.activation_state_attribute_name) == "active" : true
+          end
+
         end
       end
     end

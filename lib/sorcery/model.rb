@@ -35,7 +35,7 @@ module Sorcery
           protected
           
           def after_config!
-            @sorcery_config.after_config_callbacks.each { |acc| acc.call(@sorcery_config) }
+            @sorcery_config.after_config.each { |c| send(c) }
           end
         end
       end
@@ -92,7 +92,7 @@ module Sorcery
         raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
         user = where("#{@sorcery_config.username_attribute_name} = ?", credentials[0]).first
         salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil?
-        user if user && @sorcery_config.before_authenticate_callbacks.all? {|proc| proc.call(user, @sorcery_config)} && (user.send(@sorcery_config.crypted_password_attribute_name)) == encrypt(credentials[1],salt)
+        user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && (user.send(@sorcery_config.crypted_password_attribute_name)) == encrypt(credentials[1],salt)
       end
       
       def encrypt(*tokens)
@@ -117,17 +117,15 @@ module Sorcery
                     :salt_join_token,
                     :salt_attribute_name,
                     :stretches,
-                    :encryption_key
+                    :encryption_key,
+                    :before_authenticate,
+                    :after_config
                     
-      attr_reader   :after_config_callbacks,
-                    :before_authenticate_callbacks,
-                    :encryption_provider,
+      attr_reader   :encryption_provider,
                     :custom_encryption_provider,
                     :encryption_algorithm                            
 
       def initialize
-        @after_config_callbacks = []
-        @before_authenticate_callbacks = []
         @defaults = {
           :@submodules                           => [],
           :@username_attribute_name              => :username,
@@ -140,7 +138,9 @@ module Sorcery
           :@encryption_key                       => nil,
           :@salt_join_token                      => "",
           :@salt_attribute_name                  => :salt,
-          :@stretches                            => nil
+          :@stretches                            => nil,
+          :@before_authenticate                  => [],
+          :@after_config                         => []
         }
         reset!
       end     
@@ -170,15 +170,6 @@ module Sorcery
         end
       end
       
-      # Here submodules can add procs that will run after the user configuration params are set.
-      def after_config(proc)
-        @after_config_callbacks << proc
-      end
-      
-      # This is used to prevent non-active users to login, for example.
-      def before_authenticate(proc)
-        @before_authenticate_callbacks << proc
-      end
     end
     
   end
