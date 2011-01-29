@@ -17,7 +17,11 @@ module Sorcery
               ::Sorcery::Controller::Config.user_class = self
               @sorcery_config.submodules = ::Sorcery::Controller::Config.submodules
               @sorcery_config.submodules.each do |mod|
-                include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
+                begin
+                  include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join("")) 
+                rescue NameError
+                  # don't stop on a missing submodule.
+                end
               end
             end
             

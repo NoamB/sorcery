@@ -48,6 +48,11 @@ describe ApplicationController do
       create_new_user
     end
   
+    after(:each) do
+      Sorcery::Controller::Config.reset!
+      plugin_set_controller_config_property(:user_class, User)
+    end
+    
     it "should respond to the instance method login" do
       should respond_to(:login)
     end
@@ -161,6 +166,30 @@ describe ApplicationController do
       session[:user_id] = nil
       get :test_login_from_cookie
       assigns[:logged_in_user].should == @user
+    end
+  end
+  
+  # ----------------- SESSION TIMEOUT -----------------------
+  describe ApplicationController, "with session timeout features" do
+    before(:all) do
+      plugin_model_configure([:session_timeout])
+      plugin_set_controller_config_property(:session_timeout,0.5)
+      create_new_user
+    end
+    
+    it "should not reset session before session timeout" do
+      subject.send(:login_user,@user)
+      get :test_should_be_logged_in
+      session[:user_id].should_not be_nil
+      response.should be_a_success
+    end
+    
+    it "should reset session after session timeout" do
+      subject.send(:login_user,@user)
+      sleep 0.6
+      get :test_should_be_logged_in
+      session[:user_id].should be_nil
+      response.should be_a_redirect
     end
   end
 end

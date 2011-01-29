@@ -3,12 +3,14 @@ module Sorcery
     def self.included(klass)
       klass.class_eval do
         include InstanceMethods
-        if Config.submodules.include?(:remember_me)
-          include RememberMeMethods
-          Config.login_sources << :login_from_cookie
-          Config.after_login << :remember_me!
-          Config.after_logout << :forget_me!
+        Config.submodules.each do |mod|
+          begin
+            include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join("")) 
+          rescue NameError
+            # don't stop on a missing submodule.
+          end
         end
+
       end
     end
     
@@ -23,6 +25,7 @@ module Sorcery
       def login(*credentials)
         user = Config.user_class.authenticate(*credentials)
         if user
+          reset_session # protect from session fixation attacks
           login_user(user)
           after_login!
           logged_in_user
@@ -57,8 +60,8 @@ module Sorcery
       protected
       
       def login_user(user)
-        reset_session # protect from session fixation attacks
         session[:user_id] = user.id
+        session[:last_login] = Time.now.utc
       end
       
       def login_from_session
@@ -74,30 +77,6 @@ module Sorcery
       end
     end
     
-    module RememberMeMethods
-      def remember_me!
-        logged_in_user.remember_me!
-        send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = { :value => logged_in_user.remember_me_token, :expires => logged_in_user.remember_me_token_expires_at }        
-      end
-      
-      def forget_me!
-        logged_in_user.forget_me!
-        send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = nil
-      end
-      
-      protected
-      
-      def login_from_cookie
-        user = send(:"#{Config.cookies_attribute_name}")[:remember_me_token] && Config.user_class.find_by_remember_me_token(send(:"#{Config.cookies_attribute_name}")[:remember_me_token])
-        if user && user.remember_me_token?
-          send(:"#{Config.cookies_attribute_name}")[:remember_me_token] = { :value => user.remember_me_token, :expires => user.remember_me_token_expires_at }
-          @logged_in_user = user
-        else
-          @logged_in_user = false
-        end
-      end
-    end
-    
     module Config
       class << self
         attr_accessor :user_class,
@@ -108,19 +87,28 @@ module Sorcery
                       :login_sources,
                       :after_login,
                       :after_logout
-        
-        def reset!
-          @user_class = nil
-          @submodules = []
-          @session_attribute_name = :session
-          @cookies_attribute_name = :cookies
-          @not_authenticated_action = :not_authenticated
-          @login_sources = []
-          @after_login = []
-          @after_logout = []
+                      
+        def init!
+          @defaults = {
+            :@user_class                           => nil,
+            :@submodules                           => [],
+            :@session_attribute_name               => :session,
+            :@cookies_attribute_name               => :cookies,
+            :@not_authenticated_action             => :not_authenticated,
+            :@login_sources                        => [],
+            :@after_login                          => [],
+            :@after_logout                         => []
+          }
         end
         
+        # Resets all configuration options to their default values.
+        def reset!
+          @defaults.each do |k,v|
+            instance_variable_set(k,v)
+          end       
+        end
       end
+      init!
       reset!
     end
   end

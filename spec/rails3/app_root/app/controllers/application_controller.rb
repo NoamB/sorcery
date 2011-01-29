@@ -1,7 +1,8 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   
-  before_filter :authenticate, :only => [:test_logout]
+  before_filter :timeout_session, :only => [:test_should_be_logged_in] if defined?(:timeout_session)
+  before_filter :authenticate, :only => [:test_logout, :test_should_be_logged_in]
   
   def index
     render :text => ""
@@ -43,6 +44,10 @@ class ApplicationController < ActionController::Base
   
   def test_not_authenticated_action
     render :text => "test_not_authenticated_action"
+  end
+  
+  def test_should_be_logged_in
+    render :text => ""
   end
   
   protected

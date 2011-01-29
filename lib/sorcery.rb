@@ -8,6 +8,12 @@ module Sorcery
     end
   end
   autoload :Controller, 'sorcery/controller'
+  module Controller
+    module Submodules
+      autoload :RememberMe, 'sorcery/controller/submodules/remember_me'
+      autoload :SessionTimeout, 'sorcery/controller/submodules/session_timeout'
+    end
+  end
   module CryptoProviders
     autoload :AES256, 'sorcery/crypto_providers/aes256'
     autoload :BCrypt, 'sorcery/crypto_providers/bcrypt'
