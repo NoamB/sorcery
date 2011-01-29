@@ -191,5 +191,26 @@ describe ApplicationController do
       session[:user_id].should be_nil
       response.should be_a_redirect
     end
+    
+    it "with 'session_timeout_from_last_action' should not logout if there was activity" do
+      plugin_set_controller_config_property(:session_timeout_from_last_action, true)
+      subject.send(:login_user,@user)
+      sleep 0.3
+      get :test_should_be_logged_in
+      session[:user_id].should_not be_nil
+      sleep 0.3
+      get :test_should_be_logged_in
+      session[:user_id].should_not be_nil
+      response.should be_a_success
+    end
+    
+    it "with 'session_timeout_from_last_action' should logout if there was no activity" do
+      plugin_set_controller_config_property(:session_timeout_from_last_action, true)
+      subject.send(:login_user,@user)
+      sleep 0.6
+      get :test_should_be_logged_in
+      session[:user_id].should be_nil
+      response.should be_a_redirect
+    end
   end
 end

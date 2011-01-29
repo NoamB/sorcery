@@ -62,8 +62,14 @@ end
 def plugin_model_configure(submodules = [], options = {})
   reload_user_class
   
+  # return to no-module configuration
+  ::Sorcery::Controller::Config.init!
+  ::Sorcery::Controller::Config.reset!
+  
+  # configure
   ::Sorcery::Controller::Config.user_class = User
   ::Sorcery::Controller::Config.submodules = submodules
+  
   ApplicationController.send(:include,::Sorcery::Controller)
   
   User.activate_sorcery! do |config|

@@ -27,7 +27,6 @@ module Sorcery
         if user
           reset_session # protect from session fixation attacks
           login_user(user)
-          after_login!
           logged_in_user
         end
       end
@@ -61,7 +60,7 @@ module Sorcery
       
       def login_user(user)
         session[:user_id] = user.id
-        session[:last_login] = Time.now.utc
+        after_login!
       end
       
       def login_from_session
