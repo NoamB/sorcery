@@ -4,6 +4,17 @@ Magical Authentication
 Inspired by restful_authentication, Authlogic and Devise.
 Crypto code taken almost unchanged from Authlogic.
 
+== Features:
+
+* Basic Login/Logout.
+* Password encryption with configurable algorithm.
+* User activation by email with optional success email.
+* Reset password with email verification.
+* Remember me with configurable expiration.
+* Configurable session timeout.
+* Modular design, load only the modules you need.
+* 100% TDD'd code, 100% test coverage.
+
 == Goals:
 
 This gem plugin was started out of a few personal goals which are not related to the problem solved by it at all:
@@ -24,7 +35,7 @@ gem install sorcery
 
 == Configuration:
 
-There are 2 places to configure the plugin:
+There are 3 places to configure the plugin:
 1. config/application.rb
 
 config.sorcery.submodules = [:user_activation, :remember_me] # add the modules you want to use
@@ -36,15 +47,46 @@ activate_sorcery! do |config|
   config.username_attribute_name = :email
 end
 
+3. app/controllers/application_controller.rb (this is actually needed only in some cases)
+
+activate_sorcery! do |config|
+  config.session_timeout = 10.minutes
+end
+
+
 The configuration options vary with the modules you've chosen to use.
 
 == Basic Configuration:
 
+TODO
+
 == User Activation Configuration:
+
+TODO
 
 == Remember Me Configuration:
 
+TODO
+
 == Password Reset Configuration:
+
+TODO
+
+== Session Timeout Configuration:
+
+TODO
+
+== TODO
+
+I've got many ideas which include:
+* Auto login
+* Other reset password strategies (security questions?)
+* Sinatra support
+* Mongoid support
+* Hammering logins protection
+* Hammering reset password protection
+* OmniAuth integration
+* Activity logging
 
 == Contributing to sorcery
  
@@ -58,5 +100,6 @@ The configuration options vary with the modules you've chosen to use.
 
 == Copyright
 
-Copyright (c) 2010 Noam. See LICENSE.txt for further details.
+Copyright (c) 2010 Noam Ben Ari (nbenari@gmail.com). See LICENSE.txt for further details.
+Released with permission from Kontera (http://www.kontera.com), where I work.
 
