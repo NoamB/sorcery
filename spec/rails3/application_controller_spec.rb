@@ -127,11 +127,20 @@ describe ApplicationController do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
       plugin_model_configure([:remember_me])
+    end
+    
+    before(:each) do
       create_new_user
     end
     
     after(:all) do
       ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/remember_me")
+    end
+    
+    after(:each) do
+      session = nil
+      cookies = nil
+      User.delete_all
     end
     
     it "should set cookie on remember_me!" do
@@ -167,6 +176,11 @@ describe ApplicationController do
       get :test_login_from_cookie
       assigns[:logged_in_user].should == @user
     end
+    
+    it "should not remember_me! when not asked to" do
+      post :test_login, :username => 'gizmo', :password => 'secret'
+      cookies["remember_me_token"].should == nil
+    end
   end
   
   # ----------------- SESSION TIMEOUT -----------------------
@@ -178,14 +192,14 @@ describe ApplicationController do
     end
     
     it "should not reset session before session timeout" do
-      subject.send(:login_user,@user)
+      login_user
       get :test_should_be_logged_in
       session[:user_id].should_not be_nil
       response.should be_a_success
     end
     
     it "should reset session after session timeout" do
-      subject.send(:login_user,@user)
+      login_user
       sleep 0.6
       get :test_should_be_logged_in
       session[:user_id].should be_nil
@@ -194,7 +208,7 @@ describe ApplicationController do
     
     it "with 'session_timeout_from_last_action' should not logout if there was activity" do
       plugin_set_controller_config_property(:session_timeout_from_last_action, true)
-      subject.send(:login_user,@user)
+      login_user
       sleep 0.3
       get :test_should_be_logged_in
       session[:user_id].should_not be_nil
@@ -206,7 +220,7 @@ describe ApplicationController do
     
     it "with 'session_timeout_from_last_action' should logout if there was no activity" do
       plugin_set_controller_config_property(:session_timeout_from_last_action, true)
-      subject.send(:login_user,@user)
+      login_user
       sleep 0.6
       get :test_should_be_logged_in
       session[:user_id].should be_nil

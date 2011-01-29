@@ -17,10 +17,11 @@ module Sorcery
             merge_session_timeout_defaults!
           end
           Config.after_login << :register_login_time
+          base.prepend_before_filter :validate_session
         end
         
         module InstanceMethods
-          def register_login_time
+          def register_login_time(user, credentials)
             session[:login_time] = session[:last_action_time] = Time.now.utc
           end
           
@@ -30,8 +31,9 @@ module Sorcery
             if session_to_use && (Time.now.utc - session_to_use > Config.session_timeout)
               reset_session
               @logged_in_user = false
+            else
+              session[:last_action_time] = Time.now.utc
             end
-            session[:last_action_time] = Time.now.utc
           end
         end
       end

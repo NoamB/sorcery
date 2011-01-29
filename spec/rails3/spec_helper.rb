@@ -59,6 +59,11 @@ def create_new_user
   @user.save!
 end
 
+def login_user
+  subject.send(:login_user,@user)
+  subject.send(:after_login!,@user,['gizmo','secret'])
+end
+
 def plugin_model_configure(submodules = [], options = {})
   reload_user_class
   

@@ -2,6 +2,7 @@ module Sorcery
   module Controller
     def self.included(klass)
       klass.class_eval do
+        extend ClassMethods
         include InstanceMethods
         Config.submodules.each do |mod|
           begin
@@ -11,6 +12,12 @@ module Sorcery
           end
         end
 
+      end
+    end
+    
+    module ClassMethods
+      def activate_sorcery!(&block)
+        yield Config if block_given?
       end
     end
     
@@ -27,6 +34,7 @@ module Sorcery
         if user
           reset_session # protect from session fixation attacks
           login_user(user)
+          after_login!(user, credentials)
           logged_in_user
         end
       end
@@ -60,15 +68,14 @@ module Sorcery
       
       def login_user(user)
         session[:user_id] = user.id
-        after_login!
       end
       
       def login_from_session
         @logged_in_user = (Config.user_class.find_by_id(session[:user_id]) if session[:user_id]) || false
       end
       
-      def after_login!
-        Config.after_login.each {|c| self.send(c)}
+      def after_login!(user, credentials)
+        Config.after_login.each {|c| self.send(c, user, credentials)}
       end
       
       def after_logout!
