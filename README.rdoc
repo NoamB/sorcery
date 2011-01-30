@@ -12,6 +12,7 @@ Crypto code taken almost unchanged from Authlogic.
 * Reset password with email verification.
 * Remember me with configurable expiration.
 * Configurable session timeout.
+* Brute force login hammering protection.
 * Modular design, load only the modules you need.
 * 100% TDD'd code, 100% test coverage.
 
@@ -19,7 +20,6 @@ Crypto code taken almost unchanged from Authlogic.
 
 I've got many ideas which include:
 * Auto login
-* Hammering login protection
 * Hammering reset password protection
 * Other reset password strategies (security questions?)
 * Sinatra support
@@ -98,7 +98,9 @@ TODO
 
 TODO
 
-== TODO
+== Brute Force Protection Configuration:
+
+TODO
 
 
 
