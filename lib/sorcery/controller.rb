@@ -18,6 +18,11 @@ module Sorcery
     module ClassMethods
       def activate_sorcery!(&block)
         yield Config if block_given?
+        after_config!
+      end
+      
+      def after_config!
+        Config.after_config.each {|c| send(c)}       
       end
     end
     
@@ -36,6 +41,9 @@ module Sorcery
           login_user(user)
           after_login!(user, credentials)
           logged_in_user
+        else
+          after_failed_login!(user, credentials)
+          nil
         end
       end
       
@@ -78,9 +86,14 @@ module Sorcery
         Config.after_login.each {|c| self.send(c, user, credentials)}
       end
       
+      def after_failed_login!(user, credentials)
+        Config.after_failed_login.each {|c| self.send(c, user, credentials)}
+      end
+      
       def after_logout!
         Config.after_logout.each {|c| self.send(c)}
       end
+      
     end
     
     module Config
@@ -92,7 +105,9 @@ module Sorcery
                       :not_authenticated_action,
                       :login_sources,
                       :after_login,
-                      :after_logout
+                      :after_failed_login,
+                      :after_logout,
+                      :after_config
                       
         def init!
           @defaults = {
@@ -103,7 +118,9 @@ module Sorcery
             :@not_authenticated_action             => :not_authenticated,
             :@login_sources                        => [],
             :@after_login                          => [],
-            :@after_logout                         => []
+            :@after_failed_login                   => [],
+            :@after_logout                         => [],
+            :@after_config                         => []
           }
         end
         

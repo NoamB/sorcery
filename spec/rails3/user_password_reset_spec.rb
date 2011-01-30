@@ -15,7 +15,7 @@ describe "User with password_reset submodule" do
   describe User, "loaded plugin configuration" do
   
     before(:all) do
-      plugin_model_configure([:password_reset])
+      plugin_model_configure([:password_reset], :sorcery_mailer => ::SorceryMailer)
     end
   
     after(:each) do
@@ -68,6 +68,10 @@ describe "User with password_reset submodule" do
       @user.password = "blabulsdf"
       @user.save!
       @user.reset_password_code.should be_nil
+    end
+    
+    it "if mailer is nil on activation, throw exception!" do
+      expect{plugin_model_configure([:password_reset])}.to raise_error(ArgumentError)
     end
   end
   

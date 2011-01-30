@@ -1,10 +1,10 @@
 = sorcery
-Magical Authentication
+Magical Authentication.
 
 Inspired by restful_authentication, Authlogic and Devise.
 Crypto code taken almost unchanged from Authlogic.
 
-== Features:
+== Current Features:
 
 * Basic Login/Logout.
 * Password encryption with configurable algorithm.
@@ -15,7 +15,19 @@ Crypto code taken almost unchanged from Authlogic.
 * Modular design, load only the modules you need.
 * 100% TDD'd code, 100% test coverage.
 
-== Goals:
+== Planned Features:
+
+I've got many ideas which include:
+* Auto login
+* Hammering login protection
+* Hammering reset password protection
+* Other reset password strategies (security questions?)
+* Sinatra support
+* Mongoid support
+* OmniAuth integration
+* Activity logging
+
+== Project Goals:
 
 This gem plugin was started out of a few personal goals which are not related to the problem solved by it at all:
 * I wanted to write something 100% TDD from start to finish.
@@ -31,9 +43,19 @@ In addition to the above goals, when I decided this will be an authentication pl
 
 == Installation:
 
+You can either git clone and then 'rake install',
+
+In the future will be available:
+
 gem install sorcery
 
 == Configuration:
+
+First add 'sorcery' to your Gemfile:
+
+gem "sorcery"
+
+And run bundle install.
 
 There are 3 places to configure the plugin:
 1. config/application.rb
@@ -78,15 +100,7 @@ TODO
 
 == TODO
 
-I've got many ideas which include:
-* Auto login
-* Other reset password strategies (security questions?)
-* Sinatra support
-* Mongoid support
-* Hammering logins protection
-* Hammering reset password protection
-* OmniAuth integration
-* Activity logging
+
 
 == Contributing to sorcery
  

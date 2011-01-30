@@ -28,7 +28,7 @@ silence_warnings {RAILS_ENV = ENV['RAILS_ENV']}
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures  = false
-  config.include RSpec::Rails::ControllerExampleGroup, :example_group => { :file_path => /_controller_spec.rb$/ }#:file_path => /\bspec[\\\/]controllers[\\\/]/ }
+  config.include RSpec::Rails::ControllerExampleGroup, :example_group => { :file_path => /controller(.)*_spec.rb$/ }#:file_path => /\bspec[\\\/]controllers[\\\/]/ }
 end
 
 #----------------------------------------------------------------
@@ -91,8 +91,8 @@ def plugin_set_model_config_property(property, *values)
 end
 
 def plugin_set_controller_config_property(property, value)
-  ApplicationController.class_eval do
-    ::Sorcery::Controller::Config.send(:"#{property}=", value)
+  ApplicationController.activate_sorcery! do |config|
+    config.send(:"#{property}=", value)
   end
 end
 

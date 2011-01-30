@@ -27,7 +27,17 @@ module Sorcery
             before_save :clear_reset_password_code, :if =>clear_reset_password_code_proc
           end
           
+          base.sorcery_config.after_config << :validate_mailer_defined
+          
+          base.extend(ClassMethods)
           base.send(:include, InstanceMethods)
+        end
+        
+        module ClassMethods
+          def validate_mailer_defined
+            msg = "To use password_reset submodule, you must define a mailer (config.sorcery_mailer = YourMailerClass)."
+            raise ArgumentError, msg if @sorcery_config.sorcery_mailer == nil
+          end
         end
         
         module InstanceMethods

@@ -12,6 +12,7 @@ module Sorcery
     module Submodules
       autoload :RememberMe, 'sorcery/controller/submodules/remember_me'
       autoload :SessionTimeout, 'sorcery/controller/submodules/session_timeout'
+      autoload :BruteForceProtection, 'sorcery/controller/submodules/brute_force_protection'
     end
   end
   module CryptoProviders
