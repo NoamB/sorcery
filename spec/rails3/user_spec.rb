@@ -4,11 +4,11 @@ require File.expand_path(File.dirname(__FILE__) + '/app_root/app/mailers/sorcery
 describe "User with no submodules (core)" do
   before(:all) do
     plugin_model_configure
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
+    #ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
   end
   
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
+    #ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
   end
 
   describe User, "when app has plugin loaded" do

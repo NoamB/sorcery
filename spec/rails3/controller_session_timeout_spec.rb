@@ -1,13 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe ApplicationController do
-  before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
-  end
-  
-  after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
-  end
+  # before(:all) do
+  #   ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
+  # end
+  # 
+  # after(:all) do
+  #   ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
+  # end
   
   # ----------------- SESSION TIMEOUT -----------------------
   describe ApplicationController, "with session timeout features" do

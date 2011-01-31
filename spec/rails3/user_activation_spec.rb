@@ -3,13 +3,13 @@ require File.expand_path(File.dirname(__FILE__) + '/app_root/app/mailers/sorcery
 
 describe "User with activation submodule" do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
+    #ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
   end
   
   after(:all) do
     ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
+    #ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
   end
 
   # ----------------- PLUGIN CONFIGURATION -----------------------

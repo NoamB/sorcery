@@ -1,13 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe ApplicationController do
-  before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
-  end
-  
-  after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
-  end
+  # before(:all) do
+  #   ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
+  # end
+  # 
+  # after(:all) do
+  #   ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
+  # end
  
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe ApplicationController, "plugin configuration" do
@@ -35,6 +35,7 @@ describe ApplicationController do
   # ----------------- PLUGIN ACTIVATED -----------------------
   describe ApplicationController, "when activated with sorcery" do
     before(:all) do
+      User.delete_all
       create_new_user
     end
   
@@ -99,8 +100,8 @@ describe ApplicationController do
       subject.logged_in_user.should == false
     end
     
-    it "should respond to 'authenticate'" do
-      should respond_to(:authenticate)
+    it "should respond to 'require_user_login'" do
+      should respond_to(:require_user_login)
     end
     
     it "should call the configured 'not_authenticated_action' when authenticate before_filter fails" do
