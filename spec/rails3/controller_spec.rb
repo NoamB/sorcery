@@ -25,16 +25,6 @@ describe ApplicationController do
       Sorcery::Controller::Config.user_class.should equal(TestUser)
     end
     
-    it "should enable configuration option 'session_attribute_name'" do
-      plugin_set_controller_config_property(:session_attribute_name, :my_session)
-      Sorcery::Controller::Config.session_attribute_name.should equal(:my_session)
-    end
-    
-    it "should enable configuration option 'cookies_attribute_name'" do
-      plugin_set_controller_config_property(:cookies_attribute_name, :my_cookies)
-      Sorcery::Controller::Config.cookies_attribute_name.should equal(:my_cookies)
-    end
-    
     it "should enable configuration option 'not_authenticated_action'" do
       plugin_set_controller_config_property(:not_authenticated_action, :my_action)
       Sorcery::Controller::Config.not_authenticated_action.should equal(:my_action)

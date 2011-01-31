@@ -100,8 +100,6 @@ module Sorcery
       class << self
         attr_accessor :user_class,
                       :submodules,
-                      :session_attribute_name,
-                      :cookies_attribute_name,
                       :not_authenticated_action,
                       :login_sources,
                       :after_login,
@@ -113,8 +111,6 @@ module Sorcery
           @defaults = {
             :@user_class                           => nil,
             :@submodules                           => [],
-            :@session_attribute_name               => :session,
-            :@cookies_attribute_name               => :cookies,
             :@not_authenticated_action             => :not_authenticated,
             :@login_sources                        => [],
             :@after_login                          => [],
