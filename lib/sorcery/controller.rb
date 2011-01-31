@@ -31,7 +31,10 @@ module Sorcery
       # Will trigger auto-login attempts via the call to logged_in?
       # If all attempts to auto-login fail, the failure callback will be called.
       def require_user_login
-        self.send(Config.not_authenticated_action) if !logged_in?
+        if !logged_in?
+          session[:user_wanted_url] = request.url if Config.save_user_wanted_url
+          self.send(Config.not_authenticated_action) 
+        end
       end
       
       def login(*credentials)
@@ -72,6 +75,10 @@ module Sorcery
         result || false
       end
       
+      def not_authenticated
+        redirect_to root_path
+      end
+      
       protected
       
       def login_user(user)
@@ -105,7 +112,8 @@ module Sorcery
                       :after_login,
                       :after_failed_login,
                       :after_logout,
-                      :after_config
+                      :after_config,
+                      :save_user_wanted_url
                       
         def init!
           @defaults = {
@@ -116,7 +124,8 @@ module Sorcery
             :@after_login                          => [],
             :@after_failed_login                   => [],
             :@after_logout                         => [],
-            :@after_config                         => []
+            :@after_config                         => [],
+            :@save_user_wanted_url                 => true
           }
         end
         

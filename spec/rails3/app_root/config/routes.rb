@@ -2,6 +2,7 @@ AppRoot::Application.routes.draw do
   root :to => "application#index" 
   match '/test_login', :to => "application#test_login"
   match '/test_logout', :to => "application#test_logout"
+  match '/some_action', :to => "application#some_action"
   match '/test_logout_with_remember', :to => "application#test_logout_with_remember"
   match '/test_login_with_remember', :to => 'application#test_login_with_remember'
   match '/test_login_with_remember_in_login', :to => 'application#test_login_with_remember_in_login'

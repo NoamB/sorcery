@@ -104,6 +104,12 @@ describe ApplicationController do
       response.body.should == "test_not_authenticated_action"
     end
     
+    it "require_user_login before_filter should save the url that the user originally wanted" do
+      get :some_action
+      session[:user_wanted_url].should == "http://test.host/some_action"
+      response.should redirect_to("http://test.host/")
+    end
+    
   end
   
 end
