@@ -1,13 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe ApplicationController do
-  # before(:all) do
-  #   ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
-  # end
-  # 
-  # after(:all) do
-  #   ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
-  # end
   
   # ----------------- SESSION TIMEOUT -----------------------
   describe ApplicationController, "with brute force protection features" do
@@ -38,9 +31,9 @@ describe ApplicationController do
     
     it "should reset the counter if enough time has passed" do
       plugin_set_controller_config_property(:login_retries_amount_allowed, 5)
-      plugin_set_controller_config_property(:login_retries_time_period, 0.5)
+      plugin_set_controller_config_property(:login_retries_time_period, 0.2)
       get :test_login, :username => 'gizmo', :password => 'blabla'
-      sleep 1
+      sleep 0.4
       get :test_login, :username => 'gizmo', :password => 'blabla'
       session[:failed_logins].should == 1
     end
@@ -56,11 +49,11 @@ describe ApplicationController do
     it "should clear ban after ban time limit passes" do
       plugin_set_controller_config_property(:login_retries_amount_allowed, 1)
       plugin_set_controller_config_property(:login_retries_time_period, 50)
-      plugin_set_controller_config_property(:login_ban_time_period, 0.5)
+      plugin_set_controller_config_property(:login_ban_time_period, 0.2)
       get :test_login, :username => 'gizmo', :password => 'blabla'
       get :test_login, :username => 'gizmo', :password => 'blabla'
       session[:banned].should == true
-      sleep 0.6
+      sleep 0.3
       get :test_login, :username => 'gizmo', :password => 'blabla'
       session[:banned].should == nil
     end

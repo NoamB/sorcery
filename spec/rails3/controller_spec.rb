@@ -1,13 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe ApplicationController do
-  # before(:all) do
-  #   ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
-  # end
-  # 
-  # after(:all) do
-  #   ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
-  # end
  
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe ApplicationController, "plugin configuration" do

@@ -4,11 +4,6 @@ require File.expand_path(File.dirname(__FILE__) + '/app_root/app/mailers/sorcery
 describe "User with no submodules (core)" do
   before(:all) do
     plugin_model_configure
-    #ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
-  end
-  
-  after(:all) do
-    #ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
   end
 
   describe User, "when app has plugin loaded" do
@@ -284,26 +279,5 @@ describe "User with no submodules (core)" do
     end
     
   end
-  
-  describe User, "prevent non-active login feature" do
-    before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
-      plugin_model_configure([:user_activation], :sorcery_mailer => ::SorceryMailer)
-    end
 
-    after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
-    end
-
-    it "should not allow a non-active user to authenticate" do
-      create_new_user
-      User.authenticate(@user.username,'secret').should be_false
-    end
-
-    it "should allow a non-active user to authenticate if configured so" do
-      create_new_user
-      plugin_set_model_config_property(:prevent_non_active_users_to_login, false)
-      User.authenticate(@user.username,'secret').should be_true
-    end
-  end
 end

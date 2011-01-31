@@ -2,13 +2,11 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "User with remember_me submodule" do
   before(:all) do
-    #ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
   end
   
   after(:all) do
     ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/remember_me")
-    #ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
   end
 
   # ----------------- PLUGIN CONFIGURATION -----------------------
