@@ -1,10 +1,10 @@
 source 'http://rubygems.org'
 
 gem "rails", '3.0.3'
+gem 'bcrypt-ruby', :require => 'bcrypt'
 gem "sorcery", '0.1.0', :path => '../../../'
 
 group :development do
-  gem 'bcrypt-ruby', :require => 'bcrypt'
   gem 'rspec'
   gem 'ruby-debug19'
   gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency

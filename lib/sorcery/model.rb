@@ -132,7 +132,7 @@ module Sorcery
           :@email_attribute_name                 => :email,
           :@crypted_password_attribute_name      => :crypted_password,
           :@encryption_algorithm                 => :sha256,
-          :@encryption_provider                  => CryptoProviders::SHA256,
+          :@encryption_provider                  => CryptoProviders::BCrypt,
           :@custom_encryption_provider           => nil,
           :@encryption_key                       => nil,
           :@salt_join_token                      => "",

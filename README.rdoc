@@ -90,6 +90,9 @@ For example:
   	  config.session_timeout = 10.minutes
 	end
 
+Also check the migrations in the example app to see what database fields are expected.
+
+
 
 The configuration options vary with the modules you've chosen to use.
 

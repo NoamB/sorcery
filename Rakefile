@@ -15,7 +15,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/NoamB/sorcery"
   gem.license = "MIT"
   gem.summary = "Magical authentication for Rails 3 applications"
-  gem.description = "Provides common authentication needs such as signing in/out, activating by email, resetting password and deleting accounts."
+  gem.description = "Provides common authentication needs such as signing in/out, activating by email and resetting password."
   gem.email = "nbenari@gmail.com"
   gem.authors = ["Noam Ben Ari"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
