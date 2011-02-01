@@ -80,14 +80,14 @@ For example:
 2. app/models/user.rb (or another model of your choice)
 
 	activate_sorcery! do |config|
-	  config.sorcery_mailer = MyMailer
+  	  config.sorcery_mailer = MyMailer
 	  config.username_attribute_name = :email
 	end
 
 3. app/controllers/application_controller.rb (OPTIONAL: this is actually needed only in some cases)
 
 	activate_sorcery! do |config|
-	  config.session_timeout = 10.minutes
+  	  config.session_timeout = 10.minutes
 	end
 
 
@@ -122,15 +122,13 @@ see lib/sorcery/controller/submodules/brute_force_protection.rb
 
 
 == Contributing to sorcery
- 
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
-* Fork the project
-* Start a feature/bugfix branch
-* Commit and push until you are happy with your contribution
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
 
+I can use help of any kind, be it comments on code (code review), suggestions, features, bug reports, bug fixes and even a donation.
+
+== Contact
+
+	email: nbenari@gmail.com
+	
 == Copyright
 
 Copyright (c) 2010 Noam Ben Ari (nbenari@gmail.com). See LICENSE.txt for further details.
