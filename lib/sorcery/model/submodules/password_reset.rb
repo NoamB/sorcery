@@ -5,9 +5,9 @@ module Sorcery
       module PasswordReset        
         def self.included(base)
           base.sorcery_config.class_eval do
-            attr_accessor :reset_password_code_attribute_name,
-                          :sorcery_mailer,
-                          :reset_password_email_method_name
+            attr_accessor :reset_password_code_attribute_name,        # reset password code attribute name.
+                          :sorcery_mailer,                            # mailer class. Needed.
+                          :reset_password_email_method_name           # reset password email method on your mailer class.
 
           end
           

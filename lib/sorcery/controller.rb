@@ -106,15 +106,21 @@ module Sorcery
     
     module Config
       class << self
-        attr_accessor :user_class,
-                      :submodules,
-                      :not_authenticated_action,
+        attr_accessor :submodules,
+        
+                      :user_class,                    # what class to use as the user class.
+                      
+                      :not_authenticated_action,      # what controller action to call for non-authenticated users.
+                      
+                      :save_user_wanted_url,          # when a non logged in user tries to enter a page that requires login, save the URL he wanted to reach, 
+                                                      # and send him there after login.
+                      
                       :login_sources,
                       :after_login,
                       :after_failed_login,
                       :after_logout,
-                      :after_config,
-                      :save_user_wanted_url
+                      :after_config
+                      
                       
         def init!
           @defaults = {

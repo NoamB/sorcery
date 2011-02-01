@@ -6,8 +6,8 @@ module Sorcery
           base.send(:include, InstanceMethods)
           Config.module_eval do
             class << self
-              attr_accessor :session_timeout,
-                            :session_timeout_from_last_action
+              attr_accessor :session_timeout,                     # how long in seconds to keep the session alive.
+                            :session_timeout_from_last_action     # use the last action as the beginning of session timeout.
                             
               def merge_session_timeout_defaults!
                 @defaults.merge!(:@session_timeout                      => 3600, # 1.hour

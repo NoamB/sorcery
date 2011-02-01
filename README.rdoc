@@ -1,8 +1,12 @@
 = sorcery
-Magical Authentication.
+Magical Authentication for Rails 3.
 
 Inspired by restful_authentication, Authlogic and Devise.
 Crypto code taken almost unchanged from Authlogic.
+
+== Example app using sorcery:
+
+https://github.com/NoamB/sorcery-example-app
 
 == Current Features:
 
@@ -18,7 +22,8 @@ Crypto code taken almost unchanged from Authlogic.
 
 == Planned Features:
 
-I've got many ideas which include:
+I've got many plans which include:
+* Basic HTTP Authentication
 * Auto login
 * Hammering reset password protection
 * Other reset password strategies (security questions?)
@@ -26,6 +31,7 @@ I've got many ideas which include:
 * Mongoid support
 * OmniAuth integration
 * Activity logging
+* Have an idea? Let me know, and it might get into the gem!
 
 == Project Goals:
 
@@ -34,12 +40,13 @@ This gem plugin was started out of a few personal goals which are not related to
 * I wanted to learn how to write an engine for Rails 3.
 
 In addition to the above goals, when I decided this will be an authentication plugin, and while looking at existing solutions, these goals came up:
-* Simple & short configuration, not drowning in syntactic sugar.
+* Simple & short configuration as possible, not drowning in syntactic sugar.
 * Keep MVC cleanly separated - DB is for models, sessions are for controllers. Models stay unaware of sessions.
 * Magic yes, Voodoo no.
 * No generated code polluting the application's code.
 * No built-in controllers, models, mailers, migrations or templates; Real apps will need all of these custom made.
-* Nice to have: support for more ORMs and web frameworks (Sinatra, Mongoid).
+
+Hopefully, I've achieved this. If not, let me know.
 
 == Installation:
 
@@ -47,60 +54,70 @@ You can either git clone and then 'rake install',
 
 In the future will be available:
 
-gem install sorcery
+	gem install sorcery
 
 == Configuration:
 
 First add 'sorcery' to your Gemfile:
 
-gem "sorcery"
+	gem "sorcery"
 
-And run bundle install.
+And run 
+	
+	bundle install
 
-There are 3 places to configure the plugin:
+There are 2 required places to configure the plugin, and an optional one:
 1. config/application.rb
 
-config.sorcery.submodules = [:user_activation, :remember_me] # add the modules you want to use
+	config.sorcery.submodules = [:user_activation, :remember_me] # add the modules you want to use
+
+You can also configure here any controller and any controller-submodule option here.
+For example:
+
+	config.sorcery.session_timeout = 10.minutes
+
 
 2. app/models/user.rb (or another model of your choice)
 
-activate_sorcery! do |config|
-  config.sorcery_mailer = MyMailer
-  config.username_attribute_name = :email
-end
+	activate_sorcery! do |config|
+	  config.sorcery_mailer = MyMailer
+	  config.username_attribute_name = :email
+	end
 
-3. app/controllers/application_controller.rb (this is actually needed only in some cases)
+3. app/controllers/application_controller.rb (OPTIONAL: this is actually needed only in some cases)
 
-activate_sorcery! do |config|
-  config.session_timeout = 10.minutes
-end
+	activate_sorcery! do |config|
+	  config.session_timeout = 10.minutes
+	end
 
 
 The configuration options vary with the modules you've chosen to use.
 
-== Basic Configuration:
+== Basic Configuration (in Model):
 
-TODO
+see lib/sorcery/model.rb
 
-== User Activation Configuration:
+== User Activation Configuration (in Model):
 
-TODO
+see lib/sorcery/model/submodules/user_activation.rb
 
-== Remember Me Configuration:
+== Remember Me Configuration (in Model):
 
-TODO
+see lib/sorcery/model/submodules/remember_me.rb
 
-== Password Reset Configuration:
+== Password Reset Configuration (in Model):
 
-TODO
+see lib/sorcery/model/submodules/password_reset.rb
 
-== Session Timeout Configuration:
 
-TODO
 
-== Brute Force Protection Configuration:
+== Session Timeout Configuration (in Controller or config/application.rb):
 
-TODO
+see lib/sorcery/controller/submodules/session_timeout.rb
+
+== Brute Force Protection Configuration (in Controller or config/application.rb):
+
+see lib/sorcery/controller/submodules/brute_force_protection.rb
 
 
 

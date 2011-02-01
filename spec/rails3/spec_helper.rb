@@ -21,6 +21,7 @@ ENV['RAILS_ROOT'] = 'app_root'
 require "#{File.dirname(__FILE__)}/app_root/config/environment"
 #require "#{File.dirname(__FILE__)}/../../init" # for plugins
 require 'rspec/rails'
+#require 'sorcery'
 
 # Undo changes to RAILS_ENV
 silence_warnings {RAILS_ENV = ENV['RAILS_ENV']}
@@ -40,7 +41,7 @@ RSpec.configure do |config|
 end
 
 #----------------------------------------------------------------
-require File.join(File.dirname(__FILE__), 'app_root','app','models','user')
+#require File.join(File.dirname(__FILE__), 'app_root','app','models','user')
 
 class TestUser < ActiveRecord::Base
   activate_sorcery!
@@ -72,6 +73,7 @@ def login_user
   subject.send(:after_login!,@user,['gizmo','secret'])
 end
 
+# TODO: rename to sorcery_reload!(subs = [], model_opts = {}, controller_opts = {})
 def plugin_model_configure(submodules = [], options = {})
   reload_user_class
   
@@ -80,9 +82,8 @@ def plugin_model_configure(submodules = [], options = {})
   ::Sorcery::Controller::Config.reset!
   
   # configure
-  ::Sorcery::Controller::Config.user_class = User
   ::Sorcery::Controller::Config.submodules = submodules
-  
+  ::Sorcery::Controller::Config.user_class = nil # the next line will reset it to User
   ApplicationController.send(:include,::Sorcery::Controller)
   
   User.activate_sorcery! do |config|
@@ -92,12 +93,14 @@ def plugin_model_configure(submodules = [], options = {})
   end
 end
 
+# TODO: rename to sorcery_model_property_set(prop, val)
 def plugin_set_model_config_property(property, *values)
   User.class_eval do
     sorcery_config.send(:"#{property}=", *values)
   end
 end
 
+# TODO: rename to sorcery_controller_property_set(prop, val)
 def plugin_set_controller_config_property(property, value)
   ApplicationController.activate_sorcery! do |config|
     config.send(:"#{property}=", value)

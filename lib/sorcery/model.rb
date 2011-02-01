@@ -106,21 +106,23 @@ module Sorcery
     # Each class which calls 'activate_sorcery!' receives an instance of this class.
     # Every submodule which gets loaded may add accessors to this class so that all options will be configured from a single place.
     class Config
-      attr_accessor :submodules,
-                    :username_attribute_name, 
-                    :password_attribute_name,
-                    :email_attribute_name,
-                    :crypted_password_attribute_name,
-                    :salt_join_token,
-                    :salt_attribute_name,
-                    :stretches,
-                    :encryption_key,
-                    :before_authenticate,
-                    :after_config
+
+      attr_accessor :username_attribute_name,           # change default username attribute, for example, to use :email as the login.
+                    :password_attribute_name,           # change *virtual* password attribute, the one which is used until an encrypted one is generated.
+                    :email_attribute_name,              # change default email attribute.
+                    :crypted_password_attribute_name,   # change default crypted_password attribute.
+                    :salt_join_token,                   # what pattern to use to join the password with the salt
+                    :salt_attribute_name,               # change default salt attribute.
+                    :stretches,                         # how many times to apply encryption to the password.
+                    :encryption_key,                    # encryption key used to encrypt reversible encryptions such as AES256.
                     
-      attr_reader   :encryption_provider,
-                    :custom_encryption_provider,
-                    :encryption_algorithm                            
+                    :submodules,                        # configured in config/application.rb
+                    :before_authenticate,               # an array of method names to call before authentication completes. used internally.
+                    :after_config                       # an array of method names to call after configuration by user. used internally.
+                    
+      attr_reader   :encryption_provider,               # change default encryption_provider.
+                    :custom_encryption_provider,        # use an external encryption class.
+                    :encryption_algorithm               # encryption algorithm name. See 'encryption_algorithm=' below for available options.
 
       def initialize
         @defaults = {

@@ -6,10 +6,10 @@ module Sorcery
           base.send(:include, InstanceMethods)
           Config.module_eval do
             class << self
-              attr_accessor :login_retries_amount_allowed,
-                            :login_retries_time_period,
-                            :login_ban_time_period,
-                            :banned_action
+              attr_accessor :login_retries_amount_allowed,      # how many failed logins allowed.
+                            :login_retries_time_period,         # the time after which the failed logins counter is reset.
+                            :login_ban_time_period,             # how long the user should be banned. in seconds.
+                            :banned_action                      # what controller action should be called when a banned user tries.
                             
               def merge_brute_force_protection_defaults!
                 @defaults.merge!(:@login_retries_amount_allowed  => 50,
