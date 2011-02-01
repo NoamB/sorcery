@@ -11,7 +11,8 @@ module Sorcery
             # don't stop on a missing submodule.
           end
         end
-
+        Config.update!
+        Config.user_class = User
       end
     end
     
@@ -134,6 +135,12 @@ module Sorcery
           @defaults.each do |k,v|
             instance_variable_set(k,v)
           end       
+        end
+        
+        def update!
+          @defaults.each do |k,v|
+            instance_variable_set(k,v) if !instance_variable_defined?(k)
+          end
         end
       end
       init!

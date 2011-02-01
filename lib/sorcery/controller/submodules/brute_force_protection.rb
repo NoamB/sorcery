@@ -11,14 +11,14 @@ module Sorcery
                             :login_ban_time_period,
                             :banned_action
                             
-              def merge_session_timeout_defaults!
+              def merge_brute_force_protection_defaults!
                 @defaults.merge!(:@login_retries_amount_allowed  => 50,
                                  :@login_retries_time_period     => 30,
                                  :@login_ban_time_period         => 3600,
                                  :@banned_action                 => :default_banned_action)
               end
             end
-            merge_session_timeout_defaults!
+            merge_brute_force_protection_defaults!
           end
           Config.after_failed_login << :check_failed_logins_limit_reached
           base.prepend_before_filter :deny_banned_user
@@ -35,7 +35,6 @@ module Sorcery
               session[:first_failed_login_time] = now
             end
             increment_failed_logins
-            
             # ban
             ban_if_above_limit(now)
           end
