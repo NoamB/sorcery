@@ -5,6 +5,7 @@ module Sorcery
       autoload :UserActivation, 'sorcery/model/submodules/user_activation'
       autoload :PasswordReset, 'sorcery/model/submodules/password_reset'
       autoload :RememberMe, 'sorcery/model/submodules/remember_me'
+      autoload :HTTPBasicAuth, 'sorcery/controller/submodules/http_basic_auth'
     end
   end
   autoload :Controller, 'sorcery/controller'
