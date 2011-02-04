@@ -37,16 +37,20 @@ Brute Force Protection (see lib/sorcery/controller/submodules/brute_force_protec
 * Brute force login hammering protection.
 * configurable logins before ban, logins within time period before ban, ban time and ban action.
 
+Basic HTTP Authentication (see lib/sorcery/controller/submodules/http_basic_auth.rb):
+* A before filter for requesting authentication with HTTP Basic.
+* automatic login from HTTP Basic.
+* automatic login is disabled if session key changed.
+
 Other:
 * Modular design, load only the modules you need.
 * 100% TDD'd code, 100% test coverage.
 
-== Planned Features:
+== Next Planned Features:
 
 I've got many plans which include:
-* Basic HTTP Authentication
-* Auto login
 * Hammering reset password protection
+* Configurable Auto login on registration/activation
 * Other reset password strategies (security questions?)
 * Sinatra support
 * Mongoid support
