@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = %q{2011-02-04}
+  s.date = %q{2011-02-05}
   s.description = %q{Provides common authentication needs such as signing in/out, activating by email and resetting password.}
   s.email = %q{nbenari@gmail.com}
   s.extra_rdoc_files = [
@@ -109,6 +109,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/test/unit/user_test.rb",
     "spec/rails3/app_root/vendor/plugins/.gitkeep",
     "spec/rails3/controller_brute_force_protection_spec.rb",
+    "spec/rails3/controller_http_basic_auth_spec.rb",
     "spec/rails3/controller_remember_me_spec.rb",
     "spec/rails3/controller_session_timeout_spec.rb",
     "spec/rails3/controller_spec.rb",
