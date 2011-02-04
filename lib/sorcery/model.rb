@@ -95,10 +95,10 @@ module Sorcery
       
       # calls the requested email method on the configured mailer
       # supports both the ActionMailer 3 way of calling, and the plain old Ruby object way.
-      def generic_send_email(method)
+      def generic_send_email(method, mailer)
         config = sorcery_config
-        mail = config.sorcery_mailer.send(config.send(method),self)
-        if defined?(ActionMailer) and config.sorcery_mailer.superclass == ActionMailer::Base
+        mail = config.send(mailer).send(config.send(method),self)
+        if defined?(ActionMailer) and config.send(mailer).superclass == ActionMailer::Base
           mail.deliver
         end
       end

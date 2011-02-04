@@ -10,7 +10,7 @@ module Sorcery
           base.sorcery_config.class_eval do
             attr_accessor :activation_state_attribute_name,         # the attribute name to hold activation state (active/pending).
                           :activation_code_attribute_name,          # the attribute name to hold activation code (sent by email).
-                          :sorcery_mailer,                          # your mailer class. Needed.
+                          :user_activation_mailer,                  # your mailer class. Needed.
                           :activation_needed_email_method_name,     # activation needed email method on your mailer class.
                           :activation_success_email_method_name,    # activation success email method on your mailer class.
                           :prevent_non_active_users_to_login        # do you want to prevent or allow users that did not activate by email to login?
@@ -19,7 +19,7 @@ module Sorcery
           base.sorcery_config.instance_eval do
             @defaults.merge!(:@activation_state_attribute_name      => :activation_state,
                              :@activation_code_attribute_name       => :activation_code,
-                             :@sorcery_mailer                       => nil,
+                             :@user_activation_mailer               => nil,
                              :@activation_needed_email_method_name  => :activation_needed_email,
                              :@activation_success_email_method_name => :activation_success_email,
                              :@prevent_non_active_users_to_login    => true)
@@ -41,8 +41,8 @@ module Sorcery
         
         module ClassMethods
           def validate_mailer_defined
-            msg = "To use user_activation submodule, you must define a mailer (config.sorcery_mailer = YourMailerClass)."
-            raise ArgumentError, msg if @sorcery_config.sorcery_mailer == nil
+            msg = "To use user_activation submodule, you must define a mailer (config.user_activation_mailer = YourMailerClass)."
+            raise ArgumentError, msg if @sorcery_config.user_activation_mailer == nil
           end
         end
         
@@ -65,11 +65,11 @@ module Sorcery
           end
 
           def send_activation_needed_email!
-            generic_send_email(:activation_needed_email_method_name) unless sorcery_config.activation_needed_email_method_name.nil?
+            generic_send_email(:activation_needed_email_method_name, :user_activation_mailer) unless sorcery_config.activation_needed_email_method_name.nil?
           end
 
           def send_activation_success_email!
-            generic_send_email(:activation_success_email_method_name) unless sorcery_config.activation_success_email_method_name.nil?
+            generic_send_email(:activation_success_email_method_name, :user_activation_mailer) unless sorcery_config.activation_success_email_method_name.nil?
           end
           
           def prevent_non_active_login

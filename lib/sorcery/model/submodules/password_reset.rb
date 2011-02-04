@@ -6,14 +6,14 @@ module Sorcery
         def self.included(base)
           base.sorcery_config.class_eval do
             attr_accessor :reset_password_code_attribute_name,        # reset password code attribute name.
-                          :sorcery_mailer,                            # mailer class. Needed.
+                          :reset_password_mailer,                     # mailer class. Needed.
                           :reset_password_email_method_name           # reset password email method on your mailer class.
 
           end
           
           base.sorcery_config.instance_eval do
             @defaults.merge!(:@reset_password_code_attribute_name => :reset_password_code,
-                             :@sorcery_mailer                     => nil,
+                             :@reset_password_mailer              => nil,
                              :@reset_password_email_method_name   => :reset_password_email)
 
             reset!
@@ -35,8 +35,8 @@ module Sorcery
         
         module ClassMethods
           def validate_mailer_defined
-            msg = "To use password_reset submodule, you must define a mailer (config.sorcery_mailer = YourMailerClass)."
-            raise ArgumentError, msg if @sorcery_config.sorcery_mailer == nil
+            msg = "To use password_reset submodule, you must define a mailer (config.reset_password_mailer = YourMailerClass)."
+            raise ArgumentError, msg if @sorcery_config.reset_password_mailer == nil
           end
         end
         
@@ -46,7 +46,7 @@ module Sorcery
             self.send(:"#{config.reset_password_code_attribute_name}=", generate_random_code)
             self.class.transaction do
               self.save!(:validate => false)
-              generic_send_email(:reset_password_email_method_name)
+              generic_send_email(:reset_password_email_method_name, :reset_password_mailer)
             end
           end
 

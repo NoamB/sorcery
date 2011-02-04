@@ -13,12 +13,12 @@ describe "User with activation submodule" do
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe User, "loaded plugin configuration" do
     before(:all) do
-      plugin_model_configure([:user_activation], :sorcery_mailer => ::SorceryMailer)
+      plugin_model_configure([:user_activation], :user_activation_mailer => ::SorceryMailer)
     end
   
     after(:each) do
       User.sorcery_config.reset!
-      plugin_model_configure([:user_activation], :sorcery_mailer => ::SorceryMailer)
+      plugin_model_configure([:user_activation], :user_activation_mailer => ::SorceryMailer)
     end
     
     it "should enable configuration option 'activation_state_attribute_name'" do
@@ -31,9 +31,9 @@ describe "User with activation submodule" do
       User.sorcery_config.activation_code_attribute_name.should equal(:code)    
     end
     
-    it "should enable configuration option 'sorcery_mailer'" do
-      plugin_set_model_config_property(:sorcery_mailer, TestMailer)
-      User.sorcery_config.sorcery_mailer.should equal(TestMailer)    
+    it "should enable configuration option 'user_activation_mailer'" do
+      plugin_set_model_config_property(:user_activation_mailer, TestMailer)
+      User.sorcery_config.user_activation_mailer.should equal(TestMailer)    
     end
     
     it "should enable configuration option 'activation_needed_email_method_name'" do
@@ -54,7 +54,7 @@ describe "User with activation submodule" do
   # ----------------- ACTIVATION PROCESS -----------------------
   describe User, "activation process" do
     before(:all) do
-      plugin_model_configure([:user_activation], :sorcery_mailer => ::SorceryMailer)
+      plugin_model_configure([:user_activation], :user_activation_mailer => ::SorceryMailer)
     end
     
     it "should generate an activation code on registration" do
@@ -130,7 +130,7 @@ describe "User with activation submodule" do
 
   describe User, "prevent non-active login feature" do
     before(:all) do
-      plugin_model_configure([:user_activation], :sorcery_mailer => ::SorceryMailer)
+      plugin_model_configure([:user_activation], :user_activation_mailer => ::SorceryMailer)
     end
     
     it "should not allow a non-active user to authenticate" do

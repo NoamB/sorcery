@@ -13,7 +13,7 @@ describe "User with password_reset submodule" do
   describe User, "loaded plugin configuration" do
   
     before(:all) do
-      plugin_model_configure([:password_reset], :sorcery_mailer => ::SorceryMailer)
+      plugin_model_configure([:password_reset], :reset_password_mailer => ::SorceryMailer)
     end
   
     after(:each) do
@@ -30,7 +30,7 @@ describe "User with password_reset submodule" do
   describe User, "when activated with sorcery" do
   
     before(:all) do
-      plugin_model_configure([:password_reset], :sorcery_mailer => ::SorceryMailer)
+      plugin_model_configure([:password_reset], :reset_password_mailer => ::SorceryMailer)
     end
   
     before(:each) do
