@@ -35,6 +35,7 @@ GEM
     activesupport (3.0.3)
     archive-tar-minitar (0.5.2)
     arel (2.0.6)
+    bcrypt-ruby (2.1.4)
     builder (2.1.2)
     columnize (0.3.2)
     diff-lcs (1.1.2)
@@ -105,6 +106,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt-ruby (~> 2.1.4)
   rails (= 3.0.3)
   rspec
   rspec-rails

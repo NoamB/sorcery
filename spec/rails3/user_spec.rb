@@ -93,7 +93,7 @@ describe "User with no submodules (core)" do
   # ----------------- PLUGIN ACTIVATED -----------------------
   describe User, "when activated with sorcery" do
     before(:all) do
-      plugin_model_configure
+      plugin_model_configure()
     end
   
     before(:each) do
@@ -137,7 +137,7 @@ describe "User with no submodules (core)" do
     
     it "should encrypt password when a new user is saved" do
       create_new_user
-      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('secret',@user.salt)
+      User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be_true
     end
 
     it "should clear the virtual password field if the encryption process worked" do
@@ -171,14 +171,14 @@ describe "User with no submodules (core)" do
       create_new_user
       @user.email = "blup@bla.com"
       @user.save!
-      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('secret',@user.salt)
+      User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be_true
     end
 
     it "should replace the crypted_password in case a new password is set" do
       create_new_user
       @user.password = 'new_secret'
       @user.save!
-      @user.send(User.sorcery_config.crypted_password_attribute_name).should == User.encrypt('new_secret',@user.salt)
+      User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be_false
     end
 
   end
@@ -208,6 +208,10 @@ describe "User with no submodules (core)" do
       class MyCrypto
         def self.encrypt(*tokens)
           tokens.flatten.join('').gsub(/e/,'A')
+        end
+        
+        def self.matches?(crypted,*tokens)
+          crypted = encrypt(*tokens)
         end
       end
       plugin_set_model_config_property(:encryption_algorithm, :custom)

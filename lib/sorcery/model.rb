@@ -52,10 +52,16 @@ module Sorcery
       def authenticate(*credentials)
         raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
         user = where("#{@sorcery_config.username_attribute_name} = ?", credentials[0]).first
-        salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil?
-        user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && (user.send(@sorcery_config.crypted_password_attribute_name)) == encrypt(credentials[1],salt)
+        _salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil? && !@sorcery_config.encryption_provider.nil?
+        user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && credentials_match?(user.send(@sorcery_config.crypted_password_attribute_name),credentials[1],_salt)
+      end
+
+      def credentials_match?(crypted, *tokens)
+        return crypted == tokens.join if @sorcery_config.encryption_provider.nil?
+        @sorcery_config.encryption_provider.matches?(crypted, *tokens)
       end
       
+      # encrypt tokens using current encryption_provider.
       def encrypt(*tokens)
         return tokens.first if @sorcery_config.encryption_provider.nil?
         
@@ -78,8 +84,8 @@ module Sorcery
       # encrypts password with salt and save it.
       def encrypt_password
         config = sorcery_config
-        self.send(:"#{config.salt_attribute_name}=", generate_random_code) if !config.salt_attribute_name.nil?
-        self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name),salt))
+        new_salt = self.send(:"#{config.salt_attribute_name}=", generate_random_code) if !config.salt_attribute_name.nil?
+        self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name),new_salt))
       end
 
       def clear_virtual_password
@@ -131,7 +137,7 @@ module Sorcery
           :@password_attribute_name              => :password,
           :@email_attribute_name                 => :email,
           :@crypted_password_attribute_name      => :crypted_password,
-          :@encryption_algorithm                 => :sha256,
+          :@encryption_algorithm                 => :bcrypt,
           :@encryption_provider                  => CryptoProviders::BCrypt,
           :@custom_encryption_provider           => nil,
           :@encryption_key                       => nil,

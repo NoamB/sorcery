@@ -49,7 +49,7 @@ module Sorcery
           @cost ||= 10
         end
         attr_writer :cost
-        alias :stretches= :cost=
+        #alias :stretches= :cost=
         
         # Creates a BCrypt hash for the password passed.
         def encrypt(*tokens)
