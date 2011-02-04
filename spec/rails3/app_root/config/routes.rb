@@ -8,6 +8,7 @@ AppRoot::Application.routes.draw do
   match '/test_login_with_remember_in_login', :to => 'application#test_login_with_remember_in_login'
   match '/test_login_from_cookie', :to => 'application#test_login_from_cookie'
   match '/test_should_be_logged_in', :to => 'application#test_should_be_logged_in'
+  match '/test_http_basic_auth', :to => 'application#test_http_basic_auth'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

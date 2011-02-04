@@ -13,6 +13,7 @@ module Sorcery
       autoload :RememberMe, 'sorcery/controller/submodules/remember_me'
       autoload :SessionTimeout, 'sorcery/controller/submodules/session_timeout'
       autoload :BruteForceProtection, 'sorcery/controller/submodules/brute_force_protection'
+      autoload :HttpBasicAuth, 'sorcery/controller/submodules/http_basic_auth'
     end
   end
   module CryptoProviders

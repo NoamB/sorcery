@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   
   #before_filter :validate_session, :only => [:test_should_be_logged_in] if defined?(:validate_session)
+  before_filter :require_user_login_from_http, :only => [:test_http_basic_auth]
   before_filter :require_user_login, :only => [:test_logout, :test_should_be_logged_in, :some_action]
   
   def index
@@ -52,6 +53,10 @@ class ApplicationController < ActionController::Base
   
   def test_should_be_logged_in
     render :text => ""
+  end
+  
+  def test_http_basic_auth
+    render :text => "HTTP Basic Auth"
   end
   
   protected
