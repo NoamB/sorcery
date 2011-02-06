@@ -45,5 +45,6 @@ describe ApplicationController do
       session[:user_id].should be_nil
       response.should be_a_redirect
     end
+    
   end
 end

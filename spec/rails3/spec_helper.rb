@@ -62,15 +62,20 @@ module Sorcery
   end
 end
 
-def create_new_user
-  user_attributes_hash = {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
+def create_new_user(attributes_hash = nil)
+  user_attributes_hash = attributes_hash || {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
   @user = User.new(user_attributes_hash)
   @user.save!
+  @user
 end
 
 def login_user
   subject.send(:login_user,@user)
   subject.send(:after_login!,@user,['gizmo','secret'])
+end
+
+def logout_user
+  subject.send(:logout)
 end
 
 # TODO: rename to sorcery_reload!(subs = [], model_opts = {}, controller_opts = {})

@@ -53,6 +53,7 @@ module Sorcery
       
       def logout
         if logged_in?
+          before_logout!(logged_in_user)
           reset_session
           after_logout!
         end
@@ -98,6 +99,10 @@ module Sorcery
         Config.after_failed_login.each {|c| self.send(c, user, credentials)}
       end
       
+      def before_logout!(user)
+        Config.before_logout.each {|c| self.send(c, user)}
+      end
+      
       def after_logout!
         Config.after_logout.each {|c| self.send(c)}
       end
@@ -118,6 +123,7 @@ module Sorcery
                       :login_sources,
                       :after_login,
                       :after_failed_login,
+                      :before_logout,
                       :after_logout,
                       :after_config
                       
@@ -130,6 +136,7 @@ module Sorcery
             :@login_sources                        => [],
             :@after_login                          => [],
             :@after_failed_login                   => [],
+            :@before_logout                        => [],
             :@after_logout                         => [],
             :@after_config                         => [],
             :@save_user_wanted_url                 => true

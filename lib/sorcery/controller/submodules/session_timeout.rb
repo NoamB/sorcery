@@ -35,6 +35,7 @@ module Sorcery
               session[:last_action_time] = Time.now.utc
             end
           end
+
         end
       end
     end
