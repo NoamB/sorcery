@@ -6,22 +6,27 @@ module Sorcery
           base.extend(ClassMethods)
           base.sorcery_config.class_eval do
             attr_accessor :last_login_attribute_name,                     # last login attribute name.
-                          :last_logout_attribute_name                    # last logout attribute name.
+                          :last_logout_attribute_name,                    # last logout attribute name.
+                          :last_activity_attribute_name,                  # last activity attribute name.
+                          :activity_timeout                               # how long since last activity is the user defined logged out?
           end
           
           base.sorcery_config.instance_eval do
             @defaults.merge!(:@last_login_attribute_name                   => :last_login,
-                             :@last_logout_attribute_name                  => :last_logout)
+                             :@last_logout_attribute_name                  => :last_logout,
+                             :@last_activity_attribute_name                => :last_activity,
+                             :@activity_timeout                            => 10.minutes)
             reset!
           end
         end
         
         module ClassMethods
-          # get all users with last login > last logout, 
-          # which are within session_timeout (if submodule included) or within defined time
+          # get all users with last_activity within timeout
           def logged_in_users
             config = sorcery_config
-            where("#{config.last_login_attribute_name} IS NOT NULL AND (#{config.last_logout_attribute_name} IS NULL OR #{config.last_login_attribute_name}>#{config.last_logout_attribute_name})")
+            where("#{config.last_activity_attribute_name} IS NOT NULL") \
+            .where("#{config.last_logout_attribute_name} IS NULL OR #{config.last_activity_attribute_name} > #{config.last_logout_attribute_name}") \
+            .where("#{config.last_activity_attribute_name} > ? ", config.activity_timeout.seconds.ago)
           end
         end
       end

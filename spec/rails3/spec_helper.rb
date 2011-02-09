@@ -62,6 +62,8 @@ module Sorcery
   end
 end
 
+SUBMODUELS_AUTO_ADDED_CONTROLLER_FILTERS = [:register_last_activity_time_to_db, :deny_banned_user, :validate_session]
+
 def create_new_user(attributes_hash = nil)
   user_attributes_hash = attributes_hash || {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
   @user = User.new(user_attributes_hash)
@@ -69,13 +71,18 @@ def create_new_user(attributes_hash = nil)
   @user
 end
 
-def login_user
-  subject.send(:login_user,@user)
-  subject.send(:after_login!,@user,['gizmo','secret'])
+def login_user(user = nil)
+  user ||= @user
+  subject.send(:login_user,user)
+  subject.send(:after_login!,user,[user.username,'secret'])
 end
 
 def logout_user
   subject.send(:logout)
+end
+
+def clear_user_without_logout
+  subject.instance_variable_set(:@logged_in_user,nil)
 end
 
 # TODO: rename to sorcery_reload!(subs = [], model_opts = {}, controller_opts = {})
@@ -85,6 +92,11 @@ def plugin_model_configure(submodules = [], options = {})
   # return to no-module configuration
   ::Sorcery::Controller::Config.init!
   ::Sorcery::Controller::Config.reset!
+  
+  # remove all plugin before_filters so they won't fail other tests.
+  # I don't like this way, but I didn't find another.
+  # hopefully it won't break until Rails 4.
+  ApplicationController._process_action_callbacks.delete_if {|c| SUBMODUELS_AUTO_ADDED_CONTROLLER_FILTERS.include?(c.filter) }
   
   # configure
   ::Sorcery::Controller::Config.submodules = submodules
@@ -114,6 +126,8 @@ end
 
 private
 
+# reload user class between specs
+# so it will be possible to test the different submodules in isolation
 def reload_user_class
   Object.send(:remove_const,:User)
   load 'user.rb'

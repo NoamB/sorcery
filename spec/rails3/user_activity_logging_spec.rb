@@ -26,7 +26,11 @@ describe "User with activity logging submodule" do
       plugin_set_model_config_property(:last_logout_attribute_name, :logout_time)
       User.sorcery_config.last_logout_attribute_name.should equal(:logout_time)
     end
-
+    
+    it "should allow configuration option 'last_activity_attribute_name'" do
+      plugin_set_model_config_property(:last_activity_attribute_name, :activity_time)
+      User.sorcery_config.last_activity_attribute_name.should equal(:activity_time)
+    end
   end
 
 end
