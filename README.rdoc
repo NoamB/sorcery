@@ -19,7 +19,7 @@ User Activation (see lib/sorcery/model/submodules/user_activation.rb):
 * User activation by email with optional success email.
 * configurable attribute names.
 * configurable mailer.
-* Optionally prevent active users to login.
+* Optionally prevent non-active users to login.
 
 Password Reset (see lib/sorcery/model/submodules/password_reset.rb):
 * Reset password with email verification.
@@ -75,9 +75,9 @@ Hopefully, I've achieved this. If not, let me know.
 
 == Installation:
 
-You can either git clone and then 'rake install',
+You can either git clone and then 'rake install' to live on the edge (unstable),
 
-In the future will be available:
+Or simply (stable):
 
 	gem install sorcery
 
@@ -122,7 +122,10 @@ The configuration options vary with the modules you've chosen to use.
 
 == Contributing to sorcery
 
-I can use help of any kind, be it comments on code, suggestions, features, bug reports, bug fixes, documentation and if you like, a donation.
+Your feedback is very welcome and will make this gem much much better for you, me and everyone else.
+Besides feedback on code, features, suggestions and bug reports, you may want to actually make an impact on the code.
+For this you can fork the project on github, add your code, run the tests, add your own tests and make a pull request.
+If you feel my work has made your life easier, and you would like to thank me through a donation, my paypal email is in the contact details.
 
 == Contact
 
