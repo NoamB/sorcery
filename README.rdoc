@@ -42,6 +42,11 @@ Basic HTTP Authentication (see lib/sorcery/controller/submodules/http_basic_auth
 * automatic login from HTTP Basic.
 * automatic login is disabled if session key changed.
 
+Activity Logging (see lib/sorcery/model/submodules/activity_logging.rb):
+* automatic logging of last login, last logout and last activity time.
+* an easy method of collecting the list of currently logged in users.
+* configurable timeout by which to decide whether to include a user in the list of logged in users.
+
 Other:
 * Modular design, load only the modules you need.
 * 100% TDD'd code, 100% test coverage.
@@ -55,7 +60,6 @@ I've got many plans which include:
 * Sinatra support
 * Mongoid support
 * OmniAuth integration
-* Activity logging
 * Have an idea? Let me know, and it might get into the gem!
 
 == Project Goals:
@@ -124,7 +128,14 @@ The configuration options vary with the modules you've chosen to use.
 
 Your feedback is very welcome and will make this gem much much better for you, me and everyone else.
 Besides feedback on code, features, suggestions and bug reports, you may want to actually make an impact on the code.
-For this you can fork the project on github, add your code, run the tests, add your own tests and make a pull request.
+For this:
+
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don’t break it in a future version unintentionally.
+* Commit, do not mess with Rakefiles, version, or history. (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for topic branches.
+
 If you feel my work has made your life easier, and you would like to thank me through a donation, my paypal email is in the contact details.
 
 == Contact

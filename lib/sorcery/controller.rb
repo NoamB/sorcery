@@ -64,9 +64,9 @@ module Sorcery
       end
       
       # attempts to auto-login from the sources defined (session, basic_auth, cookie, etc.)
-      # returns the logged in user if found, false if not (using old restful-authentication trick).
+      # returns the logged in user if found, false if not (using old restful-authentication trick, nil != false).
       def logged_in_user
-        @logged_in_user ||= login_from_session || login_from_other_sources unless @logged_in_user == false # || login_from_basic_auth || )
+        @logged_in_user ||= login_from_session || login_from_other_sources unless @logged_in_user == false
       end
       
       def login_from_other_sources

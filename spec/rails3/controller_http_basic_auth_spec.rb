@@ -9,6 +9,10 @@ describe ApplicationController do
       create_new_user
     end
     
+    after(:each) do
+      logout_user
+    end
+    
     it "requests basic authentication when before_filter is used" do
       get :test_http_basic_auth
       response.code.should == "401"
@@ -35,6 +39,12 @@ describe ApplicationController do
       plugin_set_controller_config_property(:controller_to_realm_map, {"application" => "Salad"})
       get :test_http_basic_auth
       response.headers["WWW-Authenticate"].should == "Basic realm=\"Salad\""
+    end
+    
+    it "should sign in the user's session on successful login" do
+      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.username}:secret")
+      get :test_http_basic_auth, nil, :http_authentication_used => true
+      session[:user_id].should == User.find_by_username(@user.username).id
     end
   end
 end
