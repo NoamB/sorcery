@@ -24,6 +24,31 @@ describe "User with password_reset submodule" do
       create_new_user
       @user.should respond_to(:reset_password!)
     end
+    
+    it "should respond to 'reset_password_code_valid?'" do
+      create_new_user
+      @user.should respond_to(:reset_password_code_valid?)
+    end
+    
+    it "should allow configuration option 'reset_password_code_attribute_name'" do
+      plugin_set_model_config_property(:reset_password_code_attribute_name, :my_code)
+      User.sorcery_config.reset_password_code_attribute_name.should equal(:my_code)
+    end
+    
+    it "should allow configuration option 'reset_password_mailer'" do
+      plugin_set_model_config_property(:reset_password_mailer, TestUser)
+      User.sorcery_config.reset_password_mailer.should equal(TestUser)
+    end
+    
+    it "should allow configuration option 'reset_password_email_method_name'" do
+      plugin_set_model_config_property(:reset_password_email_method_name, :my_mailer_method)
+      User.sorcery_config.reset_password_email_method_name.should equal(:my_mailer_method)
+    end
+    
+    it "should allow configuration option 'reset_password_expiration_period'" do
+      plugin_set_model_config_property(:reset_password_expiration_period, 16)
+      User.sorcery_config.reset_password_expiration_period.should equal(16)
+    end
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
@@ -68,9 +93,38 @@ describe "User with password_reset submodule" do
       @user.reset_password_code.should be_nil
     end
     
+    it "code isn't valid if expiration passed" do
+      create_new_user
+      plugin_set_model_config_property(:reset_password_expiration_period, 0.1)
+      @user.reset_password!
+      sleep 0.5
+      @user.reset_password_code_valid?(@user.reset_password_code).should == false
+    end
+    
+    it "code is valid if it's the same code and expiration period did not pass" do
+      create_new_user
+      plugin_set_model_config_property(:reset_password_expiration_period, 300)
+      @user.reset_password!
+      @user.reset_password_code_valid?(@user.reset_password_code).should == true
+    end
+    
+    it "code is valid if it's the same code and expiration period is nil" do
+      create_new_user
+      plugin_set_model_config_property(:reset_password_expiration_period, nil)
+      @user.reset_password!
+      @user.reset_password_code_valid?(@user.reset_password_code).should == true
+    end
+    
+    it "code isn't valid if it's not the same code" do
+      create_new_user
+      @user.reset_password!
+      @user.reset_password_code_valid?("asdadagfdgdf").should == false
+    end
+    
     it "if mailer is nil on activation, throw exception!" do
       expect{plugin_model_configure([:password_reset])}.to raise_error(ArgumentError)
     end
+    
   end
   
 end

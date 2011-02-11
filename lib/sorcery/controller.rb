@@ -12,7 +12,6 @@ module Sorcery
           end
         end
         Config.update!
-        Config.user_class = User
       end
     end
     

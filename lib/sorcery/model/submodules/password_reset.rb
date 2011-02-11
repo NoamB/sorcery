@@ -5,26 +5,26 @@ module Sorcery
       module PasswordReset        
         def self.included(base)
           base.sorcery_config.class_eval do
-            attr_accessor :reset_password_code_attribute_name,        # reset password code attribute name.
-                          :reset_password_mailer,                     # mailer class. Needed.
-                          :reset_password_email_method_name           # reset password email method on your mailer class.
+            attr_accessor :reset_password_code_attribute_name,              # reset password code attribute name.
+                          :reset_password_code_expires_at_attribute_name,   # expires at attribute name.
+                          :reset_password_mailer,                           # mailer class. Needed.
+                          :reset_password_email_method_name,                # reset password email method on your mailer class.
+                          :reset_password_expiration_period                 # how many seconds before the reset request expires. nil for never expires.
 
           end
           
           base.sorcery_config.instance_eval do
-            @defaults.merge!(:@reset_password_code_attribute_name => :reset_password_code,
-                             :@reset_password_mailer              => nil,
-                             :@reset_password_email_method_name   => :reset_password_email)
+            @defaults.merge!(:@reset_password_code_attribute_name            => :reset_password_code,
+                             :@reset_password_code_expires_at_attribute_name => :reset_password_code_expires_at,
+                             :@reset_password_mailer                         => nil,
+                             :@reset_password_email_method_name              => :reset_password_email,
+                             :@reset_password_expiration_period              => nil )
 
             reset!
           end
           
           base.class_eval do
-            clear_reset_password_code_proc = Proc.new do |record|
-              record.valid? && record.send(sorcery_config.password_attribute_name)
-            end
-            
-            before_save :clear_reset_password_code, :if =>clear_reset_password_code_proc
+            before_save :clear_reset_password_code, :if => Proc.new {|record| record.valid? && record.send(sorcery_config.password_attribute_name)}
           end
           
           base.sorcery_config.after_config << :validate_mailer_defined
@@ -44,10 +44,18 @@ module Sorcery
           def reset_password!
             config = sorcery_config
             self.send(:"#{config.reset_password_code_attribute_name}=", generate_random_code)
+            self.send(:"#{config.reset_password_code_expires_at_attribute_name}=", Time.now.utc+config.reset_password_expiration_period) if config.reset_password_expiration_period
             self.class.transaction do
               self.save!(:validate => false)
               generic_send_email(:reset_password_email_method_name, :reset_password_mailer)
             end
+          end
+          
+          def reset_password_code_valid?(code)
+            config = sorcery_config
+            result = self.send(config.reset_password_code_attribute_name) == code
+            result = result && Time.now.utc < self.send(config.reset_password_code_expires_at_attribute_name) if config.reset_password_expiration_period
+            result
           end
 
           protected
@@ -55,6 +63,7 @@ module Sorcery
           def clear_reset_password_code
             config = sorcery_config
             self.send(:"#{config.reset_password_code_attribute_name}=", nil)
+            self.send(:"#{config.reset_password_code_expires_at_attribute_name}=", nil) if config.reset_password_expiration_period
           end
         end
         
