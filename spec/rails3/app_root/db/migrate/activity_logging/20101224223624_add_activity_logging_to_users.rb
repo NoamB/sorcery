@@ -1,17 +1,17 @@
 class AddActivityLoggingToUsers < ActiveRecord::Migration
   def self.up
-    add_column :users, :last_login,     :datetime, :default => nil
-    add_column :users, :last_logout,    :datetime, :default => nil
-    add_column :users, :last_activity,  :datetime, :default => nil
+    add_column :users, :last_login_at,     :datetime, :default => nil
+    add_column :users, :last_logout_at,    :datetime, :default => nil
+    add_column :users, :last_activity_at,  :datetime, :default => nil
     
-    add_index :users, [:last_logout, :last_activity]
+    add_index :users, [:last_logout_at, :last_activity_at]
   end
 
   def self.down
-    remove_index :users, [:last_logout, :last_activity]
+    remove_index :users, [:last_logout_at, :last_activity_at]
     
-    remove_column :users, :last_activity
-    remove_column :users, :last_logout
-    remove_column :users, :last_login
+    remove_column :users, :last_activity_at
+    remove_column :users, :last_logout_at
+    remove_column :users, :last_login_at
   end
 end

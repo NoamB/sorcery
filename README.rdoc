@@ -24,6 +24,7 @@ User Activation (see lib/sorcery/model/submodules/user_activation.rb):
 Password Reset (see lib/sorcery/model/submodules/password_reset.rb):
 * Reset password with email verification.
 * configurable mailer, method name, and attribute name.
+* configurable expiration.
 
 Remember Me (see lib/sorcery/model/submodules/remember_me.rb):
 * Remember me with configurable expiration.
