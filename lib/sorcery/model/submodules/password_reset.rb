@@ -48,7 +48,7 @@ module Sorcery
           def reset_password!
             config = sorcery_config
             # hammering protection
-            return if self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.ago
+            return if self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.ago.utc
             
             self.send(:"#{config.reset_password_code_attribute_name}=", generate_random_code)
             self.send(:"#{config.reset_password_code_expires_at_attribute_name}=", Time.now.utc+config.reset_password_expiration_period) if config.reset_password_expiration_period
