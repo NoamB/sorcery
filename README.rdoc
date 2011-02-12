@@ -25,6 +25,7 @@ Password Reset (see lib/sorcery/model/submodules/password_reset.rb):
 * Reset password with email verification.
 * configurable mailer, method name, and attribute name.
 * configurable expiration.
+* configurable time between emails (hammering protection).
 
 Remember Me (see lib/sorcery/model/submodules/remember_me.rb):
 * Remember me with configurable expiration.
@@ -55,9 +56,9 @@ Other:
 == Next Planned Features:
 
 I've got many plans which include:
-* Hammering reset password protection
 * Configurable Auto login on registration/activation
 * Other reset password strategies (security questions?)
+* Other brute force protection strategies (captcha, lock account)
 * Sinatra support
 * Mongoid support
 * OmniAuth integration

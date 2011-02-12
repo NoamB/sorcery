@@ -49,6 +49,16 @@ describe "User with password_reset submodule" do
       plugin_set_model_config_property(:reset_password_expiration_period, 16)
       User.sorcery_config.reset_password_expiration_period.should equal(16)
     end
+    
+    it "should allow configuration option 'reset_password_email_sent_at_attribute_name'" do
+      plugin_set_model_config_property(:reset_password_email_sent_at_attribute_name, :blabla)
+      User.sorcery_config.reset_password_email_sent_at_attribute_name.should equal(:blabla)
+    end
+    
+    it "should allow configuration option 'reset_password_time_between_emails'" do
+      plugin_set_model_config_property(:reset_password_time_between_emails, 16)
+      User.sorcery_config.reset_password_time_between_emails.should equal(16)
+    end
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
@@ -71,6 +81,7 @@ describe "User with password_reset submodule" do
 
     it "the reset_password_code should be random" do
       create_new_user
+      plugin_set_model_config_property(:reset_password_time_between_emails, 0)
       @user.reset_password!
       old_password_code = @user.reset_password_code
       @user.reset_password!
@@ -119,6 +130,27 @@ describe "User with password_reset submodule" do
       create_new_user
       @user.reset_password!
       @user.reset_password_code_valid?("asdadagfdgdf").should == false
+    end
+    
+    it "should not send an email if time between emails has not passed since last email" do
+      create_new_user
+      plugin_set_model_config_property(:reset_password_time_between_emails, 10000)
+      old_size = ActionMailer::Base.deliveries.size
+      @user.reset_password!
+      ActionMailer::Base.deliveries.size.should == old_size + 1
+      @user.reset_password!
+      ActionMailer::Base.deliveries.size.should == old_size + 1
+    end
+    
+    it "should send an email if time between emails has passed since last email" do
+      create_new_user
+      plugin_set_model_config_property(:reset_password_time_between_emails, 0.5)
+      old_size = ActionMailer::Base.deliveries.size
+      @user.reset_password!
+      ActionMailer::Base.deliveries.size.should == old_size + 1
+      sleep 0.5
+      @user.reset_password!
+      ActionMailer::Base.deliveries.size.should == old_size + 2
     end
     
     it "if mailer is nil on activation, throw exception!" do
