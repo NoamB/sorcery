@@ -25,7 +25,7 @@ module Sorcery
             session[:login_time] = session[:last_action_time] = Time.now.utc
           end
           
-          # To be used as a before_filter, before require_user_login
+          # To be used as a before_filter, before require_login
           def validate_session
             session_to_use = Config.session_timeout_from_last_action ? session[:last_action_time] : session[:login_time]
             if session_to_use && (Time.now.utc - session_to_use > Config.session_timeout)

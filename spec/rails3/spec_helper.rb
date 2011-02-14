@@ -41,7 +41,8 @@ RSpec.configure do |config|
 end
 
 #----------------------------------------------------------------
-#require File.join(File.dirname(__FILE__), 'app_root','app','models','user')
+# needed when running individual specs
+require File.join(File.dirname(__FILE__), 'app_root','app','models','user')
 
 class TestUser < ActiveRecord::Base
   activate_sorcery!
@@ -101,7 +102,7 @@ def plugin_model_configure(submodules = [], options = {})
   # configure
   ::Sorcery::Controller::Config.submodules = submodules
   ::Sorcery::Controller::Config.user_class = nil # the next line will reset it to User
-  ApplicationController.send(:include,::Sorcery::Controller)
+  ActionController::Base.send(:include,::Sorcery::Controller)
   
   User.activate_sorcery! do |config|
     options.each do |property,value|

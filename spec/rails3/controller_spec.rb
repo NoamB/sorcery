@@ -93,8 +93,8 @@ describe ApplicationController do
       subject.logged_in_user.should == false
     end
     
-    it "should respond to 'require_user_login'" do
-      should respond_to(:require_user_login)
+    it "should respond to 'require_login'" do
+      should respond_to(:require_login)
     end
     
     it "should call the configured 'not_authenticated_action' when authenticate before_filter fails" do
@@ -104,7 +104,7 @@ describe ApplicationController do
       response.body.should == "test_not_authenticated_action"
     end
     
-    it "require_user_login before_filter should save the url that the user originally wanted" do
+    it "require_login before_filter should save the url that the user originally wanted" do
       get :some_action
       session[:user_wanted_url].should == "http://test.host/some_action"
       response.should redirect_to("http://test.host/")

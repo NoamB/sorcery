@@ -30,7 +30,7 @@ module Sorcery
       # To be used as before_filter.
       # Will trigger auto-login attempts via the call to logged_in?
       # If all attempts to auto-login fail, the failure callback will be called.
-      def require_user_login
+      def require_login
         if !logged_in?
           session[:user_wanted_url] = request.url if Config.save_user_wanted_url
           self.send(Config.not_authenticated_action) 
