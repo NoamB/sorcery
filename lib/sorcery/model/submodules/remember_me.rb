@@ -22,13 +22,15 @@ module Sorcery
         end
         
         module InstanceMethods
+          # You shouldn't really use this one - it's called by the controller's 'remember_me!' method.
           def remember_me!
             config = sorcery_config
             self.send(:"#{config.remember_me_token_attribute_name}=", generate_random_code)
             self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", Time.now + config.remember_me_for)
             self.save!(:validate => false)
           end
-
+          
+          # You shouldn't really use this one - it's called by the controller's 'forget_me!' method.
           def forget_me!
             config = sorcery_config
             self.send(:"#{config.remember_me_token_attribute_name}=", nil)

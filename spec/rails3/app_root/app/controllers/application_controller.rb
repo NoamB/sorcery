@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   
   #before_filter :validate_session, :only => [:test_should_be_logged_in] if defined?(:validate_session)
-  before_filter :require_login_from_http, :only => [:test_http_basic_auth]
+  before_filter :require_login_from_http_basic, :only => [:test_http_basic_auth]
   before_filter :require_login, :only => [:test_logout, :test_should_be_logged_in, :some_action]
   
   def index

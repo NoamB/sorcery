@@ -20,6 +20,8 @@ module Sorcery
             # disadvantages: can hurt performance.
           end
           
+          protected
+          
           def register_login_time_to_db(user, credentials)
             user.send(:"#{user.sorcery_config.last_login_at_attribute_name}=", Time.now.utc.to_s(:db))
             user.save!(:validate => false)

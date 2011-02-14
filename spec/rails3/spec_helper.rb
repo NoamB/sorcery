@@ -1,17 +1,17 @@
 $: << File.join(File.dirname(__FILE__), '..', '..', 'lib' )
 
-require 'simplecov'
-SimpleCov.root File.join(File.dirname(__FILE__), "app_root" )
-SimpleCov.start do
-  add_filter "/config/"
-  
-  add_group 'Controllers', 'app/controllers'
-  add_group 'Models', 'app/models'
-  add_group 'Helpers', 'app/helpers'
-  add_group 'Libraries', 'lib'
-  add_group 'Plugins', 'vendor/plugins'
-  add_group 'Migrations', 'db/migrate'
-end
+# require 'simplecov'
+# SimpleCov.root File.join(File.dirname(__FILE__), "app_root" )
+# SimpleCov.start do
+#   add_filter "/config/"
+#   
+#   add_group 'Controllers', 'app/controllers'
+#   add_group 'Models', 'app/models'
+#   add_group 'Helpers', 'app/helpers'
+#   add_group 'Libraries', 'lib'
+#   add_group 'Plugins', 'vendor/plugins'
+#   add_group 'Migrations', 'db/migrate'
+# end
 
 # Set the default environment to sqlite3's in_memory database
 ENV['RAILS_ENV'] ||= 'in_memory'

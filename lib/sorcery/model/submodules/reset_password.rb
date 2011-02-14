@@ -2,7 +2,7 @@ module Sorcery
   module Model
     module Submodules
       # This submodule adds the ability to reset password via email confirmation.
-      module PasswordReset        
+      module ResetPassword       
         def self.included(base)
           base.sorcery_config.class_eval do
             attr_accessor :reset_password_code_attribute_name,              # reset password code attribute name.
@@ -39,13 +39,14 @@ module Sorcery
         
         module ClassMethods
           def validate_mailer_defined
-            msg = "To use password_reset submodule, you must define a mailer (config.reset_password_mailer = YourMailerClass)."
+            msg = "To use reset_password submodule, you must define a mailer (config.reset_password_mailer = YourMailerClass)."
             raise ArgumentError, msg if @sorcery_config.reset_password_mailer == nil
           end
         end
         
         module InstanceMethods
-          def reset_password!
+          # generates a reset code with expiration and sends an email to the user.
+          def deliver_reset_password_instructions!
             config = sorcery_config
             # hammering protection
             return if self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.ago.utc

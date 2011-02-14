@@ -21,6 +21,8 @@ module Sorcery
         end
         
         module InstanceMethods
+          protected
+          
           def register_login_time(user, credentials)
             session[:login_time] = session[:last_action_time] = Time.now.utc
           end

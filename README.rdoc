@@ -21,7 +21,7 @@ User Activation (see lib/sorcery/model/submodules/user_activation.rb):
 * configurable mailer.
 * Optionally prevent non-active users to login.
 
-Password Reset (see lib/sorcery/model/submodules/password_reset.rb):
+Reset Password (see lib/sorcery/model/submodules/reset_password.rb):
 * Reset password with email verification.
 * configurable mailer, method name, and attribute name.
 * configurable expiration.

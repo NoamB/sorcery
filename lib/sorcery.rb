@@ -3,7 +3,7 @@ module Sorcery
   module Model
     module Submodules
       autoload :UserActivation, 'sorcery/model/submodules/user_activation'
-      autoload :PasswordReset, 'sorcery/model/submodules/password_reset'
+      autoload :ResetPassword, 'sorcery/model/submodules/reset_password'
       autoload :RememberMe, 'sorcery/model/submodules/remember_me'
       autoload :ActivityLogging, 'sorcery/model/submodules/activity_logging'
     end
