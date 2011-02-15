@@ -25,14 +25,24 @@ describe "User with reset_password submodule" do
       @user.should respond_to(:deliver_reset_password_instructions!)
     end
     
-    it "should respond to 'reset_password_code_valid?'" do
+    it "should respond to 'reset_password_token_valid?'" do
       create_new_user
-      @user.should respond_to(:reset_password_code_valid?)
+      @user.should respond_to(:reset_password_token_valid?)
     end
     
-    it "should allow configuration option 'reset_password_code_attribute_name'" do
-      plugin_set_model_config_property(:reset_password_code_attribute_name, :my_code)
-      User.sorcery_config.reset_password_code_attribute_name.should equal(:my_code)
+    it "should respond to 'reset_password!" do
+      create_new_user
+      @user.should respond_to(:reset_password!)
+    end
+    
+    it "should respond to 'load_from_reset_password_token'" do
+      create_new_user
+      User.should respond_to(:load_from_reset_password_token)
+    end
+    
+    it "should allow configuration option 'reset_password_token_attribute_name'" do
+      plugin_set_model_config_property(:reset_password_token_attribute_name, :my_code)
+      User.sorcery_config.reset_password_token_attribute_name.should equal(:my_code)
     end
     
     it "should allow configuration option 'reset_password_mailer'" do
@@ -72,20 +82,52 @@ describe "User with reset_password submodule" do
       User.delete_all
     end
 
-    it "'reset_password!' should generate a reset_password_code" do
+    it "load_from_reset_password_token should return user when token is found" do
       create_new_user
-      @user.reset_password_code.should be_nil
       @user.deliver_reset_password_instructions!
-      @user.reset_password_code.should_not be_nil
+      User.load_from_reset_password_token(@user.reset_password_token).should == @user
+    end
+    
+    it "load_from_reset_password_token should NOT return user when token is NOT found" do
+      create_new_user
+      @user.deliver_reset_password_instructions!
+      User.load_from_reset_password_token("a").should == nil
+    end
+    
+    it "load_from_reset_password_token should return user when token is found and not expired" do
+      create_new_user
+      plugin_set_model_config_property(:reset_password_expiration_period, 500)
+      @user.deliver_reset_password_instructions!
+      User.load_from_reset_password_token(@user.reset_password_token).should == @user
+    end
+    
+    it "load_from_reset_password_token should NOT return user when token is found and expired" do
+      create_new_user
+      plugin_set_model_config_property(:reset_password_expiration_period, 0.1)
+      @user.deliver_reset_password_instructions!
+      sleep 0.5
+      User.load_from_reset_password_token(@user.reset_password_token).should == nil
+    end
+    
+    it "load_from_reset_password_token should return nil if token is blank" do
+      User.load_from_reset_password_token(nil).should == nil
+      User.load_from_reset_password_token("").should == nil
+    end
+    
+    it "'deliver_reset_password_instructions!' should generate a reset_password_token" do
+      create_new_user
+      @user.reset_password_token.should be_nil
+      @user.deliver_reset_password_instructions!
+      @user.reset_password_token.should_not be_nil
     end
 
-    it "the reset_password_code should be random" do
+    it "the reset_password_token should be random" do
       create_new_user
       plugin_set_model_config_property(:reset_password_time_between_emails, 0)
       @user.deliver_reset_password_instructions!
-      old_password_code = @user.reset_password_code
+      old_password_code = @user.reset_password_token
       @user.deliver_reset_password_instructions!
-      @user.reset_password_code.should_not == old_password_code
+      @user.reset_password_token.should_not == old_password_code
     end
 
     it "should send an email on reset" do
@@ -95,13 +137,13 @@ describe "User with reset_password submodule" do
       ActionMailer::Base.deliveries.size.should == old_size + 1
     end
 
-    it "when a new password is set, should delete reset_password_code" do
+    it "when reset_password! is called, should delete reset_password_token" do
       create_new_user
       @user.deliver_reset_password_instructions!
-      @user.reset_password_code.should_not be_nil
-      @user.password = "blabulsdf"
+      @user.reset_password_token.should_not be_nil
+      @user.reset_password!(:password => "blabulsdf")
       @user.save!
-      @user.reset_password_code.should be_nil
+      @user.reset_password_token.should be_nil
     end
     
     it "code isn't valid if expiration passed" do
@@ -109,27 +151,21 @@ describe "User with reset_password submodule" do
       plugin_set_model_config_property(:reset_password_expiration_period, 0.1)
       @user.deliver_reset_password_instructions!
       sleep 0.5
-      @user.reset_password_code_valid?(@user.reset_password_code).should == false
+      @user.reset_password_token_valid?.should == false
     end
     
     it "code is valid if it's the same code and expiration period did not pass" do
       create_new_user
       plugin_set_model_config_property(:reset_password_expiration_period, 300)
       @user.deliver_reset_password_instructions!
-      @user.reset_password_code_valid?(@user.reset_password_code).should == true
+      @user.reset_password_token_valid?.should == true
     end
     
     it "code is valid if it's the same code and expiration period is nil" do
       create_new_user
       plugin_set_model_config_property(:reset_password_expiration_period, nil)
       @user.deliver_reset_password_instructions!
-      @user.reset_password_code_valid?(@user.reset_password_code).should == true
-    end
-    
-    it "code isn't valid if it's not the same code" do
-      create_new_user
-      @user.deliver_reset_password_instructions!
-      @user.reset_password_code_valid?("asdadagfdgdf").should == false
+      @user.reset_password_token_valid?.should == true
     end
     
     it "should not send an email if time between emails has not passed since last email" do
