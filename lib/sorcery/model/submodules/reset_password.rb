@@ -39,7 +39,7 @@ module Sorcery
             return nil if token.blank?
             user = where("#{@sorcery_config.reset_password_token_attribute_name} = ?", token).first
             if !user.blank? && !@sorcery_config.reset_password_expiration_period.nil?
-              return (user.reset_password_token_valid? ? user : nil)
+              return user.reset_password_token_valid? ? user : nil
             end
             user
           end
@@ -58,10 +58,9 @@ module Sorcery
           def deliver_reset_password_instructions!
             config = sorcery_config
             # hammering protection
-            return if self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.ago.utc
-            
+            return if config.reset_password_time_between_emails && self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.ago.utc
             self.send(:"#{config.reset_password_token_attribute_name}=", generate_random_code)
-            self.send(:"#{config.reset_password_token_expires_at_attribute_name}=", Time.now.utc+config.reset_password_expiration_period) if config.reset_password_expiration_period
+            self.send(:"#{config.reset_password_token_expires_at_attribute_name}=", Time.now.utc + config.reset_password_expiration_period) if config.reset_password_expiration_period
             self.send(:"#{config.reset_password_email_sent_at_attribute_name}=", Time.now.utc)
             self.class.transaction do
               self.save!(:validate => false)
