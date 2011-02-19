@@ -120,7 +120,7 @@ module Sorcery
       class << self
         attr_accessor :submodules,
         
-                      :user_class,                    # what class to use as the user class.
+                      :user_class,                    # what class to use as the user class. Set automatically when you call activate_sorcery! in the User class.
                       
                       :not_authenticated_action,      # what controller action to call for non-authenticated users.
                       

@@ -39,6 +39,7 @@ module Sorcery
           # Calls 'lock!' if login retries limit was reached.
           def register_failed_login!
             config = sorcery_config
+            return if !unlocked?
             self.increment(config.failed_logins_count_attribute_name)
             save!
             self.lock! if self.send(config.failed_logins_count_attribute_name) >= config.consecutive_login_retries_amount_limit
