@@ -1,7 +1,8 @@
 PATH
   remote: ../../../
   specs:
-    sorcery (0.1.3)
+    sorcery (0.1.4)
+      bcrypt-ruby (~> 2.1.4)
 
 GEM
   remote: http://rubygems.org/
@@ -112,5 +113,5 @@ DEPENDENCIES
   rspec-rails
   ruby-debug19
   simplecov (>= 0.3.8)
-  sorcery (= 0.1.3)!
+  sorcery (= 0.1.4)!
   sqlite3-ruby
