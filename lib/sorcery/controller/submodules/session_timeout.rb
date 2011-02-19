@@ -1,6 +1,8 @@
 module Sorcery
   module Controller
     module Submodules
+      # This submodule helps you set a timeout to all user sessions.
+      # The timeout can be configured and also you can choose to reset it on every user action.
       module SessionTimeout
         def self.included(base)
           base.send(:include, InstanceMethods)
@@ -23,10 +25,13 @@ module Sorcery
         module InstanceMethods
           protected
           
+          # Registers last login to be used as the timeout starting point.
+          # Runs as a hook after a successful login.
           def register_login_time(user, credentials)
             session[:login_time] = session[:last_action_time] = Time.now.utc
           end
           
+          # Checks if session timeout was reached and expires the current session if so.
           # To be used as a before_filter, before require_login
           def validate_session
             session_to_use = Config.session_timeout_from_last_action ? session[:last_action_time] : session[:login_time]

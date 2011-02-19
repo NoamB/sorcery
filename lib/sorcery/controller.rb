@@ -37,6 +37,8 @@ module Sorcery
         end
       end
       
+      # Takes credentials and returns a user on successful authentication.
+      # Runs hooks after login or failed login.
       def login(*credentials)
         user = Config.user_class.authenticate(*credentials)
         if user
@@ -50,6 +52,7 @@ module Sorcery
         end
       end
       
+      # Resets the session and runs hooks before and after.
       def logout
         if logged_in?
           before_logout!(logged_in_user)
@@ -68,6 +71,17 @@ module Sorcery
         @logged_in_user ||= login_from_session || login_from_other_sources unless @logged_in_user == false
       end
       
+
+      
+      # The default action for denying non-authenticated users.
+      # You can override this method in your controllers.
+      def not_authenticated
+        redirect_to root_path
+      end
+      
+      protected
+      
+      # Tries all available sources (methods) until one doesn't return false.
       def login_from_other_sources
         result = nil
         Config.login_sources.find do |source|
@@ -75,12 +89,6 @@ module Sorcery
         end
         result || false
       end
-      
-      def not_authenticated
-        redirect_to root_path
-      end
-      
-      protected
       
       def login_user(user)
         session[:user_id] = user.id

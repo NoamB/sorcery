@@ -40,8 +40,8 @@ describe "User with brute_force_protection submodule" do
     end
     
     it "should enable configuration option 'consecutive_login_retries_amount_allowed'" do
-      plugin_set_model_config_property(:consecutive_login_retries_amount_allowed, 34)
-      User.sorcery_config.consecutive_login_retries_amount_allowed.should equal(34)    
+      plugin_set_model_config_property(:consecutive_login_retries_amount_limit, 34)
+      User.sorcery_config.consecutive_login_retries_amount_limit.should equal(34)    
     end
     
     it "should enable configuration option 'login_lock_time_period'" do

@@ -1,6 +1,8 @@
 module Sorcery
   module Model
     module Submodules
+      # The Remember Me submodule takes care of setting the user's cookie so that he will be automatically logged in to the site on every visit,
+      # until the cookie expires.
       module RememberMe
         def self.included(base)
           base.sorcery_config.class_eval do
@@ -22,7 +24,7 @@ module Sorcery
         end
         
         module InstanceMethods
-          # You shouldn't really use this one - it's called by the controller's 'remember_me!' method.
+          # You shouldn't really use this one yourself - it's called by the controller's 'remember_me!' method.
           def remember_me!
             config = sorcery_config
             self.send(:"#{config.remember_me_token_attribute_name}=", generate_random_code)
@@ -30,7 +32,7 @@ module Sorcery
             self.save!(:validate => false)
           end
           
-          # You shouldn't really use this one - it's called by the controller's 'forget_me!' method.
+          # You shouldn't really use this one yourself - it's called by the controller's 'forget_me!' method.
           def forget_me!
             config = sorcery_config
             self.send(:"#{config.remember_me_token_attribute_name}=", nil)

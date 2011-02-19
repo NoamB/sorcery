@@ -42,6 +42,7 @@ module Sorcery
         module ClassMethods
           protected
           
+          # This submodule requires the developer to define his own mailer class to be used by it.
           def validate_mailer_defined
             msg = "To use user_activation submodule, you must define a mailer (config.user_activation_mailer = YourMailerClass)."
             raise ArgumentError, msg if @sorcery_config.user_activation_mailer == nil
@@ -49,6 +50,7 @@ module Sorcery
         end
         
         module InstanceMethods
+          # clears activation code, sets the user as 'active' and optionaly sends a success email.
           def activate!
             config = sorcery_config
             self.send(:"#{config.activation_code_attribute_name}=", nil)
@@ -66,6 +68,7 @@ module Sorcery
             self.send(:"#{config.activation_state_attribute_name}=", "pending")
           end
 
+          # called automatically after user initial creation.
           def send_activation_needed_email!
             generic_send_email(:activation_needed_email_method_name, :user_activation_mailer) unless sorcery_config.activation_needed_email_method_name.nil?
           end

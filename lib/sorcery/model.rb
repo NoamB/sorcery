@@ -55,7 +55,8 @@ module Sorcery
         _salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil? && !@sorcery_config.encryption_provider.nil?
         user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && credentials_match?(user.send(@sorcery_config.crypted_password_attribute_name),credentials[1],_salt)
       end
-
+      
+      # Calls the configured encryption provider to compare the supplied password with the encrypted one.
       def credentials_match?(crypted, *tokens)
         return crypted == tokens.join if @sorcery_config.encryption_provider.nil?
         @sorcery_config.encryption_provider.matches?(crypted, *tokens)

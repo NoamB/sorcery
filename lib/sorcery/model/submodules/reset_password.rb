@@ -2,6 +2,12 @@ module Sorcery
   module Model
     module Submodules
       # This submodule adds the ability to reset password via email confirmation.
+      # When the user requests an email is sent to him with a url.
+      # The url includes a token, which is also saved with the user's record in the db.
+      # The token has configurable expiration.
+      # When the user clicks the url in the email, providing the token has not yet expired, he will be able to reset his password via a form.
+      #
+      # When using this submodule, supplying a mailer is mandatory.
       module ResetPassword       
         def self.included(base)
           base.sorcery_config.class_eval do
@@ -34,7 +40,8 @@ module Sorcery
         end
         
         module ClassMethods
-          
+          # Find user by token, also checks for expiration.
+          # Returns the user if token found and is valid.
           def load_from_reset_password_token(token)
             return nil if token.blank?
             user = where("#{@sorcery_config.reset_password_token_attribute_name} = ?", token).first
@@ -46,6 +53,7 @@ module Sorcery
           
           protected
           
+          # This submodule requires the developer to define his own mailer class to be used by it.
           def validate_mailer_defined
             msg = "To use reset_password submodule, you must define a mailer (config.reset_password_mailer = YourMailerClass)."
             raise ArgumentError, msg if @sorcery_config.reset_password_mailer == nil
@@ -68,11 +76,13 @@ module Sorcery
             end
           end
           
+          # Clears token and tries to update the new password for the user.
           def reset_password!(params)
             clear_reset_password_token
             update_attributes(params)
           end
           
+          # Checks for token validity (expiration).
           def reset_password_token_valid?
             config = sorcery_config
             config.reset_password_expiration_period ? Time.now.utc < self.send(config.reset_password_token_expires_at_attribute_name) : true
@@ -80,6 +90,7 @@ module Sorcery
 
           protected
 
+          # Clears the token.
           def clear_reset_password_token
             config = sorcery_config
             self.send(:"#{config.reset_password_token_attribute_name}=", nil)

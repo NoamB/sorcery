@@ -1,6 +1,9 @@
 module Sorcery
   module Controller
     module Submodules
+      # This submodule integrates HTTP Basic authentication into sorcery.
+      # You are provided with a before filter, require_login_from_http_basic, which requests the browser for authentication.
+      # Then the rest of the submodule takes care of logging the user in into the session, so that the next requests will keep him logged in.
       module HttpBasicAuth
         def self.included(base)
           base.send(:include, InstanceMethods)
@@ -42,6 +45,7 @@ module Sorcery
             end
           end
           
+          # Sets the realm name by searching the controller name in the hash given at configuration time.
           def realm_name_by_controller
             current_controller = self.class
             while current_controller != ActionController::Base
