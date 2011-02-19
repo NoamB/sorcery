@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sorcery}
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = %q{2011-02-05}
+  s.date = %q{2011-02-19}
   s.description = %q{Provides common authentication needs such as signing in/out, activating by email and resetting password.}
   s.email = %q{nbenari@gmail.com}
   s.extra_rdoc_files = [
@@ -25,9 +25,9 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
-    "features/support/env.rb",
     "lib/sorcery.rb",
     "lib/sorcery/controller.rb",
+    "lib/sorcery/controller/submodules/activity_logging.rb",
     "lib/sorcery/controller/submodules/brute_force_protection.rb",
     "lib/sorcery/controller/submodules/http_basic_auth.rb",
     "lib/sorcery/controller/submodules/remember_me.rb",
@@ -40,8 +40,10 @@ Gem::Specification.new do |s|
     "lib/sorcery/crypto_providers/sha512.rb",
     "lib/sorcery/engine.rb",
     "lib/sorcery/model.rb",
-    "lib/sorcery/model/submodules/reset_password.rb",
+    "lib/sorcery/model/submodules/activity_logging.rb",
+    "lib/sorcery/model/submodules/brute_force_protection.rb",
     "lib/sorcery/model/submodules/remember_me.rb",
+    "lib/sorcery/model/submodules/reset_password.rb",
     "lib/sorcery/model/submodules/user_activation.rb",
     "sorcery.gemspec",
     "spec/Gemfile",
@@ -82,9 +84,11 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/config/locales/en.yml",
     "spec/rails3/app_root/config/routes.rb",
     "spec/rails3/app_root/db/migrate/activation/20101224223622_add_activation_to_users.rb",
+    "spec/rails3/app_root/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
+    "spec/rails3/app_root/db/migrate/brute_force_protection/20101224223626_add_brute_force_protection_to_users.rb",
     "spec/rails3/app_root/db/migrate/core/20101224223620_create_users.rb",
-    "spec/rails3/app_root/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/rails3/app_root/db/migrate/remember_me/20101224223623_add_remember_me_token_to_users.rb",
+    "spec/rails3/app_root/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/rails3/app_root/db/schema.rb",
     "spec/rails3/app_root/db/seeds.rb",
     "spec/rails3/app_root/lib/tasks/.gitkeep",
@@ -108,6 +112,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/test/test_helper.rb",
     "spec/rails3/app_root/test/unit/user_test.rb",
     "spec/rails3/app_root/vendor/plugins/.gitkeep",
+    "spec/rails3/controller_activity_logging_spec.rb",
     "spec/rails3/controller_brute_force_protection_spec.rb",
     "spec/rails3/controller_http_basic_auth_spec.rb",
     "spec/rails3/controller_remember_me_spec.rb",
@@ -115,8 +120,10 @@ Gem::Specification.new do |s|
     "spec/rails3/controller_spec.rb",
     "spec/rails3/spec_helper.rb",
     "spec/rails3/user_activation_spec.rb",
-    "spec/rails3/user_reset_password_spec.rb",
+    "spec/rails3/user_activity_logging_spec.rb",
+    "spec/rails3/user_brute_force_protection_spec.rb",
     "spec/rails3/user_remember_me_spec.rb",
+    "spec/rails3/user_reset_password_spec.rb",
     "spec/rails3/user_spec.rb",
     "spec/sorcery_crypto_providers_spec.rb",
     "spec/spec_helper.rb"
@@ -145,14 +152,17 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/config/initializers/session_store.rb",
     "spec/rails3/app_root/config/routes.rb",
     "spec/rails3/app_root/db/migrate/activation/20101224223622_add_activation_to_users.rb",
+    "spec/rails3/app_root/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
+    "spec/rails3/app_root/db/migrate/brute_force_protection/20101224223626_add_brute_force_protection_to_users.rb",
     "spec/rails3/app_root/db/migrate/core/20101224223620_create_users.rb",
-    "spec/rails3/app_root/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/rails3/app_root/db/migrate/remember_me/20101224223623_add_remember_me_token_to_users.rb",
+    "spec/rails3/app_root/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/rails3/app_root/db/schema.rb",
     "spec/rails3/app_root/db/seeds.rb",
     "spec/rails3/app_root/test/performance/browsing_test.rb",
     "spec/rails3/app_root/test/test_helper.rb",
     "spec/rails3/app_root/test/unit/user_test.rb",
+    "spec/rails3/controller_activity_logging_spec.rb",
     "spec/rails3/controller_brute_force_protection_spec.rb",
     "spec/rails3/controller_http_basic_auth_spec.rb",
     "spec/rails3/controller_remember_me_spec.rb",
@@ -160,8 +170,10 @@ Gem::Specification.new do |s|
     "spec/rails3/controller_spec.rb",
     "spec/rails3/spec_helper.rb",
     "spec/rails3/user_activation_spec.rb",
-    "spec/rails3/user_reset_password_spec.rb",
+    "spec/rails3/user_activity_logging_spec.rb",
+    "spec/rails3/user_brute_force_protection_spec.rb",
     "spec/rails3/user_remember_me_spec.rb",
+    "spec/rails3/user_reset_password_spec.rb",
     "spec/rails3/user_spec.rb",
     "spec/sorcery_crypto_providers_spec.rb",
     "spec/spec_helper.rb"
@@ -171,39 +183,39 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rails>, ["= 3.0.3"])
+      s.add_development_dependency(%q<rails>, [">= 3.0.0"])
       s.add_development_dependency(%q<rspec>, ["~> 2.3.0"])
       s.add_development_dependency(%q<rspec-rails>, [">= 0"])
       s.add_development_dependency(%q<ruby-debug19>, [">= 0"])
       s.add_development_dependency(%q<sqlite3-ruby>, [">= 0"])
       s.add_development_dependency(%q<yard>, ["~> 0.6.0"])
-      s.add_development_dependency(%q<cucumber>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<simplecov>, [">= 0.3.8"])
+      s.add_runtime_dependency(%q<bcrypt-ruby>, ["~> 2.1.4"])
     else
-      s.add_dependency(%q<rails>, ["= 3.0.3"])
+      s.add_dependency(%q<rails>, [">= 3.0.0"])
       s.add_dependency(%q<rspec>, ["~> 2.3.0"])
       s.add_dependency(%q<rspec-rails>, [">= 0"])
       s.add_dependency(%q<ruby-debug19>, [">= 0"])
       s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
       s.add_dependency(%q<yard>, ["~> 0.6.0"])
-      s.add_dependency(%q<cucumber>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_dependency(%q<simplecov>, [">= 0.3.8"])
+      s.add_dependency(%q<bcrypt-ruby>, ["~> 2.1.4"])
     end
   else
-    s.add_dependency(%q<rails>, ["= 3.0.3"])
+    s.add_dependency(%q<rails>, [">= 3.0.0"])
     s.add_dependency(%q<rspec>, ["~> 2.3.0"])
     s.add_dependency(%q<rspec-rails>, [">= 0"])
     s.add_dependency(%q<ruby-debug19>, [">= 0"])
     s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
     s.add_dependency(%q<yard>, ["~> 0.6.0"])
-    s.add_dependency(%q<cucumber>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
     s.add_dependency(%q<simplecov>, [">= 0.3.8"])
+    s.add_dependency(%q<bcrypt-ruby>, ["~> 2.1.4"])
   end
 end
 
