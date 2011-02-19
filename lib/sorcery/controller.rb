@@ -45,7 +45,7 @@ module Sorcery
           after_login!(user, credentials)
           logged_in_user
         else
-          after_failed_login!(user, credentials)
+          after_failed_login!(credentials)
           nil
         end
       end
@@ -94,8 +94,8 @@ module Sorcery
         Config.after_login.each {|c| self.send(c, user, credentials)}
       end
       
-      def after_failed_login!(user, credentials)
-        Config.after_failed_login.each {|c| self.send(c, user, credentials)}
+      def after_failed_login!(credentials)
+        Config.after_failed_login.each {|c| self.send(c, credentials)}
       end
       
       def before_logout!(user)

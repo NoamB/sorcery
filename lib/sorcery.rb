@@ -6,6 +6,7 @@ module Sorcery
       autoload :ResetPassword, 'sorcery/model/submodules/reset_password'
       autoload :RememberMe, 'sorcery/model/submodules/remember_me'
       autoload :ActivityLogging, 'sorcery/model/submodules/activity_logging'
+      autoload :BruteForceProtection, 'sorcery/model/submodules/brute_force_protection'
     end
   end
   autoload :Controller, 'sorcery/controller'

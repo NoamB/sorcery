@@ -1,6 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe ApplicationController do
+  before(:all) do
+    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/brute_force_protection")
+  end
+  
+  after(:all) do
+    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/brute_force_protection")
+  end
   
   # ----------------- SESSION TIMEOUT -----------------------
   describe ApplicationController, "with brute force protection features" do
@@ -14,59 +21,35 @@ describe ApplicationController do
       plugin_set_controller_config_property(:user_class, User)
     end
     
-    it "should have configuration for 'login_retries_amount_allowed' per session" do
-      plugin_set_controller_config_property(:login_retries_amount_allowed, 32)
-      Sorcery::Controller::Config.login_retries_amount_allowed.should equal(32)
-    end
-    
-    it "should have configuration for 'login_retries_counter_reset_time'" do
-      plugin_set_controller_config_property(:login_retries_time_period, 32)
-      Sorcery::Controller::Config.login_retries_time_period.should equal(32)
-    end
-    
-    it "should count login retries per session" do
+    it "should count login retries" do
       3.times {get :test_login, :username => 'gizmo', :password => 'blabla'}
-      session[:failed_logins].should == 3
+      User.find_by_username('gizmo').failed_logins_count.should == 3
     end
     
-    it "should reset the counter if enough time has passed" do
-      plugin_set_controller_config_property(:login_retries_amount_allowed, 5)
-      plugin_set_controller_config_property(:login_retries_time_period, 0.2)
-      get :test_login, :username => 'gizmo', :password => 'blabla'
-      sleep 0.4
-      get :test_login, :username => 'gizmo', :password => 'blabla'
-      session[:failed_logins].should == 1
+    it "should reset the counter on a good login" do
+      plugin_set_model_config_property(:consecutive_login_retries_amount_allowed, 5)
+      3.times {get :test_login, :username => 'gizmo', :password => 'blabla'}
+      get :test_login, :username => 'gizmo', :password => 'secret'
+      User.find_by_username('gizmo').failed_logins_count.should == 0
     end
     
-    it "should ban session when number of retries reached within an amount of time" do
-      plugin_set_controller_config_property(:login_retries_amount_allowed, 1)
-      plugin_set_controller_config_property(:login_retries_time_period, 50)
+    it "should lock user when number of retries reached the limit" do
+      User.find_by_username('gizmo').lock_expires_at.should be_nil
+      plugin_set_model_config_property(:consecutive_login_retries_amount_allowed, 1)
       get :test_login, :username => 'gizmo', :password => 'blabla'
-      get :test_login, :username => 'gizmo', :password => 'blabla'
-      session[:banned].should == true
+      User.find_by_username('gizmo').lock_expires_at.should_not be_nil
     end
 
-    it "should clear ban after ban time limit passes" do
-      plugin_set_controller_config_property(:login_retries_amount_allowed, 1)
-      plugin_set_controller_config_property(:login_retries_time_period, 50)
-      plugin_set_controller_config_property(:login_ban_time_period, 0.2)
+    it "should unlock after lock time period passes" do
+      plugin_set_model_config_property(:consecutive_login_retries_amount_allowed, 2)
+      plugin_set_model_config_property(:login_lock_time_period, 0.2)
       get :test_login, :username => 'gizmo', :password => 'blabla'
       get :test_login, :username => 'gizmo', :password => 'blabla'
-      session[:banned].should == true
+      User.find_by_username('gizmo').lock_expires_at.should_not be_nil
       sleep 0.3
       get :test_login, :username => 'gizmo', :password => 'blabla'
-      session[:banned].should == nil
+      User.find_by_username('gizmo').lock_expires_at.should be_nil
     end
-    
-    it "banned session calls the configured banned action" do
-      plugin_set_controller_config_property(:login_retries_amount_allowed, 1)
-      plugin_set_controller_config_property(:login_retries_time_period, 50)
-      plugin_set_controller_config_property(:login_ban_time_period, 50)
-      get :test_login, :username => 'gizmo', :password => 'blabla'
-      get :test_login, :username => 'gizmo', :password => 'blabla'
-      get :test_login, :username => 'gizmo', :password => 'blabla'
-      session[:banned].should == true
-      response.body.should == " "
-    end
+
   end
 end
