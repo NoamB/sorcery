@@ -35,9 +35,9 @@ Session Timeout (see lib/sorcery/controller/submodules/session_timeout.rb):
 * Configurable session timeout.
 * Optionally session timeout will be calculated from last user action.
 
-Brute Force Protection (see lib/sorcery/controller/submodules/brute_force_protection.rb):
+Brute Force Protection (see lib/sorcery/model/submodules/brute_force_protection.rb):
 * Brute force login hammering protection.
-* configurable logins before ban, logins within time period before ban, ban time and ban action.
+* configurable logins before lock and lock duration.
 
 Basic HTTP Authentication (see lib/sorcery/controller/submodules/http_basic_auth.rb):
 * A before filter for requesting authentication with HTTP Basic.
@@ -58,10 +58,10 @@ Other:
 I've got many plans which include:
 * Configurable Auto login on registration/activation
 * Other reset password strategies (security questions?)
-* Other brute force protection strategies (captcha, lock account)
+* Other brute force protection strategies (captcha)
 * Sinatra support
 * Mongoid support
-* OmniAuth integration
+* OAuth1 and OAuth2 support
 * Have an idea? Let me know, and it might get into the gem!
 
 == Project Goals:
