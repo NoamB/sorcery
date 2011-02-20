@@ -32,7 +32,7 @@ module Sorcery
       # If all attempts to auto-login fail, the failure callback will be called.
       def require_login
         if !logged_in?
-          session[:user_wanted_url] = request.url if Config.save_user_wanted_url
+          session[:return_to_url] = request.url if Config.save_return_to_url
           self.send(Config.not_authenticated_action) 
         end
       end
@@ -42,7 +42,9 @@ module Sorcery
       def login(*credentials)
         user = Config.user_class.authenticate(*credentials)
         if user
+          return_to_url = session[:return_to_url]
           reset_session # protect from session fixation attacks
+          session[:return_to_url] = return_to_url
           login_user(user)
           after_login!(user, credentials)
           logged_in_user
@@ -71,7 +73,9 @@ module Sorcery
         @logged_in_user ||= login_from_session || login_from_other_sources unless @logged_in_user == false
       end
       
-
+      def return_or_redirect_to(url, flash_hash = {})
+        redirect_to(session[:return_to_url] || url, :flash => flash_hash)
+      end
       
       # The default action for denying non-authenticated users.
       # You can override this method in your controllers.
@@ -124,7 +128,7 @@ module Sorcery
                       
                       :not_authenticated_action,      # what controller action to call for non-authenticated users.
                       
-                      :save_user_wanted_url,          # when a non logged in user tries to enter a page that requires login, save the URL he wanted to reach, 
+                      :save_return_to_url,            # when a non logged in user tries to enter a page that requires login, save the URL he wanted to reach, 
                                                       # and send him there after login.
                       
                       :login_sources,
@@ -146,7 +150,7 @@ module Sorcery
             :@before_logout                        => [],
             :@after_logout                         => [],
             :@after_config                         => [],
-            :@save_user_wanted_url                 => true
+            :@save_return_to_url                   => true
           }
         end
         

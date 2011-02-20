@@ -18,6 +18,11 @@ class ApplicationController < ActionController::Base
     render :text => ""
   end
   
+  def test_return_to
+    @user = login(params[:username], params[:password])
+    return_or_redirect_to(:index, :notice => 'haha!')
+  end
+  
   def test_logout
     logout
     render :text => ""
