@@ -36,6 +36,7 @@ module Sorcery
           base.sorcery_config.after_config << :validate_mailer_defined
           
           base.extend(ClassMethods)
+          base.send(:include, TemporaryToken)
           base.send(:include, InstanceMethods)
         end
         
@@ -43,12 +44,9 @@ module Sorcery
           # Find user by token, also checks for expiration.
           # Returns the user if token found and is valid.
           def load_from_reset_password_token(token)
-            return nil if token.blank?
-            user = where("#{@sorcery_config.reset_password_token_attribute_name} = ?", token).first
-            if !user.blank? && !@sorcery_config.reset_password_expiration_period.nil?
-              return user.reset_password_token_valid? ? user : nil
-            end
-            user
+            token_attr_name = @sorcery_config.reset_password_token_attribute_name
+            token_expiration_date_attr = @sorcery_config.reset_password_token_expires_at_attribute_name
+            load_from_token(token, token_attr_name, token_expiration_date_attr)
           end
           
           protected
@@ -67,7 +65,7 @@ module Sorcery
             config = sorcery_config
             # hammering protection
             return if config.reset_password_time_between_emails && self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.ago.utc
-            self.send(:"#{config.reset_password_token_attribute_name}=", generate_random_code)
+            self.send(:"#{config.reset_password_token_attribute_name}=", generate_random_token)
             self.send(:"#{config.reset_password_token_expires_at_attribute_name}=", Time.now.utc + config.reset_password_expiration_period) if config.reset_password_expiration_period
             self.send(:"#{config.reset_password_email_sent_at_attribute_name}=", Time.now.utc)
             self.class.transaction do
@@ -80,12 +78,6 @@ module Sorcery
           def reset_password!(params)
             clear_reset_password_token
             update_attributes(params)
-          end
-          
-          # Checks for token validity (expiration).
-          def reset_password_token_valid?
-            config = sorcery_config
-            config.reset_password_expiration_period ? Time.now.utc < self.send(config.reset_password_token_expires_at_attribute_name) : true
           end
 
           protected

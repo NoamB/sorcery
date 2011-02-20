@@ -25,11 +25,6 @@ describe "User with reset_password submodule" do
       @user.should respond_to(:deliver_reset_password_instructions!)
     end
     
-    it "should respond to 'reset_password_token_valid?'" do
-      create_new_user
-      @user.should respond_to(:reset_password_token_valid?)
-    end
-    
     it "should respond to 'reset_password!" do
       create_new_user
       @user.should respond_to(:reset_password!)
@@ -109,6 +104,13 @@ describe "User with reset_password submodule" do
       User.load_from_reset_password_token(@user.reset_password_token).should == nil
     end
     
+    it "load_from_reset_password_token should always be valid if expiration period is nil" do
+      create_new_user
+      plugin_set_model_config_property(:reset_password_expiration_period, nil)
+      @user.deliver_reset_password_instructions!
+      User.load_from_reset_password_token(@user.reset_password_token).should == @user
+    end
+    
     it "load_from_reset_password_token should return nil if token is blank" do
       User.load_from_reset_password_token(nil).should == nil
       User.load_from_reset_password_token("").should == nil
@@ -144,28 +146,6 @@ describe "User with reset_password submodule" do
       @user.reset_password!(:password => "blabulsdf")
       @user.save!
       @user.reset_password_token.should be_nil
-    end
-    
-    it "code isn't valid if expiration passed" do
-      create_new_user
-      plugin_set_model_config_property(:reset_password_expiration_period, 0.1)
-      @user.deliver_reset_password_instructions!
-      sleep 0.5
-      @user.reset_password_token_valid?.should == false
-    end
-    
-    it "code is valid if it's the same code and expiration period did not pass" do
-      create_new_user
-      plugin_set_model_config_property(:reset_password_expiration_period, 300)
-      @user.deliver_reset_password_instructions!
-      @user.reset_password_token_valid?.should == true
-    end
-    
-    it "code is valid if it's the same code and expiration period is nil" do
-      create_new_user
-      plugin_set_model_config_property(:reset_password_expiration_period, nil)
-      @user.deliver_reset_password_instructions!
-      @user.reset_password_token_valid?.should == true
     end
     
     it "should not send an email if time between emails has not passed since last email" do

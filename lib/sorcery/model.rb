@@ -85,7 +85,7 @@ module Sorcery
       # encrypts password with salt and save it.
       def encrypt_password
         config = sorcery_config
-        new_salt = self.send(:"#{config.salt_attribute_name}=", generate_random_code) if !config.salt_attribute_name.nil?
+        new_salt = self.send(:"#{config.salt_attribute_name}=", generate_random_token) if !config.salt_attribute_name.nil?
         self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name),new_salt))
       end
 
@@ -105,7 +105,7 @@ module Sorcery
       end
       
       # Random code, used for salt and temporary tokens.
-      def generate_random_code
+      def generate_random_token
         return Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
       end
     end

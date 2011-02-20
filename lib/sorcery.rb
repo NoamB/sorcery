@@ -1,6 +1,7 @@
 module Sorcery
   autoload :Model, 'sorcery/model'
   module Model
+    autoload :TemporaryToken, 'sorcery/model/temporary_token'
     module Submodules
       autoload :UserActivation, 'sorcery/model/submodules/user_activation'
       autoload :ResetPassword, 'sorcery/model/submodules/reset_password'
