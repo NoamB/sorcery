@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../app/mailers/sorcery_maile
 
 describe "User with no submodules (core)" do
   before(:all) do
-    plugin_model_configure
+    sorcery_reload!
   end
 
   describe User, "when app has plugin loaded" do
@@ -36,55 +36,55 @@ describe "User with no submodules (core)" do
     end
   
     it "should enable configuration option 'username_attribute_name'" do
-      plugin_set_model_config_property(:username_attribute_name, :email)
+      sorcery_model_property_set(:username_attribute_name, :email)
       User.sorcery_config.username_attribute_name.should equal(:email)    
     end
   
     it "should enable configuration option 'password_attribute_name'" do
-      plugin_set_model_config_property(:password_attribute_name, :mypassword)
+      sorcery_model_property_set(:password_attribute_name, :mypassword)
       User.sorcery_config.password_attribute_name.should equal(:mypassword)
     end
     
     it "should enable configuration option 'email_attribute_name'" do
-      plugin_set_model_config_property(:email_attribute_name, :my_email)
+      sorcery_model_property_set(:email_attribute_name, :my_email)
       User.sorcery_config.email_attribute_name.should equal(:my_email)
     end
 
     it "should enable configuration option 'crypted_password_attribute_name'" do
-      plugin_set_model_config_property(:crypted_password_attribute_name, :password)
+      sorcery_model_property_set(:crypted_password_attribute_name, :password)
       User.sorcery_config.crypted_password_attribute_name.should equal(:password)
     end
     
     it "should enable configuration option 'salt_attribute_name'" do
-      plugin_set_model_config_property(:salt_attribute_name, :my_salt)
+      sorcery_model_property_set(:salt_attribute_name, :my_salt)
       User.sorcery_config.salt_attribute_name.should equal(:my_salt)
     end
 
     it "should enable configuration option 'encryption_algorithm'" do
-      plugin_set_model_config_property(:encryption_algorithm, :none)
+      sorcery_model_property_set(:encryption_algorithm, :none)
       User.sorcery_config.encryption_algorithm.should equal(:none)
     end
 
     it "should enable configuration option 'encryption_key'" do
-      plugin_set_model_config_property(:encryption_key, 'asdadas424234242')
+      sorcery_model_property_set(:encryption_key, 'asdadas424234242')
       User.sorcery_config.encryption_key.should == 'asdadas424234242'
     end
 
     it "should enable configuration option 'custom_encryption_provider'" do
-      plugin_set_model_config_property(:encryption_algorithm, :custom)
-      plugin_set_model_config_property(:custom_encryption_provider, Array)
+      sorcery_model_property_set(:encryption_algorithm, :custom)
+      sorcery_model_property_set(:custom_encryption_provider, Array)
       User.sorcery_config.custom_encryption_provider.should equal(Array)
     end
   
     it "should enable configuration option 'salt_join_token'" do
       salt_join_token = "--%%*&-"
-      plugin_set_model_config_property(:salt_join_token, salt_join_token)
+      sorcery_model_property_set(:salt_join_token, salt_join_token)
       User.sorcery_config.salt_join_token.should equal(salt_join_token)
     end
     
     it "should enable configuration option 'stretches'" do
       stretches = 15
-      plugin_set_model_config_property(:stretches, stretches)
+      sorcery_model_property_set(:stretches, stretches)
       User.sorcery_config.stretches.should equal(stretches)
     end
   
@@ -93,7 +93,7 @@ describe "User with no submodules (core)" do
   # ----------------- PLUGIN ACTIVATED -----------------------
   describe User, "when activated with sorcery" do
     before(:all) do
-      plugin_model_configure()
+      sorcery_reload!()
     end
   
     before(:each) do
@@ -124,7 +124,7 @@ describe "User with no submodules (core)" do
   describe User, "registration" do
   
     before(:all) do
-      plugin_model_configure()
+      sorcery_reload!()
     end
 
     before(:each) do
@@ -186,7 +186,7 @@ describe "User with no submodules (core)" do
   # ----------------- PASSWORD ENCRYPTION -----------------------
   describe User, "special encryption cases" do
     before(:all) do
-      plugin_model_configure()
+      sorcery_reload!()
       @text = "Some Text!"
     end
   
@@ -199,7 +199,7 @@ describe "User with no submodules (core)" do
     end
   
     it "should work with no password encryption" do
-      plugin_set_model_config_property(:encryption_algorithm, :none)
+      sorcery_model_property_set(:encryption_algorithm, :none)
       create_new_user
       User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'secret').should be_true
     end
@@ -214,66 +214,66 @@ describe "User with no submodules (core)" do
           crypted = encrypt(*tokens)
         end
       end
-      plugin_set_model_config_property(:encryption_algorithm, :custom)
-      plugin_set_model_config_property(:custom_encryption_provider, MyCrypto)
+      sorcery_model_property_set(:encryption_algorithm, :custom)
+      sorcery_model_property_set(:custom_encryption_provider, MyCrypto)
       create_new_user
       User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'secret').should be_true
     end
   
     it "if encryption algo is aes256, it should set key to crypto provider" do
-      plugin_set_model_config_property(:encryption_algorithm, :aes256)
-      plugin_set_model_config_property(:encryption_key, nil)
+      sorcery_model_property_set(:encryption_algorithm, :aes256)
+      sorcery_model_property_set(:encryption_key, nil)
       expect{User.encrypt(@text)}.to raise_error(ArgumentError)
-      plugin_set_model_config_property(:encryption_key, "asd234dfs423fddsmndsflktsdf32343")
+      sorcery_model_property_set(:encryption_key, "asd234dfs423fddsmndsflktsdf32343")
       expect{User.encrypt(@text)}.to_not raise_error(ArgumentError)
     end
     
     it "if encryption algo is aes256, it should set key to crypto provider, even if attributes are set in reverse" do
-      plugin_set_model_config_property(:encryption_key, nil)
-      plugin_set_model_config_property(:encryption_algorithm, :none)
-      plugin_set_model_config_property(:encryption_key, "asd234dfs423fddsmndsflktsdf32343")
-      plugin_set_model_config_property(:encryption_algorithm, :aes256)
+      sorcery_model_property_set(:encryption_key, nil)
+      sorcery_model_property_set(:encryption_algorithm, :none)
+      sorcery_model_property_set(:encryption_key, "asd234dfs423fddsmndsflktsdf32343")
+      sorcery_model_property_set(:encryption_algorithm, :aes256)
       expect{User.encrypt(@text)}.to_not raise_error(ArgumentError)
     end
   
     it "if encryption algo is md5 it should work" do
-      plugin_set_model_config_property(:encryption_algorithm, :md5)
+      sorcery_model_property_set(:encryption_algorithm, :md5)
       User.encrypt(@text).should == Sorcery::CryptoProviders::MD5.encrypt(@text)
     end
   
     it "if encryption algo is sha1 it should work" do
-      plugin_set_model_config_property(:encryption_algorithm, :sha1)
+      sorcery_model_property_set(:encryption_algorithm, :sha1)
       User.encrypt(@text).should == Sorcery::CryptoProviders::SHA1.encrypt(@text)
     end
   
     it "if encryption algo is sha256 it should work" do
-      plugin_set_model_config_property(:encryption_algorithm, :sha256)
+      sorcery_model_property_set(:encryption_algorithm, :sha256)
       User.encrypt(@text).should == Sorcery::CryptoProviders::SHA256.encrypt(@text)
     end
   
     it "if encryption algo is sha512 it should work" do
-      plugin_set_model_config_property(:encryption_algorithm, :sha512)
+      sorcery_model_property_set(:encryption_algorithm, :sha512)
       User.encrypt(@text).should == Sorcery::CryptoProviders::SHA512.encrypt(@text)
     end
   
     it "salt should be random for each user and saved in db" do
-      plugin_set_model_config_property(:salt_attribute_name, :salt)
+      sorcery_model_property_set(:salt_attribute_name, :salt)
       create_new_user
       @user.salt.should_not be_nil
     end
     
     it "if salt is set should use it to encrypt" do
-      plugin_set_model_config_property(:salt_attribute_name, :salt)
-      plugin_set_model_config_property(:encryption_algorithm, :sha512)
+      sorcery_model_property_set(:salt_attribute_name, :salt)
+      sorcery_model_property_set(:encryption_algorithm, :sha512)
       create_new_user
       @user.crypted_password.should_not == Sorcery::CryptoProviders::SHA512.encrypt('secret')
       @user.crypted_password.should == Sorcery::CryptoProviders::SHA512.encrypt('secret',@user.salt)
     end
     
     it "if salt_join_token is set should use it to encrypt" do
-      plugin_set_model_config_property(:salt_attribute_name, :salt)
-      plugin_set_model_config_property(:salt_join_token, "-@=>")
-      plugin_set_model_config_property(:encryption_algorithm, :sha512)
+      sorcery_model_property_set(:salt_attribute_name, :salt)
+      sorcery_model_property_set(:salt_join_token, "-@=>")
+      sorcery_model_property_set(:encryption_algorithm, :sha512)
       create_new_user
       @user.crypted_password.should_not == Sorcery::CryptoProviders::SHA512.encrypt('secret')
       Sorcery::CryptoProviders::SHA512.join_token = ""

@@ -13,7 +13,7 @@ describe "User with brute_force_protection submodule" do
   describe User, "loaded plugin configuration" do
   
     before(:all) do
-      plugin_model_configure([:brute_force_protection])
+      sorcery_reload!([:brute_force_protection])
       create_new_user
     end
   
@@ -30,22 +30,22 @@ describe "User with brute_force_protection submodule" do
     end
  
     it "should enable configuration option 'failed_logins_count_attribute_name'" do
-      plugin_set_model_config_property(:failed_logins_count_attribute_name, :my_count)
+      sorcery_model_property_set(:failed_logins_count_attribute_name, :my_count)
       User.sorcery_config.failed_logins_count_attribute_name.should equal(:my_count)    
     end
     
     it "should enable configuration option 'lock_expires_at_attribute_name'" do
-      plugin_set_model_config_property(:lock_expires_at_attribute_name, :expires)
+      sorcery_model_property_set(:lock_expires_at_attribute_name, :expires)
       User.sorcery_config.lock_expires_at_attribute_name.should equal(:expires)    
     end
     
     it "should enable configuration option 'consecutive_login_retries_amount_allowed'" do
-      plugin_set_model_config_property(:consecutive_login_retries_amount_limit, 34)
+      sorcery_model_property_set(:consecutive_login_retries_amount_limit, 34)
       User.sorcery_config.consecutive_login_retries_amount_limit.should equal(34)    
     end
     
     it "should enable configuration option 'login_lock_time_period'" do
-      plugin_set_model_config_property(:login_lock_time_period, 2.hours)
+      sorcery_model_property_set(:login_lock_time_period, 2.hours)
       User.sorcery_config.login_lock_time_period.should == 2.hours    
     end
   end
@@ -54,7 +54,7 @@ describe "User with brute_force_protection submodule" do
   describe User, "when activated with sorcery" do
   
     before(:all) do
-      plugin_model_configure([:brute_force_protection])
+      sorcery_reload!([:brute_force_protection])
     end
   
     before(:each) do

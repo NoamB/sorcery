@@ -12,7 +12,7 @@ describe "User with remember_me submodule" do
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe User, "loaded plugin configuration" do
     before(:all) do
-      plugin_model_configure([:remember_me])
+      sorcery_reload!([:remember_me])
     end
   
     after(:each) do
@@ -20,12 +20,12 @@ describe "User with remember_me submodule" do
     end
     
     it "should allow configuration option 'remember_me_token_attribute_name'" do
-      plugin_set_model_config_property(:remember_me_token_attribute_name, :my_token)
+      sorcery_model_property_set(:remember_me_token_attribute_name, :my_token)
       User.sorcery_config.remember_me_token_attribute_name.should equal(:my_token)
     end
 
     it "should allow configuration option 'remember_me_token_expires_at_attribute_name'" do
-      plugin_set_model_config_property(:remember_me_token_expires_at_attribute_name, :my_expires)
+      sorcery_model_property_set(:remember_me_token_expires_at_attribute_name, :my_expires)
       User.sorcery_config.remember_me_token_expires_at_attribute_name.should equal(:my_expires)
     end
     
@@ -48,7 +48,7 @@ describe "User with remember_me submodule" do
     
     it "should set an expiration based on 'remember_me_for' attribute" do
       create_new_user
-      plugin_set_model_config_property(:remember_me_for, 2 * 60 * 60 * 24)
+      sorcery_model_property_set(:remember_me_for, 2 * 60 * 60 * 24)
       @user.remember_me!
       @user.remember_me_token_expires_at.to_s.should == (Time.now + 2 * 60 * 60 * 24).utc.to_s
     end

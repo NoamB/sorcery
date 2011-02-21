@@ -12,13 +12,13 @@ describe ApplicationController do
   # ----------------- SESSION TIMEOUT -----------------------
   describe ApplicationController, "with brute force protection features" do
     before(:all) do
-      plugin_model_configure([:brute_force_protection])
+      sorcery_reload!([:brute_force_protection])
       create_new_user
     end
     
     after(:each) do
       Sorcery::Controller::Config.reset!
-      plugin_set_controller_config_property(:user_class, User)
+      sorcery_controller_property_set(:user_class, User)
     end
     
     it "should count login retries" do
@@ -27,7 +27,7 @@ describe ApplicationController do
     end
     
     it "should reset the counter on a good login" do
-      plugin_set_model_config_property(:consecutive_login_retries_amount_limit, 5)
+      sorcery_model_property_set(:consecutive_login_retries_amount_limit, 5)
       3.times {get :test_login, :username => 'gizmo', :password => 'blabla'}
       get :test_login, :username => 'gizmo', :password => 'secret'
       User.find_by_username('gizmo').failed_logins_count.should == 0
@@ -35,14 +35,14 @@ describe ApplicationController do
     
     it "should lock user when number of retries reached the limit" do
       User.find_by_username('gizmo').lock_expires_at.should be_nil
-      plugin_set_model_config_property(:consecutive_login_retries_amount_limit, 1)
+      sorcery_model_property_set(:consecutive_login_retries_amount_limit, 1)
       get :test_login, :username => 'gizmo', :password => 'blabla'
       User.find_by_username('gizmo').lock_expires_at.should_not be_nil
     end
 
     it "should unlock after lock time period passes" do
-      plugin_set_model_config_property(:consecutive_login_retries_amount_limit, 2)
-      plugin_set_model_config_property(:login_lock_time_period, 0.2)
+      sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
+      sorcery_model_property_set(:login_lock_time_period, 0.2)
       get :test_login, :username => 'gizmo', :password => 'blabla'
       get :test_login, :username => 'gizmo', :password => 'blabla'
       User.find_by_username('gizmo').lock_expires_at.should_not be_nil
@@ -52,8 +52,8 @@ describe ApplicationController do
     end
 
     it "should not unlock if time period is 0 (permanent lock)" do
-      plugin_set_model_config_property(:consecutive_login_retries_amount_limit, 2)
-      plugin_set_model_config_property(:login_lock_time_period, 0)
+      sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
+      sorcery_model_property_set(:login_lock_time_period, 0)
       get :test_login, :username => 'gizmo', :password => 'blabla'
       get :test_login, :username => 'gizmo', :password => 'blabla'
       unlock_date = User.find_by_username('gizmo').lock_expires_at

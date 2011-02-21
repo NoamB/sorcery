@@ -13,48 +13,48 @@ describe "User with activation submodule" do
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe User, "loaded plugin configuration" do
     before(:all) do
-      plugin_model_configure([:user_activation], :user_activation_mailer => ::SorceryMailer)
+      sorcery_reload!([:user_activation], :user_activation_mailer => ::SorceryMailer)
     end
   
     after(:each) do
       User.sorcery_config.reset!
-      plugin_model_configure([:user_activation], :user_activation_mailer => ::SorceryMailer)
+      sorcery_reload!([:user_activation], :user_activation_mailer => ::SorceryMailer)
     end
     
     it "should enable configuration option 'activation_state_attribute_name'" do
-      plugin_set_model_config_property(:activation_state_attribute_name, :status)
+      sorcery_model_property_set(:activation_state_attribute_name, :status)
       User.sorcery_config.activation_state_attribute_name.should equal(:status)    
     end
     
     it "should enable configuration option 'activation_token_attribute_name'" do
-      plugin_set_model_config_property(:activation_token_attribute_name, :code)
+      sorcery_model_property_set(:activation_token_attribute_name, :code)
       User.sorcery_config.activation_token_attribute_name.should equal(:code)    
     end
     
     it "should enable configuration option 'user_activation_mailer'" do
-      plugin_set_model_config_property(:user_activation_mailer, TestMailer)
+      sorcery_model_property_set(:user_activation_mailer, TestMailer)
       User.sorcery_config.user_activation_mailer.should equal(TestMailer)    
     end
     
     it "should enable configuration option 'activation_needed_email_method_name'" do
-      plugin_set_model_config_property(:activation_needed_email_method_name, :my_activation_email)
+      sorcery_model_property_set(:activation_needed_email_method_name, :my_activation_email)
       User.sorcery_config.activation_needed_email_method_name.should equal(:my_activation_email)
     end
     
     it "should enable configuration option 'activation_success_email_method_name'" do
-      plugin_set_model_config_property(:activation_success_email_method_name, :my_activation_email)
+      sorcery_model_property_set(:activation_success_email_method_name, :my_activation_email)
       User.sorcery_config.activation_success_email_method_name.should equal(:my_activation_email)
     end
     
     it "if mailer is nil on activation, throw exception!" do
-      expect{plugin_model_configure([:user_activation])}.to raise_error(ArgumentError)
+      expect{sorcery_reload!([:user_activation])}.to raise_error(ArgumentError)
     end
   end
 
   # ----------------- ACTIVATION PROCESS -----------------------
   describe User, "activation process" do
     before(:all) do
-      plugin_model_configure([:user_activation], :user_activation_mailer => ::SorceryMailer)
+      sorcery_reload!([:user_activation], :user_activation_mailer => ::SorceryMailer)
     end
     
     it "should generate an activation code on registration" do
@@ -113,14 +113,14 @@ describe "User with activation submodule" do
     end
     
     it "activation needed email is optional" do
-      plugin_set_model_config_property(:activation_needed_email_method_name, nil)
+      sorcery_model_property_set(:activation_needed_email_method_name, nil)
       old_size = ActionMailer::Base.deliveries.size
       create_new_user
       ActionMailer::Base.deliveries.size.should == old_size
     end
     
     it "activation success email is optional" do
-      plugin_set_model_config_property(:activation_success_email_method_name, nil)
+      sorcery_model_property_set(:activation_success_email_method_name, nil)
       create_new_user
       old_size = ActionMailer::Base.deliveries.size
       @user.activate!
@@ -130,7 +130,7 @@ describe "User with activation submodule" do
 
   describe User, "prevent non-active login feature" do
     before(:all) do
-      plugin_model_configure([:user_activation], :user_activation_mailer => ::SorceryMailer)
+      sorcery_reload!([:user_activation], :user_activation_mailer => ::SorceryMailer)
     end
     
     it "should not allow a non-active user to authenticate" do
@@ -140,14 +140,14 @@ describe "User with activation submodule" do
     
     it "should allow a non-active user to authenticate if configured so" do
       create_new_user
-      plugin_set_model_config_property(:prevent_non_active_users_to_login, false)
+      sorcery_model_property_set(:prevent_non_active_users_to_login, false)
       User.authenticate(@user.username,'secret').should be_true
     end
   end
   
   describe User, "load_from_activation_token" do
     before(:all) do
-      plugin_model_configure([:user_activation], :user_activation_mailer => ::SorceryMailer)
+      sorcery_reload!([:user_activation], :user_activation_mailer => ::SorceryMailer)
     end
     
     it "load_from_activation_token should return user when token is found" do
@@ -161,13 +161,13 @@ describe "User with activation submodule" do
     end
     
     it "load_from_activation_token should return user when token is found and not expired" do
-      plugin_set_model_config_property(:activation_token_expiration_period, 500)
+      sorcery_model_property_set(:activation_token_expiration_period, 500)
       create_new_user
       User.load_from_activation_token(@user.activation_token).should == @user
     end
     
     it "load_from_activation_token should NOT return user when token is found and expired" do
-      plugin_set_model_config_property(:activation_token_expiration_period, 0.1)
+      sorcery_model_property_set(:activation_token_expiration_period, 0.1)
       create_new_user
       sleep 0.5
       User.load_from_activation_token(@user.activation_token).should == nil
@@ -179,7 +179,7 @@ describe "User with activation submodule" do
     end
     
     it "load_from_activation_token should always be valid if expiration period is nil" do
-      plugin_set_model_config_property(:activation_token_expiration_period, nil)
+      sorcery_model_property_set(:activation_token_expiration_period, nil)
       create_new_user
       User.load_from_activation_token(@user.activation_token).should == @user
     end

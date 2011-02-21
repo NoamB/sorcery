@@ -12,7 +12,7 @@ describe ApplicationController do
   # ----------------- ACTIVITY LOGGING -----------------------
   describe ApplicationController, "with activity logging features" do
     before(:all) do
-      plugin_model_configure([:activity_logging])
+      sorcery_reload!([:activity_logging])
     end
 
     before(:each) do

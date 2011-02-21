@@ -5,8 +5,8 @@ describe ApplicationController do
   # ----------------- SESSION TIMEOUT -----------------------
   describe ApplicationController, "with session timeout features" do
     before(:all) do
-      plugin_model_configure([:session_timeout])
-      plugin_set_controller_config_property(:session_timeout,0.5)
+      sorcery_reload!([:session_timeout])
+      sorcery_controller_property_set(:session_timeout,0.5)
       create_new_user
     end
     
@@ -26,7 +26,7 @@ describe ApplicationController do
     end
     
     it "with 'session_timeout_from_last_action' should not logout if there was activity" do
-      plugin_set_controller_config_property(:session_timeout_from_last_action, true)
+      sorcery_controller_property_set(:session_timeout_from_last_action, true)
       login_user
       sleep 0.3
       get :test_should_be_logged_in
@@ -38,7 +38,7 @@ describe ApplicationController do
     end
     
     it "with 'session_timeout_from_last_action' should logout if there was no activity" do
-      plugin_set_controller_config_property(:session_timeout_from_last_action, true)
+      sorcery_controller_property_set(:session_timeout_from_last_action, true)
       login_user
       sleep 0.6
       get :test_should_be_logged_in

@@ -5,21 +5,21 @@ describe ApplicationController do
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe ApplicationController, "plugin configuration" do
     before(:all) do
-      plugin_model_configure
+      sorcery_reload!
     end
     
     after(:each) do
       Sorcery::Controller::Config.reset!
-      plugin_model_configure
+      sorcery_reload!
     end
     
     it "should enable configuration option 'user_class'" do
-      plugin_set_controller_config_property(:user_class, TestUser)
+      sorcery_controller_property_set(:user_class, TestUser)
       Sorcery::Controller::Config.user_class.should equal(TestUser)
     end
     
     it "should enable configuration option 'not_authenticated_action'" do
-      plugin_set_controller_config_property(:not_authenticated_action, :my_action)
+      sorcery_controller_property_set(:not_authenticated_action, :my_action)
       Sorcery::Controller::Config.not_authenticated_action.should equal(:my_action)
     end
     
@@ -34,7 +34,7 @@ describe ApplicationController do
   
     after(:each) do
       Sorcery::Controller::Config.reset!
-      plugin_set_controller_config_property(:user_class, User)
+      sorcery_controller_property_set(:user_class, User)
     end
     
     it "should respond to the instance method login" do
@@ -99,7 +99,7 @@ describe ApplicationController do
     
     it "should call the configured 'not_authenticated_action' when authenticate before_filter fails" do
       session[:user_id] = nil
-      plugin_set_controller_config_property(:not_authenticated_action, :test_not_authenticated_action)
+      sorcery_controller_property_set(:not_authenticated_action, :test_not_authenticated_action)
       get :test_logout
       response.body.should == "test_not_authenticated_action"
     end

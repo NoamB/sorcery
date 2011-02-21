@@ -6,7 +6,7 @@ describe ApplicationController do
   describe ApplicationController, "with remember me features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
-      plugin_model_configure([:remember_me])
+      sorcery_reload!([:remember_me])
     end
     
     before(:each) do

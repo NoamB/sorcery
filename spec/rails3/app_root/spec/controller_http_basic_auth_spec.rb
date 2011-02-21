@@ -5,7 +5,7 @@ describe ApplicationController do
   # ----------------- HTTP BASIC AUTH -----------------------
   describe ApplicationController, "with http basic auth features" do
     before(:all) do
-      plugin_model_configure([:http_basic_auth])
+      sorcery_reload!([:http_basic_auth])
       create_new_user
     end
     
@@ -31,12 +31,12 @@ describe ApplicationController do
     end
     
     it "should allow configuration option 'controller_to_realm_map'" do
-      plugin_set_controller_config_property(:controller_to_realm_map, {"1" => "2"})
+      sorcery_controller_property_set(:controller_to_realm_map, {"1" => "2"})
       Sorcery::Controller::Config.controller_to_realm_map.should == {"1" => "2"}
     end
     
     it "should display the correct realm name configured for the controller" do
-      plugin_set_controller_config_property(:controller_to_realm_map, {"application" => "Salad"})
+      sorcery_controller_property_set(:controller_to_realm_map, {"application" => "Salad"})
       get :test_http_basic_auth
       response.headers["WWW-Authenticate"].should == "Basic realm=\"Salad\""
     end
