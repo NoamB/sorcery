@@ -39,9 +39,9 @@ module Sorcery
           # given to main controller module as a login source callback
           def login_from_basic_auth
             authenticate_with_http_basic do |username, password|
-              @logged_in_user = (Config.user_class.authenticate(username, password) if session[:http_authentication_used]) || false
-              login_user(@logged_in_user) if @logged_in_user
-              @logged_in_user
+              @current_user = (Config.user_class.authenticate(username, password) if session[:http_authentication_used]) || false
+              login_user(@current_user) if @current_user
+              @current_user
             end
           end
           

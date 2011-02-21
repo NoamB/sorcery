@@ -25,7 +25,7 @@ describe ApplicationController do
     
     it "should set cookie on remember_me!" do
       post :test_login_with_remember, :username => 'gizmo', :password => 'secret'
-      cookies["remember_me_token"].should == assigns[:logged_in_user].remember_me_token
+      cookies["remember_me_token"].should == assigns[:current_user].remember_me_token
     end
     
     it "should clear cookie on forget_me!" do
@@ -50,11 +50,11 @@ describe ApplicationController do
       session[:user_id] = @user.id
       subject.remember_me!
       subject.instance_eval do
-        @logged_in_user = nil
+        @current_user = nil
       end
       session[:user_id] = nil
       get :test_login_from_cookie
-      assigns[:logged_in_user].should == @user
+      assigns[:current_user].should == @user
     end
     
     it "should not remember_me! when not asked to" do

@@ -49,8 +49,8 @@ describe ApplicationController do
       should respond_to(:logged_in?)
     end
     
-    it "should respond to the instance method logged_in_user" do
-      should respond_to(:logged_in_user)
+    it "should respond to the instance method current_user" do
+      should respond_to(:current_user)
     end
   
     it "login(username,password) should return the user when success and set the session with user.id" do
@@ -82,15 +82,15 @@ describe ApplicationController do
       subject.logged_in?.should be_false
     end
     
-    it "logged_in_user should return the user instance if logged in" do
+    it "current_user should return the user instance if logged in" do
       create_new_user
       session[:user_id] = @user.id
-      subject.logged_in_user.should == @user
+      subject.current_user.should == @user
     end
     
-    it "logged_in_user should return false if not logged in" do
+    it "current_user should return false if not logged in" do
       session[:user_id] = nil
-      subject.logged_in_user.should == false
+      subject.current_user.should == false
     end
     
     it "should respond to 'require_login'" do

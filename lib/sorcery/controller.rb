@@ -47,7 +47,7 @@ module Sorcery
           session[:return_to_url] = return_to_url
           login_user(user)
           after_login!(user, credentials)
-          logged_in_user
+          current_user
         else
           after_failed_login!(credentials)
           nil
@@ -57,20 +57,20 @@ module Sorcery
       # Resets the session and runs hooks before and after.
       def logout
         if logged_in?
-          before_logout!(logged_in_user)
+          before_logout!(current_user)
           reset_session
           after_logout!
         end
       end
       
       def logged_in?
-        !!logged_in_user
+        !!current_user
       end
       
       # attempts to auto-login from the sources defined (session, basic_auth, cookie, etc.)
       # returns the logged in user if found, false if not (using old restful-authentication trick, nil != false).
-      def logged_in_user
-        @logged_in_user ||= login_from_session || login_from_other_sources unless @logged_in_user == false
+      def current_user
+        @current_user ||= login_from_session || login_from_other_sources unless @current_user == false
       end
       
       def return_or_redirect_to(url, flash_hash = {})
@@ -99,7 +99,7 @@ module Sorcery
       end
       
       def login_from_session
-        @logged_in_user = (Config.user_class.find_by_id(session[:user_id]) if session[:user_id]) || false
+        @current_user = (Config.user_class.find_by_id(session[:user_id]) if session[:user_id]) || false
       end
       
       def after_login!(user, credentials)

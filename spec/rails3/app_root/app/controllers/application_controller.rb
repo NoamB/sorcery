@@ -48,7 +48,7 @@ class ApplicationController < ActionController::Base
   end
   
   def test_login_from_cookie
-    @user = logged_in_user
+    @user = current_user
     render :text => ""
   end
   

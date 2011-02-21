@@ -13,7 +13,7 @@ module Sorcery
     
     initializer "extend Controller with sorcery" do |app|
       ActionController::Base.send(:include, Sorcery::Controller)
-      ActionController::Base.helper_method :logged_in_user
+      ActionController::Base.helper_method :current_user
     end
     
     initializer "attempt to preload user model" do |app|

@@ -27,7 +27,7 @@ module Sorcery
         
         module ClassMethods
           # get all users with last_activity within timeout
-          def logged_in_users
+          def current_users
             config = sorcery_config
             where("#{config.last_activity_at_attribute_name} IS NOT NULL") \
             .where("#{config.last_logout_at_attribute_name} IS NULL OR #{config.last_activity_at_attribute_name} > #{config.last_logout_at_attribute_name}") \

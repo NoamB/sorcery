@@ -82,7 +82,7 @@ Spork.prefork do
   end
 
   def clear_user_without_logout
-    subject.instance_variable_set(:@logged_in_user,nil)
+    subject.instance_variable_set(:@current_user,nil)
   end
 
   # TODO: rename to sorcery_reload!(subs = [], model_opts = {}, controller_opts = {})
