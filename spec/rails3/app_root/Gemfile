@@ -5,9 +5,10 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 gem "sorcery", '0.1.4', :path => '../../../'
 gem 'bcrypt-ruby', '~> 2.1.4', :require => 'bcrypt'
   
-group :development do
+group :development, :test do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'ruby-debug19'
   gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency
+  gem 'spork', '~> 0.9.0.rc'
 end

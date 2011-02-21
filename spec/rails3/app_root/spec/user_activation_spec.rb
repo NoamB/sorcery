@@ -1,5 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-require File.expand_path(File.dirname(__FILE__) + '/app_root/app/mailers/sorcery_mailer')
+require File.expand_path(File.dirname(__FILE__) + '/../app/mailers/sorcery_mailer')
 
 describe "User with activation submodule" do
   before(:all) do
