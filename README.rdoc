@@ -66,13 +66,13 @@ Activity Logging (see lib/sorcery/model/submodules/activity_logging.rb):
 
 == Next Planned Features:
 
-I've got many plans which include:
+I've got many plans which include (by priority):
+* OAuth1 and OAuth2 support
+* Sinatra support
+* Mongoid support
 * Configurable Auto login on registration/activation
 * Other reset password strategies (security questions?)
 * Other brute force protection strategies (captcha)
-* Sinatra support
-* Mongoid support
-* OAuth1 and OAuth2 support
 * Have an idea? Let me know, and it might get into the gem!
 
 == Installation:
