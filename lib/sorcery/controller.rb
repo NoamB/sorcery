@@ -5,7 +5,7 @@ module Sorcery
         extend ClassMethods
         include InstanceMethods
         Config.submodules.each do |mod|
-          begin
+          begin # FIXME: is this protection needed?
             include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join("")) 
           rescue NameError
             # don't stop on a missing submodule.

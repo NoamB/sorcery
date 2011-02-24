@@ -18,6 +18,10 @@ module Sorcery
       autoload :BruteForceProtection, 'sorcery/controller/submodules/brute_force_protection'
       autoload :HttpBasicAuth, 'sorcery/controller/submodules/http_basic_auth'
       autoload :ActivityLogging, 'sorcery/controller/submodules/activity_logging'
+      autoload :Oauth, 'sorcery/controller/submodules/oauth'
+      module Oauth
+        autoload :Twitter, 'sorcery/controller/submodules/oauth/twitter'
+      end
     end
   end
   module CryptoProviders

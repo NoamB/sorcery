@@ -17,7 +17,8 @@ It does this with a few goals in mind:
 
 Hopefully, I've achieved this. If not, let me know.
 
-== Useful links:
+== Useful Links:
+
 Example app using sorcery: https://github.com/NoamB/sorcery-example-app
 
 Documentation: http://rubydoc.info/gems/sorcery/0.1.4/frames
