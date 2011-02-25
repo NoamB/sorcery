@@ -19,14 +19,14 @@ module Sorcery
           # Increments the failed logins counter on every failed login.
           # Runs as a hook after a failed login.
           def update_failed_logins_count!(credentials)
-            user = User.where("#{User.sorcery_config.username_attribute_name} = ?", credentials[0]).first
+            user = Config.user_class.where("#{Config.user_class.sorcery_config.username_attribute_name} = ?", credentials[0]).first
             user.register_failed_login! if user
           end
           
           # Resets the failed logins counter.
           # Runs as a hook after a successful login.
           def reset_failed_logins_count!(user, credentials)
-            user.update_attributes!(User.sorcery_config.failed_logins_count_attribute_name => 0)
+            user.update_attributes!(Config.user_class.sorcery_config.failed_logins_count_attribute_name => 0)
           end
         end
       end

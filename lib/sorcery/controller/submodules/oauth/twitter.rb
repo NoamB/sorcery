@@ -18,10 +18,21 @@ module Sorcery
           end
 
           module TwitterConfig
-            class << self
+            class << self              
               attr_accessor :key,
-                            :secret
+                            :secret,
+                            :callback_url
+            
+              def site
+                "https://api.twitter.com"
+              end
+              
+              def user_info_path
+                "/1/account/verify_credentials.json"
+              end
+
             end
+            
           end
           
         end

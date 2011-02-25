@@ -8,6 +8,7 @@ module Sorcery
       autoload :RememberMe, 'sorcery/model/submodules/remember_me'
       autoload :ActivityLogging, 'sorcery/model/submodules/activity_logging'
       autoload :BruteForceProtection, 'sorcery/model/submodules/brute_force_protection'
+      autoload :Oauth, 'sorcery/model/submodules/oauth'
     end
   end
   autoload :Controller, 'sorcery/controller'
