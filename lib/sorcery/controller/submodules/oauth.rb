@@ -2,6 +2,8 @@ module Sorcery
   module Controller
     module Submodules
       # This submodule helps you login users from OAuth providers such as Twitter.
+      # This is the controller part which handles the http requests and tokens passed between the app and the provider.
+      # For more configuration options see Sorcery::Model::Oauth.
       module Oauth
         def self.included(base)
           base.send(:include, InstanceMethods)
@@ -62,7 +64,11 @@ module Sorcery
             @request_token = session[:request_token]
             session[:request_token] = nil
             @access_token = @request_token.get_access_token
-            #@user_hash = JSON.parse(@access_token.get(provider_config.user_info_path).body)
+          end
+          
+          def get_user_hash(provider)
+            provider_config = Config.send(provider)
+            @user_hash = JSON.parse(@access_token.get(provider_config.user_info_path).body)
           end
         end
       end

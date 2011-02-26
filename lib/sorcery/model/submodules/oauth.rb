@@ -1,7 +1,13 @@
 module Sorcery
   module Model
     module Submodules
-
+      # This submodule helps you login users from OAuth providers such as Twitter.
+      # This is the model part which handles finding the user using access tokens.
+      # For the controller options see Sorcery::Controller::Oauth.
+      #
+      # Socery assumes you will create new users in the same table where you keep your regular users,
+      # but that you might have a separate table for keeping their access token data,
+      # and that maybe that separate table has a few rows for each user (facebook and twitter).
       module Oauth
         def self.included(base)
           base.sorcery_config.class_eval do
