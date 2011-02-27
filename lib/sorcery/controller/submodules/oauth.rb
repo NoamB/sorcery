@@ -36,9 +36,9 @@ module Sorcery
           protected
           
           # requests a request_token
-          # and then sends user to authorize with that token
-          # after authorization the user is redirected to the callback defined in the provider config
-          def login_with_provider(provider)
+          # and then sends user to authenticate with that token
+          # after authentication the user is redirected to the callback defined in the provider config
+          def auth_at_provider(provider)
             provider_config = Config.send(provider)
             @callback_url = provider_config.callback_url
             @consumer = OAuth::Consumer.new(provider_config.key, provider_config.secret, :site => provider_config.site)
@@ -48,27 +48,24 @@ module Sorcery
           end
           
           # tries to login the user from access token
-          def login_from_access_token(access_token, access_token_secret)
-            model_config = Config.user_class.sorcery_config
-            user = Config.user_class.find_by_access_token(access_token, access_token_secret)
-            if user
-              reset_session # protect from session fixation attacks
+          def login_from_access_token
+            if user = Config.user_class.load_from_access_token(get_access_token(params[:oauth_verifier]))
+              reset_session
               login_user(user)
-              return user
+              user
             end
-            false
           end
           
-          def get_access_token(provider)
-            provider_config = Config.send(provider)
-            @request_token = session[:request_token]
-            session[:request_token] = nil
-            @access_token = @request_token.get_access_token
+          def get_access_token(oauth_verifier = nil)
+            @access_token ||= lambda do 
+              @request_token = session[:request_token]
+              session[:request_token] = nil
+              @request_token.get_access_token(:oauth_verifier => oauth_verifier)
+            end.call
           end
           
           def get_user_hash(provider)
-            provider_config = Config.send(provider)
-            @user_hash = JSON.parse(@access_token.get(provider_config.user_info_path).body)
+            @user_hash ||= JSON.parse(@access_token.get(Config.send(provider).user_info_path).body)
           end
         end
       end

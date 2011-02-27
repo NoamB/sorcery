@@ -31,8 +31,10 @@ module Sorcery
           end
           
           base.class_eval do
-            before_create :setup_activation
-            after_create :send_activation_needed_email!
+            # don't setup activation if no password supplied - this user is created automatically
+            before_create :setup_activation, :if => Proc.new { |record| record.send(sorcery_config.password_attribute_name).present? }
+            # don't send activation needed email if no crypted password created - this user is external (OAuth etc.)
+            after_create  :send_activation_needed_email!, :if => Proc.new { |record| !record.send(sorcery_config.crypted_password_attribute_name).nil?}
           end
           
           base.sorcery_config.after_config << :validate_mailer_defined
