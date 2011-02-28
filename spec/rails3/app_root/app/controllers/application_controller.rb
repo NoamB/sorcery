@@ -1,3 +1,5 @@
+require 'oauth'
+
 class ApplicationController < ActionController::Base
   protect_from_forgery
   
@@ -62,6 +64,10 @@ class ApplicationController < ActionController::Base
   
   def test_http_basic_auth
     render :text => "HTTP Basic Auth"
+  end
+  
+  def auth_at_provider_test
+    auth_at_provider(:twitter)
   end
   
   protected

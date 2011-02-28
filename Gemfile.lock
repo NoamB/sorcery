@@ -41,6 +41,7 @@ GEM
       bundler (~> 1.0.0)
       git (>= 1.2.5)
       rake
+    json (1.5.1)
     linecache19 (0.5.11)
       ruby_core_source (>= 0.1.4)
     mail (2.2.13)
@@ -49,6 +50,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
+    oauth (0.4.4)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-mount (0.6.13)
@@ -108,6 +110,8 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.0.0)
   jeweler (~> 1.5.2)
+  json (>= 1.5.1)
+  oauth (>= 0.4.4)
   rails (>= 3.0.0)
   rspec (~> 2.3.0)
   rspec-rails

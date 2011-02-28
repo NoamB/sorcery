@@ -1,4 +1,5 @@
 # require 'bundler'
+# -- Commented because it's slow
 # begin
 #   Bundler.setup(:default, :development)
 # rescue Bundler::BundlerError => e
@@ -6,6 +7,8 @@
 #   $stderr.puts "Run `bundle install` to install missing gems"
 #   exit e.status_code
 # end
+# --
+
 require 'rake'
 
 require 'jeweler'

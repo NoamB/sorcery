@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 gem "rails", '3.0.3'
 gem 'bcrypt-ruby', :require => 'bcrypt'
 gem "sorcery", '0.1.4', :path => '../../../'
+gem 'oauth', ">= 0.4.4"
 
 group :development do
   gem 'rspec'

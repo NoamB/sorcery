@@ -1,15 +1,5 @@
 AppRoot::Application.routes.draw do
   root :to => "application#index" 
-  match '/test_login', :to => "application#test_login"
-  match '/test_return_to', :to => "application#test_return_to"
-  match '/test_logout', :to => "application#test_logout"
-  match '/some_action', :to => "application#some_action"
-  match '/test_logout_with_remember', :to => "application#test_logout_with_remember"
-  match '/test_login_with_remember', :to => 'application#test_login_with_remember'
-  match '/test_login_with_remember_in_login', :to => 'application#test_login_with_remember_in_login'
-  match '/test_login_from_cookie', :to => 'application#test_login_from_cookie'
-  match '/test_should_be_logged_in', :to => 'application#test_should_be_logged_in'
-  match '/test_http_basic_auth', :to => 'application#test_http_basic_auth'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -65,5 +55,5 @@ AppRoot::Application.routes.draw do
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.
-  # match ':controller(/:action(/:id(.:format)))'
+  match ':controller(/:action(/:id(.:format)))'
 end

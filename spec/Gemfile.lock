@@ -50,6 +50,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
+    oauth (0.4.4)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-mount (0.6.13)
@@ -101,6 +102,7 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt-ruby
+  oauth (>= 0.4.4)
   rails (= 3.0.3)
   rspec
   ruby-debug19

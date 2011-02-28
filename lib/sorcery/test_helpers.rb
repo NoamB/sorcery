@@ -58,6 +58,12 @@ module Sorcery
         config.send(:"#{property}=", value)
       end
     end
+    
+    def sorcery_controller_oauth_property_set(provider, property, value)
+      ApplicationController.activate_sorcery! do |config|
+        config.send(provider).send(:"#{property}=", value)
+      end
+    end
 
     private
 
