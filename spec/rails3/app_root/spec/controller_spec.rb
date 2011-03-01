@@ -106,7 +106,7 @@ describe ApplicationController do
     
     it "require_login before_filter should save the url that the user originally wanted" do
       get :some_action
-      session[:return_to_url].should == "http://test.host/some_action"
+      session[:return_to_url].should == "http://test.host/application/some_action"
       response.should redirect_to("http://test.host/")
     end
     

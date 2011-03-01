@@ -9,6 +9,13 @@ module Sorcery
       @user
     end
 
+    def create_new_external_user(attributes_hash = nil)
+      user_attributes_hash = attributes_hash || {:username => 'gizmo', :providers_attributes => [{:provider => "myprovider", :access_token => '', :access_token_secret => ''}]}
+      @user = User.new(user_attributes_hash)
+      @user.save!
+      @user
+    end
+    
     def login_user(user = nil)
       user ||= @user
       subject.send(:login_user,user)

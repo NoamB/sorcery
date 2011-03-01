@@ -49,7 +49,7 @@ module Sorcery
           
           # tries to login the user from access token
           def login_from_access_token
-            if user = Config.user_class.load_from_access_token(get_access_token(params[:oauth_verifier]))
+            if user = Config.user_class.load_from_access_token( get_access_token( params[:oauth_verifier] ) )
               reset_session
               login_user(user)
               user

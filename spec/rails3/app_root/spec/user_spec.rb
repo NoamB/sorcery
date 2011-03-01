@@ -159,9 +159,9 @@ describe "User with no submodules (core)" do
     it "should not clear the virtual password field if save failed due to exception" do
       create_new_user
       @user.password = 'blupush'
-      @user.email = nil
+      @user.username = nil
       begin
-        @user.save # triggers SQL exception since email field is defined not null.
+        @user.save # triggers SQL exception since username field is defined not null.
       rescue
       end
       @user.password.should_not be_nil
@@ -282,6 +282,36 @@ describe "User with no submodules (core)" do
       @user.crypted_password.should == Sorcery::CryptoProviders::SHA512.encrypt('secret',@user.salt)
     end
     
+  end
+  
+  describe User, "external users" do
+    before(:all) do
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/oauth")
+      sorcery_reload!()
+    end
+  
+    after(:all) do
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/oauth")
+    end
+    
+    before(:each) do
+      User.delete_all
+    end
+    
+    it "should respond to 'external?'" do
+      create_new_user
+      @user.should respond_to(:external?)
+    end
+    
+    it "external? should be false for regular users" do
+      create_new_user
+      @user.external?.should be_false
+    end
+    
+    it "external? should be true for external users" do
+      create_new_external_user
+      @user.external?.should be_true
+    end
   end
 
 end

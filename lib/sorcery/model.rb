@@ -79,6 +79,12 @@ module Sorcery
         self.class.sorcery_config
       end
       
+      # identifies whether this user is regular, i.e. we hold his credentials in our db,
+      # or that he is external, and his credentials are saved elsewhere (twitter/facebook etc.).
+      def external?
+        send(sorcery_config.crypted_password_attribute_name).nil?
+      end
+      
       protected
       
       # creates new salt and saves it.

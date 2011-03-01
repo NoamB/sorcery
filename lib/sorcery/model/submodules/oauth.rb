@@ -8,6 +8,9 @@ module Sorcery
       # Socery assumes you will create new users in the same table where you keep your regular users,
       # but that you might have a separate table for keeping their access token data,
       # and that maybe that separate table has a few rows for each user (facebook and twitter).
+      #
+      # External users will have a null crypted_password field, since we do not hold their password.
+      # They will not be sent activation emails on creation.
       module Oauth
         def self.included(base)
           base.sorcery_config.class_eval do
