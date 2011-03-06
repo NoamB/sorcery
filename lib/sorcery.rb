@@ -22,6 +22,7 @@ module Sorcery
       autoload :Oauth, 'sorcery/controller/submodules/oauth'
       module Oauth
         autoload :Twitter, 'sorcery/controller/submodules/oauth/twitter'
+        autoload :Facebook, 'sorcery/controller/submodules/oauth/facebook'
       end
     end
   end

@@ -5,6 +5,7 @@ source "http://rubygems.org"
 gem "rails", ">= 3.0.0"
 gem 'json', ">= 1.5.1"
 gem 'oauth', ">= 0.4.4"
+gem 'oauth2', ">= 0.1.1"
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do

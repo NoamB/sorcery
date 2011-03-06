@@ -39,17 +39,31 @@ module Sorcery
           # and then sends user to authenticate with that token
           # after authentication the user is redirected to the callback defined in the provider config
           def auth_at_provider(provider)
-            provider_config = Config.send(provider)
-            @callback_url = provider_config.callback_url
-            @consumer = OAuth::Consumer.new(provider_config.key, provider_config.secret, :site => provider_config.site)
+            @provider_config = Config.send(provider)
+            @callback_url = @provider_config.callback_url
+            
+            # TODO: the flows for oauth1 and oauth2 will be extracted to respective modules and mixed into the relevant providers.
+            # The creation of version specific objects will be done via 1 call to the provider, and not via an "if" statement.
+            @provider_config.oauth_version =~ /^1.0/ ? oauth1_flow : oauth2_flow
+          end
+          
+          def oauth1_flow
+            @consumer = ::OAuth::Consumer.new(@provider_config.key, @provider_config.secret, :site => @provider_config.site)
             @request_token = @consumer.get_request_token(:oauth_callback => @callback_url)
             session[:request_token] = @request_token
             redirect_to @request_token.authorize_url(:oauth_callback => @callback_url)
           end
           
+          def oauth2_flow
+            @client = ::OAuth2::Client.new(@provider_config.key, @provider_config.secret, :site => @provider_config.site)
+            session[:client] = @client
+            session[:callback_url] = @callback_url
+            redirect_to @client.web_server.authorize_url(:redirect_uri => @callback_url, :scope => 'email,offline_access')
+          end
+          
           # tries to login the user from access token
           def login_from_access_token
-            if user = Config.user_class.load_from_access_token( get_access_token( params[:oauth_verifier] ) )
+            if user = Config.user_class.load_from_access_token( params[:oauth_verifier] ? get_access_token( params[:oauth_verifier] ) : get_access_token2 )
               reset_session
               login_user(user)
               user
@@ -64,8 +78,18 @@ module Sorcery
             end.call
           end
           
+          def get_access_token2
+            @access_token ||= lambda do
+              @client = session[:client]
+              @callback_url = session[:callback_url]
+              session[:client] = nil
+              @client.web_server.get_access_token(params[:code], :redirect_uri => @callback_url)
+            end.call
+          end
+          
           def get_user_hash(provider)
-            @user_hash ||= JSON.parse(@access_token.get(Config.send(provider).user_info_path).body)
+            response = @access_token.get(Config.send(provider).user_info_path)
+            @user_hash ||= JSON.parse(response.respond_to?(:body) ? response.body : response)
           end
         end
       end

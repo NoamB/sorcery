@@ -37,7 +37,7 @@ module Sorcery
         module ClassMethods
           def load_from_access_token(access_token)
             config = sorcery_config
-            user_provider = config.user_providers_class.where("#{config.access_token_attribute_name} = ? AND #{config.access_token_secret_attribute_name} = ?", access_token.token, access_token.secret).first
+            user_provider = config.user_providers_class.where("#{config.access_token_attribute_name} = ? AND #{config.access_token_secret_attribute_name} = ?", access_token.token, access_token.respond_to?(:secret) ? access_token.secret : "").first
             user = find(user_provider.send(config.user_providers_user_id_attribute_name)) if user_provider
           end
         end

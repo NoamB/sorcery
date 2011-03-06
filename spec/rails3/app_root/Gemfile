@@ -5,7 +5,7 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 gem "sorcery", '0.1.4', :path => '../../../'
 gem 'bcrypt-ruby', '~> 2.1.4', :require => 'bcrypt'
 gem 'oauth', ">= 0.4.4"
-
+gem 'oauth2', ">= 0.1.1"
 group :development, :test do
   gem 'rspec'
   gem 'rspec-rails'
