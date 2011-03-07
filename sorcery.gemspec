@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = %q{2011-02-19}
+  s.date = %q{2011-03-07}
   s.description = %q{Provides common authentication needs such as signing in/out, activating by email and resetting password.}
   s.email = %q{nbenari@gmail.com}
   s.extra_rdoc_files = [
@@ -30,6 +30,9 @@ Gem::Specification.new do |s|
     "lib/sorcery/controller/submodules/activity_logging.rb",
     "lib/sorcery/controller/submodules/brute_force_protection.rb",
     "lib/sorcery/controller/submodules/http_basic_auth.rb",
+    "lib/sorcery/controller/submodules/oauth.rb",
+    "lib/sorcery/controller/submodules/oauth/facebook.rb",
+    "lib/sorcery/controller/submodules/oauth/twitter.rb",
     "lib/sorcery/controller/submodules/remember_me.rb",
     "lib/sorcery/controller/submodules/session_timeout.rb",
     "lib/sorcery/crypto_providers/aes256.rb",
@@ -42,24 +45,29 @@ Gem::Specification.new do |s|
     "lib/sorcery/model.rb",
     "lib/sorcery/model/submodules/activity_logging.rb",
     "lib/sorcery/model/submodules/brute_force_protection.rb",
+    "lib/sorcery/model/submodules/oauth.rb",
     "lib/sorcery/model/submodules/remember_me.rb",
     "lib/sorcery/model/submodules/reset_password.rb",
     "lib/sorcery/model/submodules/user_activation.rb",
+    "lib/sorcery/model/temporary_token.rb",
+    "lib/sorcery/test_helpers.rb",
     "sorcery.gemspec",
     "spec/Gemfile",
     "spec/Gemfile.lock",
     "spec/Rakefile",
     "spec/rails3/.rspec",
-    "spec/rails3/Gemfile",
-    "spec/rails3/Gemfile.lock",
-    "spec/rails3/Rakefile",
     "spec/rails3/app_root/.gitignore",
+    "spec/rails3/app_root/.rspec",
+    "spec/rails3/app_root/Gemfile",
+    "spec/rails3/app_root/Gemfile.lock",
     "spec/rails3/app_root/README",
+    "spec/rails3/app_root/Rakefile",
     "spec/rails3/app_root/Rakefile.unused",
     "spec/rails3/app_root/app/controllers/application_controller.rb",
     "spec/rails3/app_root/app/helpers/application_helper.rb",
     "spec/rails3/app_root/app/mailers/sorcery_mailer.rb",
     "spec/rails3/app_root/app/models/user.rb",
+    "spec/rails3/app_root/app/models/user_provider.rb",
     "spec/rails3/app_root/app/views/layouts/application.html.erb",
     "spec/rails3/app_root/app/views/sorcery_mailer/activation_email.html.erb",
     "spec/rails3/app_root/app/views/sorcery_mailer/activation_email.text.erb",
@@ -87,6 +95,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
     "spec/rails3/app_root/db/migrate/brute_force_protection/20101224223626_add_brute_force_protection_to_users.rb",
     "spec/rails3/app_root/db/migrate/core/20101224223620_create_users.rb",
+    "spec/rails3/app_root/db/migrate/oauth/20101224223628_create_user_providers.rb",
     "spec/rails3/app_root/db/migrate/remember_me/20101224223623_add_remember_me_token_to_users.rb",
     "spec/rails3/app_root/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/rails3/app_root/db/schema.rb",
@@ -107,24 +116,22 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/public/robots.txt",
     "spec/rails3/app_root/public/stylesheets/.gitkeep",
     "spec/rails3/app_root/script/rails",
-    "spec/rails3/app_root/test/fixtures/users.yml",
-    "spec/rails3/app_root/test/performance/browsing_test.rb",
-    "spec/rails3/app_root/test/test_helper.rb",
-    "spec/rails3/app_root/test/unit/user_test.rb",
+    "spec/rails3/app_root/spec/controller_activity_logging_spec.rb",
+    "spec/rails3/app_root/spec/controller_brute_force_protection_spec.rb",
+    "spec/rails3/app_root/spec/controller_http_basic_auth_spec.rb",
+    "spec/rails3/app_root/spec/controller_oauth_spec.rb",
+    "spec/rails3/app_root/spec/controller_remember_me_spec.rb",
+    "spec/rails3/app_root/spec/controller_session_timeout_spec.rb",
+    "spec/rails3/app_root/spec/controller_spec.rb",
+    "spec/rails3/app_root/spec/spec_helper.orig.rb",
+    "spec/rails3/app_root/spec/spec_helper.rb",
+    "spec/rails3/app_root/spec/user_activation_spec.rb",
+    "spec/rails3/app_root/spec/user_activity_logging_spec.rb",
+    "spec/rails3/app_root/spec/user_brute_force_protection_spec.rb",
+    "spec/rails3/app_root/spec/user_remember_me_spec.rb",
+    "spec/rails3/app_root/spec/user_reset_password_spec.rb",
+    "spec/rails3/app_root/spec/user_spec.rb",
     "spec/rails3/app_root/vendor/plugins/.gitkeep",
-    "spec/rails3/controller_activity_logging_spec.rb",
-    "spec/rails3/controller_brute_force_protection_spec.rb",
-    "spec/rails3/controller_http_basic_auth_spec.rb",
-    "spec/rails3/controller_remember_me_spec.rb",
-    "spec/rails3/controller_session_timeout_spec.rb",
-    "spec/rails3/controller_spec.rb",
-    "spec/rails3/spec_helper.rb",
-    "spec/rails3/user_activation_spec.rb",
-    "spec/rails3/user_activity_logging_spec.rb",
-    "spec/rails3/user_brute_force_protection_spec.rb",
-    "spec/rails3/user_remember_me_spec.rb",
-    "spec/rails3/user_reset_password_spec.rb",
-    "spec/rails3/user_spec.rb",
     "spec/sorcery_crypto_providers_spec.rb",
     "spec/spec_helper.rb"
   ]
@@ -138,6 +145,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/app/helpers/application_helper.rb",
     "spec/rails3/app_root/app/mailers/sorcery_mailer.rb",
     "spec/rails3/app_root/app/models/user.rb",
+    "spec/rails3/app_root/app/models/user_provider.rb",
     "spec/rails3/app_root/config/application.rb",
     "spec/rails3/app_root/config/boot.rb",
     "spec/rails3/app_root/config/environment.rb",
@@ -155,26 +163,26 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
     "spec/rails3/app_root/db/migrate/brute_force_protection/20101224223626_add_brute_force_protection_to_users.rb",
     "spec/rails3/app_root/db/migrate/core/20101224223620_create_users.rb",
+    "spec/rails3/app_root/db/migrate/oauth/20101224223628_create_user_providers.rb",
     "spec/rails3/app_root/db/migrate/remember_me/20101224223623_add_remember_me_token_to_users.rb",
     "spec/rails3/app_root/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/rails3/app_root/db/schema.rb",
     "spec/rails3/app_root/db/seeds.rb",
-    "spec/rails3/app_root/test/performance/browsing_test.rb",
-    "spec/rails3/app_root/test/test_helper.rb",
-    "spec/rails3/app_root/test/unit/user_test.rb",
-    "spec/rails3/controller_activity_logging_spec.rb",
-    "spec/rails3/controller_brute_force_protection_spec.rb",
-    "spec/rails3/controller_http_basic_auth_spec.rb",
-    "spec/rails3/controller_remember_me_spec.rb",
-    "spec/rails3/controller_session_timeout_spec.rb",
-    "spec/rails3/controller_spec.rb",
-    "spec/rails3/spec_helper.rb",
-    "spec/rails3/user_activation_spec.rb",
-    "spec/rails3/user_activity_logging_spec.rb",
-    "spec/rails3/user_brute_force_protection_spec.rb",
-    "spec/rails3/user_remember_me_spec.rb",
-    "spec/rails3/user_reset_password_spec.rb",
-    "spec/rails3/user_spec.rb",
+    "spec/rails3/app_root/spec/controller_activity_logging_spec.rb",
+    "spec/rails3/app_root/spec/controller_brute_force_protection_spec.rb",
+    "spec/rails3/app_root/spec/controller_http_basic_auth_spec.rb",
+    "spec/rails3/app_root/spec/controller_oauth_spec.rb",
+    "spec/rails3/app_root/spec/controller_remember_me_spec.rb",
+    "spec/rails3/app_root/spec/controller_session_timeout_spec.rb",
+    "spec/rails3/app_root/spec/controller_spec.rb",
+    "spec/rails3/app_root/spec/spec_helper.orig.rb",
+    "spec/rails3/app_root/spec/spec_helper.rb",
+    "spec/rails3/app_root/spec/user_activation_spec.rb",
+    "spec/rails3/app_root/spec/user_activity_logging_spec.rb",
+    "spec/rails3/app_root/spec/user_brute_force_protection_spec.rb",
+    "spec/rails3/app_root/spec/user_remember_me_spec.rb",
+    "spec/rails3/app_root/spec/user_reset_password_spec.rb",
+    "spec/rails3/app_root/spec/user_spec.rb",
     "spec/sorcery_crypto_providers_spec.rb",
     "spec/spec_helper.rb"
   ]
@@ -183,7 +191,10 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rails>, [">= 3.0.0"])
+      s.add_runtime_dependency(%q<rails>, [">= 3.0.0"])
+      s.add_runtime_dependency(%q<json>, [">= 1.5.1"])
+      s.add_runtime_dependency(%q<oauth>, [">= 0.4.4"])
+      s.add_runtime_dependency(%q<oauth2>, [">= 0.1.1"])
       s.add_development_dependency(%q<rspec>, ["~> 2.3.0"])
       s.add_development_dependency(%q<rspec-rails>, [">= 0"])
       s.add_development_dependency(%q<ruby-debug19>, [">= 0"])
@@ -193,8 +204,13 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<simplecov>, [">= 0.3.8"])
       s.add_runtime_dependency(%q<bcrypt-ruby>, ["~> 2.1.4"])
+      s.add_runtime_dependency(%q<oauth>, [">= 0.4.4"])
+      s.add_runtime_dependency(%q<oauth2>, [">= 0.1.1"])
     else
       s.add_dependency(%q<rails>, [">= 3.0.0"])
+      s.add_dependency(%q<json>, [">= 1.5.1"])
+      s.add_dependency(%q<oauth>, [">= 0.4.4"])
+      s.add_dependency(%q<oauth2>, [">= 0.1.1"])
       s.add_dependency(%q<rspec>, ["~> 2.3.0"])
       s.add_dependency(%q<rspec-rails>, [">= 0"])
       s.add_dependency(%q<ruby-debug19>, [">= 0"])
@@ -204,9 +220,14 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_dependency(%q<simplecov>, [">= 0.3.8"])
       s.add_dependency(%q<bcrypt-ruby>, ["~> 2.1.4"])
+      s.add_dependency(%q<oauth>, [">= 0.4.4"])
+      s.add_dependency(%q<oauth2>, [">= 0.1.1"])
     end
   else
     s.add_dependency(%q<rails>, [">= 3.0.0"])
+    s.add_dependency(%q<json>, [">= 1.5.1"])
+    s.add_dependency(%q<oauth>, [">= 0.4.4"])
+    s.add_dependency(%q<oauth2>, [">= 0.1.1"])
     s.add_dependency(%q<rspec>, ["~> 2.3.0"])
     s.add_dependency(%q<rspec-rails>, [">= 0"])
     s.add_dependency(%q<ruby-debug19>, [">= 0"])
@@ -216,6 +237,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
     s.add_dependency(%q<simplecov>, [">= 0.3.8"])
     s.add_dependency(%q<bcrypt-ruby>, ["~> 2.1.4"])
+    s.add_dependency(%q<oauth>, [">= 0.4.4"])
+    s.add_dependency(%q<oauth2>, [">= 0.1.1"])
   end
 end
 

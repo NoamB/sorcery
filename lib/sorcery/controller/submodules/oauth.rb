@@ -1,3 +1,8 @@
+require 'rubygems'
+require 'bundler/setup'
+require 'oauth'
+require 'oauth2'
+
 module Sorcery
   module Controller
     module Submodules
