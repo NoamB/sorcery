@@ -70,8 +70,20 @@ class ApplicationController < ActionController::Base
     auth_at_provider(:twitter)
   end
   
+  def auth_at_provider_test2
+    auth_at_provider(:facebook)
+  end
+  
   def test_login_from_access_token
-    if @user = login_from_access_token
+    if @user = login_from_access_token(:twitter)
+      redirect_to "bla", :notice => "Success!"
+    else
+      redirect_to "blu", :alert => "Failed!"
+    end
+  end
+  
+  def test_login_from_access_token2
+    if @user = login_from_access_token(:facebook)
       redirect_to "bla", :notice => "Success!"
     else
       redirect_to "blu", :alert => "Failed!"

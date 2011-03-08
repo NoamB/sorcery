@@ -21,8 +21,12 @@ module Sorcery
       autoload :ActivityLogging, 'sorcery/controller/submodules/activity_logging'
       autoload :Oauth, 'sorcery/controller/submodules/oauth'
       module Oauth
-        autoload :Twitter, 'sorcery/controller/submodules/oauth/twitter'
-        autoload :Facebook, 'sorcery/controller/submodules/oauth/facebook'
+        autoload :Oauth1, 'sorcery/controller/submodules/oauth/oauth1'
+        autoload :Oauth2, 'sorcery/controller/submodules/oauth/oauth2'
+        module Providers
+          autoload :Twitter, 'sorcery/controller/submodules/oauth/providers/twitter'
+          autoload :Facebook, 'sorcery/controller/submodules/oauth/providers/facebook'
+        end
       end
     end
   end
