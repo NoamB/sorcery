@@ -14,18 +14,18 @@ module Sorcery
       module Oauth
         def self.included(base)
           base.sorcery_config.class_eval do
-            attr_accessor :user_providers_class,
-                          :user_providers_user_id_attribute_name,
+            attr_accessor :authentications_class,
+                          :authentications_user_id_attribute_name,
                           :access_token_attribute_name,
                           :access_token_secret_attribute_name
 
           end
           
           base.sorcery_config.instance_eval do
-            @defaults.merge!(:@user_providers_class                  => Sorcery::Controller::Config.user_class,
-                             :@user_providers_user_id_attribute_name => :user_id,
-                             :@access_token_attribute_name           => :access_token,
-                             :@access_token_secret_attribute_name    => :access_token_secret)
+            @defaults.merge!(:@authentications_class                  => Sorcery::Controller::Config.user_class,
+                             :@authentications_user_id_attribute_name => :user_id,
+                             :@access_token_attribute_name            => :access_token,
+                             :@access_token_secret_attribute_name     => :access_token_secret)
 
             reset!
           end
@@ -37,8 +37,8 @@ module Sorcery
         module ClassMethods
           def load_from_access_token(access_token)
             config = sorcery_config
-            user_provider = config.user_providers_class.where("#{config.access_token_attribute_name} = ? AND #{config.access_token_secret_attribute_name} = ?", access_token.token, access_token.respond_to?(:secret) ? access_token.secret : "").first
-            user = find(user_provider.send(config.user_providers_user_id_attribute_name)) if user_provider
+            authentication = config.authentications_class.where("#{config.access_token_attribute_name} = ? AND #{config.access_token_secret_attribute_name} = ?", access_token.token, access_token.respond_to?(:secret) ? access_token.secret : "").first
+            user = find(authentication.send(config.authentications_user_id_attribute_name)) if authentication
           end
         end
         

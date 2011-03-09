@@ -38,14 +38,14 @@ describe ApplicationController do
     end
     
     it "logins if user exists" do
-      sorcery_model_property_set(:user_providers_class, UserProvider)
+      sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user
       get :test_login_from_access_token, :oauth_verifier => "blablaRERASDFcxvSDFA"
       flash[:notice].should == "Success!"
     end
     
     it "'login_from_access_token' fails if user doesn't exist" do
-      sorcery_model_property_set(:user_providers_class, UserProvider)
+      sorcery_model_property_set(:authentications_class, Authentication)
       create_new_user
       get :test_login_from_access_token, :oauth_verifier => "blablaRERASDFcxvSDFA"
       flash[:alert].should == "Failed!"

@@ -1,5 +1,3 @@
-require 'rubygems'
-require 'bundler/setup'
 require 'oauth'
 require 'oauth2'
 
@@ -16,11 +14,11 @@ module Sorcery
             class << self
               attr_reader :oauth_providers                           # oauth providers like twitter.
               
-              attr_accessor :user_providers_class
+              attr_accessor :authentications_class
                             
               def merge_oauth_defaults!
                 @defaults.merge!(:@oauth_providers => [],
-                                 :@user_providers_class => nil)
+                                 :@authentications_class => nil)
               end
               
               def oauth_providers=(providers)

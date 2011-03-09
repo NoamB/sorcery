@@ -3,6 +3,10 @@ module Sorcery
     module Submodules
       module Oauth
         module Oauth1
+          def oauth_version
+            "1.0"
+          end
+          
           def get_request_token
             ::OAuth::Consumer.new(@key, @secret, :site => @site).get_request_token(:oauth_callback => @callback_url)
           end

@@ -1,6 +1,6 @@
-class CreateUserProviders < ActiveRecord::Migration
+class CreateAuthentications < ActiveRecord::Migration
   def self.up
-    create_table :user_providers do |t|
+    create_table :authentications do |t|
       t.integer :user_id, :null => false
       t.string :provider, :access_token, :access_token_secret, :null => false
 
@@ -9,6 +9,6 @@ class CreateUserProviders < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :user_providers
+    drop_table :authentications
   end
 end

@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
-  attr_accessible :email, :password, :password_confirmation, :providers_attributes
+  attr_accessible :email, :password, :password_confirmation, :authentications_attributes
   
-  has_many :providers, :class_name => "UserProvider", :dependent => :destroy
-  accepts_nested_attributes_for :providers
+  has_many :authentications, :dependent => :destroy
+  accepts_nested_attributes_for :authentications
 end

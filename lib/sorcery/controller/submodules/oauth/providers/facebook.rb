@@ -31,18 +31,17 @@ module Sorcery
                             :secret,
                             :callback_url,
                             :site,
-                            :user_info_path
+                            :user_info_path,
+                            :scope
                             
               include Oauth2
             
               def initialize
                 @site           = "https://graph.facebook.com"
                 @user_info_path = "/me"
+                @scope          = "email,offline_access"
               end
               
-              def oauth_version
-                "2.0"
-              end
             end
             
           end

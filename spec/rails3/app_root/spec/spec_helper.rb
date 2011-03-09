@@ -42,7 +42,7 @@ Spork.prefork do
   #----------------------------------------------------------------
   # needed when running individual specs
   require File.join(File.dirname(__FILE__), '..','app','models','user')
-  require File.join(File.dirname(__FILE__), '..','app','models','user_provider')
+  require File.join(File.dirname(__FILE__), '..','app','models','authentication')
 
   class TestUser < ActiveRecord::Base
     activate_sorcery!

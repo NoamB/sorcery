@@ -39,10 +39,6 @@ module Sorcery
                 @site           = "https://api.twitter.com"
                 @user_info_path = "/1/account/verify_credentials.json"
               end
-              
-              def oauth_version
-                "1.0a"
-              end
             
             end
           end
