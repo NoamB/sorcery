@@ -10,7 +10,7 @@ module Sorcery
     end
 
     def create_new_external_user(attributes_hash = nil)
-      user_attributes_hash = attributes_hash || {:username => 'gizmo', :authentications_attributes => [{:provider => "myprovider", :access_token => '', :access_token_secret => ''}]}
+      user_attributes_hash = attributes_hash || {:username => 'gizmo', :authentications_attributes => [{:provider => "myprovider", :uid => '123'}]}
       @user = User.new(user_attributes_hash)
       @user.save!
       @user

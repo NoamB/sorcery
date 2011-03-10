@@ -18,7 +18,7 @@ module Sorcery
                   attr_reader :twitter                           # access to twitter_client.
 
                   def merge_twitter_defaults!
-                    @defaults.merge!(:@twitter => TwitterClient.new)
+                    @defaults.merge!(:@twitter => TwitterClient)
                   end
                 end
                 merge_twitter_defaults!
@@ -26,20 +26,30 @@ module Sorcery
               end
             end
 
-            class TwitterClient
-              attr_accessor :key,
-                            :secret,
-                            :callback_url,
-                            :site,
-                            :user_info_path
-            
-              include Oauth1
-              
-              def initialize
-                @site           = "https://api.twitter.com"
-                @user_info_path = "/1/account/verify_credentials.json"
-              end
-            
+            module TwitterClient
+              class << self
+                attr_accessor :key,
+                              :secret,
+                              :callback_url,
+                              :site,
+                              :user_info_path
+                
+                include Oauth1
+                
+                def init
+                  @site           = "https://api.twitter.com"
+                  @user_info_path = "/1/account/verify_credentials.json"
+                end
+                
+                def get_user_hash(access_token)
+                  user_hash = {}
+                  response = access_token.get(@user_info_path)
+                  user_hash[:user_info] = JSON.parse(response.body)
+                  user_hash[:uid] = access_token.params[:user_id]
+                  user_hash
+                end
+              end  
+              init
             end
           end
         end

@@ -16,16 +16,16 @@ module Sorcery
           base.sorcery_config.class_eval do
             attr_accessor :authentications_class,
                           :authentications_user_id_attribute_name,
-                          :access_token_attribute_name,
-                          :access_token_secret_attribute_name
+                          :provider_attribute_name,
+                          :provider_uid_attribute_name
 
           end
           
           base.sorcery_config.instance_eval do
             @defaults.merge!(:@authentications_class                  => Sorcery::Controller::Config.user_class,
                              :@authentications_user_id_attribute_name => :user_id,
-                             :@access_token_attribute_name            => :access_token,
-                             :@access_token_secret_attribute_name     => :access_token_secret)
+                             :@provider_attribute_name                => :provider,
+                             :@provider_uid_attribute_name            => :uid)
 
             reset!
           end
@@ -35,9 +35,9 @@ module Sorcery
         end
         
         module ClassMethods
-          def load_from_access_token(access_token)
+          def load_from_provider(provider,uid)
             config = sorcery_config
-            authentication = config.authentications_class.where("#{config.access_token_attribute_name} = ? AND #{config.access_token_secret_attribute_name} = ?", access_token.token, access_token.respond_to?(:secret) ? access_token.secret : "").first
+            authentication = config.authentications_class.find_by_provider_and_uid(provider, uid)
             user = find(authentication.send(config.authentications_user_id_attribute_name)) if authentication
           end
         end

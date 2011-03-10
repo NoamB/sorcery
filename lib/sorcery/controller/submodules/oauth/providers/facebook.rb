@@ -18,7 +18,7 @@ module Sorcery
                   attr_reader :facebook                           # access to facebook_client.
           
                   def merge_facebook_defaults!
-                    @defaults.merge!(:@facebook => FacebookClient.new)
+                    @defaults.merge!(:@facebook => FacebookClient)
                   end
                 end
                 merge_facebook_defaults!
@@ -26,22 +26,32 @@ module Sorcery
               end
             end
           
-            class FacebookClient
-              attr_accessor :key,
-                            :secret,
-                            :callback_url,
-                            :site,
-                            :user_info_path,
-                            :scope
+            module FacebookClient
+              class << self
+                attr_accessor :key,
+                              :secret,
+                              :callback_url,
+                              :site,
+                              :user_info_path,
+                              :scope
                             
-              include Oauth2
+                include Oauth2
             
-              def initialize
-                @site           = "https://graph.facebook.com"
-                @user_info_path = "/me"
-                @scope          = "email,offline_access"
+                def init
+                  @site           = "https://graph.facebook.com"
+                  @user_info_path = "/me"
+                  @scope          = "email,offline_access"
+                end
+                
+                def get_user_hash(access_token)
+                  user_hash = {}
+                  response = access_token.get(@user_info_path)
+                  user_hash[:user_info] = JSON.parse(response)
+                  user_hash[:uid] = user_hash[:user_info]['id']
+                  user_hash
+                end
               end
-              
+              init
             end
             
           end

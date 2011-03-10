@@ -53,7 +53,8 @@ module Sorcery
             args.merge!({:oauth_verifier => params[:oauth_verifier], :request_token => session[:request_token]}) if @provider.respond_to?(:get_request_token)
             args.merge!({:code => params[:code]}) if params[:code]
             @access_token = @provider.get_access_token(args)
-            if user = Config.user_class.load_from_access_token( @access_token )
+            @user_hash = @provider.get_user_hash(@access_token)
+            if user = Config.user_class.load_from_provider(provider,@user_hash[:uid])
               reset_session
               login_user(user)
               user
@@ -62,8 +63,7 @@ module Sorcery
           
           def get_user_hash(provider)
             @provider = Config.send(provider)
-            response = @access_token.get(@provider.user_info_path)
-            @user_hash ||= JSON.parse(response.respond_to?(:body) ? response.body : response)
+            @provider.get_user_hash(@access_token)
           end
         end
       end
