@@ -23,6 +23,7 @@ describe ApplicationController do
       @webby = @client.web_server
       OAuth2::Strategy::WebServer.stub!(:new).and_return(@webby)
       @webby.stub!(:get_access_token).and_return(@acc_token)
+      @acc_token.stub!(:get).and_return({"id"=>"123", "name"=>"Noam Ben Ari", "first_name"=>"Noam", "last_name"=>"Ben Ari", "link"=>"http://www.facebook.com/nbenari1", "hometown"=>{"id"=>"110619208966868", "name"=>"Haifa, Israel"}, "location"=>{"id"=>"106906559341067", "name"=>"Pardes Hanah, Hefa, Israel"}, "bio"=>"I'm a new daddy, and enjoying it!", "gender"=>"male", "email"=>"nbenari@gmail.com", "timezone"=>2, "locale"=>"en_US", "languages"=>[{"id"=>"108405449189952", "name"=>"Hebrew"}, {"id"=>"106059522759137", "name"=>"English"}, {"id"=>"112624162082677", "name"=>"Russian"}], "verified"=>true, "updated_time"=>"2011-02-16T20:59:38+0000"}.to_json)
     end
       
     after(:each) do
@@ -38,7 +39,7 @@ describe ApplicationController do
     
     it "'login_from_access_token' logins if user exists" do
       sorcery_model_property_set(:authentications_class, Authentication)
-      create_new_external_user
+      create_new_external_user(:facebook)
       get :test_login_from_access_token2
       flash[:notice].should == "Success!"
     end
@@ -71,13 +72,13 @@ describe ApplicationController do
     
     it "should not send activation email to external users" do
       old_size = ActionMailer::Base.deliveries.size
-      create_new_external_user
+      create_new_external_user(:facebook)
       ActionMailer::Base.deliveries.size.should == old_size
     end
     
     it "should not send external users an activation success email" do
       sorcery_model_property_set(:activation_success_email_method_name, nil)
-      create_new_external_user
+      create_new_external_user(:facebook)
       old_size = ActionMailer::Base.deliveries.size
       @user.activate!
       ActionMailer::Base.deliveries.size.should == old_size

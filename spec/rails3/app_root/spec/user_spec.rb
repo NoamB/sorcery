@@ -309,7 +309,7 @@ describe "User with no submodules (core)" do
     end
     
     it "external? should be true for external users" do
-      create_new_external_user
+      create_new_external_user(:twitter)
       @user.external?.should be_true
     end
   end
