@@ -6,7 +6,7 @@ module Sorcery
       # For the controller options see Sorcery::Controller::Oauth.
       #
       # Socery assumes you will create new users in the same table where you keep your regular users,
-      # but that you might have a separate table for keeping their access token data,
+      # but that you might have a separate table for keeping their external data,
       # and that maybe that separate table has a few rows for each user (facebook and twitter).
       #
       # External users will have a null crypted_password field, since we do not hold their password.

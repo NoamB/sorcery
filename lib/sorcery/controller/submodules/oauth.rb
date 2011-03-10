@@ -34,8 +34,7 @@ module Sorcery
         module InstanceMethods
           protected
           
-          # requests a request_token
-          # and then sends user to authenticate with that token
+          # sends user to authenticate at the provider's website.
           # after authentication the user is redirected to the callback defined in the provider config
           def auth_at_provider(provider)
             @provider = Config.send(provider)
@@ -64,6 +63,33 @@ module Sorcery
           def get_user_hash(provider)
             @provider = Config.send(provider)
             @provider.get_user_hash(@access_token)
+          end
+          
+          # this method automatically creates a new user from the data in the external user hash.
+          # The mappings from user hash fields to user db fields are set at controller config.
+          # If the hash field you would like to map is nested, use slashes. For example, Given a hash like:
+          #
+          #   "user" => {"name"=>"moishe"}
+          #
+          # You will set the mapping:
+          #
+          #   {:username => "user/name"}
+          #
+          # And this will cause 'moishe' to be set as the value of :username field.
+          def create_from_provider!(provider)
+            provider = provider.to_sym
+            @provider = Config.send(provider)
+            @user_hash = get_user_hash(provider)
+            config = Config.user_class.sorcery_config
+            attrs = {}
+            @provider.user_info_mapping.each do |k,v|
+              (varr = v.split("/")).size > 1 ? attrs.merge!(k => varr.inject(@user_hash[:user_info]) {|hsh,v| hsh[v] }) : attrs.merge!(k => @user_hash[:user_info][v])
+            end
+            Config.user_class.transaction do
+              @user = Config.user_class.create!(attrs)
+              Config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider, config.provider_uid_attribute_name => @user_hash[:uid]})
+            end
+            @user
           end
         end
       end

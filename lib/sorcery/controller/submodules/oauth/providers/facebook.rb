@@ -33,7 +33,8 @@ module Sorcery
                               :callback_url,
                               :site,
                               :user_info_path,
-                              :scope
+                              :scope,
+                              :user_info_mapping
                             
                 include Oauth2
             
@@ -41,6 +42,7 @@ module Sorcery
                   @site           = "https://graph.facebook.com"
                   @user_info_path = "/me"
                   @scope          = "email,offline_access"
+                  @user_info_mapping = {}
                 end
                 
                 def get_user_hash(access_token)

@@ -32,13 +32,15 @@ module Sorcery
                               :secret,
                               :callback_url,
                               :site,
-                              :user_info_path
+                              :user_info_path,
+                              :user_info_mapping
                 
                 include Oauth1
                 
                 def init
                   @site           = "https://api.twitter.com"
                   @user_info_path = "/1/account/verify_credentials.json"
+                  @user_info_mapping = {}
                 end
                 
                 def get_user_hash(access_token)
