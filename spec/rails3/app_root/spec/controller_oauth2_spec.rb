@@ -1,5 +1,15 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
+def stub_all_oauth2_requests!
+  @client = OAuth2::Client.new("key","secret", :site => "http://myapi.com")
+  OAuth2::Client.stub!(:new).and_return(@client)
+  @acc_token = OAuth2::AccessToken.new(@client, "", "asd", nil, {})
+  @webby = @client.web_server
+  OAuth2::Strategy::WebServer.stub!(:new).and_return(@webby)
+  @webby.stub!(:get_access_token).and_return(@acc_token)
+  @acc_token.stub!(:get).and_return({"id"=>"123", "name"=>"Noam Ben Ari", "first_name"=>"Noam", "last_name"=>"Ben Ari", "link"=>"http://www.facebook.com/nbenari1", "hometown"=>{"id"=>"110619208966868", "name"=>"Haifa, Israel"}, "location"=>{"id"=>"106906559341067", "name"=>"Pardes Hanah, Hefa, Israel"}, "bio"=>"I'm a new daddy, and enjoying it!", "gender"=>"male", "email"=>"nbenari@gmail.com", "timezone"=>2, "locale"=>"en_US", "languages"=>[{"id"=>"108405449189952", "name"=>"Hebrew"}, {"id"=>"106059522759137", "name"=>"English"}, {"id"=>"112624162082677", "name"=>"Russian"}], "verified"=>true, "updated_time"=>"2011-02-16T20:59:38+0000"}.to_json)
+end
+
 describe ApplicationController do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/oauth")
@@ -17,13 +27,7 @@ describe ApplicationController do
   describe ApplicationController, "with OAuth features" do
   
     before(:each) do
-      @client = OAuth2::Client.new("key","secret", :site => "http://myapi.com")
-      OAuth2::Client.stub!(:new).and_return(@client)
-      @acc_token = OAuth2::AccessToken.new(@client, "", "asd", nil, {})
-      @webby = @client.web_server
-      OAuth2::Strategy::WebServer.stub!(:new).and_return(@webby)
-      @webby.stub!(:get_access_token).and_return(@acc_token)
-      @acc_token.stub!(:get).and_return({"id"=>"123", "name"=>"Noam Ben Ari", "first_name"=>"Noam", "last_name"=>"Ben Ari", "link"=>"http://www.facebook.com/nbenari1", "hometown"=>{"id"=>"110619208966868", "name"=>"Haifa, Israel"}, "location"=>{"id"=>"106906559341067", "name"=>"Pardes Hanah, Hefa, Israel"}, "bio"=>"I'm a new daddy, and enjoying it!", "gender"=>"male", "email"=>"nbenari@gmail.com", "timezone"=>2, "locale"=>"en_US", "languages"=>[{"id"=>"108405449189952", "name"=>"Hebrew"}, {"id"=>"106059522759137", "name"=>"English"}, {"id"=>"112624162082677", "name"=>"Russian"}], "verified"=>true, "updated_time"=>"2011-02-16T20:59:38+0000"}.to_json)
+      stub_all_oauth2_requests!
     end
       
     after(:each) do
@@ -49,6 +53,31 @@ describe ApplicationController do
       create_new_user
       get :test_login_from_access_token2
       flash[:alert].should == "Failed!"
+    end
+  end
+  
+  describe ApplicationController, "'create_from_provider!'" do
+    before(:each) do
+      stub_all_oauth2_requests!
+      User.delete_all
+    end
+      
+    it "should create a new user" do
+      sorcery_controller_property_set(:authentications_class, Authentication)
+      sorcery_controller_oauth_property_set(:facebook, :user_info_mapping, {:username => "name"})
+      lambda do
+        get :test_create_from_provider, :provider => "facebook"
+      end.should change(User, :count).by(1)
+      User.first.username.should == "Noam Ben Ari"
+    end
+    
+    it "should support nested attributes" do
+      sorcery_controller_property_set(:authentications_class, Authentication)
+      sorcery_controller_oauth_property_set(:facebook, :user_info_mapping, {:username => "hometown/name"})
+      lambda do
+        get :test_create_from_provider, :provider => "facebook"
+      end.should change(User, :count).by(1)
+      User.first.username.should == "Haifa, Israel"
     end
   end
   
@@ -84,4 +113,5 @@ describe ApplicationController do
       ActionMailer::Base.deliveries.size.should == old_size
     end
   end
+  
 end

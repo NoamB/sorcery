@@ -90,6 +90,16 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def test_create_from_provider
+    provider = params[:provider]
+    login_from_access_token(provider)
+    if @user = create_from_provider!(provider)
+      redirect_to "bla", :notice => "Success!"
+    else
+      redirect_to "blu", :alert => "Failed!"
+    end
+  end
+  
   protected
   
   
