@@ -1,17 +1,17 @@
 $: << File.join(File.dirname(__FILE__), '..', '..', 'lib' )
 
-# require 'simplecov'
-# SimpleCov.root File.join(File.dirname(__FILE__), "app_root" )
-# SimpleCov.start do
-#   add_filter "/config/"
-#   
-#   add_group 'Controllers', 'app/controllers'
-#   add_group 'Models', 'app/models'
-#   add_group 'Helpers', 'app/helpers'
-#   add_group 'Libraries', 'lib'
-#   add_group 'Plugins', 'vendor/plugins'
-#   add_group 'Migrations', 'db/migrate'
-# end
+require 'simplecov'
+SimpleCov.root File.join(File.dirname(__FILE__), "..", "..", "app_root" )
+SimpleCov.start do
+  add_filter "/config/"
+  
+  add_group 'Controllers', 'app/controllers'
+  add_group 'Models', 'app/models'
+  add_group 'Helpers', 'app/helpers'
+  add_group 'Libraries', 'lib'
+  add_group 'Plugins', 'vendor/plugins'
+  add_group 'Migrations', 'db/migrate'
+end
 
 require 'spork'
 
@@ -28,7 +28,7 @@ Spork.prefork do
   RSpec.configure do |config|
     config.use_transactional_fixtures = true
     config.use_instantiated_fixtures  = false
-    config.include RSpec::Rails::ControllerExampleGroup, :example_group => { :file_path => /controller(.)*_spec.rb$/ }#:file_path => /\bspec[\\\/]controllers[\\\/]/ }
+    config.include RSpec::Rails::ControllerExampleGroup, :example_group => { :file_path => /controller(.)*_spec.rb$/ }
 
     config.before(:suite) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")

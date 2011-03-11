@@ -35,6 +35,7 @@ module Sorcery
         end
         
         module ClassMethods
+          # takes a provider and uid and finds a user by them.
           def load_from_provider(provider,uid)
             config = sorcery_config
             authentication = config.authentications_class.find_by_provider_and_uid(provider, uid)
