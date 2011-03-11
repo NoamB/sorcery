@@ -5,9 +5,9 @@ module Sorcery
       # This is the model part which handles finding the user using access tokens.
       # For the controller options see Sorcery::Controller::Oauth.
       #
-      # Socery assumes you will create new users in the same table where you keep your regular users,
-      # but that you might have a separate table for keeping their external data,
-      # and that maybe that separate table has a few rows for each user (facebook and twitter).
+      # Socery assumes (read: requires) you will create external users in the same table where you keep your regular users,
+      # but that you will have a separate table for keeping their external authentication data,
+      # and that that separate table has a few rows for each user, facebook and twitter for example (a one-to-many relationship).
       #
       # External users will have a null crypted_password field, since we do not hold their password.
       # They will not be sent activation emails on creation.
@@ -22,7 +22,7 @@ module Sorcery
           end
           
           base.sorcery_config.instance_eval do
-            @defaults.merge!(:@authentications_class                  => Sorcery::Controller::Config.user_class,
+            @defaults.merge!(:@authentications_class                  => Sorcery::Controller::Config.authentications_class,
                              :@authentications_user_id_attribute_name => :user_id,
                              :@provider_attribute_name                => :provider,
                              :@provider_uid_attribute_name            => :uid)
