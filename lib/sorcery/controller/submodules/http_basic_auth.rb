@@ -34,6 +34,7 @@ module Sorcery
           def require_login_from_http_basic
             (request_http_basic_authentication(realm_name_by_controller) and (session[:http_authentication_used] = true) and return) if (request.authorization.nil? || session[:http_authentication_used].nil?)
             require_login
+            session[:http_authentication_used] = nil unless logged_in?
           end
           
           # given to main controller module as a login source callback

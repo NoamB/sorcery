@@ -3,6 +3,7 @@ Magical Authentication for Rails 3.
 
 Inspired by restful_authentication, Authlogic and Devise.
 Crypto code taken almost unchanged from Authlogic.
+OAuth code inspired by OmniAuth.
 
 == Summary
 
@@ -65,10 +66,13 @@ Activity Logging (see lib/sorcery/model/submodules/activity_logging.rb):
 * an easy method of collecting the list of currently logged in users.
 * configurable timeout by which to decide whether to include a user in the list of logged in users.
 
+Oauth (see lib/sorcery/controller/submodules/oauth.rb):
+* OAuth1 and OAuth2 support (currently twitter & facebook)
+* configurable db field names and authentications table.
+
 == Next Planned Features:
 
 I've got many plans which include (by priority):
-* OAuth1 and OAuth2 support
 * Sinatra support
 * Mongoid support
 * Configurable Auto login on registration/activation
