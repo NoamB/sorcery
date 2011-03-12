@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sorcery}
-  s.version = "0.1.4"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = %q{2011-03-07}
+  s.date = %q{2011-03-13}
   s.description = %q{Provides common authentication needs such as signing in/out, activating by email and resetting password.}
   s.email = %q{nbenari@gmail.com}
   s.extra_rdoc_files = [
@@ -31,8 +31,10 @@ Gem::Specification.new do |s|
     "lib/sorcery/controller/submodules/brute_force_protection.rb",
     "lib/sorcery/controller/submodules/http_basic_auth.rb",
     "lib/sorcery/controller/submodules/oauth.rb",
-    "lib/sorcery/controller/submodules/oauth/facebook.rb",
-    "lib/sorcery/controller/submodules/oauth/twitter.rb",
+    "lib/sorcery/controller/submodules/oauth/oauth1.rb",
+    "lib/sorcery/controller/submodules/oauth/oauth2.rb",
+    "lib/sorcery/controller/submodules/oauth/providers/facebook.rb",
+    "lib/sorcery/controller/submodules/oauth/providers/twitter.rb",
     "lib/sorcery/controller/submodules/remember_me.rb",
     "lib/sorcery/controller/submodules/session_timeout.rb",
     "lib/sorcery/crypto_providers/aes256.rb",
@@ -66,8 +68,8 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/app/controllers/application_controller.rb",
     "spec/rails3/app_root/app/helpers/application_helper.rb",
     "spec/rails3/app_root/app/mailers/sorcery_mailer.rb",
+    "spec/rails3/app_root/app/models/authentication.rb",
     "spec/rails3/app_root/app/models/user.rb",
-    "spec/rails3/app_root/app/models/user_provider.rb",
     "spec/rails3/app_root/app/views/layouts/application.html.erb",
     "spec/rails3/app_root/app/views/sorcery_mailer/activation_email.html.erb",
     "spec/rails3/app_root/app/views/sorcery_mailer/activation_email.text.erb",
@@ -95,7 +97,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
     "spec/rails3/app_root/db/migrate/brute_force_protection/20101224223626_add_brute_force_protection_to_users.rb",
     "spec/rails3/app_root/db/migrate/core/20101224223620_create_users.rb",
-    "spec/rails3/app_root/db/migrate/oauth/20101224223628_create_user_providers.rb",
+    "spec/rails3/app_root/db/migrate/oauth/20101224223628_create_authentications.rb",
     "spec/rails3/app_root/db/migrate/remember_me/20101224223623_add_remember_me_token_to_users.rb",
     "spec/rails3/app_root/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/rails3/app_root/db/schema.rb",
@@ -119,6 +121,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/spec/controller_activity_logging_spec.rb",
     "spec/rails3/app_root/spec/controller_brute_force_protection_spec.rb",
     "spec/rails3/app_root/spec/controller_http_basic_auth_spec.rb",
+    "spec/rails3/app_root/spec/controller_oauth2_spec.rb",
     "spec/rails3/app_root/spec/controller_oauth_spec.rb",
     "spec/rails3/app_root/spec/controller_remember_me_spec.rb",
     "spec/rails3/app_root/spec/controller_session_timeout_spec.rb",
@@ -128,6 +131,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/spec/user_activation_spec.rb",
     "spec/rails3/app_root/spec/user_activity_logging_spec.rb",
     "spec/rails3/app_root/spec/user_brute_force_protection_spec.rb",
+    "spec/rails3/app_root/spec/user_oauth_spec.rb",
     "spec/rails3/app_root/spec/user_remember_me_spec.rb",
     "spec/rails3/app_root/spec/user_reset_password_spec.rb",
     "spec/rails3/app_root/spec/user_spec.rb",
@@ -138,14 +142,14 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/NoamB/sorcery}
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.5.0}
+  s.rubygems_version = %q{1.6.2}
   s.summary = %q{Magical authentication for Rails 3 applications}
   s.test_files = [
     "spec/rails3/app_root/app/controllers/application_controller.rb",
     "spec/rails3/app_root/app/helpers/application_helper.rb",
     "spec/rails3/app_root/app/mailers/sorcery_mailer.rb",
+    "spec/rails3/app_root/app/models/authentication.rb",
     "spec/rails3/app_root/app/models/user.rb",
-    "spec/rails3/app_root/app/models/user_provider.rb",
     "spec/rails3/app_root/config/application.rb",
     "spec/rails3/app_root/config/boot.rb",
     "spec/rails3/app_root/config/environment.rb",
@@ -163,7 +167,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
     "spec/rails3/app_root/db/migrate/brute_force_protection/20101224223626_add_brute_force_protection_to_users.rb",
     "spec/rails3/app_root/db/migrate/core/20101224223620_create_users.rb",
-    "spec/rails3/app_root/db/migrate/oauth/20101224223628_create_user_providers.rb",
+    "spec/rails3/app_root/db/migrate/oauth/20101224223628_create_authentications.rb",
     "spec/rails3/app_root/db/migrate/remember_me/20101224223623_add_remember_me_token_to_users.rb",
     "spec/rails3/app_root/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/rails3/app_root/db/schema.rb",
@@ -171,6 +175,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/spec/controller_activity_logging_spec.rb",
     "spec/rails3/app_root/spec/controller_brute_force_protection_spec.rb",
     "spec/rails3/app_root/spec/controller_http_basic_auth_spec.rb",
+    "spec/rails3/app_root/spec/controller_oauth2_spec.rb",
     "spec/rails3/app_root/spec/controller_oauth_spec.rb",
     "spec/rails3/app_root/spec/controller_remember_me_spec.rb",
     "spec/rails3/app_root/spec/controller_session_timeout_spec.rb",
@@ -180,6 +185,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/spec/user_activation_spec.rb",
     "spec/rails3/app_root/spec/user_activity_logging_spec.rb",
     "spec/rails3/app_root/spec/user_brute_force_protection_spec.rb",
+    "spec/rails3/app_root/spec/user_oauth_spec.rb",
     "spec/rails3/app_root/spec/user_remember_me_spec.rb",
     "spec/rails3/app_root/spec/user_reset_password_spec.rb",
     "spec/rails3/app_root/spec/user_spec.rb",
