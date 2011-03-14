@@ -39,7 +39,7 @@ GEM
     faraday (0.5.5)
       addressable (~> 2.2.4)
       multipart-post (~> 1.1.0)
-      rack (>= 1.1.0, < 2)
+      rack (< 2, >= 1.1.0)
     git (1.2.5)
     i18n (0.5.0)
     jeweler (1.5.2)
