@@ -22,7 +22,7 @@ module Sorcery
           end
           
           base.sorcery_config.instance_eval do
-            @defaults.merge!(:@authentications_class                  => Sorcery::Controller::Config.authentications_class,
+            @defaults.merge!(:@authentications_class                  => nil,
                              :@authentications_user_id_attribute_name => :user_id,
                              :@provider_attribute_name                => :provider,
                              :@provider_uid_attribute_name            => :uid)

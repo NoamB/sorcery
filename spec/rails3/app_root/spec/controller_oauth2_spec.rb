@@ -63,7 +63,7 @@ describe ApplicationController do
     end
       
     it "should create a new user" do
-      sorcery_controller_property_set(:authentications_class, Authentication)
+      sorcery_model_property_set(:authentications_class, Authentication)
       sorcery_controller_oauth_property_set(:facebook, :user_info_mapping, {:username => "name"})
       lambda do
         get :test_create_from_provider, :provider => "facebook"
@@ -72,7 +72,7 @@ describe ApplicationController do
     end
     
     it "should support nested attributes" do
-      sorcery_controller_property_set(:authentications_class, Authentication)
+      sorcery_model_property_set(:authentications_class, Authentication)
       sorcery_controller_oauth_property_set(:facebook, :user_info_mapping, {:username => "hometown/name"})
       lambda do
         get :test_create_from_provider, :provider => "facebook"

@@ -10,12 +10,9 @@ module Sorcery
           Config.module_eval do
             class << self
               attr_reader :oauth_providers                           # oauth providers like twitter.
-              
-              attr_accessor :authentications_class
-                            
+                                          
               def merge_oauth_defaults!
-                @defaults.merge!(:@oauth_providers => [],
-                                 :@authentications_class => nil)
+                @defaults.merge!(:@oauth_providers => [])
               end
               
               def oauth_providers=(providers)
@@ -84,7 +81,7 @@ module Sorcery
             end
             Config.user_class.transaction do
               @user = Config.user_class.create!(attrs)
-              Config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider, config.provider_uid_attribute_name => @user_hash[:uid]})
+              Config.user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider, config.provider_uid_attribute_name => @user_hash[:uid]})
             end
             @user
           end

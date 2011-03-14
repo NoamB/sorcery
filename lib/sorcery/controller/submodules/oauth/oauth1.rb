@@ -1,3 +1,4 @@
+require 'oauth'
 module Sorcery
   module Controller
     module Submodules
