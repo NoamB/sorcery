@@ -41,4 +41,5 @@ module Sorcery
   autoload :TestHelpers, 'sorcery/test_helpers'
   
   require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
+  require 'sorcery/sinatra' if defined?(Sinatra)
 end
