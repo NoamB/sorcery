@@ -2,11 +2,11 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "User with reset_password submodule" do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/reset_password")
+    ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/reset_password")
   end
   
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/reset_password")
+    ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/reset_password")
   end
 
   # ----------------- PLUGIN CONFIGURATION -----------------------

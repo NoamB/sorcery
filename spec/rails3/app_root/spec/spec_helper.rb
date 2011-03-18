@@ -53,6 +53,7 @@ Spork.prefork do
   end
   
   include ::Sorcery::TestHelpers
+  include ::Sorcery::TestHelpers::Rails
   
 end
 

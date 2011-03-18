@@ -1,11 +1,11 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe ApplicationController do
+describe 'MyApp' do
   
   # ----------------- REMEMBER ME -----------------------
-  describe ApplicationController, "with remember me features" do
+  describe 'MyApp', "with remember me features" do
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
+      ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/remember_me")
       sorcery_reload!([:remember_me])
     end
     
@@ -14,7 +14,7 @@ describe ApplicationController do
     end
     
     after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/remember_me")
+      ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/remember_me")
     end
     
     after(:each) do

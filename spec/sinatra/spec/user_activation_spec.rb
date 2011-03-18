@@ -1,13 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-require File.expand_path(File.dirname(__FILE__) + '/../app/mailers/sorcery_mailer')
+require File.expand_path(File.dirname(__FILE__) + '/../sorcery_mailer')
 
 describe "User with activation submodule" do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+    ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/activation")
   end
   
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+    ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/activation")
   end
 
   # ----------------- PLUGIN CONFIGURATION -----------------------

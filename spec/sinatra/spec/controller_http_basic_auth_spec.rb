@@ -1,9 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe ApplicationController do
+describe 'MyApp' do
   
   # ----------------- HTTP BASIC AUTH -----------------------
-  describe ApplicationController, "with http basic auth features" do
+  describe 'MyApp', "with http basic auth features" do
     before(:all) do
       sorcery_reload!([:http_basic_auth])
       create_new_user

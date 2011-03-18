@@ -1,16 +1,16 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe ApplicationController do
+describe 'MyApp' do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activity_logging")
+    ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/activity_logging")
   end
   
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activity_logging")
+    ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/activity_logging")
   end
   
   # ----------------- ACTIVITY LOGGING -----------------------
-  describe ApplicationController, "with activity logging features" do
+  describe Sinatra::Application, "with activity logging features" do
     before(:all) do
       sorcery_reload!([:activity_logging])
     end

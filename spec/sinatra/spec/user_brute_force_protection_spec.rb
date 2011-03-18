@@ -2,11 +2,11 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "User with brute_force_protection submodule" do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/brute_force_protection")
+    ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/brute_force_protection")
   end
   
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/brute_force_protection")
+    ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/brute_force_protection")
   end
 
   # ----------------- PLUGIN CONFIGURATION -----------------------

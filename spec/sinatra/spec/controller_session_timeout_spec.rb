@@ -1,9 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe ApplicationController do
+describe 'MyApp' do
   
   # ----------------- SESSION TIMEOUT -----------------------
-  describe ApplicationController, "with session timeout features" do
+  describe 'MyApp', "with session timeout features" do
     before(:all) do
       sorcery_reload!([:session_timeout])
       sorcery_controller_property_set(:session_timeout,0.5)

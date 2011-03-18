@@ -2,11 +2,11 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "User with oauth submodule" do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/oauth")
+    ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/oauth")
   end
   
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/oauth")
+    ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/oauth")
   end
 
   # ----------------- PLUGIN CONFIGURATION -----------------------

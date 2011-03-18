@@ -1,16 +1,16 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe ApplicationController do
+describe 'MyApp' do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/brute_force_protection")
+    ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/brute_force_protection")
   end
   
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/brute_force_protection")
+    ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/brute_force_protection")
   end
   
   # ----------------- SESSION TIMEOUT -----------------------
-  describe ApplicationController, "with brute force protection features" do
+  describe 'MyApp', "with brute force protection features" do
     before(:all) do
       sorcery_reload!([:brute_force_protection])
       create_new_user

@@ -10,9 +10,9 @@ def stub_all_oauth2_requests!
   @acc_token.stub!(:get).and_return({"id"=>"123", "name"=>"Noam Ben Ari", "first_name"=>"Noam", "last_name"=>"Ben Ari", "link"=>"http://www.facebook.com/nbenari1", "hometown"=>{"id"=>"110619208966868", "name"=>"Haifa, Israel"}, "location"=>{"id"=>"106906559341067", "name"=>"Pardes Hanah, Hefa, Israel"}, "bio"=>"I'm a new daddy, and enjoying it!", "gender"=>"male", "email"=>"nbenari@gmail.com", "timezone"=>2, "locale"=>"en_US", "languages"=>[{"id"=>"108405449189952", "name"=>"Hebrew"}, {"id"=>"106059522759137", "name"=>"English"}, {"id"=>"112624162082677", "name"=>"Russian"}], "verified"=>true, "updated_time"=>"2011-02-16T20:59:38+0000"}.to_json)
 end
 
-describe ApplicationController do
+describe 'MyApp' do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/oauth")
+    ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/oauth")
     sorcery_reload!([:oauth])
     sorcery_controller_property_set(:oauth_providers, [:facebook])
     sorcery_controller_oauth_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
@@ -21,10 +21,10 @@ describe ApplicationController do
   end
   
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/oauth")
+    ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/oauth")
   end
   # ----------------- OAuth -----------------------
-  describe ApplicationController, "with OAuth features" do
+  describe 'MyApp', "with OAuth features" do
   
     before(:each) do
       stub_all_oauth2_requests!
@@ -56,7 +56,7 @@ describe ApplicationController do
     end
   end
   
-  describe ApplicationController, "'create_from_provider!'" do
+  describe 'MyApp', "'create_from_provider!'" do
     before(:each) do
       stub_all_oauth2_requests!
       User.delete_all
@@ -81,9 +81,9 @@ describe ApplicationController do
     end
   end
   
-  describe ApplicationController, "OAuth with User Activation features" do
+  describe 'MyApp', "OAuth with User Activation features" do
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+      ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/activation")
       sorcery_reload!([:user_activation,:oauth], :user_activation_mailer => ::SorceryMailer)
       sorcery_controller_property_set(:oauth_providers, [:facebook])
       sorcery_controller_oauth_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
@@ -92,7 +92,7 @@ describe ApplicationController do
     end
     
     after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+      ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/activation")
     end
     
     after(:each) do
