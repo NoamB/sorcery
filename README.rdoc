@@ -28,7 +28,7 @@ Check out the tutorials in the github wiki!
 
 == Full Features List by module:
 
-Core (see lib/sorcery/model/model.rb and lib/sorcery/controller/controller.rb): 
+Core (see lib/sorcery/model.rb and lib/sorcery/controller.rb): 
 * login/logout, optional return user to requested url on login, configurable redirect for non-logged-in users.
 * password encryption, algorithms: bcrypt(default), md5, sha1, sha256, sha512, aes256, custom(yours!), none. Configurable stretches and salt.
 * configurable attribute names for username, password and email.
@@ -76,6 +76,9 @@ Oauth (see lib/sorcery/controller/submodules/oauth.rb):
 
 I've got many plans which include (by priority):
 * Sinatra support
+* Scoping logins (to a subdomain or another arbitrary field)
+* Simple auth (no user)
+* Switching authentication mode at runtime (Maintenance mode)
 * Mongoid support
 * Configurable Auto login on registration/activation
 * Other reset password strategies (security questions?)
