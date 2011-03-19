@@ -12,29 +12,25 @@ module Sorcery
       
       class ::Sinatra::Application
         class << self
-          attr_accessor :sorcery_vars, :sorcery_cookies, :sorcery_instance
+          attr_accessor :sorcery_vars
         end
         @sorcery_vars = {}
-        @sorcery_cookies = {}
 
         before do
           self.class.sorcery_vars = {}
-          self.class.sorcery_cookies = {}
-          self.class.sorcery_instance = self
         end
         
         after do
           save_instance_vars
-          self.class.sorcery_cookies = response.cookies
+        end
+        
+        def save_instance_vars
+          instance_variables.each do |var|
+            self.class.sorcery_vars[:"#{var.to_s.delete("@")}"] = instance_variable_get(var)
+          end
         end
       end
-              
-      def save_instance_vars
-        instance_variables.each do |var|
-          self.class.sorcery_vars[:"#{var.to_s.delete("@")}"] = instance_variable_get(var)
-        end
-      end
-      
+                    
       ::RSpec::Matchers.define :redirect_to do |expected|
         match do |actual|
           actual.status == 302 && actual.location == expected
@@ -47,17 +43,51 @@ module Sorcery
         end
         app
       end
-        
-      def this
-        ::Sinatra::Application.sorcery_instance
+
+      def logout_user
+        get_sinatra_app(subject).send(:logout)
       end
-      
+
+      def clear_user_without_logout
+        get_sinatra_app(subject).instance_variable_set(:@current_user,nil)
+      end
+        
       def assigns
         ::Sinatra::Application.sorcery_vars
       end
       
-      def cookies
-        ::Sinatra::Application.sorcery_cookies
+      class SessionData
+        def initialize(cookies)
+          @cookies = cookies
+          @data = cookies['rack.session']
+          if @data
+            @data = @data.unpack("m*").first
+            @data = Marshal.load(@data)
+          else
+            @data = {}
+          end
+        end
+
+        def [](key)
+          @data[key]
+        end
+
+        def []=(key, value)
+          @data[key] = value
+          session_data = Marshal.dump(@data)
+          session_data = [session_data].pack("m*")
+          @cookies.merge("rack.session=#{Rack::Utils.escape(session_data)}", URI.parse("//example.org//"))
+          raise "session variable not set" unless @cookies['rack.session'] == session_data
+        end
+      end
+
+      def session
+        SessionData.new(rack_test_session.instance_variable_get(:@rack_mock_session).cookie_jar)
+      end
+      
+      def login_user(user=nil)
+        user ||= @user
+        session[:user_id] = user.id
       end
       
       def sorcery_reload!(submodules = [], options = {})
@@ -70,7 +100,8 @@ module Sorcery
         # configure
         ::Sorcery::Controller::Config.submodules = submodules
         ::Sorcery::Controller::Config.user_class = nil
-        Sinatra::Application.send(:include, Sorcery::Controller)
+        ::Sinatra::Application.send(:include, Sorcery::Controller::Adapters::Sinatra)
+        ::Sinatra::Application.send(:include, Sorcery::Controller)
         
         User.activate_sorcery! do |config|
           options.each do |property,value|

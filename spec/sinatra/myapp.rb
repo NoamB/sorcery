@@ -19,12 +19,10 @@ require 'sorcery'
 
 APP_ROOT = File.dirname(__FILE__)
 
-before '/test_logout|test_should_be_logged_in/' do
-  require_login
-end
-
-before '/some_action' do
-  require_login
+['/test_logout','/some_action','/test_should_be_logged_in'].each do |patt|
+  before patt do
+    require_login
+  end
 end
 
 get '/' do
@@ -58,6 +56,10 @@ post '/test_return_to' do
   session[:return_to_url] = params[:return_to_url] if params[:return_to_url]
   @user = login(params[:username], params[:password])
   return_or_redirect_to(:some_action)
+end
+
+get '/test_should_be_logged_in' do
+  erb ''
 end
 
 def test_not_authenticated_action

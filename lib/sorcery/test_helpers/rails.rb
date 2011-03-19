@@ -38,6 +38,20 @@ module Sorcery
           config.send(provider).send(:"#{property}=", value)
         end
       end
+      
+      def login_user(user = nil)
+        user ||= @user
+        subject.send(:login_user,user)
+        subject.send(:after_login!,user,[user.username,'secret'])
+      end
+
+      def logout_user
+        subject.send(:logout)
+      end
+
+      def clear_user_without_logout
+        subject.instance_variable_set(:@current_user,nil)
+      end
     end
   end
 end

@@ -1,5 +1,13 @@
 module Sorcery
   module TestHelpers
+    # a patch to fix a bug in testing that happens when you 'destroy' a session twice.
+    # After the first destroy, the session is an ordinary hash, and then when destroy is called again there's an exception.
+    class ::Hash
+      def destroy
+        clear
+      end
+    end
+    
     def create_new_user(attributes_hash = nil)
       user_attributes_hash = attributes_hash || {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
       @user = User.new(user_attributes_hash)
@@ -12,20 +20,6 @@ module Sorcery
       @user = User.new(user_attributes_hash)
       @user.save!
       @user
-    end
-    
-    def login_user(user = nil)
-      user ||= @user
-      subject.send(:login_user,user)
-      subject.send(:after_login!,user,[user.username,'secret'])
-    end
-
-    def logout_user
-      subject.send(:logout)
-    end
-
-    def clear_user_without_logout
-      subject.instance_variable_set(:@current_user,nil)
     end
     
     def sorcery_model_property_set(property, *values)

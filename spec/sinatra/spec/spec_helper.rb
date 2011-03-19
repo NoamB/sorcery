@@ -40,21 +40,3 @@ end
 
 include ::Sorcery::TestHelpers
 include ::Sorcery::TestHelpers::Sinatra
-
-def sorcery_reload!(submodules = [], options = {})
-  reload_user_class
-
-  # return to no-module configuration
-  ::Sorcery::Controller::Config.init!
-  ::Sorcery::Controller::Config.reset!
-
-  # configure
-  ::Sorcery::Controller::Config.submodules = submodules
-  ::Sorcery::Controller::Config.user_class = nil
-
-  User.activate_sorcery! do |config|
-    options.each do |property,value|
-      config.send(:"#{property}=", value)
-    end
-  end
-end
