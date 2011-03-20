@@ -12,6 +12,7 @@ ActiveRecord::Base.establish_connection(
 )
 
 require 'action_mailer'
+require File.join(File.dirname(__FILE__),'sorcery_mailer')
 
 # models
 require File.join(File.dirname(__FILE__),'user')
@@ -92,4 +93,28 @@ end
 
 get '/test_http_basic_auth' do
   erb "HTTP Basic Auth"
+end
+
+# oauth2
+
+get '/auth_at_provider_test2' do
+  auth_at_provider(:facebook)
+end
+
+get '/test_login_from_access_token2' do
+  if @user = login_from_access_token(:facebook)
+    erb "Success!"
+  else
+    erb "Failed!"
+  end
+end
+
+get '/test_create_from_provider' do
+  provider = params[:provider]
+  login_from_access_token(provider)
+  if @user = create_from_provider!(provider)
+    erb "Success!"
+  else
+    erb "Failed!"
+  end
 end

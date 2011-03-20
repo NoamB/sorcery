@@ -32,6 +32,7 @@ describe ApplicationController do
       
     after(:each) do
       User.delete_all
+      Authentication.delete_all
     end
     
     it "auth_at_provider redirects correctly" do
@@ -60,6 +61,7 @@ describe ApplicationController do
     before(:each) do
       stub_all_oauth2_requests!
       User.delete_all
+      Authentication.delete_all
     end
       
     it "should create a new user" do
