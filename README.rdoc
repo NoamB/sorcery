@@ -154,5 +154,3 @@ If you feel my work has made your life easier, and you would like to thank me th
 == Copyright
 
 Copyright (c) 2010 Noam Ben Ari (nbenari@gmail.com). See LICENSE.txt for further details.
-Released with permission from Kontera (http://www.kontera.com), where I work.
-
