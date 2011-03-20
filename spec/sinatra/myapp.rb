@@ -19,11 +19,19 @@ require 'sorcery'
 
 APP_ROOT = File.dirname(__FILE__)
 
+# --- before filters
+
 ['/test_logout','/some_action','/test_should_be_logged_in'].each do |patt|
   before patt do
     require_login
   end
 end
+
+before '/test_http_basic_auth' do
+  require_login_from_http_basic
+end
+
+# -----
 
 get '/' do
 
@@ -78,4 +86,10 @@ post '/test_login_with_remember' do
   @user = login(params[:username], params[:password])
   remember_me!
   erb ''
+end
+
+# http_basic
+
+get '/test_http_basic_auth' do
+  erb "HTTP Basic Auth"
 end

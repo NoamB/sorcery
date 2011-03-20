@@ -1,33 +1,34 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require 'base64'
 
-describe 'MyApp' do
+describe Sinatra::Application do
   
   # ----------------- HTTP BASIC AUTH -----------------------
-  describe 'MyApp', "with http basic auth features" do
+  describe Sinatra::Application, "with http basic auth features" do
     before(:all) do
       sorcery_reload!([:http_basic_auth])
       create_new_user
     end
     
     after(:each) do
-      logout_user
+      get "/test_logout"
     end
     
     it "requests basic authentication when before_filter is used" do
-      get :test_http_basic_auth
-      response.code.should == "401"
+      get "/test_http_basic_auth"
+      last_response.status.should == 401
     end
     
     it "authenticates from http basic if credentials are sent" do
-      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.username}:secret")
-      get :test_http_basic_auth, nil, :http_authentication_used => true
-      response.should be_a_success
+      session[:http_authentication_used] = true
+      get "/test_http_basic_auth", {}, {"HTTP_AUTHORIZATION" => "Basic " + Base64::encode64("#{@user.username}:secret")}
+      last_response.should be_ok
     end
     
     it "fails authentication if credentials are wrong" do
-      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.username}:wrong!")
-      get :test_http_basic_auth, nil, :http_authentication_used => true
-      response.code.should redirect_to root_url
+      session[:http_authentication_used] = true
+      get "/test_http_basic_auth", {}, {"HTTP_AUTHORIZATION" => "Basic " + Base64::encode64("#{@user.username}:wrong!")}
+      last_response.should redirect_to 'http://example.org/'
     end
     
     it "should allow configuration option 'controller_to_realm_map'" do
@@ -37,13 +38,13 @@ describe 'MyApp' do
     
     it "should display the correct realm name configured for the controller" do
       sorcery_controller_property_set(:controller_to_realm_map, {"application" => "Salad"})
-      get :test_http_basic_auth
-      response.headers["WWW-Authenticate"].should == "Basic realm=\"Salad\""
+      get "/test_http_basic_auth"
+      last_response.headers["WWW-Authenticate"].should == "Basic realm=\"Salad\""
     end
     
     it "should sign in the user's session on successful login" do
-      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.username}:secret")
-      get :test_http_basic_auth, nil, :http_authentication_used => true
+      session[:http_authentication_used] = true
+      get "/test_http_basic_auth", {}, {"HTTP_AUTHORIZATION" => "Basic " + Base64::encode64("#{@user.username}:secret")}
       session[:user_id].should == User.find_by_username(@user.username).id
     end
   end

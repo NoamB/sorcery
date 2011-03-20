@@ -27,7 +27,7 @@ module Sorcery
         sorcery_config.send(:"#{property}=", *values)
       end
     end
-
+    
     private
 
     # reload user class between specs

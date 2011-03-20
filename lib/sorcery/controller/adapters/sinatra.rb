@@ -24,6 +24,16 @@ module Sorcery
               end
             end
           end
+          
+          ::Sinatra::Request.class_eval do
+            def authorization
+              env['HTTP_AUTHORIZATION']   ||
+              env['X-HTTP_AUTHORIZATION'] ||
+              env['X_HTTP_AUTHORIZATION'] ||
+              env['REDIRECT_X_HTTP_AUTHORIZATION']
+            end
+          end
+          
           base.send(:include, InstanceMethods)
           base.extend(ClassMethods)
         end
@@ -40,6 +50,18 @@ module Sorcery
         
           def root_path
             '/'
+          end
+          
+          helpers do
+            def request_http_basic_authentication(realm)
+              response.header['WWW-Authenticate'] = %(Basic realm="#{realm}")
+              throw :halt, [ 401, 'Authorization Required' ]
+            end
+            
+            def authenticate_with_http_basic(&blk)
+              @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+              yield @auth.credentials if ( @auth.provided? && @auth.basic? && @auth.credentials )
+            end
           end
           
           # def cookies
