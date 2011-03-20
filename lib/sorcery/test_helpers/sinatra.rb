@@ -43,7 +43,13 @@ module Sorcery
         end
         app
       end
-
+      
+      def login_user(user=nil)
+        user ||= @user
+        get_sinatra_app(subject).send(:login_user,user)
+        get_sinatra_app(subject).send(:after_login!,user,[user.username,'secret'])
+      end
+      
       def logout_user
         get_sinatra_app(subject).send(:logout)
       end
@@ -85,10 +91,33 @@ module Sorcery
         SessionData.new(rack_test_session.instance_variable_get(:@rack_mock_session).cookie_jar)
       end
       
-      def login_user(user=nil)
-        user ||= @user
-        session[:user_id] = user.id
-      end
+      # class CookieData
+      #   def initialize(cookies)
+      #     @cookies = cookies
+      #     @data = cookies
+      #     if @data
+      #       @data = @data.unpack("m*").first
+      #       @data = Marshal.load(@data)
+      #     else
+      #       @data = {}
+      #     end
+      #   end
+      # 
+      #   def [](key)
+      #     @data[key]
+      #   end
+      # 
+      #   def []=(key, value)
+      #     @data[key] = value
+      #     cookie_data = Marshal.dump(@data)
+      #     cookie_data = [cookie_data].pack("m*")
+      #     @cookies.merge("#{cookie_data}", URI.parse("//example.org//"))
+      #   end
+      # end
+      # 
+      # def cookies
+      #   CookieData.new(rack_test_session.instance_variable_get(:@rack_mock_session).cookie_jar)
+      # end
       
       def sorcery_reload!(submodules = [], options = {})
         reload_user_class

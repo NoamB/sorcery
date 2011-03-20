@@ -71,3 +71,11 @@ def not_authenticated2
   save_instance_vars
   redirect '/'
 end
+
+# remember me
+
+post '/test_login_with_remember' do
+  @user = login(params[:username], params[:password])
+  remember_me!
+  erb ''
+end

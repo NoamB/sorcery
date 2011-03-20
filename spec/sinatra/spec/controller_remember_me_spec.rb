@@ -1,9 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe 'MyApp' do
+describe Sinatra::Application do
   
   # ----------------- REMEMBER ME -----------------------
-  describe 'MyApp', "with remember me features" do
+  describe Sinatra::Application, "with remember me features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/remember_me")
       sorcery_reload!([:remember_me])
@@ -19,13 +19,14 @@ describe 'MyApp' do
     
     after(:each) do
       session = nil
-      cookies = nil
+      clear_cookies
       User.delete_all
     end
     
     it "should set cookie on remember_me!" do
-      post :test_login_with_remember, :username => 'gizmo', :password => 'secret'
+      post "/test_login_with_remember", :username => 'gizmo', :password => 'secret'
       cookies["remember_me_token"].should == assigns[:current_user].remember_me_token
+      #last_response.cookies["remember_me_token"].should == assigns[:current_user].remember_me_token
     end
     
     it "should clear cookie on forget_me!" do
@@ -36,8 +37,8 @@ describe 'MyApp' do
     
     it "login(username,password,remember_me) should login and remember" do
       post :test_login_with_remember_in_login, :username => 'gizmo', :password => 'secret', :remember => "1"
-      cookies["remember_me_token"].should_not be_nil
-      cookies["remember_me_token"].should == assigns[:user].remember_me_token
+      last_response.cookies["remember_me_token"].should_not be_nil
+      last_response.cookies["remember_me_token"].should == assigns[:user].remember_me_token
     end
     
     it "logout should also forget_me!" do

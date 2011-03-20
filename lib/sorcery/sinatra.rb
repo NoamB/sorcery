@@ -1,5 +1,5 @@
 ActiveRecord::Base.send(:include, Sorcery::Model) if defined?(ActiveRecord)
-if defined?(Sinatra::Application)
-  Sinatra::Application.send(:include, Sorcery::Controller::Adapters::Sinatra)
-  Sinatra::Application.send(:include, Sorcery::Controller)
+if defined?(Sinatra::Base)
+  Sinatra::Base.send(:include, Sorcery::Controller::Adapters::Sinatra)
+  Sinatra::Base.send(:include, Sorcery::Controller)
 end

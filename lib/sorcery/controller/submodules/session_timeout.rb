@@ -34,18 +34,15 @@ module Sorcery
           # Checks if session timeout was reached and expires the current session if so.
           # To be used as a before_filter, before require_login
           def validate_session
-            puts "vallll"
             session_to_use = Config.session_timeout_from_last_action ? session[:last_action_time] : session[:login_time]
             p Time.now.utc - session_to_use if session_to_use
             p Time.now.utc
             p session_to_use
             p session[:last_action_time]
             if session_to_use && (Time.now.utc - session_to_use > Config.session_timeout)
-              puts "expired"
               reset_session
               @current_user = false
             else
-              puts "good"
               session[:last_action_time] = Time.now.utc
             end
           end
