@@ -20,10 +20,6 @@ module Sorcery
             reset!
           end
           
-          base.class_eval do
-
-          end
-          
           base.sorcery_config.before_authenticate << :prevent_locked_user_login
           base.extend(ClassMethods)
           base.send(:include, InstanceMethods)

@@ -60,7 +60,6 @@ describe 'MyApp' do
     it "'current_users' should hold the user object when 1 user is logged in" do
       get "/test_login", :username => 'gizmo', :password => 'secret'
       get "/some_action"
-      p User.count
       get_sinatra_app(subject).current_users.size.should == 1
       get_sinatra_app(subject).current_users[0].should == @user
     end
