@@ -37,6 +37,7 @@ describe ApplicationController do
       
     after(:each) do
       User.delete_all
+      Authentication.delete_all
     end
     
     it "auth_at_provider redirects correctly" do
@@ -65,6 +66,7 @@ describe ApplicationController do
     before(:each) do
       stub_all_oauth_requests!
       User.delete_all
+      Authentication.delete_all
     end
       
     it "should create a new user" do
@@ -98,6 +100,7 @@ describe ApplicationController do
     
     after(:each) do
       User.delete_all
+      Authentication.delete_all
     end
     
     it "should not send activation email to external users" do

@@ -20,19 +20,7 @@ require 'sorcery'
 
 APP_ROOT = File.dirname(__FILE__)
 
-# --- before filters
-
-['/test_logout','/some_action','/test_should_be_logged_in'].each do |patt|
-  before patt do
-    require_login
-  end
-end
-
-before '/test_http_basic_auth' do
-  require_login_from_http_basic
-end
-
-# -----
+require File.join(File.dirname(__FILE__),'filters')
 
 get '/' do
 
@@ -93,6 +81,20 @@ end
 
 get '/test_http_basic_auth' do
   erb "HTTP Basic Auth"
+end
+
+# oauth
+
+get '/auth_at_provider_test' do
+  auth_at_provider(:twitter)
+end
+
+get '/test_login_from_access_token' do
+  if @user = login_from_access_token(:twitter)
+    erb "Success!"
+  else
+    erb "Failed!"
+  end
 end
 
 # oauth2
