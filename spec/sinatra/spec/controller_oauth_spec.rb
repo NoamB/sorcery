@@ -4,13 +4,13 @@ require 'ostruct'
 def stub_all_oauth_requests!
   @consumer = OAuth::Consumer.new("key","secret", :site => "http://myapi.com")
   OAuth::Consumer.stub!(:new).and_return(@consumer)
-  
   @req_token = OAuth::RequestToken.new(@consumer) # OpenStruct.new() 
   @consumer.stub!(:get_request_token).and_return(@req_token)
   @acc_token = OAuth::AccessToken.new(@consumer)
-  #@req_token.stub!(:authorize_url).and_return('http://myapi.com/oauth/authorize?oauth_callback=http%3A%2F%2Fblabla.com&oauth_token=')
   @req_token.stub!(:get_access_token).and_return(@acc_token)
-  session[:request_token] = @req_token
+  session[:request_token] = @req_token.token
+  session[:request_token_secret] = @req_token.secret
+  OAuth::RequestToken.stub!(:new).and_return(@req_token)
   response = OpenStruct.new()
   response.body = {"following"=>false, "listed_count"=>0, "profile_link_color"=>"0084B4", "profile_image_url"=>"http://a1.twimg.com/profile_images/536178575/noamb_normal.jpg", "description"=>"Programmer/Heavy Metal Fan/New Father", "status"=>{"text"=>"coming soon to sorcery gem: twitter and facebook authentication support.", "truncated"=>false, "favorited"=>false, "source"=>"web", "geo"=>nil, "in_reply_to_screen_name"=>nil, "in_reply_to_user_id"=>nil, "in_reply_to_status_id_str"=>nil, "created_at"=>"Sun Mar 06 23:01:12 +0000 2011", "contributors"=>nil, "place"=>nil, "retweeted"=>false, "in_reply_to_status_id"=>nil, "in_reply_to_user_id_str"=>nil, "coordinates"=>nil, "retweet_count"=>0, "id"=>44533012284706816, "id_str"=>"44533012284706816"}, "show_all_inline_media"=>false, "geo_enabled"=>true, "profile_sidebar_border_color"=>"a8c7f7", "url"=>nil, "followers_count"=>10, "screen_name"=>"nbenari", "profile_use_background_image"=>true, "location"=>"Israel", "statuses_count"=>25, "profile_background_color"=>"022330", "lang"=>"en", "verified"=>false, "notifications"=>false, "profile_background_image_url"=>"http://a3.twimg.com/profile_background_images/104087198/04042010339.jpg", "favourites_count"=>5, "created_at"=>"Fri Nov 20 21:58:19 +0000 2009", "is_translator"=>false, "contributors_enabled"=>false, "protected"=>false, "follow_request_sent"=>false, "time_zone"=>"Greenland", "profile_text_color"=>"333333", "name"=>"Noam Ben Ari", "friends_count"=>10, "profile_sidebar_fill_color"=>"C0DFEC", "id"=>123, "id_str"=>"91434812", "profile_background_tile"=>false, "utc_offset"=>-10800}.to_json
   @acc_token.stub!(:get).and_return(response)

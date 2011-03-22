@@ -32,9 +32,12 @@ module Sorcery
           # after authentication the user is redirected to the callback defined in the provider config
           def auth_at_provider(provider)
             @provider = Config.send(provider)
+            args = {}
             if @provider.respond_to?(:get_request_token)
-              args = {:request_token => @provider.get_request_token} 
-              session[:request_token] = args[:request_token]
+              req_token = @provider.get_request_token
+              session[:request_token]         = req_token.token
+              session[:request_token_secret]  = req_token.secret
+              args.merge!({:request_token => req_token.token, :request_token_secret => req_token.secret})
             end
             redirect_to @provider.authorize_url(args)
           end
@@ -43,7 +46,7 @@ module Sorcery
           def login_from_access_token(provider)
             @provider = Config.send(provider)
             args = {}
-            args.merge!({:oauth_verifier => params[:oauth_verifier], :request_token => session[:request_token]}) if @provider.respond_to?(:get_request_token)
+            args.merge!({:oauth_verifier => params[:oauth_verifier], :request_token => session[:request_token], :request_token_secret => session[:request_token_secret]}) if @provider.respond_to?(:get_request_token)
             args.merge!({:code => params[:code]}) if params[:code]
             @access_token = @provider.get_access_token(args)
             @user_hash = @provider.get_user_hash(@access_token)
