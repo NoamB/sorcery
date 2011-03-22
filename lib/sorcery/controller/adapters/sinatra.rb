@@ -64,20 +64,25 @@ module Sorcery
             end
           end
           
-          # def cookies
-          #   CookieData.new
-          # end
+          def cookies
+            @cookie_proxy ||= CookieProxy.new(request,response)
+          end
         end
         
-        # class CookieData
-        #   def [](key)
-        #     cookies[key.to_s]
-        #   end
-        #   
-        #   def []=(key, value)
-        #     Rack::Utils.set_cookie_header! '', "#{key}", :value => value
-        #   end
-        # end
+        class CookieProxy
+          def initialize(request,response)
+            @request = request
+            @response = response
+          end
+          
+          def [](key)
+            @request.cookies[key.to_s]
+          end
+          
+          def []=(key, value)
+            @response.set_cookie(key, value)
+          end
+        end
         
         module ClassMethods
           def prepend_before_filter(filter)

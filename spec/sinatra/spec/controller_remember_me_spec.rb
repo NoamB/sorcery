@@ -25,41 +25,39 @@ describe Sinatra::Application do
     
     it "should set cookie on remember_me!" do
       post "/test_login_with_remember", :username => 'gizmo', :password => 'secret'
-      cookies["remember_me_token"].should == assigns[:current_user].remember_me_token
-      #last_response.cookies["remember_me_token"].should == assigns[:current_user].remember_me_token
+      cookies["remember_me_token"].should == assigns[:user].remember_me_token
     end
     
     it "should clear cookie on forget_me!" do
       cookies["remember_me_token"] == {:value => 'asd54234dsfsd43534', :expires => 3600}
-      get :test_logout
+      get '/test_logout'
       cookies["remember_me_token"].should == nil
     end
     
     it "login(username,password,remember_me) should login and remember" do
-      post :test_login_with_remember_in_login, :username => 'gizmo', :password => 'secret', :remember => "1"
-      last_response.cookies["remember_me_token"].should_not be_nil
-      last_response.cookies["remember_me_token"].should == assigns[:user].remember_me_token
+      post '/test_login_with_remember_in_login', :username => 'gizmo', :password => 'secret', :remember => "1"
+      cookies["remember_me_token"].should_not be_nil
+      cookies["remember_me_token"].should == assigns[:user].remember_me_token
     end
     
     it "logout should also forget_me!" do
       session[:user_id] = @user.id
-      get :test_logout_with_remember
+      get '/test_logout_with_remember'
       cookies["remember_me_token"].should == nil
     end
     
     it "should login_from_cookie" do
-      session[:user_id] = @user.id
-      subject.remember_me!
-      subject.instance_eval do
+      post "/test_login_with_remember", :username => 'gizmo', :password => 'secret'
+      get_sinatra_app(subject).instance_eval do
         @current_user = nil
       end
       session[:user_id] = nil
-      get :test_login_from_cookie
+      get '/test_login_from_cookie'
       assigns[:current_user].should == @user
     end
     
     it "should not remember_me! when not asked to" do
-      post :test_login, :username => 'gizmo', :password => 'secret'
+      post '/test_login', :username => 'gizmo', :password => 'secret'
       cookies["remember_me_token"].should == nil
     end
   end

@@ -12,6 +12,7 @@ ActiveRecord::Base.establish_connection(
 )
 
 require 'action_mailer'
+ActionMailer::Base.delivery_method = :test
 require File.join(File.dirname(__FILE__),'sorcery_mailer')
 
 # models
@@ -74,6 +75,16 @@ end
 post '/test_login_with_remember' do
   @user = login(params[:username], params[:password])
   remember_me!
+  erb ''
+end
+
+post '/test_login_with_remember_in_login' do
+  @user = login(params[:username], params[:password], params[:remember])
+  erb ''
+end
+
+get '/test_login_from_cookie' do
+  @user = current_user
   erb ''
 end
 

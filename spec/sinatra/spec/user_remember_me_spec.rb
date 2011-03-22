@@ -50,7 +50,7 @@ describe "User with remember_me submodule" do
       create_new_user
       sorcery_model_property_set(:remember_me_for, 2 * 60 * 60 * 24)
       @user.remember_me!
-      @user.remember_me_token_expires_at.to_s.should == (Time.now + 2 * 60 * 60 * 24).utc.to_s
+      @user.remember_me_token_expires_at.to_s.should == (Time.now + 2 * 60 * 60 * 24).to_s
     end
     
     it "should delete the token and expiration on 'forget_me!'" do
