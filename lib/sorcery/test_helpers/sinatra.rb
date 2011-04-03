@@ -97,7 +97,7 @@ module Sorcery
         ::Sorcery::Controller::Config.reset!
 
         # clear all filters
-        filters = ::Sinatra::Application.instance_variable_set(:@filters,{:before => [],:after => []})
+        ::Sinatra::Application.instance_variable_set(:@filters,{:before => [],:after => []})
         ::Sinatra::Application.class_eval do
           load File.join(File.dirname(__FILE__),'..','..','..','spec','sinatra','filters.rb')
         end

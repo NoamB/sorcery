@@ -15,8 +15,10 @@ describe Sinatra::Application do
     end
     
     it "requests basic authentication when before_filter is used" do
+      session[:http_authentication_used] = nil
       get "/test_http_basic_auth"
       last_response.status.should == 401
+      session[:http_authentication_used].should == true
     end
     
     it "authenticates from http basic if credentials are sent" do

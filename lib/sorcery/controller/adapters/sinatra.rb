@@ -30,7 +30,7 @@ module Sorcery
               env['HTTP_AUTHORIZATION']   ||
               env['X-HTTP_AUTHORIZATION'] ||
               env['X_HTTP_AUTHORIZATION'] ||
-              env['REDIRECT_X_HTTP_AUTHORIZATION']
+              env['REDIRECT_X_HTTP_AUTHORIZATION'] || nil
             end
           end
           
@@ -55,7 +55,7 @@ module Sorcery
           helpers do
             def request_http_basic_authentication(realm)
               response.header['WWW-Authenticate'] = %(Basic realm="#{realm}")
-              throw :halt, [ 401, 'Authorization Required' ]
+              response.status = 401
             end
             
             def authenticate_with_http_basic(&blk)
