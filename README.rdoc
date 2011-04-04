@@ -1,32 +1,86 @@
 = sorcery
-Magical Authentication for Rails 3.
+Magical Authentication for Rails 3 and Sinatra.
 
 Inspired by restful_authentication, Authlogic and Devise.
 Crypto code taken almost unchanged from Authlogic.
-OAuth code inspired by OmniAuth.
+OAuth code inspired by OmniAuth and Ryan Bates's railscasts about it.
+
 
 == Summary
 
-Sorcery aims to make your life easier by giving you an easy API to write your own user authentication flow with.
-It does this with a few goals in mind:
 
-* Less is more - less than 20 simple methods to remember for the entire feature-set make the lib easy to 'get'.
-* No built-in or generated code - use the API inside *your own* MVC structures, and don't fight to fix someone else's.
+Sorcery is a stripped-down, bare-bones authentication library, with which you can write your own authentication flow.
+It was built with a few goals in mind:
+
+* Less is more - less than 20 public methods to remember for the entire feature-set make the lib easy to 'get'.
+* No built-in or generated code - use the library's methods inside *your own* MVC structures, and don't fight to fix someone else's.
 * Magic yes, Voodoo no - the lib should be easy to hack for most developers.
 * Configuration over Confusion - Simple & short configuration as possible, not drowning in syntactic sugar.
 * Keep MVC cleanly separated - DB is for models, sessions are for controllers. Models stay unaware of sessions.
 
 Hopefully, I've achieved this. If not, let me know.
 
+
 == Useful Links:
+
 
 Example app using sorcery: https://github.com/NoamB/sorcery-example-app
 
-Documentation: http://rubydoc.info/gems/sorcery/0.2.0/frames
+Documentation: http://rubydoc.info/gems/sorcery/0.3.0/frames
 
 Check out the tutorials in the github wiki!
 
+
+== Installation:
+
+
+If using bundler, first add 'sorcery' to your Gemfile:
+
+	gem "sorcery"
+
+And run 
+	
+	bundle install
+
+Otherwise simply
+
+	gem install sorcery
+
+
+== Configuration:
+
+
+1. config/application.rb
+
+	config.sorcery.submodules = [:user_activation, :remember_me] # add the submodules you want to use
+
+You can also configure here any controller and any controller-submodule option here.
+For example:
+
+	config.sorcery.session_timeout = 10.minutes
+
+
+2. app/models/user.rb (or another model of your choice, but a User class is assumed by default)
+
+	activate_sorcery! do |config|
+  	  config.user_activation_mailer = MyMailer
+	  config.username_attribute_name = :email
+	end
+
+3. app/controllers/application_controller.rb (OPTIONAL: this is actually needed only in some cases)
+
+	activate_sorcery! do |config|
+  	  config.session_timeout = 10.minutes
+	end
+
+The configuration options vary with the submodules you've chosen to use, so check the documentation or the wiki tutorials regarding the specific submodule.
+
+Also check the migrations in the example app to see what database fields are expected.
+
+
+
 == Full Features List by module:
+
 
 Core (see lib/sorcery/model/model.rb and lib/sorcery/controller/controller.rb): 
 * login/logout, optional return user to requested url on login, configurable redirect for non-logged-in users.
@@ -72,61 +126,16 @@ Oauth (see lib/sorcery/controller/submodules/oauth.rb):
 * OAuth1 and OAuth2 support (currently twitter & facebook)
 * configurable db field names and authentications table.
 
+
 == Next Planned Features:
 
+
 I've got many plans which include (by priority):
-* Sinatra support
 * Mongoid support
 * Configurable Auto login on registration/activation
 * Other reset password strategies (security questions?)
 * Other brute force protection strategies (captcha)
 * Have an idea? Let me know, and it might get into the gem!
-
-== Installation:
-
-You can either git clone and then 'rake install' to live on the edge (unstable),
-
-Or simply (stable):
-
-	gem install sorcery
-
-== Configuration:
-
-First add 'sorcery' to your Gemfile:
-
-	gem "sorcery"
-
-And run 
-	
-	bundle install
-
-There are 2 required places to configure the plugin, and an optional one:
-1. config/application.rb
-
-	config.sorcery.submodules = [:user_activation, :remember_me] # add the modules you want to use
-
-You can also configure here any controller and any controller-submodule option here.
-For example:
-
-	config.sorcery.session_timeout = 10.minutes
-
-
-2. app/models/user.rb (or another model of your choice)
-
-	activate_sorcery! do |config|
-  	  config.user_activation_mailer = MyMailer
-	  config.username_attribute_name = :email
-	end
-
-3. app/controllers/application_controller.rb (OPTIONAL: this is actually needed only in some cases)
-
-	activate_sorcery! do |config|
-  	  config.session_timeout = 10.minutes
-	end
-
-Also check the migrations in the example app to see what database fields are expected.
-
-The configuration options vary with the modules you've chosen to use.
 
 
 == Contributing to sorcery
@@ -137,19 +146,22 @@ For this:
 
 * Fork the project.
 * Make your feature addition or bug fix.
-* Add tests for it. This is important so I don’t break it in a future version unintentionally.
+* Add tests for it. I've used RSpec so far, please remain consistent with it.
 * Commit, do not mess with Rakefiles, version, or history. (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
 If you feel my work has made your life easier, and you would like to thank me through a donation, my paypal email is in the contact details.
 
+
 == Contact
 
+	Feel free to ask questions using these contact details:
+	
 	email: nbenari@gmail.com ( also for paypal )
 	twitter: @nbenari
 	
+	
 == Copyright
 
-Copyright (c) 2010 Noam Ben Ari (nbenari@gmail.com). See LICENSE.txt for further details.
-Released with permission from Kontera (http://www.kontera.com), where I work.
 
+Copyright (c) 2010 Noam Ben Ari (nbenari@gmail.com). See LICENSE.txt for further details.
