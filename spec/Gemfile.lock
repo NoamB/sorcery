@@ -1,7 +1,7 @@
 PATH
   remote: ../../../
   specs:
-    sorcery (0.2.1)
+    sorcery (0.3.0)
 
 GEM
   remote: http://rubygems.org/
@@ -118,4 +118,4 @@ DEPENDENCIES
   rspec
   ruby-debug19
   simplecov (>= 0.3.8)
-  sorcery (= 0.2.1)!
+  sorcery (= 0.3.0)!
