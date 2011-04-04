@@ -29,6 +29,9 @@ module Sorcery
         end
       end
     end
+    module Adapters
+      autoload :Sinatra, 'sorcery/controller/adapters/sinatra'
+    end
   end
   module CryptoProviders
     autoload :AES256, 'sorcery/crypto_providers/aes256'
@@ -39,6 +42,11 @@ module Sorcery
     autoload :SHA512, 'sorcery/crypto_providers/sha512'
   end
   autoload :TestHelpers, 'sorcery/test_helpers'
+  module TestHelpers
+    autoload :Rails, 'sorcery/test_helpers/rails'
+    autoload :Sinatra, 'sorcery/test_helpers/sinatra'
+  end
   
   require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
+  require 'sorcery/sinatra' if defined?(Sinatra)
 end

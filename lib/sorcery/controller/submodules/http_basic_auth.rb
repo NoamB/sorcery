@@ -48,13 +48,17 @@ module Sorcery
           
           # Sets the realm name by searching the controller name in the hash given at configuration time.
           def realm_name_by_controller
-            current_controller = self.class
-            while current_controller != ActionController::Base
-              result = Config.controller_to_realm_map[current_controller.controller_name]
-              return result if result
-              current_controller = self.class.superclass
+            if defined?(ActionController::Base)
+              current_controller = self.class
+              while current_controller != ActionController::Base
+                result = Config.controller_to_realm_map[current_controller.controller_name]
+                return result if result
+                current_controller = self.class.superclass
+              end
+              nil
+            else
+              Config.controller_to_realm_map["application"]
             end
-            nil
           end
           
         end

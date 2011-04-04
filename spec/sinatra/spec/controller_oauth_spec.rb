@@ -4,8 +4,7 @@ require 'ostruct'
 def stub_all_oauth_requests!
   @consumer = OAuth::Consumer.new("key","secret", :site => "http://myapi.com")
   OAuth::Consumer.stub!(:new).and_return(@consumer)
-  
-  @req_token = OAuth::RequestToken.new(@consumer)
+  @req_token = OAuth::RequestToken.new(@consumer) # OpenStruct.new() 
   @consumer.stub!(:get_request_token).and_return(@req_token)
   @acc_token = OAuth::AccessToken.new(@consumer)
   @req_token.stub!(:get_access_token).and_return(@acc_token)
@@ -17,9 +16,9 @@ def stub_all_oauth_requests!
   @acc_token.stub!(:get).and_return(response)
 end
 
-describe ApplicationController do
+describe Sinatra::Application do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/oauth")
+    ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/oauth")
     sorcery_reload!([:oauth])
     sorcery_controller_property_set(:oauth_providers, [:twitter])
     sorcery_controller_oauth_property_set(:twitter, :key, "eYVNBjBDi33aa9GkA3w")
@@ -28,10 +27,10 @@ describe ApplicationController do
   end
   
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/oauth")
+    ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/oauth")
   end
   # ----------------- OAuth -----------------------
-  describe ApplicationController, "'login_from_access_token'" do
+  describe Sinatra::Application, "'login_from_access_token'" do
   
     before(:each) do
       stub_all_oauth_requests!
@@ -44,27 +43,27 @@ describe ApplicationController do
     
     it "auth_at_provider redirects correctly" do
       create_new_user
-      get :auth_at_provider_test
-      response.should be_a_redirect
-      response.should redirect_to("http://myapi.com/oauth/authorize?oauth_callback=http%3A%2F%2Fblabla.com&oauth_token=")
+      get "/auth_at_provider_test"
+      last_response.should be_a_redirect
+      last_response.should redirect_to("http://myapi.com/oauth/authorize?oauth_callback=http%3A%2F%2Fblabla.com&oauth_token=")
     end
     
     it "logins if user exists" do
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:twitter)
-      get :test_login_from_access_token, :oauth_verifier => "blablaRERASDFcxvSDFA"
-      flash[:notice].should == "Success!"
+      get '/test_login_from_access_token', :oauth_verifier => "blablaRERASDFcxvSDFA"
+      last_response.body.should == "Success!"
     end
     
     it "'login_from_access_token' fails if user doesn't exist" do
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_user
       get :test_login_from_access_token, :oauth_verifier => "blablaRERASDFcxvSDFA"
-      flash[:alert].should == "Failed!"
+      last_response.body.should == "Failed!"
     end
   end
   
-  describe ApplicationController, "'create_from_provider!'" do
+  describe Sinatra::Application, "'create_from_provider!'" do
     before(:each) do
       stub_all_oauth_requests!
       User.delete_all
@@ -90,14 +89,14 @@ describe ApplicationController do
     end
   end
   
-  describe ApplicationController, "OAuth with User Activation features" do
+  describe Sinatra::Application, "OAuth with User Activation features" do
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+      ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/activation")
       sorcery_reload!([:user_activation,:oauth], :user_activation_mailer => ::SorceryMailer)
     end
     
     after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+      ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/activation")
     end
     
     after(:each) do
