@@ -24,7 +24,9 @@ Hopefully, I've achieved this. If not, let me know.
 == Useful Links:
 
 
-Example app using sorcery: https://github.com/NoamB/sorcery-example-app
+Example Rails 3 app using sorcery: https://github.com/NoamB/sorcery-example-app
+
+Example Sinatra app using sorcery: https://github.com/NoamB/sorcery-example-app-sinatra
 
 Documentation: http://rubydoc.info/gems/sorcery/0.3.0/frames
 
@@ -53,12 +55,8 @@ Otherwise simply
 1. config/application.rb
 
 	config.sorcery.submodules = [:user_activation, :remember_me] # add the submodules you want to use
-
-You can also configure here any controller and any controller-submodule option here.
-For example:
-
+	# You can also configure here any controller and any controller-submodule option here. For example:
 	config.sorcery.session_timeout = 10.minutes
-
 
 2. app/models/user.rb (or another model of your choice, but a User class is assumed by default)
 
@@ -175,7 +173,7 @@ If you feel my work has made your life easier, and you would like to thank me th
 
 == Contact
 
-	Feel free to ask questions using these contact details:
+Feel free to ask questions using these contact details:
 	
 	email: nbenari@gmail.com ( also for paypal )
 	twitter: @nbenari
