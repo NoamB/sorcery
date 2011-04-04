@@ -75,8 +75,25 @@ For example:
 
 The configuration options vary with the submodules you've chosen to use, so check the documentation or the wiki tutorials regarding the specific submodule.
 
-Also check the migrations in the example app to see what database fields are expected.
+For your convenience, Sorcery includes a migrations generator for Rails, which can be used like so:
 
+  rails g sorcery_migration [list of submodules]
+
+For example, for only the core functionality use:
+
+  rails g sorcery_migration core
+
+To generate migrations for both the core AND 'remember_me' submodule:
+
+  rails g sorcery_migration core remember_me
+
+These migrations use the default fields. You can choose to use these migrations or make your own tables and fields. Sorcery tries not to impose a database structure and naming scheme on your application.
+
+
+== Usage
+
+
+Please see the tutorials in the github wiki.
 
 
 == Full Features List by module:
