@@ -5,7 +5,7 @@ module Sorcery
         extend ClassMethods
         include InstanceMethods
         Config.submodules.each do |mod|
-          begin # FIXME: is this protection needed?
+          begin
             include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join("")) 
           rescue NameError
             # don't stop on a missing submodule.
@@ -73,12 +73,14 @@ module Sorcery
         @current_user ||= login_from_session || login_from_other_sources unless @current_user == false
       end
       
-      def return_or_redirect_to(url, flash_hash = {})
+      # used when a user tries to access a page while logged out, is asked to login, and we want to return him back to the page he originally wanted.
+      def redirect_back_or_to(url, flash_hash = {})
         redirect_to(session[:return_to_url] || url, :flash => flash_hash)
       end
       
       # The default action for denying non-authenticated users.
-      # You can override this method in your controllers.
+      # You can override this method in your controllers,
+      # or provide a different method in the configuration.
       def not_authenticated
         redirect_to root_path
       end

@@ -53,7 +53,7 @@ end
 post '/test_return_to' do
   session[:return_to_url] = params[:return_to_url] if params[:return_to_url]
   @user = login(params[:username], params[:password])
-  return_or_redirect_to(:some_action)
+  redirect_back_or_to(:some_action)
 end
 
 get '/test_should_be_logged_in' do

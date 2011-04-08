@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   
   def test_return_to
     @user = login(params[:username], params[:password])
-    return_or_redirect_to(:index, :notice => 'haha!')
+    redirect_back_or_to(:index, :notice => 'haha!')
   end
   
   def test_logout

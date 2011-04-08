@@ -6,7 +6,7 @@ Crypto code taken almost unchanged from Authlogic.
 OAuth code inspired by OmniAuth and Ryan Bates's railscasts about it.
 
 
-== Summary
+== Philosophy
 
 
 Sorcery is a stripped-down, bare-bones authentication library, with which you can write your own authentication flow.
@@ -90,8 +90,48 @@ These migrations use the default fields. You can choose to use these migrations 
 
 == Usage
 
+Below is a summary of the library methods. Most method names are self explaining and the rest are commented:
 
-Please see the tutorials in the github wiki.
+  # core
+  require_login # this is a before filter
+  login(username,password,remember_me = false)
+  logout
+  logged_in?
+  current_user
+  redirect_back_or_to # used when a user tries to access a page while logged out, is asked to login, and we want to return him back to the page he originally wanted.
+  not_authenticated # handle access denied due to being logged out
+  User.authenticate(*credentials)
+  User.encrypt(*tokens)
+  @user.external? # external users, such as facebook/twitter etc.
+
+  # activity logging
+  current_users
+  User.current_users
+
+  # http basic auth
+  require_login_from_http_basic # this is a before filter
+
+  # oauth
+  auth_at_provider(provider)
+  login_from_access_token(provider)
+  get_user_hash(provider)
+  create_from_provider!(provider)
+  User.load_from_provider(provider,uid)
+
+  # remember me
+  remember_me!
+  forget_me!
+
+  # reset password
+  User.load_from_reset_password_token(token)
+  @user.deliver_reset_password_instructions!
+  @user.reset_password!(params)
+
+  # user activation
+  User.load_from_activation_token(token)
+  @user.activate!
+
+Please see the tutorials in the github wiki for detailed usage information.
 
 
 == Full Features List by module:
@@ -150,13 +190,17 @@ I've got many plans which include (by priority):
 * Simple auth (no user)
 * Switching authentication mode at runtime (Maintenance mode)
 * Mongoid support
-* Configurable Auto login on registration/activation
 * Other reset password strategies (security questions?)
 * Other brute force protection strategies (captcha)
 * Have an idea? Let me know, and it might get into the gem!
 
+Other stuff:
+* Improve documentation
+* Tty to reduce the number of library methods, and find better names to some
+
 
 == Contributing to sorcery
+
 
 Your feedback is very welcome and will make this gem much much better for you, me and everyone else.
 Besides feedback on code, features, suggestions and bug reports, you may want to actually make an impact on the code.

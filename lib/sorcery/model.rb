@@ -56,12 +56,6 @@ module Sorcery
         user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && credentials_match?(user.send(@sorcery_config.crypted_password_attribute_name),credentials[1],_salt)
       end
       
-      # Calls the configured encryption provider to compare the supplied password with the encrypted one.
-      def credentials_match?(crypted, *tokens)
-        return crypted == tokens.join if @sorcery_config.encryption_provider.nil?
-        @sorcery_config.encryption_provider.matches?(crypted, *tokens)
-      end
-      
       # encrypt tokens using current encryption_provider.
       def encrypt(*tokens)
         return tokens.first if @sorcery_config.encryption_provider.nil?
@@ -71,6 +65,15 @@ module Sorcery
         CryptoProviders::AES256.key = @sorcery_config.encryption_key if @sorcery_config.encryption_algorithm == :aes256
         @sorcery_config.encryption_provider.encrypt(*tokens)
       end
+      
+      protected
+      
+      # Calls the configured encryption provider to compare the supplied password with the encrypted one.
+      def credentials_match?(crypted, *tokens)
+        return crypted == tokens.join if @sorcery_config.encryption_provider.nil?
+        @sorcery_config.encryption_provider.matches?(crypted, *tokens)
+      end
+      
     end
     
     module InstanceMethods
