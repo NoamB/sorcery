@@ -88,7 +88,7 @@ To generate migrations for both the core AND 'remember_me' submodule:
 These migrations use the default fields. You can choose to use these migrations or make your own tables and fields. Sorcery tries not to impose a database structure and naming scheme on your application.
 
 
-== Usage
+== API Summary
 
 Below is a summary of the library methods. Most method names are self explaining and the rest are commented:
 
@@ -99,24 +99,18 @@ Below is a summary of the library methods. Most method names are self explaining
   logged_in?
   current_user
   redirect_back_or_to # used when a user tries to access a page while logged out, is asked to login, and we want to return him back to the page he originally wanted.
-  not_authenticated # handle access denied due to being logged out
-  User.authenticate(*credentials)
-  User.encrypt(*tokens)
   @user.external? # external users, such as facebook/twitter etc.
 
   # activity logging
   current_users
-  User.current_users
 
   # http basic auth
   require_login_from_http_basic # this is a before filter
 
   # oauth
-  auth_at_provider(provider)
+  auth_at_provider(provider) # sends the user to provider (twitter etc.) to authenticate.
   login_from_access_token(provider)
-  get_user_hash(provider)
-  create_from_provider!(provider)
-  User.load_from_provider(provider,uid)
+  create_from_provider!(provider) # create the user in the app db.
 
   # remember me
   remember_me!
