@@ -1,7 +1,7 @@
 module Sorcery
   module Controller
     module Submodules
-      module Oauth
+      module External
         module Providers
           # This module adds support for OAuth with facebook.com.
           # When included in the 'config.providers' option, it adds a new option, 'config.facebook'.
@@ -16,7 +16,7 @@ module Sorcery
               base.module_eval do
                 class << self
                   attr_reader :facebook                           # access to facebook_client.
-          
+                  
                   def merge_facebook_defaults!
                     @defaults.merge!(:@facebook => FacebookClient)
                   end
@@ -36,7 +36,7 @@ module Sorcery
                               :scope,
                               :user_info_mapping
                             
-                include Oauth2
+                include Protocols::Oauth2
             
                 def init
                   @site           = "https://graph.facebook.com"
@@ -45,13 +45,31 @@ module Sorcery
                   @user_info_mapping = {}
                 end
                 
-                def get_user_hash(access_token)
+                def get_user_hash
                   user_hash = {}
-                  response = access_token.get(@user_info_path)
+                  response = @access_token.get(@user_info_path)
                   user_hash[:user_info] = JSON.parse(response)
-                  user_hash[:uid] = user_hash[:user_info]['id'].to_i
+                  user_hash[:uid] = user_hash[:user_info]['id']
                   user_hash
                 end
+                
+                def has_callback?
+                  true
+                end
+                
+                # calculates and returns the url to which the user should be redirected,
+                # to get authenticated at the external provider's site.
+                def login_url(params,session)
+                  self.authorize_url
+                end
+                
+                # tries to login the user from access token
+                def process_callback(params,session)
+                  args = {}
+                  args.merge!({:code => params[:code]}) if params[:code]
+                  @access_token = self.get_access_token(args)
+                end
+                
               end
               init
             end

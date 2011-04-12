@@ -96,12 +96,12 @@ end
 
 # oauth
 
-get '/auth_at_provider_test' do
-  auth_at_provider(:twitter)
+get '/login_at_test' do
+  login_at(:twitter)
 end
 
-get '/test_login_from_access_token' do
-  if @user = login_from_access_token(:twitter)
+get '/test_login_from' do
+  if @user = login_from(:twitter)
     erb "Success!"
   else
     erb "Failed!"
@@ -110,12 +110,12 @@ end
 
 # oauth2
 
-get '/auth_at_provider_test2' do
-  auth_at_provider(:facebook)
+get '/login_at_test2' do
+  login_at(:facebook)
 end
 
-get '/test_login_from_access_token2' do
-  if @user = login_from_access_token(:facebook)
+get '/test_login_from2' do
+  if @user = login_from(:facebook)
     erb "Success!"
   else
     erb "Failed!"
@@ -124,8 +124,8 @@ end
 
 get '/test_create_from_provider' do
   provider = params[:provider]
-  login_from_access_token(provider)
-  if @user = create_from_provider!(provider)
+  login_from(provider)
+  if @user = create_from(provider)
     erb "Success!"
   else
     erb "Failed!"

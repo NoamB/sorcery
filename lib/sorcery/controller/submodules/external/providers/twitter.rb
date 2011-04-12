@@ -1,7 +1,7 @@
 module Sorcery
   module Controller
     module Submodules
-      module Oauth
+      module External
         module Providers
           # This module adds support for OAuth with Twitter.com.
           # When included in the 'config.providers' option, it adds a new option, 'config.twitter'.
@@ -15,7 +15,10 @@ module Sorcery
             def self.included(base)
               base.module_eval do
                 class << self
-                  attr_reader :twitter                           # access to twitter_client.
+                  attr_reader :twitter
+                  # def twitter(&blk) # allows block syntax.
+                  #   yield @twitter
+                  # end                           
 
                   def merge_twitter_defaults!
                     @defaults.merge!(:@twitter => TwitterClient)
@@ -25,7 +28,7 @@ module Sorcery
                 update!
               end
             end
-
+            
             module TwitterClient
               class << self
                 attr_accessor :key,
@@ -35,7 +38,7 @@ module Sorcery
                               :user_info_path,
                               :user_info_mapping
                 
-                include Oauth1
+                include Protocols::Oauth1
                 
                 def init
                   @site           = "https://api.twitter.com"
@@ -43,13 +46,35 @@ module Sorcery
                   @user_info_mapping = {}
                 end
                 
-                def get_user_hash(access_token)
+                def get_user_hash
                   user_hash = {}
-                  response = access_token.get(@user_info_path)
+                  response = @access_token.get(@user_info_path)
                   user_hash[:user_info] = JSON.parse(response.body)
                   user_hash[:uid] = user_hash[:user_info]['id']
                   user_hash
                 end
+                
+                def has_callback?
+                  true
+                end
+                
+                # calculates and returns the url to which the user should be redirected,
+                # to get authenticated at the external provider's site.
+                def login_url(params,session)
+                  req_token = self.get_request_token
+                  session[:request_token]         = req_token.token
+                  session[:request_token_secret]  = req_token.secret
+                  self.authorize_url({:request_token => req_token.token, :request_token_secret => req_token.secret})
+                end
+                
+                # tries to login the user from access token
+                def process_callback(params,session)
+                  args = {}
+                  args.merge!({:oauth_verifier => params[:oauth_verifier], :request_token => session[:request_token], :request_token_secret => session[:request_token_secret]})
+                  args.merge!({:code => params[:code]}) if params[:code]
+                  @access_token = self.get_access_token(args)
+                end
+
               end  
               init
             end

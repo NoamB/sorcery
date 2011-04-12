@@ -1,4 +1,4 @@
-class SorceryOauth < ActiveRecord::Migration
+class SorceryExternal < ActiveRecord::Migration
   def self.up
     create_table :authentications do |t|
       t.integer :user_id, :null => false

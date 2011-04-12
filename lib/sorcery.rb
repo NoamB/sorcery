@@ -8,7 +8,7 @@ module Sorcery
       autoload :RememberMe, 'sorcery/model/submodules/remember_me'
       autoload :ActivityLogging, 'sorcery/model/submodules/activity_logging'
       autoload :BruteForceProtection, 'sorcery/model/submodules/brute_force_protection'
-      autoload :Oauth, 'sorcery/model/submodules/oauth'
+      autoload :External, 'sorcery/model/submodules/external'
     end
   end
   autoload :Controller, 'sorcery/controller'
@@ -19,13 +19,15 @@ module Sorcery
       autoload :BruteForceProtection, 'sorcery/controller/submodules/brute_force_protection'
       autoload :HttpBasicAuth, 'sorcery/controller/submodules/http_basic_auth'
       autoload :ActivityLogging, 'sorcery/controller/submodules/activity_logging'
-      autoload :Oauth, 'sorcery/controller/submodules/oauth'
-      module Oauth
-        autoload :Oauth1, 'sorcery/controller/submodules/oauth/oauth1'
-        autoload :Oauth2, 'sorcery/controller/submodules/oauth/oauth2'
+      autoload :External, 'sorcery/controller/submodules/external'
+      module External
+        module Protocols
+          autoload :Oauth1, 'sorcery/controller/submodules/external/protocols/oauth1'
+          autoload :Oauth2, 'sorcery/controller/submodules/external/protocols/oauth2'
+        end
         module Providers
-          autoload :Twitter, 'sorcery/controller/submodules/oauth/providers/twitter'
-          autoload :Facebook, 'sorcery/controller/submodules/oauth/providers/facebook'
+          autoload :Twitter, 'sorcery/controller/submodules/external/providers/twitter'
+          autoload :Facebook, 'sorcery/controller/submodules/external/providers/facebook'
         end
       end
     end

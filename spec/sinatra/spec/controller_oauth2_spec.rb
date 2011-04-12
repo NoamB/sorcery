@@ -12,16 +12,16 @@ end
 
 describe 'MyApp' do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/oauth")
-    sorcery_reload!([:oauth])
-    sorcery_controller_property_set(:oauth_providers, [:facebook])
+    ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/external")
+    sorcery_reload!([:external])
+    sorcery_controller_property_set(:external_providers, [:facebook])
     sorcery_controller_oauth_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_oauth_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_oauth_property_set(:facebook, :callback_url, "http://blabla.com")
   end
   
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/oauth")
+    ActiveRecord::Migrator.rollback("#{APP_ROOT}/db/migrate/external")
   end
   # ----------------- OAuth -----------------------
   describe Sinatra::Application, "with OAuth features" do
@@ -35,29 +35,29 @@ describe 'MyApp' do
       Authentication.delete_all
     end
     
-    it "auth_at_provider redirects correctly" do
+    it "login_at redirects correctly" do
       create_new_user
-      get "/auth_at_provider_test2"
+      get "/login_at_test2"
       last_response.should be_a_redirect
       last_response.should redirect_to("http://myapi.com/oauth/authorize?client_id=key&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&type=web_server")
     end
     
-    it "'login_from_access_token' logins if user exists" do
+    it "'login_from' logins if user exists" do
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:facebook)
-      get "/test_login_from_access_token2"
+      get "/test_login_from2"
       last_response.body.should == "Success!"
     end
     
-    it "'login_from_access_token' fails if user doesn't exist" do
+    it "'login_from' fails if user doesn't exist" do
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_user
-      get "/test_login_from_access_token2"
+      get "/test_login_from2"
       last_response.body.should == "Failed!"
     end
   end
   
-  describe Sinatra::Application, "'create_from_provider!'" do
+  describe Sinatra::Application, "'create_from'" do
     before(:each) do
       stub_all_oauth2_requests!
       User.delete_all
@@ -86,8 +86,8 @@ describe 'MyApp' do
   describe Sinatra::Application, "OAuth with User Activation features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/activation")
-      sorcery_reload!([:user_activation,:oauth], :user_activation_mailer => ::SorceryMailer)
-      sorcery_controller_property_set(:oauth_providers, [:facebook])
+      sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
+      sorcery_controller_property_set(:external_providers, [:facebook])
       sorcery_controller_oauth_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
       sorcery_controller_oauth_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
       sorcery_controller_oauth_property_set(:facebook, :callback_url, "http://blabla.com")

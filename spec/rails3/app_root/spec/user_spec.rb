@@ -286,12 +286,12 @@ describe "User with no submodules (core)" do
   
   describe User, "external users" do
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/oauth")
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
       sorcery_reload!()
     end
   
     after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/oauth")
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
     end
     
     before(:each) do

@@ -66,24 +66,24 @@ class ApplicationController < ActionController::Base
     render :text => "HTTP Basic Auth"
   end
   
-  def auth_at_provider_test
-    auth_at_provider(:twitter)
+  def login_at_test
+    login_at(:twitter)
   end
   
-  def auth_at_provider_test2
-    auth_at_provider(:facebook)
+  def login_at_test2
+    login_at(:facebook)
   end
   
-  def test_login_from_access_token
-    if @user = login_from_access_token(:twitter)
+  def test_login_from
+    if @user = login_from(:twitter)
       redirect_to "bla", :notice => "Success!"
     else
       redirect_to "blu", :alert => "Failed!"
     end
   end
   
-  def test_login_from_access_token2
-    if @user = login_from_access_token(:facebook)
+  def test_login_from2
+    if @user = login_from(:facebook)
       redirect_to "bla", :notice => "Success!"
     else
       redirect_to "blu", :alert => "Failed!"
@@ -92,8 +92,8 @@ class ApplicationController < ActionController::Base
   
   def test_create_from_provider
     provider = params[:provider]
-    login_from_access_token(provider)
-    if @user = create_from_provider!(provider)
+    login_from(provider)
+    if @user = create_from(provider)
       redirect_to "bla", :notice => "Success!"
     else
       redirect_to "blu", :alert => "Failed!"

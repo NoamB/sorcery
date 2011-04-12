@@ -107,10 +107,10 @@ Below is a summary of the library methods. Most method names are self explaining
   # http basic auth
   require_login_from_http_basic # this is a before filter
 
-  # oauth
-  auth_at_provider(provider) # sends the user to provider (twitter etc.) to authenticate.
-  login_from_access_token(provider)
-  create_from_provider!(provider) # create the user in the app db.
+  # external
+  login_at(provider) # sends the user to an external service (twitter etc.) to authenticate.
+  login_from(provider) # tries to login from the external provider's callback.
+  create_from(provider) # create the user in the local app db.
 
   # remember me
   remember_me!
@@ -171,7 +171,7 @@ Activity Logging (see lib/sorcery/model/submodules/activity_logging.rb):
 * an easy method of collecting the list of currently logged in users.
 * configurable timeout by which to decide whether to include a user in the list of logged in users.
 
-Oauth (see lib/sorcery/controller/submodules/oauth.rb):
+External (see lib/sorcery/controller/submodules/external.rb):
 * OAuth1 and OAuth2 support (currently twitter & facebook)
 * configurable db field names and authentications table.
 
