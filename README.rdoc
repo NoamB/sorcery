@@ -28,7 +28,7 @@ Example Rails 3 app using sorcery: https://github.com/NoamB/sorcery-example-app
 
 Example Sinatra app using sorcery: https://github.com/NoamB/sorcery-example-app-sinatra
 
-Documentation: http://rubydoc.info/gems/sorcery/0.3.0/frames
+Documentation: http://rubydoc.info/gems/sorcery/0.3.1/frames
 
 Check out the tutorials in the github wiki!
 
