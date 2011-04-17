@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = %q{2011-04-04}
+  s.date = %q{2011-04-17}
   s.description = %q{Provides common authentication needs such as signing in/out, activating by email and resetting password.}
   s.email = %q{nbenari@gmail.com}
   s.extra_rdoc_files = [
@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
     "lib/generators/sorcery_migration/templates/activity_logging.rb",
     "lib/generators/sorcery_migration/templates/brute_force_protection.rb",
     "lib/generators/sorcery_migration/templates/core.rb",
-    "lib/generators/sorcery_migration/templates/oauth.rb",
+    "lib/generators/sorcery_migration/templates/external.rb",
     "lib/generators/sorcery_migration/templates/remember_me.rb",
     "lib/generators/sorcery_migration/templates/reset_password.rb",
     "lib/generators/sorcery_migration/templates/user_activation.rb",
@@ -38,12 +38,14 @@ Gem::Specification.new do |s|
     "lib/sorcery/controller/adapters/sinatra.rb",
     "lib/sorcery/controller/submodules/activity_logging.rb",
     "lib/sorcery/controller/submodules/brute_force_protection.rb",
+    "lib/sorcery/controller/submodules/email.rb",
+    "lib/sorcery/controller/submodules/external.rb",
+    "lib/sorcery/controller/submodules/external/protocols/oauth1.rb",
+    "lib/sorcery/controller/submodules/external/protocols/oauth2.rb",
+    "lib/sorcery/controller/submodules/external/providers/facebook.rb",
+    "lib/sorcery/controller/submodules/external/providers/twitter.rb",
     "lib/sorcery/controller/submodules/http_basic_auth.rb",
     "lib/sorcery/controller/submodules/oauth.rb",
-    "lib/sorcery/controller/submodules/oauth/oauth1.rb",
-    "lib/sorcery/controller/submodules/oauth/oauth2.rb",
-    "lib/sorcery/controller/submodules/oauth/providers/facebook.rb",
-    "lib/sorcery/controller/submodules/oauth/providers/twitter.rb",
     "lib/sorcery/controller/submodules/remember_me.rb",
     "lib/sorcery/controller/submodules/session_timeout.rb",
     "lib/sorcery/crypto_providers/aes256.rb",
@@ -56,7 +58,7 @@ Gem::Specification.new do |s|
     "lib/sorcery/model.rb",
     "lib/sorcery/model/submodules/activity_logging.rb",
     "lib/sorcery/model/submodules/brute_force_protection.rb",
-    "lib/sorcery/model/submodules/oauth.rb",
+    "lib/sorcery/model/submodules/external.rb",
     "lib/sorcery/model/submodules/remember_me.rb",
     "lib/sorcery/model/submodules/reset_password.rb",
     "lib/sorcery/model/submodules/user_activation.rb",
@@ -109,7 +111,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
     "spec/rails3/app_root/db/migrate/brute_force_protection/20101224223626_add_brute_force_protection_to_users.rb",
     "spec/rails3/app_root/db/migrate/core/20101224223620_create_users.rb",
-    "spec/rails3/app_root/db/migrate/oauth/20101224223628_create_authentications.rb",
+    "spec/rails3/app_root/db/migrate/external/20101224223628_create_authentications.rb",
     "spec/rails3/app_root/db/migrate/remember_me/20101224223623_add_remember_me_token_to_users.rb",
     "spec/rails3/app_root/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/rails3/app_root/db/schema.rb",
@@ -156,7 +158,7 @@ Gem::Specification.new do |s|
     "spec/sinatra/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
     "spec/sinatra/db/migrate/brute_force_protection/20101224223626_add_brute_force_protection_to_users.rb",
     "spec/sinatra/db/migrate/core/20101224223620_create_users.rb",
-    "spec/sinatra/db/migrate/oauth/20101224223628_create_authentications.rb",
+    "spec/sinatra/db/migrate/external/20101224223628_create_authentications.rb",
     "spec/sinatra/db/migrate/remember_me/20101224223623_add_remember_me_token_to_users.rb",
     "spec/sinatra/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/sinatra/filters.rb",
@@ -213,7 +215,7 @@ Gem::Specification.new do |s|
     "spec/rails3/app_root/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
     "spec/rails3/app_root/db/migrate/brute_force_protection/20101224223626_add_brute_force_protection_to_users.rb",
     "spec/rails3/app_root/db/migrate/core/20101224223620_create_users.rb",
-    "spec/rails3/app_root/db/migrate/oauth/20101224223628_create_authentications.rb",
+    "spec/rails3/app_root/db/migrate/external/20101224223628_create_authentications.rb",
     "spec/rails3/app_root/db/migrate/remember_me/20101224223623_add_remember_me_token_to_users.rb",
     "spec/rails3/app_root/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/rails3/app_root/db/schema.rb",
@@ -240,7 +242,7 @@ Gem::Specification.new do |s|
     "spec/sinatra/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
     "spec/sinatra/db/migrate/brute_force_protection/20101224223626_add_brute_force_protection_to_users.rb",
     "spec/sinatra/db/migrate/core/20101224223620_create_users.rb",
-    "spec/sinatra/db/migrate/oauth/20101224223628_create_authentications.rb",
+    "spec/sinatra/db/migrate/external/20101224223628_create_authentications.rb",
     "spec/sinatra/db/migrate/remember_me/20101224223623_add_remember_me_token_to_users.rb",
     "spec/sinatra/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
     "spec/sinatra/filters.rb",
