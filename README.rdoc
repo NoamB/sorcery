@@ -33,62 +33,8 @@ Documentation: http://rubydoc.info/gems/sorcery/0.3.1/frames
 Check out the tutorials in the github wiki!
 
 
-== Installation:
-
-
-If using bundler, first add 'sorcery' to your Gemfile:
-
-	gem "sorcery"
-
-And run 
-	
-	bundle install
-
-Otherwise simply
-
-	gem install sorcery
-
-
-== Configuration:
-
-
-1. config/application.rb
-
-	config.sorcery.submodules = [:user_activation, :remember_me] # add the submodules you want to use
-	# You can also configure here any controller and any controller-submodule option here. For example:
-	config.sorcery.session_timeout = 10.minutes
-
-2. app/models/user.rb (or another model of your choice, but a User class is assumed by default)
-
-	activate_sorcery! do |config|
-  	  config.user_activation_mailer = MyMailer
-	  config.username_attribute_name = :email
-	end
-
-3. app/controllers/application_controller.rb (OPTIONAL: this is actually needed only in some cases)
-
-	activate_sorcery! do |config|
-  	  config.session_timeout = 10.minutes
-	end
-
-The configuration options vary with the submodules you've chosen to use, so check the documentation or the wiki tutorials regarding the specific submodule.
-
-For your convenience, Sorcery includes a migrations generator for Rails, which can be used like so:
-
-  rails g sorcery_migration [list of submodules]
-
-For example, for only the core functionality use:
-
-  rails g sorcery_migration core
-
-To generate migrations for both the core AND 'remember_me' submodule:
-
-  rails g sorcery_migration core remember_me
-
-These migrations use the default fields. You can choose to use these migrations or make your own tables and fields. Sorcery tries not to impose a database structure and naming scheme on your application.
-
-
 == API Summary
+
 
 Below is a summary of the library methods. Most method names are self explaining and the rest are commented:
 
@@ -100,6 +46,7 @@ Below is a summary of the library methods. Most method names are self explaining
   current_user
   redirect_back_or_to # used when a user tries to access a page while logged out, is asked to login, and we want to return him back to the page he originally wanted.
   @user.external? # external users, such as facebook/twitter etc.
+  User.authenticates_with_sorcery!
 
   # activity logging
   current_users
@@ -126,6 +73,73 @@ Below is a summary of the library methods. Most method names are self explaining
   @user.activate!
 
 Please see the tutorials in the github wiki for detailed usage information.
+
+
+== Installation:
+
+
+If using bundler, first add 'sorcery' to your Gemfile:
+
+	gem "sorcery"
+
+And run 
+	
+	bundle install
+
+Otherwise simply
+
+	gem install sorcery
+
+
+== Rails 3 Configuration:
+
+
+For Rails 3 create an initializer file using:
+
+    rake sorcery:bootstrap
+
+This will create the file as config/initializers/sorcery.rb .
+Inside it the comments will tell you everything you need to know.
+
+For your convenience, Sorcery includes a migrations generator for Rails, which can be used like so:
+
+  rails g sorcery_migration [list of submodules]
+
+For example, for only the core functionality use:
+
+  rails g sorcery_migration core
+
+To generate migrations for both the core AND 'remember_me' submodule:
+
+  rails g sorcery_migration core remember_me
+
+These migrations use the default fields. You can choose to use these migrations or make your own tables and fields. Sorcery tries not to impose a database structure and naming scheme on your application.
+
+
+== Sinatra Configuration:
+
+
+For Sinatra you'll need to create the initializer manually. You can do it in the main app file or in a separate file you require (see example in example app). The code looks as follows:
+
+    Sorcery::Controller::Config.submodules = [] # specify here the submodules you want to include
+    
+    Sorcery::Controller::Config.configure do |config|
+      config.session_timeout = 10.minutes
+      ...
+      ...
+    
+      config.user_config do |user|
+        user.username_attribute_name                      = :email
+        ...
+    	...
+    	
+      end
+    end
+
+Finally, to make all the code above take effect, we'll need to re-include the sorcery controller module:
+
+    include Sorcery::Controller::Adapters::Sinatra
+    include Sorcery::Controller
 
 
 == Full Features List by module:
@@ -189,8 +203,22 @@ I've got many plans which include (by priority):
 * Have an idea? Let me know, and it might get into the gem!
 
 Other stuff:
+* Improve specs speed
+* Provide an easy way to run specs after install
 * Improve documentation
 * Tty to reduce the number of library methods, and find better names to some
+
+
+== Backward compatibility
+
+
+While the lib is young I'm breaking backward compatibility quite often.
+I'm constantly finding better ways to do things and throwing away old ways.
+To let you know when things are changing in a non-compatible way, I'm bumping the minor version of the gem.
+The patch version changes are backward compatible.
+
+In short, an app that works with 0.3.1 should be able to upgrade to 0.3.2 with no code changes.
+The same cannot be said about upgrading to 0.4.0 and above, however.
 
 
 == Contributing to sorcery
@@ -200,16 +228,17 @@ Your feedback is very welcome and will make this gem much much better for you, m
 Besides feedback on code, features, suggestions and bug reports, you may want to actually make an impact on the code.
 For this:
 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. I've used RSpec so far, please remain consistent with it.
-* Commit, do not mess with Rakefiles, version, or history. (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+* Fork it.
+* Fix it.
+* Test it.
+* Commit it.
+* Send me a pull request so I'll... Pull it.
 
-If you feel my work has made your life easier, and you would like to thank me through a donation, my paypal email is in the contact details.
+If you feel sorcery has made your life easier, and you would like to express your thanks via a donation, my paypal email is in the contact details.
 
 
 == Contact
+
 
 Feel free to ask questions using these contact details:
 	

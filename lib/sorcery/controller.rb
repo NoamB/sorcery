@@ -10,8 +10,9 @@ module Sorcery
             # don't stop on a missing submodule.
           end
         end
-        Config.update!
       end
+      Config.update!
+      Config.configure!
     end
     
     module InstanceMethods
@@ -156,6 +157,14 @@ module Sorcery
         
         def user_config(&blk)
           block_given? ? @user_config = blk : @user_config
+        end
+        
+        def configure(&blk)
+          @configure_blk = blk
+        end
+        
+        def configure!
+          @configure_blk.call(self) if @configure_blk
         end
       end
       init!
