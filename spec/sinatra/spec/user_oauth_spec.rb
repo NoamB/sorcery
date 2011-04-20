@@ -16,9 +16,9 @@ describe "User with oauth submodule" do
       sorcery_reload!([:external])
       sorcery_controller_property_set(:external_providers, [:twitter])
       sorcery_model_property_set(:authentications_class, Authentication)
-      sorcery_controller_oauth_property_set(:twitter, :key, "eYVNBjBDi33aa9GkA3w")
-      sorcery_controller_oauth_property_set(:twitter, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
-      sorcery_controller_oauth_property_set(:twitter, :callback_url, "http://blabla.com")
+      sorcery_controller_external_property_set(:twitter, :key, "eYVNBjBDi33aa9GkA3w")
+      sorcery_controller_external_property_set(:twitter, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+      sorcery_controller_external_property_set(:twitter, :callback_url, "http://blabla.com")
       create_new_external_user(:twitter)
     end
     

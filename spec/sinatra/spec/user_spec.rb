@@ -8,14 +8,8 @@ describe "User with no submodules (core)" do
 
   describe User, "when app has plugin loaded" do
     it "should respond to the plugin activation class method" do
-      ActiveRecord::Base.should respond_to(:activate_sorcery!)
-      User.should respond_to(:activate_sorcery!)
-    end
-    
-    it "plugin activation should yield config to block" do
-      User.activate_sorcery! do |config|
-        config.class.should == ::Sorcery::Model::Config 
-      end
+      ActiveRecord::Base.should respond_to(:authenticates_with_sorcery!)
+      User.should respond_to(:authenticates_with_sorcery!)
     end
   end
 
@@ -23,7 +17,7 @@ describe "User with no submodules (core)" do
   describe TestUser, "Testing activated class self-registration" do
     it "should register itself as user_class if activated" do
       TestUser.class_eval do
-        activate_sorcery!
+        authenticates_with_sorcery!
       end
       ::Sorcery::Controller::Config.user_class.should == TestUser
     end

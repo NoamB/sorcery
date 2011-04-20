@@ -2,7 +2,6 @@ module Sorcery
   module Controller
     def self.included(klass)
       klass.class_eval do
-        extend ClassMethods
         include InstanceMethods
         Config.submodules.each do |mod|
           begin
@@ -12,17 +11,6 @@ module Sorcery
           end
         end
         Config.update!
-      end
-    end
-    
-    module ClassMethods
-      def activate_sorcery!(&block)
-        yield Config if block_given?
-        after_config!
-      end
-      
-      def after_config!
-        Config.after_config.each {|c| send(c)}       
       end
     end
     
@@ -137,9 +125,7 @@ module Sorcery
                       :after_login,
                       :after_failed_login,
                       :before_logout,
-                      :after_logout,
-                      :after_config
-                      
+                      :after_logout                      
                       
         def init!
           @defaults = {
@@ -151,7 +137,6 @@ module Sorcery
             :@after_failed_login                   => [],
             :@before_logout                        => [],
             :@after_logout                         => [],
-            :@after_config                         => [],
             :@save_return_to_url                   => true
           }
         end
@@ -167,6 +152,10 @@ module Sorcery
           @defaults.each do |k,v|
             instance_variable_set(k,v) if !instance_variable_defined?(k)
           end
+        end
+        
+        def user_config(&blk)
+          block_given? ? @user_config = blk : @user_config
         end
       end
       init!
