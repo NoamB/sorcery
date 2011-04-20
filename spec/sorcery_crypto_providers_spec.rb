@@ -31,7 +31,7 @@ describe "Crypto Providers wrappers" do
     
     before(:all) do
       @digest = 'Noam Ben-Ari'
-      10.times {@digest = Digest::SHA1.hexdigest(@digest)}
+      Sorcery::CryptoProviders::SHA1.stretches.times {@digest = Digest::SHA1.hexdigest(@digest)}
     end
     
     after(:each) do
@@ -61,7 +61,7 @@ describe "Crypto Providers wrappers" do
     
     before(:all) do
       @digest = 'Noam Ben-Ari'
-      20.times {@digest = Digest::SHA256.hexdigest(@digest)}
+      Sorcery::CryptoProviders::SHA256.stretches.times {@digest = Digest::SHA256.hexdigest(@digest)}
     end
     
     after(:each) do
@@ -91,7 +91,7 @@ describe "Crypto Providers wrappers" do
     
     before(:all) do
       @digest = 'Noam Ben-Ari'
-      20.times {@digest = Digest::SHA512.hexdigest(@digest)}
+      Sorcery::CryptoProviders::SHA512.stretches.times {@digest = Digest::SHA512.hexdigest(@digest)}
     end
     
     after(:each) do
@@ -153,7 +153,8 @@ describe "Crypto Providers wrappers" do
   describe Sorcery::CryptoProviders::BCrypt do
     
     before(:all) do
-      @digest = BCrypt::Password.create('Noam Ben-Ari', :cost => 10)
+      Sorcery::CryptoProviders::BCrypt.cost = 1
+      @digest = BCrypt::Password.create('Noam Ben-Ari', :cost => Sorcery::CryptoProviders::BCrypt.cost)
     end
     
     after(:each) do

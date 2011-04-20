@@ -24,30 +24,10 @@ module Sorcery
     #
     # Uses the Sha512 hash algorithm to encrypt passwords.
     class SHA512
+      include Common
       class << self
-        attr_accessor :join_token
-        
-        # The number of times to loop through the encryption.
-        def stretches
-          @stretches ||= 20
-        end
-        attr_writer :stretches
-        
-        # Turns your raw password into a Sha512 hash.
-        def encrypt(*tokens)
-          digest = tokens.flatten.join(join_token)
-          stretches.times { digest = Digest::SHA512.hexdigest(digest) }
-          digest
-        end
-        
-        # Does the crypted password match the tokens? Uses the same tokens that were used to encrypt.
-        def matches?(crypted, *tokens)
-          encrypt(*tokens) == crypted
-        end
-        
-        def reset!
-          @stretches = 20
-          @join_token = nil
+        def secure_digest(digest)
+          Digest::SHA512.hexdigest(digest)
         end
       end
     end

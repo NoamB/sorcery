@@ -36,6 +36,7 @@ module Sorcery
     end
   end
   module CryptoProviders
+    autoload :Common, 'sorcery/crypto_providers/common'
     autoload :AES256, 'sorcery/crypto_providers/aes256'
     autoload :BCrypt, 'sorcery/crypto_providers/bcrypt'
     autoload :MD5,    'sorcery/crypto_providers/md5'

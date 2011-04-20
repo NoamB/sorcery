@@ -1,5 +1,17 @@
 module Sorcery
+  # This file will be included in the spec_helper file.
   module TestHelpers
+    def self.included(base)
+      # reducing default cost for specs speed
+      CryptoProviders::BCrypt.class_eval do
+        class << self
+          def cost
+            1
+          end
+        end
+      end
+    end
+    
     # a patch to fix a bug in testing that happens when you 'destroy' a session twice.
     # After the first destroy, the session is an ordinary hash, and then when destroy is called again there's an exception.
     class ::Hash
