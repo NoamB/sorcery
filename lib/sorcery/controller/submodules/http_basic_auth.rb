@@ -9,7 +9,7 @@ module Sorcery
           base.send(:include, InstanceMethods)
           Config.module_eval do
             class << self
-              attr_accessor :controller_to_realm_map            # how many failed logins allowed.
+              attr_accessor :controller_to_realm_map            # What realm to display for which controller name.
                             
               def merge_http_basic_auth_defaults!
                 @defaults.merge!(:@controller_to_realm_map  => {"application" => "Application"})
