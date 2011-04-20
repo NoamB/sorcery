@@ -8,5 +8,5 @@ group :development, :test do
   gem 'rspec'
   gem 'ruby-debug19'
   gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency
-  gem 'spork', '~> 0.9.0.rc'
+  gem 'timecop'
 end

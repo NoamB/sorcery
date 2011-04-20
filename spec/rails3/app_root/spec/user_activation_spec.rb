@@ -150,6 +150,10 @@ describe "User with activation submodule" do
       sorcery_reload!([:user_activation], :user_activation_mailer => ::SorceryMailer)
     end
     
+    after(:each) do
+      Timecop.return
+    end
+    
     it "load_from_activation_token should return user when token is found" do
       create_new_user
       User.load_from_activation_token(@user.activation_token).should == @user
@@ -169,7 +173,7 @@ describe "User with activation submodule" do
     it "load_from_activation_token should NOT return user when token is found and expired" do
       sorcery_model_property_set(:activation_token_expiration_period, 0.1)
       create_new_user
-      sleep 0.5
+      Timecop.travel(Time.now+0.5)
       User.load_from_activation_token(@user.activation_token).should == nil
     end
     

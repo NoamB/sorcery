@@ -76,7 +76,11 @@ describe "User with reset_password submodule" do
     before(:each) do
       User.delete_all
     end
-
+    
+    after(:each) do
+      Timecop.return
+    end
+    
     it "load_from_reset_password_token should return user when token is found" do
       create_new_user
       @user.deliver_reset_password_instructions!
@@ -100,7 +104,7 @@ describe "User with reset_password submodule" do
       create_new_user
       sorcery_model_property_set(:reset_password_expiration_period, 0.1)
       @user.deliver_reset_password_instructions!
-      sleep 0.5
+      Timecop.travel(Time.now+0.5)
       User.load_from_reset_password_token(@user.reset_password_token).should == nil
     end
     
@@ -164,7 +168,7 @@ describe "User with reset_password submodule" do
       old_size = ActionMailer::Base.deliveries.size
       @user.deliver_reset_password_instructions!
       ActionMailer::Base.deliveries.size.should == old_size + 1
-      sleep 0.5
+      Timecop.travel(Time.now+0.5)
       @user.deliver_reset_password_instructions!
       ActionMailer::Base.deliveries.size.should == old_size + 2
     end

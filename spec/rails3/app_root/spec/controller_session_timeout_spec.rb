@@ -10,6 +10,10 @@ describe ApplicationController do
       create_new_user
     end
     
+    after(:each) do
+      Timecop.return
+    end
+    
     it "should not reset session before session timeout" do
       login_user
       get :test_should_be_logged_in
@@ -19,7 +23,7 @@ describe ApplicationController do
     
     it "should reset session after session timeout" do
       login_user
-      sleep 0.6
+      Timecop.travel(Time.now+0.6)
       get :test_should_be_logged_in
       session[:user_id].should be_nil
       response.should be_a_redirect
@@ -28,10 +32,10 @@ describe ApplicationController do
     it "with 'session_timeout_from_last_action' should not logout if there was activity" do
       sorcery_controller_property_set(:session_timeout_from_last_action, true)
       get :test_login, :username => 'gizmo', :password => 'secret'
-      sleep 0.3
+      Timecop.travel(Time.now+0.3)
       get :test_should_be_logged_in
       session[:user_id].should_not be_nil
-      sleep 0.3
+      Timecop.travel(Time.now+0.3)
       get :test_should_be_logged_in
       session[:user_id].should_not be_nil
       response.should be_a_success
@@ -40,7 +44,7 @@ describe ApplicationController do
     it "with 'session_timeout_from_last_action' should logout if there was no activity" do
       sorcery_controller_property_set(:session_timeout_from_last_action, true)
       get :test_login, :username => 'gizmo', :password => 'secret'
-      sleep 0.6
+      Timecop.travel(Time.now+0.6)
       get :test_should_be_logged_in
       session[:user_id].should be_nil
       response.should be_a_redirect

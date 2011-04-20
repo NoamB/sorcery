@@ -3,6 +3,7 @@ $: << APP_ROOT # for model reloading
 
 require 'rack/test'
 require 'rspec'
+require 'timecop'
 
 # set test environment
 set :environment, :test

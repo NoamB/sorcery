@@ -39,7 +39,8 @@ describe 'MyApp' do
       create_new_user
       get "/login_at_test2"
       last_response.should be_a_redirect
-      last_response.should redirect_to("http://myapi.com/oauth/authorize?client_id=key&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&type=web_server")
+      #last_response.should redirect_to("http://myapi.com/oauth/authorize?client_id=key&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&type=web_server")
+      last_response.should redirect_to("http://myapi.com/oauth/authorize?client_id=key&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&response_type=code")
     end
     
     it "'login_from' logins if user exists" do

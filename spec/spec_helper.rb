@@ -1,10 +1,9 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
-require 'simplecov'
-SimpleCov.root File.join(File.dirname(__FILE__), '..', 'lib')
-SimpleCov.start
-
+# require 'simplecov'
+# SimpleCov.root File.join(File.dirname(__FILE__), '..', 'lib')
+# SimpleCov.start
 
 require 'rspec'
 require 'sorcery'

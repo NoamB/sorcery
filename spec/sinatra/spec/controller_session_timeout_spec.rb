@@ -10,6 +10,10 @@ describe Sinatra::Application do
       create_new_user
     end
     
+    after(:each) do
+      Timecop.return
+    end
+    
     it "should not reset session before session timeout" do
       session[:user_id] = User.first.id
       get "/test_should_be_logged_in"
@@ -19,7 +23,7 @@ describe Sinatra::Application do
     it "should reset session after session timeout" do
       get "/test_login", :username => 'gizmo', :password => 'secret'
       session[:user_id].should_not be_nil
-      sleep 0.6
+      Timecop.travel(Time.now+0.6)
       get "/test_should_be_logged_in"
       last_response.should be_a_redirect
     end
@@ -29,10 +33,10 @@ describe Sinatra::Application do
       sorcery_controller_property_set(:session_timeout,2)
       sorcery_controller_property_set(:session_timeout_from_last_action, true)
       get "/test_login", :username => 'gizmo', :password => 'secret'
-      sleep 1
+      Timecop.travel(Time.now+1)
       get "/test_should_be_logged_in"
       session[:user_id].should_not be_nil
-      sleep 1
+      Timecop.travel(Time.now+1)
       get "/test_should_be_logged_in"
       session[:user_id].should_not be_nil
       last_response.should be_ok
@@ -42,7 +46,7 @@ describe Sinatra::Application do
       sorcery_controller_property_set(:session_timeout,0.5)
       sorcery_controller_property_set(:session_timeout_from_last_action, true)
       get "/test_login", :username => 'gizmo', :password => 'secret'
-      sleep 0.6
+      Timecop.travel(Time.now+0.6)
       get "/test_should_be_logged_in"
       session[:user_id].should be_nil
       last_response.should be_a_redirect
