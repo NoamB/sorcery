@@ -1,10 +1,10 @@
 # The first thing you need to configure is which modules you need in your app.
 # The default is nothing which will include only core features (password encryption, login/logout).
 # Available submodules are: :user_activation, :http_basic_auth, :remember_me, :reset_password, :session_timeout, :brute_force_protection, :activity_logging, :external
-Collaboration::Application.config.sorcery.submodules = []
+Rails.application.config.sorcery.submodules = []
 
 # Here you can configure each submodule's features.
-Collaboration::Application.config.sorcery.configure do |config|
+Rails.application.config.sorcery.configure do |config|
   # -- core --
   # config.not_authenticated_action = :not_authenticated      # what controller action to call for non-authenticated users. You can also override 'not_authenticated' instead.
   # config.save_return_to_url = true                          # when a non logged in user tries to enter a page that requires login, save the URL he wanted to reach, 
