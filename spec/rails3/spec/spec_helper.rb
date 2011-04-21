@@ -1,7 +1,12 @@
 $: << File.join(File.dirname(__FILE__), '..', '..', 'lib' )
-
+# This file is copied to spec/ when you run 'rails generate rspec:install'
+# Set the default environment to sqlite3's in_memory database
+ENV['RAILS_ENV'] ||= 'in_memory'
+require File.expand_path("../../config/environment", __FILE__)
+require 'rspec/rails'
+require 'timecop'
 # require 'simplecov'
-# SimpleCov.root File.join(File.dirname(__FILE__), "..", "..", "app_root" )
+# SimpleCov.root File.join(File.dirname(__FILE__), "..", "..", "rails3" )
 # SimpleCov.start do
 #   add_filter "/config/"
 #   
@@ -13,20 +18,31 @@ $: << File.join(File.dirname(__FILE__), '..', '..', 'lib' )
 #   add_group 'Migrations', 'db/migrate'
 # end
 
-require 'timecop'
-# Set the default environment to sqlite3's in_memory database
-ENV['RAILS_ENV'] ||= 'in_memory'
-ENV['RAILS_ROOT'] = 'app_root'
+# Requires supporting ruby files with custom matchers and macros, etc,
+# in spec/support/ and its subdirectories.
+Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
-# Load the Rails environment and testing framework
-require "#{File.dirname(__FILE__)}/../config/environment"
-require 'rspec/rails'
+
 
 RSpec.configure do |config|
-  config.use_transactional_fixtures = true
-  config.use_instantiated_fixtures  = false
   config.include RSpec::Rails::ControllerExampleGroup, :example_group => { :file_path => /controller(.)*_spec.rb$/ }
+  # == Mock Framework
+  #
+  # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
+  #
+  # config.mock_with :mocha
+  # config.mock_with :flexmock
+  # config.mock_with :rr
+  config.mock_with :rspec
 
+  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
+  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
+  # If you're not using ActiveRecord, or you'd prefer not to run each of your
+  # examples within a transaction, remove the following line or assign false
+  # instead of true.
+  config.use_transactional_fixtures = true
+  
   config.before(:suite) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
   end
@@ -51,3 +67,4 @@ end
 
 include ::Sorcery::TestHelpers
 include ::Sorcery::TestHelpers::Rails
+

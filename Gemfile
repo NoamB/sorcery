@@ -9,8 +9,8 @@ gem 'oauth2', ">= 0.1.1"
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
-  gem "rspec", "~> 2.3.0"
-  gem 'rspec-rails'
+  gem "rspec", "~> 2.5.0"
+  gem 'rspec-rails', "~> 2.5.0"
   gem 'ruby-debug19'
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem "yard", "~> 0.6.0"

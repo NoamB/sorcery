@@ -5,8 +5,8 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 gem "sorcery", '0.3.1', :path => '../../../'
 
 group :development, :test do
-  gem 'rspec'
-  gem 'rspec-rails'
+  gem "rspec", "~> 2.5.0"
+  gem 'rspec-rails', "~> 2.5.0"
   gem 'ruby-debug19'
   gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency
   gem 'timecop'
