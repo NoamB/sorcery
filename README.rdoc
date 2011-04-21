@@ -28,7 +28,7 @@ Example Rails 3 app using sorcery: https://github.com/NoamB/sorcery-example-app
 
 Example Sinatra app using sorcery: https://github.com/NoamB/sorcery-example-app-sinatra
 
-Documentation: http://rubydoc.info/gems/sorcery/0.3.1/frames
+Documentation: http://rubydoc.info/gems/sorcery/0.4.0/frames
 
 Check out the tutorials in the github wiki!
 
@@ -194,9 +194,8 @@ External (see lib/sorcery/controller/submodules/external.rb):
 
 
 I've got many plans which include (by priority):
+* Forgot username, maybe as part of the reset_password module
 * Scoping logins (to a subdomain or another arbitrary field)
-* Simple auth (no user)
-* Switching authentication mode at runtime (Maintenance mode)
 * Mongoid support
 * Other reset password strategies (security questions?)
 * Other brute force protection strategies (captcha)
@@ -212,13 +211,13 @@ Other stuff:
 == Backward compatibility
 
 
-While the lib is young I'm breaking backward compatibility quite often.
+While the lib is young and evolving fast I'm breaking backward compatibility quite often.
 I'm constantly finding better ways to do things and throwing away old ways.
 To let you know when things are changing in a non-compatible way, I'm bumping the minor version of the gem.
 The patch version changes are backward compatible.
 
-In short, an app that works with 0.3.1 should be able to upgrade to 0.3.2 with no code changes.
-The same cannot be said about upgrading to 0.4.0 and above, however.
+In short, an app that works with x.3.1 should be able to upgrade to x.3.2 with no code changes.
+The same cannot be said about upgrading to x.4.0 and above, however.
 
 
 == Contributing to sorcery
