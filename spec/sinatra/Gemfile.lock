@@ -1,7 +1,7 @@
 PATH
   remote: ../../
   specs:
-    sorcery (0.4.0)
+    sorcery (0.4.1)
       bcrypt-ruby (~> 2.1.4)
       json (>= 1.5.1)
       oauth (>= 0.4.4)
@@ -129,6 +129,6 @@ DEPENDENCIES
   ruby-debug19
   simplecov (>= 0.3.8)
   sinatra (>= 1.2.0)
-  sorcery (= 0.4.0)!
+  sorcery (= 0.4.1)!
   sqlite3-ruby
   timecop
