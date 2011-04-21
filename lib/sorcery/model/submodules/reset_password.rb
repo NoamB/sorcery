@@ -28,7 +28,7 @@ module Sorcery
                              :@reset_password_mailer                          => nil,
                              :@reset_password_email_method_name               => :reset_password_email,
                              :@reset_password_expiration_period               => nil,
-                             :@reset_password_time_between_emails             => 5.minutes )
+                             :@reset_password_time_between_emails             => 5 * 60 )
 
             reset!
           end

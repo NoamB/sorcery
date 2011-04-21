@@ -16,7 +16,7 @@ module Sorcery
             @defaults.merge!(:@failed_logins_count_attribute_name              => :failed_logins_count,
                              :@lock_expires_at_attribute_name                  => :lock_expires_at,
                              :@consecutive_login_retries_amount_limit          => 50,
-                             :@login_lock_time_period                          => 3600)
+                             :@login_lock_time_period                          => 60 * 60)
             reset!
           end
           

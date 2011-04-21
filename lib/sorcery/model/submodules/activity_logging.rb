@@ -20,7 +20,7 @@ module Sorcery
             @defaults.merge!(:@last_login_at_attribute_name                => :last_login_at,
                              :@last_logout_at_attribute_name               => :last_logout_at,
                              :@last_activity_at_attribute_name             => :last_activity_at,
-                             :@activity_timeout                            => 10.minutes)
+                             :@activity_timeout                            => 10 * 60)
             reset!
           end
         end

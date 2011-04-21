@@ -6,20 +6,20 @@ Rails.application.config.sorcery.submodules = []
 # Here you can configure each submodule's features.
 Rails.application.config.sorcery.configure do |config|
   # -- core --
-  # config.not_authenticated_action = :not_authenticated      # what controller action to call for non-authenticated users. You can also override 'not_authenticated' instead.
-  # config.save_return_to_url = true                          # when a non logged in user tries to enter a page that requires login, save the URL he wanted to reach, 
-                                                              # and send him there after login, using 'redirect_back_or_to'.
-  
-  # -- session timeout --
-  # config.session_timeout = 3600                             # how long in seconds to keep the session alive.
-  # config.session_timeout_from_last_action = false           # use the last action as the beginning of session timeout.
+  # config.not_authenticated_action = :not_authenticated              # what controller action to call for non-authenticated users. You can also override 'not_authenticated' instead.
+  # config.save_return_to_url = true                                  # when a non logged in user tries to enter a page that requires login, save the URL he wanted to reach, 
+                                                                      # and send him there after login, using 'redirect_back_or_to'.
+                                                                      
+  # -- session timeout --                                             
+  # config.session_timeout = 3600                                     # how long in seconds to keep the session alive.
+  # config.session_timeout_from_last_action = false                   # use the last action as the beginning of session timeout.
   
   # -- http_basic_auth --
   # config.controller_to_realm_map = {"application" => "Application"} # What realm to display for which controller name.
                                                                       # For example {"My App" => "Application"}
   
   # -- external --
-  # config.external_providers = []                            # What providers are supported by this app, i.e. [:twitter, :facebook] .
+  # config.external_providers = []                                    # What providers are supported by this app, i.e. [:twitter, :facebook] .
   # 
   # config.twitter.key = "eYVNBjBDi33aa9GkA3w"
   # config.twitter.secret = "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8"
@@ -34,53 +34,52 @@ Rails.application.config.sorcery.configure do |config|
   # --- user config ---
   config.user_config do |user|
     # -- core --
-    # user.username_attribute_name =                          # change default username attribute, for example, to use :email as the login.
-    # user.password_attribute_name =                          # change *virtual* password attribute, the one which is used until an encrypted one is generated.
-    # user.email_attribute_name =                             # change default email attribute.
-    # user.crypted_password_attribute_name =                  # change default crypted_password attribute.
-    # user.salt_join_token =                                  # what pattern to use to join the password with the salt
-    # user.salt_attribute_name =                              # change default salt attribute.
-    # user.stretches =                                        # how many times to apply encryption to the password.
-    # user.encryption_key =                                   # encryption key used to encrypt reversible encryptions such as AES256.
-    # user.encryption_provider =                              # change default encryption_provider.
-    # user.custom_encryption_provider =                       # use an external encryption class.
-    # user.encryption_algorithm =                             # encryption algorithm name. See 'encryption_algorithm=' for available options.
-
-    # -- user_activation --
-    # user.activation_state_attribute_name =                  # the attribute name to hold activation state (active/pending).
-    # user.activation_token_attribute_name =                  # the attribute name to hold activation code (sent by email).
-    # user.activation_token_expires_at_attribute_name =       # the attribute name to hold activation code expiration date. 
-    # user.activation_token_expiration_period =               # how many seconds before the activation code expires. nil for never expires.
-    # user.user_activation_mailer =                           # your mailer class. Required.
-    # user.activation_needed_email_method_name =              # activation needed email method on your mailer class.
-    # user.activation_success_email_method_name =             # activation success email method on your mailer class.
-    # user.prevent_non_active_users_to_login =                # do you want to prevent or allow users that did not activate by email to login?                     
-
-    # -- reset_password --
-    # user.reset_password_token_attribute_name =              # reset password code attribute name.
-    # user.reset_password_token_expires_at_attribute_name =   # expires at attribute name.
-    # user.reset_password_email_sent_at_attribute_name =      # when was email sent, used for hammering protection.
-    # user.reset_password_mailer =                            # mailer class. Needed.
-    # user.reset_password_email_method_name =                 # reset password email method on your mailer class.
-    # user.reset_password_expiration_period =                 # how many seconds before the reset request expires. nil for never expires.
-    # user.reset_password_time_between_emails =               # hammering protection, how long to wait before allowing another email to be sent.
-    
-    # -- brute_force_protection --
-    # user.failed_logins_count_attribute_name =               # failed logins attribute name.
-    # user.lock_expires_at_attribute_name =                   # this field indicates whether user is banned and when it will be active again.
-    # user.consecutive_login_retries_amount_limit =           # how many failed logins allowed.
-    # user.login_lock_time_period =                           # how long the user should be banned. in seconds. 0 for permanent.
-                              
-    # -- activity logging --
-    # user.last_login_at_attribute_name =                     # last login attribute name.
-    # user.last_logout_at_attribute_name =                    # last logout attribute name.
-    # user.last_activity_at_attribute_name =                  # last activity attribute name.
-    # user.activity_timeout =                                 # how long since last activity is the user defined logged out?
-
-    # -- external --                                             
-    # user.authentications_class =                            # class which holds the various external provider data for this user.
-    # user.authentications_user_id_attribute_name =           # user's identifier in authentications class.
-    # user.provider_attribute_name =                          # provider's identifier in authentications class.
-    # user.provider_uid_attribute_name =                      # user's external unique identifier in authentications class.
+    # user.username_attribute_name = :username                                        # change default username attribute, for example, to use :email as the login.
+    # user.password_attribute_name = :password                                        # change *virtual* password attribute, the one which is used until an encrypted one is generated.
+    # user.email_attribute_name = :email                                              # change default email attribute.
+    # user.crypted_password_attribute_name =  :crypted_password                       # change default crypted_password attribute.
+    # user.salt_join_token = ""                                                       # what pattern to use to join the password with the salt
+    # user.salt_attribute_name = :salt                                                # change default salt attribute.
+    # user.stretches = nil                                                            # how many times to apply encryption to the password.
+    # user.encryption_key = nil                                                       # encryption key used to encrypt reversible encryptions such as AES256.
+    # user.custom_encryption_provider = nil                                           # use an external encryption class.
+    # user.encryption_algorithm = :bcrypt                                             # encryption algorithm name. See 'encryption_algorithm=' for available options.
+                                                                                      
+    # -- user_activation --                                                           
+    # user.activation_state_attribute_name = :activation_state                        # the attribute name to hold activation state (active/pending).
+    # user.activation_token_attribute_name = :activation_token                        # the attribute name to hold activation code (sent by email).
+    # user.activation_token_expires_at_attribute_name = :activation_token_expires_at  # the attribute name to hold activation code expiration date. 
+    # user.activation_token_expiration_period =  nil                                  # how many seconds before the activation code expires. nil for never expires.
+    # user.user_activation_mailer = nil                                               # your mailer class. Required.
+    # user.activation_needed_email_method_name = :activation_needed_email             # activation needed email method on your mailer class.
+    # user.activation_success_email_method_name = :activation_success_email           # activation success email method on your mailer class.
+    # user.prevent_non_active_users_to_login = true                                   # do you want to prevent or allow users that did not activate by email to login?                     
+                                                                  
+    # -- reset_password --                                        
+    # user.reset_password_token_attribute_name = :reset_password_token                          # reset password code attribute name.
+    # user.reset_password_token_expires_at_attribute_name = :reset_password_token_expires_at    # expires at attribute name.
+    # user.reset_password_email_sent_at_attribute_name = :reset_password_email_sent_at          # when was email sent, used for hammering protection.
+    # user.reset_password_mailer = nil                                                          # mailer class. Needed.
+    # user.reset_password_email_method_name = :reset_password_email                             # reset password email method on your mailer class.
+    # user.reset_password_expiration_period = nil                                               # how many seconds before the reset request expires. nil for never expires.
+    # user.reset_password_time_between_emails = 5 * 60                                          # hammering protection, how long to wait before allowing another email to be sent.
+                                                                  
+    # -- brute_force_protection --                                
+    # user.failed_logins_count_attribute_name = :failed_logins_count                  # failed logins attribute name.
+    # user.lock_expires_at_attribute_name = :lock_expires_at                          # this field indicates whether user is banned and when it will be active again.
+    # user.consecutive_login_retries_amount_limit = 50                                # how many failed logins allowed.
+    # user.login_lock_time_period = 60 * 60                                           # how long the user should be banned. in seconds. 0 for permanent.
+                                                                  
+    # -- activity logging --                                      
+    # user.last_login_at_attribute_name = :last_login_at                              # last login attribute name.
+    # user.last_logout_at_attribute_name = :last_logout_at                            # last logout attribute name.
+    # user.last_activity_at_attribute_name = :last_activity_at                        # last activity attribute name.
+    # user.activity_timeout = 10 * 60                                                 # how long since last activity is the user defined logged out?
+                                                                                      
+    # -- external --                                                                     
+    # user.authentications_class = nil                                                # class which holds the various external provider data for this user.
+    # user.authentications_user_id_attribute_name = :user_id                          # user's identifier in authentications class.
+    # user.provider_attribute_name = :provider                                        # provider's identifier in authentications class.
+    # user.provider_uid_attribute_name = :uid                                         # user's external unique identifier in authentications class.
   end
 end
