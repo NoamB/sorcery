@@ -23,5 +23,9 @@ module Sorcery
       end
     end
     
+    rake_tasks do
+      load "sorcery/railties/tasks.rake"
+    end
+    
   end
 end

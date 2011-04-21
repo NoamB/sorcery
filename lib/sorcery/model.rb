@@ -9,11 +9,13 @@ module Sorcery
     def self.included(klass)
       klass.class_eval do
         class << self
-          def activate_sorcery!
+          def authenticates_with_sorcery!
             @sorcery_config = Config.new
             self.class_eval do
               extend ClassMethods # included here, before submodules, so they can be overriden by them.
               include InstanceMethods
+              
+              # set the user_class for the controller methods which call it
               ::Sorcery::Controller::Config.user_class = self
               @sorcery_config.submodules = ::Sorcery::Controller::Config.submodules
               @sorcery_config.submodules.each do |mod|
@@ -25,7 +27,7 @@ module Sorcery
               end
             end
             
-            yield @sorcery_config if block_given?
+            ::Sorcery::Controller::Config.user_config.tap{|blk| blk.call(@sorcery_config) if blk}
             
             self.class_eval do
               attr_accessor @sorcery_config.password_attribute_name

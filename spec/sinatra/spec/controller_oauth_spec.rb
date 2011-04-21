@@ -21,9 +21,9 @@ describe Sinatra::Application do
     ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/external")
     sorcery_reload!([:external])
     sorcery_controller_property_set(:external_providers, [:twitter])
-    sorcery_controller_oauth_property_set(:twitter, :key, "eYVNBjBDi33aa9GkA3w")
-    sorcery_controller_oauth_property_set(:twitter, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
-    sorcery_controller_oauth_property_set(:twitter, :callback_url, "http://blabla.com")
+    sorcery_controller_external_property_set(:twitter, :key, "eYVNBjBDi33aa9GkA3w")
+    sorcery_controller_external_property_set(:twitter, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+    sorcery_controller_external_property_set(:twitter, :callback_url, "http://blabla.com")
   end
   
   after(:all) do
@@ -72,7 +72,7 @@ describe Sinatra::Application do
       
     it "should create a new user" do
       sorcery_model_property_set(:authentications_class, Authentication)
-      sorcery_controller_oauth_property_set(:twitter, :user_info_mapping, {:username => "screen_name"})
+      sorcery_controller_external_property_set(:twitter, :user_info_mapping, {:username => "screen_name"})
       lambda do
         get :test_create_from_provider, :provider => "twitter"
       end.should change(User, :count).by(1)
@@ -81,7 +81,7 @@ describe Sinatra::Application do
     
     it "should support nested attributes" do
       sorcery_model_property_set(:authentications_class, Authentication)
-      sorcery_controller_oauth_property_set(:twitter, :user_info_mapping, {:username => "status/text"})
+      sorcery_controller_external_property_set(:twitter, :user_info_mapping, {:username => "status/text"})
       lambda do
         get :test_create_from_provider, :provider => "twitter"
       end.should change(User, :count).by(1)

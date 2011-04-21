@@ -15,9 +15,9 @@ describe 'MyApp' do
     ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/external")
     sorcery_reload!([:external])
     sorcery_controller_property_set(:external_providers, [:facebook])
-    sorcery_controller_oauth_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
-    sorcery_controller_oauth_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
-    sorcery_controller_oauth_property_set(:facebook, :callback_url, "http://blabla.com")
+    sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
+    sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+    sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
   end
   
   after(:all) do
@@ -67,7 +67,7 @@ describe 'MyApp' do
       
     it "should create a new user" do
       sorcery_model_property_set(:authentications_class, Authentication)
-      sorcery_controller_oauth_property_set(:facebook, :user_info_mapping, {:username => "name"})
+      sorcery_controller_external_property_set(:facebook, :user_info_mapping, {:username => "name"})
       lambda do
         get "/test_create_from_provider", :provider => "facebook"
       end.should change(User, :count).by(1)
@@ -76,7 +76,7 @@ describe 'MyApp' do
     
     it "should support nested attributes" do
       sorcery_model_property_set(:authentications_class, Authentication)
-      sorcery_controller_oauth_property_set(:facebook, :user_info_mapping, {:username => "hometown/name"})
+      sorcery_controller_external_property_set(:facebook, :user_info_mapping, {:username => "hometown/name"})
       lambda do
         get "/test_create_from_provider", :provider => "facebook"
       end.should change(User, :count).by(1)
@@ -89,9 +89,9 @@ describe 'MyApp' do
       ActiveRecord::Migrator.migrate("#{APP_ROOT}/db/migrate/activation")
       sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
       sorcery_controller_property_set(:external_providers, [:facebook])
-      sorcery_controller_oauth_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
-      sorcery_controller_oauth_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
-      sorcery_controller_oauth_property_set(:facebook, :callback_url, "http://blabla.com")
+      sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
+      sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+      sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
     end
     
     after(:all) do

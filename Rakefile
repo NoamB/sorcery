@@ -41,11 +41,11 @@ end
 require 'yard'
 YARD::Rake::YardocTask.new
 
-desc 'Default: Run all specs.'
-task :default => :all_specs
+desc 'Default: Run all sorcery specs.'
+task :default => :all_sorcery_specs
 
-desc "Run all specs"
-task :all_specs do
+desc "Run all sorcery specs"
+task :all_sorcery_specs do
   Dir['spec/**/Rakefile'].each do |rakefile|
     directory_name = File.dirname(rakefile)
     sh <<-CMD

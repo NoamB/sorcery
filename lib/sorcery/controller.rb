@@ -2,7 +2,6 @@ module Sorcery
   module Controller
     def self.included(klass)
       klass.class_eval do
-        extend ClassMethods
         include InstanceMethods
         Config.submodules.each do |mod|
           begin
@@ -11,19 +10,9 @@ module Sorcery
             # don't stop on a missing submodule.
           end
         end
-        Config.update!
       end
-    end
-    
-    module ClassMethods
-      def activate_sorcery!(&block)
-        yield Config if block_given?
-        after_config!
-      end
-      
-      def after_config!
-        Config.after_config.each {|c| send(c)}       
-      end
+      Config.update!
+      Config.configure!
     end
     
     module InstanceMethods
@@ -126,7 +115,7 @@ module Sorcery
       class << self
         attr_accessor :submodules,
         
-                      :user_class,                    # what class to use as the user class. Set automatically when you call activate_sorcery! in the User class.
+                      :user_class,                    # what class to use as the user class. Set automatically when you call authenticates_with_sorcery! in the User class.
                       
                       :not_authenticated_action,      # what controller action to call for non-authenticated users.
                       
@@ -137,9 +126,7 @@ module Sorcery
                       :after_login,
                       :after_failed_login,
                       :before_logout,
-                      :after_logout,
-                      :after_config
-                      
+                      :after_logout                      
                       
         def init!
           @defaults = {
@@ -151,7 +138,6 @@ module Sorcery
             :@after_failed_login                   => [],
             :@before_logout                        => [],
             :@after_logout                         => [],
-            :@after_config                         => [],
             :@save_return_to_url                   => true
           }
         end
@@ -167,6 +153,18 @@ module Sorcery
           @defaults.each do |k,v|
             instance_variable_set(k,v) if !instance_variable_defined?(k)
           end
+        end
+        
+        def user_config(&blk)
+          block_given? ? @user_config = blk : @user_config
+        end
+        
+        def configure(&blk)
+          @configure_blk = blk
+        end
+        
+        def configure!
+          @configure_blk.call(self) if @configure_blk
         end
       end
       init!

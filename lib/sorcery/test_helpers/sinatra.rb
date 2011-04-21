@@ -108,23 +108,20 @@ module Sorcery
         ::Sinatra::Application.send(:include, Sorcery::Controller::Adapters::Sinatra)
         ::Sinatra::Application.send(:include, Sorcery::Controller)
         
-        User.activate_sorcery! do |config|
+        ::Sorcery::Controller::Config.user_config do |user|
           options.each do |property,value|
-            config.send(:"#{property}=", value)
+            user.send(:"#{property}=", value)
           end
         end
+        User.authenticates_with_sorcery!
       end
       
       def sorcery_controller_property_set(property, value)
-        ::Sinatra::Application.activate_sorcery! do |config|
-          config.send(:"#{property}=", value)
-        end
+        ::Sorcery::Controller::Config.send(:"#{property}=", value)
       end
 
-      def sorcery_controller_oauth_property_set(provider, property, value)
-        ::Sinatra::Application.activate_sorcery! do |config|
-          config.send(provider).send(:"#{property}=", value)
-        end
+      def sorcery_controller_external_property_set(provider, property, value)
+        ::Sorcery::Controller::Config.send(provider).send(:"#{property}=", value)
       end
     end
   end

@@ -58,7 +58,7 @@ require File.join(File.dirname(__FILE__), '..','app','models','user')
 require File.join(File.dirname(__FILE__), '..','app','models','authentication')
 
 class TestUser < ActiveRecord::Base
-  activate_sorcery!
+  authenticates_with_sorcery!
 end
 
 class TestMailer < ActionMailer::Base
