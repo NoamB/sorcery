@@ -112,6 +112,21 @@ describe "User with no submodules (core)" do
     it "should respond to the class method encrypt" do
       User.should respond_to(:encrypt)
     end
+    
+    it "subclass should inherit config if defined so" do
+      sorcery_reload!([],{:subclasses_inherit_config => true})
+      class Admin < User
+      end
+      Admin.sorcery_config.should_not be_nil
+      Admin.sorcery_config.should == User.sorcery_config
+    end
+    
+    it "subclass should not inherit config if not defined so" do
+      sorcery_reload!([],{:subclasses_inherit_config => false})
+      class Admin2 < User
+      end
+      Admin2.sorcery_config.should be_nil
+    end
   end
 
   # ----------------- REGISTRATION -----------------------

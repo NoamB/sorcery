@@ -58,7 +58,7 @@ module Sorcery
           protected
           
           # This submodule requires the developer to define his own mailer class to be used by it.
-          def validate_mailer_defined
+          def validate_mailer_defined(klass)
             msg = "To use user_activation submodule, you must define a mailer (config.user_activation_mailer = YourMailerClass)."
             raise ArgumentError, msg if @sorcery_config.user_activation_mailer == nil
           end

@@ -22,20 +22,24 @@ module Sorcery
                 begin
                   include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join("")) 
                 rescue NameError
-                  # don't stop on a missing submodule.
+                  # don't stop on a missing submodule. Needed because some submodules are only defined in the controller side.
                 end
               end
             end
             
+            # This runs the options block set in the initializer on the model class.
             ::Sorcery::Controller::Config.user_config.tap{|blk| blk.call(@sorcery_config) if blk}
             
+            # add virtual password accessor and ORM callbacks
             self.class_eval do
               attr_accessor @sorcery_config.password_attribute_name
               attr_protected @sorcery_config.crypted_password_attribute_name, @sorcery_config.salt_attribute_name
               before_save :encrypt_password, :if => Proc.new { |record| record.send(sorcery_config.password_attribute_name).present? }
               after_save :clear_virtual_password, :if => Proc.new { |record| record.send(sorcery_config.password_attribute_name).present? }
             end
-            @sorcery_config.after_config.each { |c| send(c) }
+            
+            @sorcery_config.after_config << :add_config_inheritence
+            @sorcery_config.after_config.each { |c| send(c, self) }
           end
         end
       end
@@ -74,6 +78,22 @@ module Sorcery
       def credentials_match?(crypted, *tokens)
         return crypted == tokens.join if @sorcery_config.encryption_provider.nil?
         @sorcery_config.encryption_provider.matches?(crypted, *tokens)
+      end
+      
+      def add_config_inheritence(klass)
+        if @sorcery_config.subclasses_inherit_config
+          klass.class_eval do
+            def self.inherited(subclass)
+              subclass.class_eval do
+                class << self
+                  attr_accessor :sorcery_config
+                end
+              end
+              subclass.sorcery_config = sorcery_config
+              super
+            end
+          end
+        end
       end
       
     end
@@ -133,6 +153,7 @@ module Sorcery
                     :salt_attribute_name,               # change default salt attribute.
                     :stretches,                         # how many times to apply encryption to the password.
                     :encryption_key,                    # encryption key used to encrypt reversible encryptions such as AES256.
+                    :subclasses_inherit_config,         # make this configuration inheritable for subclasses. Useful for ActiveRecord's STI.
                     
                     :submodules,                        # configured in config/application.rb
                     :before_authenticate,               # an array of method names to call before authentication completes. used internally.
@@ -156,6 +177,7 @@ module Sorcery
           :@salt_join_token                      => "",
           :@salt_attribute_name                  => :salt,
           :@stretches                            => nil,
+          :@subclasses_inherit_config            => false,
           :@before_authenticate                  => [],
           :@after_config                         => []
         }
