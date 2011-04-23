@@ -39,7 +39,7 @@ module Sorcery
             end
             
             @sorcery_config.after_config << :add_config_inheritence
-            @sorcery_config.after_config.each { |c| send(c, self) }
+            @sorcery_config.after_config.each { |c| send(c) }
           end
         end
       end
@@ -80,9 +80,9 @@ module Sorcery
         @sorcery_config.encryption_provider.matches?(crypted, *tokens)
       end
       
-      def add_config_inheritence(klass)
+      def add_config_inheritence
         if @sorcery_config.subclasses_inherit_config
-          klass.class_eval do
+          self.class_eval do
             def self.inherited(subclass)
               subclass.class_eval do
                 class << self
