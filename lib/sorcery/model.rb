@@ -38,7 +38,7 @@ module Sorcery
               after_save :clear_virtual_password, :if => Proc.new { |record| record.send(sorcery_config.password_attribute_name).present? }
             end
             
-            @sorcery_config.after_config << :add_config_inheritence
+            @sorcery_config.after_config << :add_config_inheritence if @sorcery_config.subclasses_inherit_config
             @sorcery_config.after_config.each { |c| send(c) }
           end
         end
@@ -81,17 +81,15 @@ module Sorcery
       end
       
       def add_config_inheritence
-        if @sorcery_config.subclasses_inherit_config
-          self.class_eval do
-            def self.inherited(subclass)
-              subclass.class_eval do
-                class << self
-                  attr_accessor :sorcery_config
-                end
+        self.class_eval do
+          def self.inherited(subclass)
+            subclass.class_eval do
+              class << self
+                attr_accessor :sorcery_config
               end
-              subclass.sorcery_config = sorcery_config
-              super
             end
+            subclass.sorcery_config = sorcery_config
+            super
           end
         end
       end
