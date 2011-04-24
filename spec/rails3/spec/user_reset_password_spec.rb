@@ -20,21 +20,20 @@ describe "User with reset_password submodule" do
       User.sorcery_config.reset!
     end
     
-    it "should respond to 'deliver_reset_password_instructions!'" do
-      create_new_user
-      @user.should respond_to(:deliver_reset_password_instructions!)
+    context "API" do
+      before(:all) do
+        create_new_user
+      end
+      
+      specify { @user.should respond_to(:deliver_reset_password_instructions!) }
+      
+      specify { @user.should respond_to(:reset_password!) }
+
+      it "should respond to .load_from_reset_password_token" do
+        User.should respond_to(:load_from_reset_password_token)
+      end
     end
-    
-    it "should respond to 'reset_password!" do
-      create_new_user
-      @user.should respond_to(:reset_password!)
-    end
-    
-    it "should respond to 'load_from_reset_password_token'" do
-      create_new_user
-      User.should respond_to(:load_from_reset_password_token)
-    end
-    
+
     it "should allow configuration option 'reset_password_token_attribute_name'" do
       sorcery_model_property_set(:reset_password_token_attribute_name, :my_code)
       User.sorcery_config.reset_password_token_attribute_name.should equal(:my_code)

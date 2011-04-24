@@ -22,10 +22,8 @@ describe ApplicationController do
     after(:each) do
       User.delete_all
     end
-
-    it "should respond to 'current_users'" do
-      subject.should respond_to(:current_users)
-    end
+    
+    specify { subject.should respond_to(:current_users) }
 
     it "'current_users' should be empty when no users are logged in" do
       subject.current_users.size.should == 0

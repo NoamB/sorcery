@@ -57,23 +57,17 @@ describe "User with activation submodule" do
       sorcery_reload!([:user_activation], :user_activation_mailer => ::SorceryMailer)
     end
     
-    it "should generate an activation code on registration" do
+    before(:each) do
       create_new_user
-      @user.activation_token.should_not be_nil
     end
     
     it "should initialize user state to 'pending'" do
-      create_new_user
       @user.activation_state.should == "pending"
     end
     
-    it "should respond to 'activate!'" do
-      create_new_user
-      @user.should respond_to(:activate!)
-    end
+    specify { @user.should respond_to(:activate!) }
     
     it "should clear activation code and change state to 'active' on activation" do
-      create_new_user
       activation_token = @user.activation_token
       @user.activate!
       @user2 = User.find(@user.id) # go to db to make sure it was saved and not just in memory
@@ -89,7 +83,6 @@ describe "User with activation submodule" do
     end
     
     it "subsequent saves do not send activation email" do
-      create_new_user
       old_size = ActionMailer::Base.deliveries.size
       @user.username = "Shauli"
       @user.save!
@@ -97,14 +90,12 @@ describe "User with activation submodule" do
     end
     
     it "should send the user an activation success email on successful activation" do
-      create_new_user
       old_size = ActionMailer::Base.deliveries.size
       @user.activate!
       ActionMailer::Base.deliveries.size.should == old_size + 1
     end
     
     it "subsequent saves do not send activation success email" do
-      create_new_user
       @user.activate!
       old_size = ActionMailer::Base.deliveries.size
       @user.username = "Shauli"
@@ -121,7 +112,6 @@ describe "User with activation submodule" do
     
     it "activation success email is optional" do
       sorcery_model_property_set(:activation_success_email_method_name, nil)
-      create_new_user
       old_size = ActionMailer::Base.deliveries.size
       @user.activate!
       ActionMailer::Base.deliveries.size.should == old_size

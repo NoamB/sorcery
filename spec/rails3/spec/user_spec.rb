@@ -9,6 +9,9 @@ describe "User with no submodules (core)" do
   describe User, "when app has plugin loaded" do
     it "should respond to the plugin activation class method" do
       ActiveRecord::Base.should respond_to(:authenticates_with_sorcery!)
+    end
+    
+    it "User should respond_to .authenticates_with_sorcery!" do
       User.should respond_to(:authenticates_with_sorcery!)
     end
   end
@@ -109,9 +112,7 @@ describe "User with no submodules (core)" do
       User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'wrong!').should be_false
     end
   
-    it "should respond to the class method encrypt" do
-      User.should respond_to(:encrypt)
-    end
+    specify { User.should respond_to(:encrypt) }
     
     it "subclass should inherit config if defined so" do
       sorcery_reload!([],{:subclasses_inherit_config => true})

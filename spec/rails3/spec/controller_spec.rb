@@ -37,21 +37,13 @@ describe ApplicationController do
       sorcery_controller_property_set(:user_class, User)
     end
     
-    it "should respond to the instance method login" do
-      should respond_to(:login)
-    end
+    specify { should respond_to(:login) }
+
+    specify { should respond_to(:logout) }
   
-    it "should respond to the instance method logout" do
-      should respond_to(:logout)
-    end
-  
-    it "should respond to the instance method logged_in?" do
-      should respond_to(:logged_in?)
-    end
+    specify { should respond_to(:logged_in?) }
     
-    it "should respond to the instance method current_user" do
-      should respond_to(:current_user)
-    end
+    specify { should respond_to(:current_user) }
   
     it "login(username,password) should return the user when success and set the session with user.id" do
       get :test_login, :username => 'gizmo', :password => 'secret'
@@ -93,9 +85,7 @@ describe ApplicationController do
       subject.current_user.should == false
     end
     
-    it "should respond to 'require_login'" do
-      should respond_to(:require_login)
-    end
+    specify { should respond_to(:require_login) }
     
     it "should call the configured 'not_authenticated_action' when authenticate before_filter fails" do
       session[:user_id] = nil

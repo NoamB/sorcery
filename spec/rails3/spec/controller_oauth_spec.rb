@@ -31,7 +31,7 @@ describe ApplicationController do
     ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
   end
   # ----------------- OAuth -----------------------
-  describe ApplicationController, "'login_from'" do
+  describe ApplicationController, "'using external API to login'" do
   
     before(:each) do
       stub_all_oauth_requests!
@@ -64,7 +64,7 @@ describe ApplicationController do
     end
   end
   
-  describe ApplicationController, "'create_from'" do
+  describe ApplicationController, "using 'create_from'" do
     before(:each) do
       stub_all_oauth_requests!
       User.delete_all
@@ -90,7 +90,7 @@ describe ApplicationController do
     end
   end
   
-  describe ApplicationController, "OAuth with User Activation features" do
+  describe ApplicationController, "using OAuth with User Activation features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
       sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)

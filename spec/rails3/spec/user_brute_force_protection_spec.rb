@@ -21,13 +21,8 @@ describe "User with brute_force_protection submodule" do
       User.sorcery_config.reset!
     end
     
-    it "should respond to 'failed_logins_count'" do
-      @user.should respond_to(:failed_logins_count)
-    end
-    
-    it "should respond to 'lock_expires_at'" do
-      @user.should respond_to(:failed_logins_count)
-    end
+    specify { @user.should respond_to(:failed_logins_count) }
+    specify { @user.should respond_to(:lock_expires_at) }
  
     it "should enable configuration option 'failed_logins_count_attribute_name'" do
       sorcery_model_property_set(:failed_logins_count_attribute_name, :my_count)
@@ -48,29 +43,6 @@ describe "User with brute_force_protection submodule" do
       sorcery_model_property_set(:login_lock_time_period, 2.hours)
       User.sorcery_config.login_lock_time_period.should == 2.hours    
     end
-  end
-
-  # ----------------- PLUGIN ACTIVATED -----------------------
-  describe User, "when activated with sorcery" do
-  
-    before(:all) do
-      sorcery_reload!([:brute_force_protection])
-    end
-  
-    before(:each) do
-      User.delete_all
-    end
-
-    # it "should increment failed_logins_count on a failed login" do
-    #   create_new_user
-    #   
-    # end
-    # 
-    # it "should set lock expiry (effectively lock user) when failed_logins_count reaches max within max period" do
-    #   create_new_user
-    #   @user.lock_expires_at.should == Time.now.utc + 30
-    # end
- 
   end
   
 end
