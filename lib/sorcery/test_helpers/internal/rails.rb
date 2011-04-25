@@ -2,6 +2,8 @@ module Sorcery
   module TestHelpers
     module Internal
       module Rails
+        include ::Sorcery::TestHelpers::Rails
+
         SUBMODUELS_AUTO_ADDED_CONTROLLER_FILTERS = [:register_last_activity_time_to_db, :deny_banned_user, :validate_session]
 
         def sorcery_reload!(submodules = [], options = {})
@@ -35,17 +37,6 @@ module Sorcery
 
         def sorcery_controller_external_property_set(provider, property, value)
           ::Sorcery::Controller::Config.send(provider).send(:"#{property}=", value)
-        end
-
-        # logins a user and calls all callbacks
-        def login_user(user = nil)
-          user ||= @user
-          @controller.send(:login_user,user)
-          @controller.send(:after_login!,user,[user.send(user.sorcery_config.username_attribute_name),'secret'])
-        end
-
-        def logout_user
-          @controller.send(:logout)
         end
 
         # This helper is used to fake multiple users signing in in tests.
