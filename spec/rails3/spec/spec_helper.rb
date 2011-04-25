@@ -65,6 +65,6 @@ class TestMailer < ActionMailer::Base
 
 end
 
-include ::Sorcery::TestHelpers
-include ::Sorcery::TestHelpers::Rails
+include ::Sorcery::TestHelpers::Internal
+include ::Sorcery::TestHelpers::Internal::Rails
 

@@ -30,11 +30,9 @@ module Sorcery
     #
     #   gem install bcrypt-ruby
     #
-    # Tell activate_sorcery! to use it:
+    # Update your initializer to use it:
     #
-    #   activate_sorcery! do |c|
-    #     c.encryption_algorithm = :bcrypt
-    #   end
+    #   config.encryption_algorithm = :bcrypt
     #
     # You are good to go!
     class BCrypt

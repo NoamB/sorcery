@@ -48,7 +48,14 @@ module Sorcery
   module TestHelpers
     autoload :Rails, 'sorcery/test_helpers/rails'
     autoload :Sinatra, 'sorcery/test_helpers/sinatra'
+    autoload :Internal, 'sorcery/test_helpers/internal'
+    module Internal
+      autoload :Rails, 'sorcery/test_helpers/internal/rails'
+      autoload :Sinatra, 'sorcery/test_helpers/internal/sinatra'
+    end
+
   end
+
   
   require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
   require 'sorcery/sinatra' if defined?(Sinatra)
