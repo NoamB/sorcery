@@ -2,6 +2,8 @@ module Sorcery
   module TestHelpers
     module Internal
       module Sinatra
+        include ::Sorcery::TestHelpers::Sinatra::CookieSessionMethods
+        include ::Sorcery::TestHelpers::Sinatra::InstanceMethods
 
         class ::Sinatra::Application
           class << self
@@ -24,62 +26,12 @@ module Sorcery
           end
         end
 
-        def get_sinatra_app(app)
-          while app.class != ::Sinatra::Application do
-            app = app.instance_variable_get(:@app)
-          end
-          app
-        end
-
-        def login_user(user=nil)
-          user ||= @user
-          get_sinatra_app(subject).send(:login_user,user)
-          get_sinatra_app(subject).send(:after_login!,user,[user.username,'secret'])
-        end
-
-        def logout_user
-          get_sinatra_app(subject).send(:logout)
-        end
-
         def clear_user_without_logout
-          get_sinatra_app(subject).instance_variable_set(:@current_user,nil)
+          get_sinatra_app(subject).instance_variable_set(:@current_user, nil)
         end
 
         def assigns
           ::Sinatra::Application.sorcery_vars
-        end
-
-        class SessionData
-          def initialize(cookies)
-            @cookies = cookies
-            @data = cookies['rack.session']
-            if @data
-              @data = @data.unpack("m*").first
-              @data = Marshal.load(@data)
-            else
-              @data = {}
-            end
-          end
-
-          def [](key)
-            @data[key]
-          end
-
-          def []=(key, value)
-            @data[key] = value
-            session_data = Marshal.dump(@data)
-            session_data = [session_data].pack("m*")
-            @cookies.merge("rack.session=#{Rack::Utils.escape(session_data)}", URI.parse("//example.org//"))
-            raise "session variable not set" unless @cookies['rack.session'] == session_data
-          end
-        end
-
-        def session
-          SessionData.new(rack_test_session.instance_variable_get(:@rack_mock_session).cookie_jar)
-        end
-
-        def cookies
-          rack_test_session.instance_variable_get(:@rack_mock_session).cookie_jar
         end
 
         def sorcery_reload!(submodules = [], options = {})
@@ -90,9 +42,9 @@ module Sorcery
           ::Sorcery::Controller::Config.reset!
 
           # clear all filters
-          ::Sinatra::Application.instance_variable_set(:@filters,{:before => [],:after => []})
+          ::Sinatra::Application.instance_variable_set(:@filters, {:before => [], :after => []})
           ::Sinatra::Application.class_eval do
-            load File.join(File.dirname(__FILE__),'..','..','..','..','spec','sinatra','filters.rb')
+            load File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'spec', 'sinatra', 'filters.rb')
           end
 
           # configure
@@ -102,7 +54,7 @@ module Sorcery
           ::Sinatra::Application.send(:include, Sorcery::Controller)
 
           ::Sorcery::Controller::Config.user_config do |user|
-            options.each do |property,value|
+            options.each do |property, value|
               user.send(:"#{property}=", value)
             end
           end

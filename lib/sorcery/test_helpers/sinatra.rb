@@ -76,9 +76,12 @@ module Sorcery
         end
 
         def session
-          SessionData.new(rack_test_session.instance_variable_get(:@rack_mock_session).cookie_jar)
+          SessionData.new(cookies)
         end
 
+        def cookies
+          rack_test_session.instance_variable_get(:@rack_mock_session).cookie_jar
+        end
       end
     end
   end
