@@ -15,7 +15,7 @@ It was built with a few goals in mind:
 * Less is more - less than 20 public methods to remember for the entire feature-set make the lib easy to 'get'.
 * No built-in or generated code - use the library's methods inside *your own* MVC structures, and don't fight to fix someone else's.
 * Magic yes, Voodoo no - the lib should be easy to hack for most developers.
-* Configuration over Confusion - Simple & short configuration as possible, not drowning in syntactic sugar.
+* Configuration over Confusion - Centralized (1 file), Simple & short configuration as possible, not drowning in syntactic sugar.
 * Keep MVC cleanly separated - DB is for models, sessions are for controllers. Models stay unaware of sessions.
 
 Hopefully, I've achieved this. If not, let me know.
@@ -193,19 +193,24 @@ External (see lib/sorcery/controller/submodules/external.rb):
 == Next Planned Features:
 
 
-I've got many plans which include (by priority):
+I've got many thoughts which include (unordered):
+* Passing a block to encrypt, allowing the developer to define his own mix of salting and encrypting
 * Forgot username, maybe as part of the reset_password module
 * Scoping logins (to a subdomain or another arbitrary field)
+* Allowing storing the salt and crypted password in the same DB field for extra security
 * Mongoid support
 * Other reset password strategies (security questions?)
 * Other brute force protection strategies (captcha)
-* Have an idea? Let me know, and it might get into the gem!
+
+
+Have an idea? Let me know, and it might get into the gem!
+
 
 Other stuff:
 * Improve specs speed
 * Provide an easy way to run specs after install
 * Improve documentation
-* Tty to reduce the number of library methods, and find better names to some
+* Try to reduce the number of library methods, and find better names to some
 
 
 == Backward compatibility
