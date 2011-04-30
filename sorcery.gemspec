@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = %q{2011-04-21}
+  s.date = %q{2011-04-30}
   s.description = %q{Provides common authentication needs such as signing in/out, activating by email and resetting password.}
   s.email = %q{nbenari@gmail.com}
   s.extra_rdoc_files = [
@@ -66,6 +66,9 @@ Gem::Specification.new do |s|
     "lib/sorcery/railties/tasks.rake",
     "lib/sorcery/sinatra.rb",
     "lib/sorcery/test_helpers.rb",
+    "lib/sorcery/test_helpers/internal.rb",
+    "lib/sorcery/test_helpers/internal/rails.rb",
+    "lib/sorcery/test_helpers/internal/sinatra.rb",
     "lib/sorcery/test_helpers/rails.rb",
     "lib/sorcery/test_helpers/sinatra.rb",
     "sorcery.gemspec",
