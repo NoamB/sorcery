@@ -3,14 +3,6 @@ module Sorcery
     module Internal
       module Sinatra
 
-        class MyApp
-          class << self
-            def new
-              return this
-            end
-          end
-        end
-
         class ::Sinatra::Application
           class << self
             attr_accessor :sorcery_vars

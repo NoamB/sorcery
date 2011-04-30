@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 gem "rails", '3.0.3'
 gem 'bcrypt-ruby', :require => 'bcrypt'
-gem "sorcery", '0.4.1', :path => '../../../'
+gem "sorcery", '>= 0.1.0', :path => '../'
 gem 'oauth', ">= 0.4.4"
 gem 'oauth2', ">= 0.1.1"
 group :development do

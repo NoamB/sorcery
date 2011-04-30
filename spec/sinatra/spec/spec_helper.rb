@@ -20,6 +20,7 @@ end
 
 Rspec.configure do |config|
   config.send(:include, RSpecMixinExample)
+  config.send(:include, ::Sorcery::TestHelpers::Sinatra)
   config.send(:include, ::Sorcery::TestHelpers::Internal)
   config.send(:include, ::Sorcery::TestHelpers::Internal::Sinatra)
   config.before(:suite) do
