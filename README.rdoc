@@ -1,5 +1,6 @@
 = sorcery
 Magical Authentication for Rails 3 and Sinatra.
+Supports ActiveRecord and Mongoid.
 
 Inspired by restful_authentication, Authlogic and Devise.
 Crypto code taken almost unchanged from Authlogic.
@@ -193,12 +194,11 @@ External (see lib/sorcery/controller/submodules/external.rb):
 == Next Planned Features:
 
 
-I've got many thoughts which include (unordered):
+I've got some thoughts which include (unordered):
 * Passing a block to encrypt, allowing the developer to define his own mix of salting and encrypting
 * Forgot username, maybe as part of the reset_password module
 * Scoping logins (to a subdomain or another arbitrary field)
 * Allowing storing the salt and crypted password in the same DB field for extra security
-* Mongoid support
 * Other reset password strategies (security questions?)
 * Other brute force protection strategies (captcha)
 
