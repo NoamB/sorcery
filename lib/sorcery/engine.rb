@@ -9,6 +9,14 @@ module Sorcery
     
     initializer "extend Model with sorcery" do |app|
       ActiveRecord::Base.send(:include, Sorcery::Model) if defined?(ActiveRecord)
+      Mongoid::Document.module_eval do
+        included do
+          attr_reader :new_record
+          include Sorcery::Model::Adapters::Mongoid
+          include Sorcery::Model
+        end
+      end if defined?(Mongoid)
+          
     end
     
     initializer "extend Controller with sorcery" do |app|

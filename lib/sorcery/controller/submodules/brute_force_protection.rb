@@ -19,7 +19,7 @@ module Sorcery
           # Increments the failed logins counter on every failed login.
           # Runs as a hook after a failed login.
           def update_failed_logins_count!(credentials)
-            user = Config.user_class.where("#{Config.user_class.sorcery_config.username_attribute_name} = ?", credentials[0]).first
+            user = Config.user_class.find_by_credentials(credentials)
             user.register_failed_login! if user
           end
           

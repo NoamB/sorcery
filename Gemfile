@@ -6,6 +6,9 @@ gem "rails", ">= 3.0.0"
 gem 'json', ">= 1.5.1"
 gem 'oauth', ">= 0.4.4"
 gem 'oauth2', ">= 0.1.1"
+gem "mongoid", "~> 2.0"
+gem "bson_ext", "~> 1.3"
+
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do

@@ -13,14 +13,14 @@ module Sorcery
             attr_writer :stretches
 
             def encrypt(*tokens)
-              digest = tokens.flatten.join(join_token)
+              digest = tokens.flatten.compact.join(join_token)
               stretches.times { digest = secure_digest(digest) }
               digest
             end
 
             # Does the crypted password match the tokens? Uses the same tokens that were used to encrypt.
             def matches?(crypted, *tokens)
-              encrypt(*tokens) == crypted
+              encrypt(*tokens.compact) == crypted
             end
 
             def reset!

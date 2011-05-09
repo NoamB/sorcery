@@ -2,6 +2,10 @@ module Sorcery
   autoload :Model, 'sorcery/model'
   module Model
     autoload :TemporaryToken, 'sorcery/model/temporary_token'
+    module Adapters
+      autoload :ActiveRecord, 'sorcery/model/adapters/active_record'
+      autoload :Mongoid, 'sorcery/model/adapters/mongoid'
+    end
     module Submodules
       autoload :UserActivation, 'sorcery/model/submodules/user_activation'
       autoload :ResetPassword, 'sorcery/model/submodules/reset_password'
@@ -59,4 +63,7 @@ module Sorcery
   
   require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
   require 'sorcery/sinatra' if defined?(Sinatra)
+
+  ActiveRecord::Base.send(:include, ::Sorcery::Model::Adapters::ActiveRecord) if defined?(ActiveRecord)
+
 end

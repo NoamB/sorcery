@@ -10,7 +10,7 @@ module Sorcery
       module ClassMethods
         def load_from_token(token, token_attr_name, token_expiration_date_attr)
           return nil if token.blank?
-          user = where("#{token_attr_name} = ?", token).first
+          user = find_by_token(token_attr_name,token)
           if !user.blank? && !user.send(token_expiration_date_attr).nil?
             return Time.now.utc < user.send(token_expiration_date_attr) ? user : nil
           end
