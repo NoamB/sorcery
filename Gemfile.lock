@@ -137,6 +137,7 @@ DEPENDENCIES
   oauth (>= 0.4.4)
   oauth2 (>= 0.1.1)
   rails (>= 3.0.0)
+  rake
   rspec (~> 2.5.0)
   rspec-rails (~> 2.5.0)
   ruby-debug19

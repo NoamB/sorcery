@@ -15,11 +15,12 @@ module Sorcery
 
         module ClassMethods
           def find_by_credentials(credentials)
-            where(@sorcery_config.username_attribute_name => credentials[0]).first
+            where(sorcery_config.username_attribute_name => credentials[0]).first
           end
 
           def find_by_provider_and_uid(provider, uid)
-            where(:provider => provider, :uid => uid).first
+            user_klass = ::Sorcery::Controller::Config.user_class
+            where(user_klass.sorcery_config.provider_attribute_name => provider, user_klass.sorcery_config.provider_uid_attribute_name => uid).first
           end
 
           def find_by_id(id)
@@ -27,15 +28,15 @@ module Sorcery
           end
 
           def find_by_activation_token(token)
-            where(:activation_token => token).first
+            where(sorcery_config.activation_token_attribute_name => token).first
           end
 
           def find_by_remember_me_token(token)
-            where(:remember_me_token => token).first
+            where(sorcery_config.remember_me_token_attribute_name => token).first
           end
 
           def find_by_username(username)
-            where(:username => username).first
+            where(sorcery_config.username_attribute_name => username).first
           end
 
           def transaction(&blk)
@@ -44,6 +45,10 @@ module Sorcery
 
           def find_by_token(token_attr_name, token)
             where(token_attr_name => token).first
+          end
+
+          def find_by_email(email)
+            where(sorcery_config.email_attribute_name => email).first
           end
 
           def get_current_users
