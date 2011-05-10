@@ -323,5 +323,4 @@ describe "User with no submodules (core)" do
       @user.external?.should be_true
     end
   end
-
 end

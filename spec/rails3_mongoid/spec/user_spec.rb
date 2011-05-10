@@ -315,4 +315,15 @@ describe "User with no submodules (core)" do
     end
   end
 
+  describe User, "when inherited" do
+    it "should inherit mongoid fields" do
+      User.class_eval do
+        field :blabla
+      end
+      class SubUser < User
+      end
+
+      SubUser.fields.should include("blabla")
+    end
+  end
 end

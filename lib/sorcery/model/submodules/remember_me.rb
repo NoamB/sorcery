@@ -22,12 +22,21 @@ module Sorcery
           
           base.send(:include, InstanceMethods)
 
-          base.class_eval do
+          base.sorcery_config.after_config << :define_remember_me_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
+
+          base.extend(ClassMethods)
+        end
+
+        module ClassMethods
+          protected
+
+          def define_remember_me_mongoid_fields
             field sorcery_config.remember_me_token_attribute_name, type: String
             field sorcery_config.remember_me_token_expires_at_attribute_name, type: DateTime
-          end if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
+          end
+
         end
-        
+
         module InstanceMethods
           # You shouldn't really use this one yourself - it's called by the controller's 'remember_me!' method.
           def remember_me!

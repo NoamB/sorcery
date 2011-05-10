@@ -34,16 +34,12 @@ module Sorcery
           end
           
           base.sorcery_config.after_config << :validate_mailer_defined
-          
+          base.sorcery_config.after_config << :define_reset_password_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
+
           base.extend(ClassMethods)
           base.send(:include, TemporaryToken)
           base.send(:include, InstanceMethods)
 
-          base.class_eval do
-            field sorcery_config.reset_password_token_attribute_name, type: String
-            field sorcery_config.reset_password_token_expires_at_attribute_name, type: DateTime
-            field sorcery_config.reset_password_email_sent_at_attribute_name, type: DateTime
-          end if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
         end
         
         module ClassMethods
@@ -63,6 +59,11 @@ module Sorcery
             raise ArgumentError, msg if @sorcery_config.reset_password_mailer == nil
           end
 
+          def define_reset_password_mongoid_fields
+            field sorcery_config.reset_password_token_attribute_name, type: String
+            field sorcery_config.reset_password_token_expires_at_attribute_name, type: DateTime
+            field sorcery_config.reset_password_email_sent_at_attribute_name, type: DateTime
+          end
         end
         
         module InstanceMethods

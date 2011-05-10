@@ -25,11 +25,7 @@ module Sorcery
             reset!
           end
 
-          base.class_eval do
-            field sorcery_config.last_login_at_attribute_name, type: DateTime
-            field sorcery_config.last_logout_at_attribute_name, type: DateTime
-            field sorcery_config.last_activity_at_attribute_name, type: DateTime
-          end if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
+          base.sorcery_config.after_config << :define_activity_logging_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
         end
         
         module ClassMethods
@@ -37,6 +33,14 @@ module Sorcery
           def current_users
             config = sorcery_config
             get_current_users
+          end
+
+          protected
+
+          def define_activity_logging_mongoid_fields
+            field sorcery_config.last_login_at_attribute_name, type: DateTime
+            field sorcery_config.last_logout_at_attribute_name, type: DateTime
+            field sorcery_config.last_activity_at_attribute_name, type: DateTime
           end
         end
       end

@@ -38,18 +38,14 @@ module Sorcery
           end
           
           base.sorcery_config.after_config << :validate_mailer_defined
-          
+          base.sorcery_config.after_config << :define_user_activation_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
           base.sorcery_config.before_authenticate << :prevent_non_active_login
           
           base.extend(ClassMethods)
           base.send(:include, TemporaryToken)
           base.send(:include, InstanceMethods)
 
-          base.class_eval do
-            field sorcery_config.activation_state_attribute_name, type: String
-            field sorcery_config.activation_token_attribute_name, type: String
-            field sorcery_config.activation_token_expires_at_attribute_name, type: DateTime
-          end if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
+
         end
         
         module ClassMethods
@@ -67,6 +63,14 @@ module Sorcery
           def validate_mailer_defined
             msg = "To use user_activation submodule, you must define a mailer (config.user_activation_mailer = YourMailerClass)."
             raise ArgumentError, msg if @sorcery_config.user_activation_mailer == nil
+          end
+
+          def define_user_activation_mongoid_fields
+            self.class_eval do
+              field sorcery_config.activation_state_attribute_name, type: String
+              field sorcery_config.activation_token_attribute_name, type: String
+              field sorcery_config.activation_token_expires_at_attribute_name, type: DateTime
+            end
           end
         end
         
