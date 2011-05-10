@@ -38,6 +38,12 @@ module Sorcery
           base.extend(ClassMethods)
           base.send(:include, TemporaryToken)
           base.send(:include, InstanceMethods)
+
+          base.class_eval do
+            field sorcery_config.reset_password_token_attribute_name, type: String
+            field sorcery_config.reset_password_token_expires_at_attribute_name, type: DateTime
+            field sorcery_config.reset_password_email_sent_at_attribute_name, type: DateTime
+          end if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
         end
         
         module ClassMethods
@@ -75,9 +81,9 @@ module Sorcery
           end
           
           # Clears token and tries to update the new password for the user.
-          def reset_password!(params)
+          def change_password!(new_password)
             clear_reset_password_token
-            update_attributes(params)
+            update_attributes(sorcery_config.password_attribute_name => new_password)
           end
 
           protected

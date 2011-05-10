@@ -60,10 +60,24 @@ module Sorcery
 
   end
 
-  
+  if defined?(ActiveRecord)
+    ActiveRecord::Base.send(:include, Sorcery::Model)
+    ActiveRecord::Base.send(:include, ::Sorcery::Model::Adapters::ActiveRecord)
+  end
+
+  if defined?(Mongoid)
+    Mongoid::Document.module_eval do
+      included do
+        attr_reader :new_record
+        include Sorcery::Model::Adapters::Mongoid
+        include Sorcery::Model
+      end
+    end
+  end
+
   require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
   require 'sorcery/sinatra' if defined?(Sinatra)
 
-  ActiveRecord::Base.send(:include, ::Sorcery::Model::Adapters::ActiveRecord) if defined?(ActiveRecord)
+
 
 end

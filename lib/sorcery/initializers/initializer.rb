@@ -45,6 +45,7 @@ Rails.application.config.sorcery.configure do |config|
     # user.encryption_key = nil                                                       # encryption key used to encrypt reversible encryptions such as AES256.
     # user.custom_encryption_provider = nil                                           # use an external encryption class.
     # user.encryption_algorithm = :bcrypt                                             # encryption algorithm name. See 'encryption_algorithm=' for available options.
+    # user.subclasses_inherit_config = false                                          # make this configuration inheritable for subclasses. Useful for ActiveRecord's STI.
                                                                                       
     # -- user_activation --                                                           
     # user.activation_state_attribute_name = :activation_state                        # the attribute name to hold activation state (active/pending).

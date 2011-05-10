@@ -23,6 +23,11 @@ module Sorcery
           base.sorcery_config.before_authenticate << :prevent_locked_user_login
           base.extend(ClassMethods)
           base.send(:include, InstanceMethods)
+
+          base.class_eval do
+            field sorcery_config.failed_logins_count_attribute_name, type: Integer
+            field sorcery_config.lock_expires_at_attribute_name, type: DateTime
+          end if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
         end
         
         module ClassMethods

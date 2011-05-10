@@ -26,10 +26,18 @@ module Sorcery
                 end
               end
             end
-            
+
             # This runs the options block set in the initializer on the model class.
             ::Sorcery::Controller::Config.user_config.tap{|blk| blk.call(@sorcery_config) if blk}
-            
+
+            self.class_eval do
+              field sorcery_config.username_attribute_name, type: String
+              field sorcery_config.password_attribute_name, type: String
+              field sorcery_config.email_attribute_name, type: String unless sorcery_config.username_attribute_name == sorcery_config.email_attribute_name
+              field sorcery_config.crypted_password_attribute_name, type: String
+              field sorcery_config.salt_attribute_name, type: String
+            end if defined?(Mongoid) and self.ancestors.include?(Mongoid::Document)
+
             # add virtual password accessor and ORM callbacks
             self.class_eval do
               attr_accessor @sorcery_config.password_attribute_name

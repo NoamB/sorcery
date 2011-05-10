@@ -27,7 +27,7 @@ describe "User with reset_password submodule" do
       
       specify { @user.should respond_to(:deliver_reset_password_instructions!) }
       
-      specify { @user.should respond_to(:reset_password!) }
+      specify { @user.should respond_to(:change_password!) }
 
       it "should respond to .load_from_reset_password_token" do
         User.should respond_to(:load_from_reset_password_token)
@@ -146,7 +146,7 @@ describe "User with reset_password submodule" do
       create_new_user
       @user.deliver_reset_password_instructions!
       @user.reset_password_token.should_not be_nil
-      @user.reset_password!(:password => "blabulsdf")
+      @user.change_password!("blabulsdf")
       @user.save!
       @user.reset_password_token.should be_nil
     end

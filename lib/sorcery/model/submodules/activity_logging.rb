@@ -9,6 +9,7 @@ module Sorcery
       module ActivityLogging
         def self.included(base)
           base.extend(ClassMethods)
+
           base.sorcery_config.class_eval do
             attr_accessor :last_login_at_attribute_name,                  # last login attribute name.
                           :last_logout_at_attribute_name,                 # last logout attribute name.
@@ -23,6 +24,12 @@ module Sorcery
                              :@activity_timeout                            => 10 * 60)
             reset!
           end
+
+          base.class_eval do
+            field sorcery_config.last_login_at_attribute_name, type: DateTime
+            field sorcery_config.last_logout_at_attribute_name, type: DateTime
+            field sorcery_config.last_activity_at_attribute_name, type: DateTime
+          end if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
         end
         
         module ClassMethods

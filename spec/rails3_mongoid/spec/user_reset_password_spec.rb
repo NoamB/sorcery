@@ -139,7 +139,7 @@ describe "User with reset_password submodule" do
       create_new_user
       @user.deliver_reset_password_instructions!
       @user.reset_password_token.should_not be_nil
-      @user.reset_password!(:password => "blabulsdf")
+      @user.change_password!("blabulsdf")
       @user.save!
       @user.reset_password_token.should be_nil
     end

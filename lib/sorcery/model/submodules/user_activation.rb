@@ -44,6 +44,12 @@ module Sorcery
           base.extend(ClassMethods)
           base.send(:include, TemporaryToken)
           base.send(:include, InstanceMethods)
+
+          base.class_eval do
+            field sorcery_config.activation_state_attribute_name, type: String
+            field sorcery_config.activation_token_attribute_name, type: String
+            field sorcery_config.activation_token_expires_at_attribute_name, type: DateTime
+          end if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
         end
         
         module ClassMethods
