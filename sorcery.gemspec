@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = %q{2011-04-30}
+  s.date = %q{2011-05-10}
   s.description = %q{Provides common authentication needs such as signing in/out, activating by email and resetting password.}
   s.email = %q{nbenari@gmail.com}
   s.extra_rdoc_files = [
@@ -56,6 +56,8 @@ Gem::Specification.new do |s|
     "lib/sorcery/engine.rb",
     "lib/sorcery/initializers/initializer.rb",
     "lib/sorcery/model.rb",
+    "lib/sorcery/model/adapters/active_record.rb",
+    "lib/sorcery/model/adapters/mongoid.rb",
     "lib/sorcery/model/submodules/activity_logging.rb",
     "lib/sorcery/model/submodules/brute_force_protection.rb",
     "lib/sorcery/model/submodules/external.rb",
@@ -154,6 +156,67 @@ Gem::Specification.new do |s|
     "spec/rails3/spec/user_reset_password_spec.rb",
     "spec/rails3/spec/user_spec.rb",
     "spec/rails3/vendor/plugins/.gitkeep",
+    "spec/rails3_mongoid/.gitignore",
+    "spec/rails3_mongoid/.rspec",
+    "spec/rails3_mongoid/Gemfile",
+    "spec/rails3_mongoid/Gemfile.lock",
+    "spec/rails3_mongoid/Rakefile",
+    "spec/rails3_mongoid/app/controllers/application_controller.rb",
+    "spec/rails3_mongoid/app/helpers/application_helper.rb",
+    "spec/rails3_mongoid/app/mailers/sorcery_mailer.rb",
+    "spec/rails3_mongoid/app/models/authentication.rb",
+    "spec/rails3_mongoid/app/models/user.rb",
+    "spec/rails3_mongoid/app/views/layouts/application.html.erb",
+    "spec/rails3_mongoid/app/views/sorcery_mailer/activation_email.html.erb",
+    "spec/rails3_mongoid/app/views/sorcery_mailer/activation_email.text.erb",
+    "spec/rails3_mongoid/app/views/sorcery_mailer/activation_success_email.html.erb",
+    "spec/rails3_mongoid/app/views/sorcery_mailer/activation_success_email.text.erb",
+    "spec/rails3_mongoid/app/views/sorcery_mailer/reset_password_email.html.erb",
+    "spec/rails3_mongoid/app/views/sorcery_mailer/reset_password_email.text.erb",
+    "spec/rails3_mongoid/config.ru",
+    "spec/rails3_mongoid/config/application.rb",
+    "spec/rails3_mongoid/config/boot.rb",
+    "spec/rails3_mongoid/config/environment.rb",
+    "spec/rails3_mongoid/config/environments/development.rb",
+    "spec/rails3_mongoid/config/environments/in_memory.rb",
+    "spec/rails3_mongoid/config/environments/production.rb",
+    "spec/rails3_mongoid/config/environments/test.rb",
+    "spec/rails3_mongoid/config/initializers/backtrace_silencers.rb",
+    "spec/rails3_mongoid/config/initializers/inflections.rb",
+    "spec/rails3_mongoid/config/initializers/mime_types.rb",
+    "spec/rails3_mongoid/config/initializers/secret_token.rb",
+    "spec/rails3_mongoid/config/initializers/session_store.rb",
+    "spec/rails3_mongoid/config/locales/en.yml",
+    "spec/rails3_mongoid/config/mongoid.yml",
+    "spec/rails3_mongoid/config/routes.rb",
+    "spec/rails3_mongoid/db/schema.rb",
+    "spec/rails3_mongoid/db/seeds.rb",
+    "spec/rails3_mongoid/lib/tasks/.gitkeep",
+    "spec/rails3_mongoid/public/404.html",
+    "spec/rails3_mongoid/public/422.html",
+    "spec/rails3_mongoid/public/500.html",
+    "spec/rails3_mongoid/public/favicon.ico",
+    "spec/rails3_mongoid/public/images/rails.png",
+    "spec/rails3_mongoid/public/javascripts/application.js",
+    "spec/rails3_mongoid/public/javascripts/controls.js",
+    "spec/rails3_mongoid/public/javascripts/dragdrop.js",
+    "spec/rails3_mongoid/public/javascripts/effects.js",
+    "spec/rails3_mongoid/public/javascripts/prototype.js",
+    "spec/rails3_mongoid/public/javascripts/rails.js",
+    "spec/rails3_mongoid/public/robots.txt",
+    "spec/rails3_mongoid/public/stylesheets/.gitkeep",
+    "spec/rails3_mongoid/script/rails",
+    "spec/rails3_mongoid/spec/spec.opts",
+    "spec/rails3_mongoid/spec/spec_helper.orig.rb",
+    "spec/rails3_mongoid/spec/spec_helper.rb",
+    "spec/rails3_mongoid/spec/user_activation_spec.rb",
+    "spec/rails3_mongoid/spec/user_activity_logging_spec.rb",
+    "spec/rails3_mongoid/spec/user_brute_force_protection_spec.rb",
+    "spec/rails3_mongoid/spec/user_oauth_spec.rb",
+    "spec/rails3_mongoid/spec/user_remember_me_spec.rb",
+    "spec/rails3_mongoid/spec/user_reset_password_spec.rb",
+    "spec/rails3_mongoid/spec/user_spec.rb",
+    "spec/rails3_mongoid/vendor/plugins/.gitkeep",
     "spec/sinatra/Gemfile",
     "spec/sinatra/Gemfile.lock",
     "spec/sinatra/Rakefile",
@@ -182,8 +245,7 @@ Gem::Specification.new do |s|
     "spec/sinatra/views/test_login.erb",
     "spec/sorcery_crypto_providers_spec.rb",
     "spec/spec.opts",
-    "spec/spec_helper.rb",
-    "spec/untitled folder"
+    "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://github.com/NoamB/sorcery}
   s.licenses = ["MIT"]
@@ -235,6 +297,35 @@ Gem::Specification.new do |s|
     "spec/rails3/spec/user_remember_me_spec.rb",
     "spec/rails3/spec/user_reset_password_spec.rb",
     "spec/rails3/spec/user_spec.rb",
+    "spec/rails3_mongoid/app/controllers/application_controller.rb",
+    "spec/rails3_mongoid/app/helpers/application_helper.rb",
+    "spec/rails3_mongoid/app/mailers/sorcery_mailer.rb",
+    "spec/rails3_mongoid/app/models/authentication.rb",
+    "spec/rails3_mongoid/app/models/user.rb",
+    "spec/rails3_mongoid/config/application.rb",
+    "spec/rails3_mongoid/config/boot.rb",
+    "spec/rails3_mongoid/config/environment.rb",
+    "spec/rails3_mongoid/config/environments/development.rb",
+    "spec/rails3_mongoid/config/environments/in_memory.rb",
+    "spec/rails3_mongoid/config/environments/production.rb",
+    "spec/rails3_mongoid/config/environments/test.rb",
+    "spec/rails3_mongoid/config/initializers/backtrace_silencers.rb",
+    "spec/rails3_mongoid/config/initializers/inflections.rb",
+    "spec/rails3_mongoid/config/initializers/mime_types.rb",
+    "spec/rails3_mongoid/config/initializers/secret_token.rb",
+    "spec/rails3_mongoid/config/initializers/session_store.rb",
+    "spec/rails3_mongoid/config/routes.rb",
+    "spec/rails3_mongoid/db/schema.rb",
+    "spec/rails3_mongoid/db/seeds.rb",
+    "spec/rails3_mongoid/spec/spec_helper.orig.rb",
+    "spec/rails3_mongoid/spec/spec_helper.rb",
+    "spec/rails3_mongoid/spec/user_activation_spec.rb",
+    "spec/rails3_mongoid/spec/user_activity_logging_spec.rb",
+    "spec/rails3_mongoid/spec/user_brute_force_protection_spec.rb",
+    "spec/rails3_mongoid/spec/user_oauth_spec.rb",
+    "spec/rails3_mongoid/spec/user_remember_me_spec.rb",
+    "spec/rails3_mongoid/spec/user_reset_password_spec.rb",
+    "spec/rails3_mongoid/spec/user_spec.rb",
     "spec/sinatra/authentication.rb",
     "spec/sinatra/db/migrate/activation/20101224223622_add_activation_to_users.rb",
     "spec/sinatra/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
@@ -264,10 +355,12 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<rails>, [">= 3.0.0"])
-      s.add_runtime_dependency(%q<json>, [">= 1.5.1"])
       s.add_runtime_dependency(%q<oauth>, [">= 0.4.4"])
       s.add_runtime_dependency(%q<oauth2>, [">= 0.1.1"])
+      s.add_development_dependency(%q<rails>, [">= 3.0.0"])
+      s.add_development_dependency(%q<json>, [">= 1.5.1"])
+      s.add_development_dependency(%q<mongoid>, ["~> 2.0"])
+      s.add_development_dependency(%q<bson_ext>, ["~> 1.3"])
       s.add_development_dependency(%q<rspec>, ["~> 2.5.0"])
       s.add_development_dependency(%q<rspec-rails>, ["~> 2.5.0"])
       s.add_development_dependency(%q<ruby-debug19>, [">= 0"])
@@ -281,10 +374,12 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<oauth>, [">= 0.4.4"])
       s.add_runtime_dependency(%q<oauth2>, [">= 0.1.1"])
     else
-      s.add_dependency(%q<rails>, [">= 3.0.0"])
-      s.add_dependency(%q<json>, [">= 1.5.1"])
       s.add_dependency(%q<oauth>, [">= 0.4.4"])
       s.add_dependency(%q<oauth2>, [">= 0.1.1"])
+      s.add_dependency(%q<rails>, [">= 3.0.0"])
+      s.add_dependency(%q<json>, [">= 1.5.1"])
+      s.add_dependency(%q<mongoid>, ["~> 2.0"])
+      s.add_dependency(%q<bson_ext>, ["~> 1.3"])
       s.add_dependency(%q<rspec>, ["~> 2.5.0"])
       s.add_dependency(%q<rspec-rails>, ["~> 2.5.0"])
       s.add_dependency(%q<ruby-debug19>, [">= 0"])
@@ -299,10 +394,12 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<oauth2>, [">= 0.1.1"])
     end
   else
-    s.add_dependency(%q<rails>, [">= 3.0.0"])
-    s.add_dependency(%q<json>, [">= 1.5.1"])
     s.add_dependency(%q<oauth>, [">= 0.4.4"])
     s.add_dependency(%q<oauth2>, [">= 0.1.1"])
+    s.add_dependency(%q<rails>, [">= 3.0.0"])
+    s.add_dependency(%q<json>, [">= 1.5.1"])
+    s.add_dependency(%q<mongoid>, ["~> 2.0"])
+    s.add_dependency(%q<bson_ext>, ["~> 1.3"])
     s.add_dependency(%q<rspec>, ["~> 2.5.0"])
     s.add_dependency(%q<rspec-rails>, ["~> 2.5.0"])
     s.add_dependency(%q<ruby-debug19>, [">= 0"])
