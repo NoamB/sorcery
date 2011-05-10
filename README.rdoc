@@ -67,7 +67,7 @@ Below is a summary of the library methods. Most method names are self explaining
   # reset password
   User.load_from_reset_password_token(token)
   @user.deliver_reset_password_instructions!
-  @user.reset_password!(params)
+  @user.change_password!(new_password)
 
   # user activation
   User.load_from_activation_token(token)
