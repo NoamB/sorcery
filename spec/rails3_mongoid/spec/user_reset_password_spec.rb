@@ -20,7 +20,7 @@ describe "User with reset_password submodule" do
       
       specify { @user.should respond_to(:deliver_reset_password_instructions!) }
       
-      specify { @user.should respond_to(:reset_password!) }
+      specify { @user.should respond_to(:change_password!) }
 
       it "should respond to .load_from_reset_password_token" do
         User.should respond_to(:load_from_reset_password_token)
@@ -135,7 +135,7 @@ describe "User with reset_password submodule" do
       ActionMailer::Base.deliveries.size.should == old_size + 1
     end
 
-    it "when reset_password! is called, should delete reset_password_token" do
+    it "when change_password! is called, should delete reset_password_token" do
       create_new_user
       @user.deliver_reset_password_instructions!
       @user.reset_password_token.should_not be_nil
@@ -164,11 +164,19 @@ describe "User with reset_password submodule" do
       @user.deliver_reset_password_instructions!
       ActionMailer::Base.deliveries.size.should == old_size + 2
     end
-    
+
+    it "should encrypt properly on reset" do
+      create_new_user
+      @user.deliver_reset_password_instructions!
+      @user.change_password!("blagu")
+      Sorcery::CryptoProviders::BCrypt.matches?(@user.crypted_password,"blagu",@user.salt).should be_true
+    end
+
     it "if mailer is nil on activation, throw exception!" do
       expect{sorcery_reload!([:reset_password])}.to raise_error(ArgumentError)
     end
-    
+
+
   end
   
 end

@@ -32,11 +32,12 @@ module Sorcery
 
             reset!
           end
-          
+
+          base.extend(ClassMethods)
+
           base.sorcery_config.after_config << :validate_mailer_defined
           base.sorcery_config.after_config << :define_reset_password_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
 
-          base.extend(ClassMethods)
           base.send(:include, TemporaryToken)
           base.send(:include, InstanceMethods)
 
@@ -84,7 +85,8 @@ module Sorcery
           # Clears token and tries to update the new password for the user.
           def change_password!(new_password)
             clear_reset_password_token
-            update_attributes(sorcery_config.password_attribute_name => new_password)
+            self.send(:"#{sorcery_config.password_attribute_name}=", new_password)
+            save
           end
 
           protected

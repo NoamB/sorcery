@@ -32,7 +32,7 @@ module Sorcery
 
             self.class_eval do
               field sorcery_config.username_attribute_name, type: String
-              field sorcery_config.password_attribute_name, type: String
+              #field sorcery_config.password_attribute_name, type: String
               field sorcery_config.email_attribute_name, type: String unless sorcery_config.username_attribute_name == sorcery_config.email_attribute_name
               field sorcery_config.crypted_password_attribute_name, type: String
               field sorcery_config.salt_attribute_name, type: String
@@ -122,7 +122,7 @@ module Sorcery
       # encrypts password with salt and saves it.
       def encrypt_password
         config = sorcery_config
-        new_salt = self.send(:"#{config.salt_attribute_name}=", generate_random_token) if !config.salt_attribute_name.nil?
+        self.send(:"#{config.salt_attribute_name}=", new_salt = generate_random_token) if !config.salt_attribute_name.nil?
         self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name),new_salt))
       end
 

@@ -142,7 +142,7 @@ describe "User with reset_password submodule" do
       ActionMailer::Base.deliveries.size.should == old_size + 1
     end
 
-    it "when reset_password! is called, should delete reset_password_token" do
+    it "when change_password! is called, should delete reset_password_token" do
       create_new_user
       @user.deliver_reset_password_instructions!
       @user.reset_password_token.should_not be_nil
