@@ -9,8 +9,7 @@ Rails.application.config.sorcery.configure do |config|
   # config.not_authenticated_action = :not_authenticated              # what controller action to call for non-authenticated users. You can also override 'not_authenticated' instead.
   # config.save_return_to_url = true                                  # when a non logged in user tries to enter a page that requires login, save the URL he wanted to reach, 
                                                                       # and send him there after login, using 'redirect_back_or_to'.
-  # subclasses_inherit_config = false                                 # make this configuration inheritable for subclasses. Useful for ActiveRecord's STI.
-                                                                      
+
   # -- session timeout --                                             
   # config.session_timeout = 3600                                     # how long in seconds to keep the session alive.
   # config.session_timeout_from_last_action = false                   # use the last action as the beginning of session timeout.
@@ -84,4 +83,7 @@ Rails.application.config.sorcery.configure do |config|
     # user.provider_attribute_name = :provider                                        # provider's identifier in authentications class.
     # user.provider_uid_attribute_name = :uid                                         # user's external unique identifier in authentications class.
   end
+
+  # This line must come after the 'user config' block.
+  config.user_class_name = User                                                       # define which model authenticates with sorcery.
 end

@@ -12,13 +12,6 @@ module Sorcery
       ActionController::Base.helper_method :current_user
     end
     
-    initializer "attempt to preload user model" do |app|
-      begin
-        require Rails.root + "app/models/user.rb"
-      rescue LoadError
-      end
-    end
-    
     rake_tasks do
       load "sorcery/railties/tasks.rake"
     end

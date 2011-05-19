@@ -14,9 +14,7 @@ module Sorcery
             self.class_eval do
               extend ClassMethods # included here, before submodules, so they can be overriden by them.
               include InstanceMethods
-              
-              # set the user_class for the controller methods which call it
-              ::Sorcery::Controller::Config.user_class = self
+
               @sorcery_config.submodules = ::Sorcery::Controller::Config.submodules
               @sorcery_config.submodules.each do |mod|
                 begin
@@ -30,6 +28,7 @@ module Sorcery
             # This runs the options block set in the initializer on the model class.
             ::Sorcery::Controller::Config.user_config.tap{|blk| blk.call(@sorcery_config) if blk}
 
+            # Mongoid support
             self.class_eval do
               field sorcery_config.username_attribute_name, type: String
               #field sorcery_config.password_attribute_name, type: String
