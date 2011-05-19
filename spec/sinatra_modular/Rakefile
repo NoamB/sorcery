@@ -6,6 +6,6 @@ task :default => :spec
 
 desc "Run all specs"
 RSpec::Core::RakeTask.new(:spec) do |t|
-  t.pattern = 'spec/*_spec.rb'
-  t.rspec_opts = ["--options #{File.dirname(__FILE__)}/spec/spec.opts"]
+  t.pattern = 'spec_modular/*_spec.rb'
+  t.rspec_opts = ["--options #{File.dirname(__FILE__)}/spec_modular/spec.opts"]
 end

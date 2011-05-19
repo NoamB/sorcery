@@ -2,7 +2,7 @@ PATH
   remote: ../../../
   specs:
     oauth (0.4.4)
-    sorcery (0.5.0)
+    sorcery (0.5.1)
       bcrypt-ruby (~> 2.1.4)
       oauth (>= 0.4.4)
       oauth (>= 0.4.4)

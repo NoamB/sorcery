@@ -21,7 +21,7 @@ module Sorcery
         end
         
         module InstanceMethods
-          
+
           protected
           
           # to be used as a before_filter.

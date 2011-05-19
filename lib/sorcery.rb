@@ -56,28 +56,26 @@ module Sorcery
     module Internal
       autoload :Rails, 'sorcery/test_helpers/internal/rails'
       autoload :Sinatra, 'sorcery/test_helpers/internal/sinatra'
+      autoload :SinatraModular, 'sorcery/test_helpers/internal/sinatra_modular'
     end
 
   end
 
   if defined?(ActiveRecord)
     ActiveRecord::Base.send(:include, Sorcery::Model)
-    ActiveRecord::Base.send(:include, ::Sorcery::Model::Adapters::ActiveRecord)
+    ActiveRecord::Base.send(:include, Sorcery::Model::Adapters::ActiveRecord)
   end
 
   if defined?(Mongoid)
     Mongoid::Document.module_eval do
       included do
         attr_reader :new_record
-        include Sorcery::Model::Adapters::Mongoid
         include Sorcery::Model
+        include Sorcery::Model::Adapters::Mongoid
       end
     end
   end
 
   require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
   require 'sorcery/sinatra' if defined?(Sinatra)
-
-
-
 end
