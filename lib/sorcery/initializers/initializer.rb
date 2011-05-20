@@ -85,5 +85,5 @@ Rails.application.config.sorcery.configure do |config|
   end
 
   # This line must come after the 'user config' block.
-  config.user_class_name = User                                                       # define which model authenticates with sorcery.
+  config.user_class = User                                                            # define which model authenticates with sorcery.
 end
