@@ -31,8 +31,8 @@ module Sorcery
           protected
 
           def define_remember_me_mongoid_fields
-            field sorcery_config.remember_me_token_attribute_name, type: String
-            field sorcery_config.remember_me_token_expires_at_attribute_name, type: DateTime
+            field sorcery_config.remember_me_token_attribute_name,            :type => String
+            field sorcery_config.remember_me_token_expires_at_attribute_name, :type => DateTime
           end
 
         end

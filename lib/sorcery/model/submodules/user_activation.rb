@@ -67,9 +67,9 @@ module Sorcery
 
           def define_user_activation_mongoid_fields
             self.class_eval do
-              field sorcery_config.activation_state_attribute_name, type: String
-              field sorcery_config.activation_token_attribute_name, type: String
-              field sorcery_config.activation_token_expires_at_attribute_name, type: DateTime
+              field sorcery_config.activation_state_attribute_name,            :type => String
+              field sorcery_config.activation_token_attribute_name,            :type => String
+              field sorcery_config.activation_token_expires_at_attribute_name, :type => DateTime
             end
           end
         end

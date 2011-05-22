@@ -61,9 +61,9 @@ module Sorcery
           end
 
           def define_reset_password_mongoid_fields
-            field sorcery_config.reset_password_token_attribute_name, type: String
-            field sorcery_config.reset_password_token_expires_at_attribute_name, type: DateTime
-            field sorcery_config.reset_password_email_sent_at_attribute_name, type: DateTime
+            field sorcery_config.reset_password_token_attribute_name,             :type => String
+            field sorcery_config.reset_password_token_expires_at_attribute_name,  :type => DateTime
+            field sorcery_config.reset_password_email_sent_at_attribute_name,     :type => DateTime
           end
         end
         

@@ -30,8 +30,8 @@ module Sorcery
           protected
 
           def define_brute_force_protection_mongoid_fields
-            field sorcery_config.failed_logins_count_attribute_name, type: Integer
-            field sorcery_config.lock_expires_at_attribute_name, type: DateTime
+            field sorcery_config.failed_logins_count_attribute_name,  :type => Integer
+            field sorcery_config.lock_expires_at_attribute_name,      :type => DateTime
           end
         end
         
