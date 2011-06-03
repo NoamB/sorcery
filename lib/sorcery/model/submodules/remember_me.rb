@@ -1,7 +1,8 @@
 module Sorcery
   module Model
     module Submodules
-      # The Remember Me submodule takes care of setting the user's cookie so that he will be automatically logged in to the site on every visit,
+      # The Remember Me submodule takes care of setting the user's cookie so that he will 
+      # be automatically logged in to the site on every visit,
       # until the cookie expires.
       module RememberMe
         def self.included(base)

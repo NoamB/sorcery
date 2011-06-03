@@ -8,14 +8,27 @@ module Sorcery
       module UserActivation
         def self.included(base)
           base.sorcery_config.class_eval do
-            attr_accessor :activation_state_attribute_name,               # the attribute name to hold activation state (active/pending).
-                          :activation_token_attribute_name,               # the attribute name to hold activation code (sent by email).
-                          :activation_token_expires_at_attribute_name,    # the attribute name to hold activation code expiration date. 
-                          :activation_token_expiration_period,            # how many seconds before the activation code expires. nil for never expires.
+            attr_accessor :activation_state_attribute_name,               # the attribute name to hold activation state
+                                                                          # (active/pending).
+                                                                          
+                          :activation_token_attribute_name,               # the attribute name to hold activation code
+                                                                          # (sent by email).
+                                                                          
+                          :activation_token_expires_at_attribute_name,    # the attribute name to hold activation code
+                                                                          # expiration date. 
+                                                                          
+                          :activation_token_expiration_period,            # how many seconds before the activation code
+                                                                          # expires. nil for never expires.
+                                                                          
                           :user_activation_mailer,                        # your mailer class. Required.
-                          :activation_needed_email_method_name,           # activation needed email method on your mailer class.
-                          :activation_success_email_method_name,          # activation success email method on your mailer class.
-                          :prevent_non_active_users_to_login              # do you want to prevent or allow users that did not activate by email to login?
+                          :activation_needed_email_method_name,           # activation needed email method on your
+                                                                          # mailer class.
+                                                                          
+                          :activation_success_email_method_name,          # activation success email method on your
+                                                                          # mailer class.
+                                                                          
+                          :prevent_non_active_users_to_login              # do you want to prevent or allow users that
+                                                                          # did not activate by email to login?
           end
           
           base.sorcery_config.instance_eval do

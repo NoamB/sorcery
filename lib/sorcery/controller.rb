@@ -62,7 +62,8 @@ module Sorcery
         @current_user ||= login_from_session || login_from_other_sources unless @current_user == false
       end
       
-      # used when a user tries to access a page while logged out, is asked to login, and we want to return him back to the page he originally wanted.
+      # used when a user tries to access a page while logged out, is asked to login, 
+      # and we want to return him back to the page he originally wanted.
       def redirect_back_or_to(url, flash_hash = {})
         redirect_to(session[:return_to_url] || url, :flash => flash_hash)
       end
@@ -115,11 +116,12 @@ module Sorcery
       class << self
         attr_accessor :submodules,
         
-                      :user_class,                    # what class to use as the user class. Set automatically when you call authenticates_with_sorcery! in the User class.
+                      :user_class,                    # what class to use as the user class. 
                       
                       :not_authenticated_action,      # what controller action to call for non-authenticated users.
                       
-                      :save_return_to_url,            # when a non logged in user tries to enter a page that requires login, save the URL he wanted to reach, 
+                      :save_return_to_url,            # when a non logged in user tries to enter a page that requires
+                                                      # login, save the URL he wanted to reach, 
                                                       # and send him there after login.
                       
                       :login_sources,

@@ -1,13 +1,16 @@
 module Sorcery
   module Controller
     module Submodules
-      # This submodule keeps track of events such as login, logout, and last activity time, per user.
+      # This submodule keeps track of events such as login, logout, 
+      # and last activity time, per user.
       # It helps in estimating which users are active now in the site.
-      # This cannot be determined absolutely because a user might be reading a page without clicking anything for a while.
-      
-      # This is the controller part of the submodule, which adds hooks to register user events, 
+      # This cannot be determined absolutely because a user might be 
+      # reading a page without clicking anything for a while.
+      # This is the controller part of the submodule, which adds hooks 
+      # to register user events, 
       # and methods to collect active users data for use in the app.
-      # see Socery::Model::Submodules::ActivityLogging for configuration options.
+      # see Socery::Model::Submodules::ActivityLogging for configuration
+      # options.
       module ActivityLogging
         def self.included(base)
           base.send(:include, InstanceMethods)
@@ -21,7 +24,8 @@ module Sorcery
           def current_users
             Config.user_class.current_users
             # A possible patch here:
-            # we'll add the current_user to the users list if he's not in it (can happen when he was inactive for more than activity timeout):
+            # we'll add the current_user to the users list if he's not in it
+            # (can happen when he was inactive for more than activity timeout):
             #
             #   users.unshift!(current_user) if logged_in? && users.find {|u| u.id == current_user.id}.nil?
             #

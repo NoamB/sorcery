@@ -1,7 +1,8 @@
 module Sorcery
   module Controller
     module Submodules
-      # The Remember Me submodule takes care of setting the user's cookie so that he will be automatically logged in to the site on every visit,
+      # The Remember Me submodule takes care of setting the user's cookie so that he will 
+      # be automatically logged in to the site on every visit,
       # until the cookie expires.
       # See Sorcery::Model::Submodules::RememberMe for configuration options.
       module RememberMe
@@ -16,7 +17,7 @@ module Sorcery
           # This method sets the cookie and calls the user to save the token and the expiration to db.
           def remember_me!
             current_user.remember_me!
-            cookies[:remember_me_token] = { :value => current_user.remember_me_token, :expires => current_user.remember_me_token_expires_at }        
+            set_remember_me_cookie!(current_user)      
           end
 
           # Clears the cookie and clears the token from the db.
@@ -33,16 +34,24 @@ module Sorcery
             remember_me! if credentials.size == 3 && credentials[2]
           end
           
-          # Checks the cookie for a remember me token, tried to find a user with that token and logs the user in if found.
+          # Checks the cookie for a remember me token, tried to find a user with that token 
+          # and logs the user in if found.
           # Runs as a login source. See 'current_user' method for how it is used.
           def login_from_cookie
             user = cookies[:remember_me_token] && Config.user_class.find_by_remember_me_token(cookies[:remember_me_token])
             if user && user.remember_me_token?
-              cookies[:remember_me_token] = { :value => user.remember_me_token, :expires => user.remember_me_token_expires_at }
+              set_remember_me_cookie!(user)
               @current_user = user
             else
               @current_user = false
             end
+          end
+          
+          def set_remember_me_cookie!(user)
+            cookies[:remember_me_token] = { 
+              :value => user.remember_me_token, 
+              :expires => user.remember_me_token_expires_at 
+            }
           end
         end
 

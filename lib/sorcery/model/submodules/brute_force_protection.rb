@@ -1,15 +1,19 @@
 module Sorcery
   module Model
     module Submodules
-      # This module helps protect user accounts by locking them down after too many failed attemps to login were detected.
-      # This is the model part of the submodule which provides configuration options and methods for locking and unlocking the user.
+      # This module helps protect user accounts by locking them down after too many failed attemps 
+      # to login were detected.
+      # This is the model part of the submodule which provides configuration options and methods 
+      # for locking and unlocking the user.
       module BruteForceProtection
         def self.included(base)
           base.sorcery_config.class_eval do
             attr_accessor :failed_logins_count_attribute_name,        # failed logins attribute name.
-                          :lock_expires_at_attribute_name,            # this field indicates whether user is banned and when it will be active again.
+                          :lock_expires_at_attribute_name,            # this field indicates whether user 
+                                                                      # is banned and when it will be active again.
                           :consecutive_login_retries_amount_limit,    # how many failed logins allowed.
-                          :login_lock_time_period                     # how long the user should be banned. in seconds. 0 for permanent.
+                          :login_lock_time_period                     # how long the user should be banned. 
+                                                                      # in seconds. 0 for permanent.
           end
           
           base.sorcery_config.instance_eval do

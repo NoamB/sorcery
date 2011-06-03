@@ -2,8 +2,10 @@ module Sorcery
   module Controller
     module Submodules
       # This submodule integrates HTTP Basic authentication into sorcery.
-      # You are provided with a before filter, require_login_from_http_basic, which requests the browser for authentication.
-      # Then the rest of the submodule takes care of logging the user in into the session, so that the next requests will keep him logged in.
+      # You are provided with a before filter, require_login_from_http_basic, 
+      # which requests the browser for authentication.
+      # Then the rest of the submodule takes care of logging the user in 
+      # into the session, so that the next requests will keep him logged in.
       module HttpBasicAuth
         def self.included(base)
           base.send(:include, InstanceMethods)
@@ -28,9 +30,12 @@ module Sorcery
           # The method sets a session when requesting the user's credentials.
           # This is a trick to overcome the way HTTP authentication works (explained below):
           #
-          # Once the user fills the credentials once, the browser will always send it to the server when visiting the website, until the browser is closed.
-          # This causes wierd behaviour if the user logs out. The session is reset, yet the user is re-logged in by the before_filter calling 'login_from_basic_auth'.
-          # To overcome this, we set a session when requesting the password, which logout will reset, and that's how we know if we need to request for HTTP auth again.
+          # Once the user fills the credentials once, the browser will always send it to the 
+          # server when visiting the website, until the browser is closed.
+          # This causes wierd behaviour if the user logs out. The session is reset, yet the 
+          # user is re-logged in by the before_filter calling 'login_from_basic_auth'.
+          # To overcome this, we set a session when requesting the password, which logout will
+          # reset, and that's how we know if we need to request for HTTP auth again.
           def require_login_from_http_basic
             (request_http_basic_authentication(realm_name_by_controller) and (session[:http_authentication_used] = true) and return) if (request.authorization.nil? || session[:http_authentication_used].nil?)
             require_login

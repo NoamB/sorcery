@@ -2,9 +2,12 @@ require 'bcrypt'
 
 module Sorcery
   module CryptoProviders
-    # For most apps Sha512 is plenty secure, but if you are building an app that stores nuclear launch codes you might want to consier BCrypt. This is an extremely
-    # secure hashing algorithm, mainly because it is slow. A brute force attack on a BCrypt encrypted password would take much longer than a brute force attack on a
-    # password encrypted with a Sha algorithm. Keep in mind you are sacrificing performance by using this, generating a password takes exponentially longer than any
+    # For most apps Sha512 is plenty secure, but if you are building an app that stores nuclear 
+    # launch codes you might want to consier BCrypt. This is an extremely
+    # secure hashing algorithm, mainly because it is slow. 
+    # A brute force attack on a BCrypt encrypted password would take much longer than a brute force attack on a
+    # password encrypted with a Sha algorithm. Keep in mind you are sacrificing performance by using this,
+    # generating a password takes exponentially longer than any
     # of the Sha algorithms. I did some benchmarking to save you some time with your decision:
     #
     #   require "bcrypt"
@@ -37,8 +40,10 @@ module Sorcery
     # You are good to go!
     class BCrypt
       class << self
-        # This is the :cost option for the BCrpyt library. The higher the cost the more secure it is and the longer is take the generate a hash. By default this is 10.
-        # Set this to whatever you want, play around with it to get that perfect balance between security and performance.
+        # This is the :cost option for the BCrpyt library. 
+        # The higher the cost the more secure it is and the longer is take the generate a hash. By default this is 10.
+        # Set this to whatever you want, play around with it to get that perfect balance between 
+        # security and performance.
         def cost
           @cost ||= 10
         end
@@ -57,7 +62,8 @@ module Sorcery
           hash == join_tokens(tokens)
         end
         
-        # This method is used as a flag to tell Sorcery to "resave" the password upon a successful login, using the new cost
+        # This method is used as a flag to tell Sorcery to "resave" the password 
+        # upon a successful login, using the new cost
         def cost_matches?(hash)
           hash = new_from_hash(hash)
           if hash.nil? || hash == {}

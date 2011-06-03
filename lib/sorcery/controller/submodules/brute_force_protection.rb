@@ -1,9 +1,12 @@
 module Sorcery
   module Controller
     module Submodules
-      # This module helps protect user accounts by locking them down after too many failed attemps to login were detected.
-      # This is the controller part of the submodule which takes care of updating the failed logins and resetting them.
-      # See Sorcery::Model::Submodules::BruteForceProtection for configuration options.
+      # This module helps protect user accounts by locking them down after too
+      # many failed attemps to login were detected.
+      # This is the controller part of the submodule which takes care of
+      # updating the failed logins and resetting them.
+      # See Sorcery::Model::Submodules::BruteForceProtection for configuration
+      # options.
       module BruteForceProtection
         def self.included(base)
           base.send(:include, InstanceMethods)

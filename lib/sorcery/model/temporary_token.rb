@@ -1,7 +1,8 @@
 module Sorcery
   module Model
     # This module encapsulates the logic for temporary token.
-    # A temporary token is created to identify a user in scenarios such as reseting password and activating the user by email.
+    # A temporary token is created to identify a user in scenarios 
+    # such as reseting password and activating the user by email.
     module TemporaryToken
       def self.included(base)
         base.extend(ClassMethods)

@@ -5,7 +5,8 @@ module Sorcery
       # When the user requests an email is sent to him with a url.
       # The url includes a token, which is also saved with the user's record in the db.
       # The token has configurable expiration.
-      # When the user clicks the url in the email, providing the token has not yet expired, he will be able to reset his password via a form.
+      # When the user clicks the url in the email, providing the token has not yet expired,
+      # he will be able to reset his password via a form.
       #
       # When using this submodule, supplying a mailer is mandatory.
       module ResetPassword       
@@ -13,11 +14,18 @@ module Sorcery
           base.sorcery_config.class_eval do
             attr_accessor :reset_password_token_attribute_name,              # reset password code attribute name.
                           :reset_password_token_expires_at_attribute_name,   # expires at attribute name.
-                          :reset_password_email_sent_at_attribute_name,      # when was email sent, used for hammering protection.
+                          :reset_password_email_sent_at_attribute_name,      # when was email sent, used for hammering
+                                                                             # protection.
+                                                                             
                           :reset_password_mailer,                            # mailer class. Needed.
-                          :reset_password_email_method_name,                 # reset password email method on your mailer class.
-                          :reset_password_expiration_period,                 # how many seconds before the reset request expires. nil for never expires.
-                          :reset_password_time_between_emails                # hammering protection, how long to wait before allowing another email to be sent.
+                          :reset_password_email_method_name,                 # reset password email method on your
+                                                                             # mailer class.
+                                                                             
+                          :reset_password_expiration_period,                 # how many seconds before the reset request
+                                                                             # expires. nil for never expires.
+                                                                             
+                          :reset_password_time_between_emails                # hammering protection, how long to wait
+                                                                             # before allowing another email to be sent.
 
           end
           
