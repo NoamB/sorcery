@@ -11,7 +11,7 @@ module Sorcery
             where("#{@sorcery_config.username_attribute_name} = ?", credentials[0]).first
           end
 
-          def find_by_token(token_attr_name, token)
+          def find_by_sorcery_token(token_attr_name, token)
             where("#{token_attr_name} = ?", token).first
           end
 
