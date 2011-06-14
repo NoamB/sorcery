@@ -11,7 +11,7 @@ module Sorcery
       module ClassMethods
         def load_from_token(token, token_attr_name, token_expiration_date_attr)
           return nil if token.blank?
-          user = find_by_token(token_attr_name,token)
+          user = find_by_sorcery_token(token_attr_name,token)
           if !user.blank? && !user.send(token_expiration_date_attr).nil?
             return Time.now.utc < user.send(token_expiration_date_attr) ? user : nil
           end
