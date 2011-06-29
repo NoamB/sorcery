@@ -49,8 +49,8 @@ module Sorcery
           
           def set_remember_me_cookie!(user)
             cookies[:remember_me_token] = { 
-              :value => user.remember_me_token, 
-              :expires => user.remember_me_token_expires_at 
+              :value => user.send(user.sorcery_config.remember_me_token_attribute_name), 
+              :expires => user.send(user.sorcery_config.remember_me_token_expires_at_attribute_name)
             }
           end
         end
