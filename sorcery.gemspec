@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sorcery}
-  s.version = "0.5.21"
+  s.version = "0.5.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = %q{2011-05-20}
+  s.date = %q{2011-07-01}
   s.description = %q{Provides common authentication needs such as signing in/out, activating by email and resetting password.}
   s.email = %q{nbenari@gmail.com}
   s.extra_rdoc_files = [
@@ -218,6 +218,13 @@ Gem::Specification.new do |s|
     "spec/rails3_mongoid/spec/user_reset_password_spec.rb",
     "spec/rails3_mongoid/spec/user_spec.rb",
     "spec/rails3_mongoid/vendor/plugins/.gitkeep",
+    "spec/shared_examples/user_activation_shared_examples.rb",
+    "spec/shared_examples/user_activity_logging_shared_examples.rb",
+    "spec/shared_examples/user_brute_force_protection_shared_examples.rb",
+    "spec/shared_examples/user_oauth_shared_examples.rb",
+    "spec/shared_examples/user_remember_me_shared_examples.rb",
+    "spec/shared_examples/user_reset_password_shared_examples.rb",
+    "spec/shared_examples/user_shared_examples.rb",
     "spec/sinatra/Gemfile",
     "spec/sinatra/Gemfile.lock",
     "spec/sinatra/Rakefile",
@@ -355,6 +362,13 @@ Gem::Specification.new do |s|
     "spec/rails3_mongoid/spec/user_remember_me_spec.rb",
     "spec/rails3_mongoid/spec/user_reset_password_spec.rb",
     "spec/rails3_mongoid/spec/user_spec.rb",
+    "spec/shared_examples/user_activation_shared_examples.rb",
+    "spec/shared_examples/user_activity_logging_shared_examples.rb",
+    "spec/shared_examples/user_brute_force_protection_shared_examples.rb",
+    "spec/shared_examples/user_oauth_shared_examples.rb",
+    "spec/shared_examples/user_remember_me_shared_examples.rb",
+    "spec/shared_examples/user_reset_password_shared_examples.rb",
+    "spec/shared_examples/user_shared_examples.rb",
     "spec/sinatra/authentication.rb",
     "spec/sinatra/db/migrate/activation/20101224223622_add_activation_to_users.rb",
     "spec/sinatra/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
