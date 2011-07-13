@@ -229,8 +229,9 @@ The same cannot be said about upgrading to x.4.0 and above, however.
 Important notes while upgrading:
 
 * If upgrading from <= v0.5.1 to >= v0.5.2 you need to explicitly set your user_class model in the initializer file.
-  # This line must come after the 'user config' block.
-  config.user_class_name = User
+
+    # This line must come after the 'user config' block.
+    config.user_class_name = User
 
 == Contributing to sorcery
 
