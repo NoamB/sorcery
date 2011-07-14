@@ -68,7 +68,12 @@ module Sorcery
             config = Config.user_class.sorcery_config
             attrs = {}
             @provider.user_info_mapping.each do |k,v|
-              (varr = v.split("/")).size > 1 ? attrs.merge!(k => varr.inject(@user_hash[:user_info]) {|hsh,v| hsh[v] }) : attrs.merge!(k => @user_hash[:user_info][v])
+              if (varr = v.split("/")).size > 1
+                attribute_value = varr.inject(@user_hash[:user_info]) {|hsh,v| hsh[v] } rescue nil
+                attribute_value.nil? ? attrs : attrs.merge!(k => attribute_value)
+              else
+                attrs.merge!(k => @user_hash[:user_info][v])
+              end
             end
             Config.user_class.transaction do
               @user = Config.user_class.create!(attrs)
