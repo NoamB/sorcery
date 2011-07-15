@@ -162,7 +162,7 @@ module Sorcery
         end
         
         def user_class
-          @user_class.to_s.constantize
+          self.class.send(:define_method, :user_class, lambda{@user_class.to_s.constantize}).call
         end
         
         def configure(&blk)
