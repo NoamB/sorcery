@@ -161,6 +161,10 @@ module Sorcery
           block_given? ? @user_config = blk : @user_config
         end
         
+        def user_class
+          @user_class.to_s.constantize
+        end
+        
         def configure(&blk)
           @configure_blk = blk
         end
