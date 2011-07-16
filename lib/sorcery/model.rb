@@ -15,7 +15,25 @@ module Sorcery
             self.class_eval do
               extend ClassMethods # included here, before submodules, so they can be overriden by them.
               include InstanceMethods
+            end
+            
+            include_required_submodules!
 
+            # This runs the options block set in the initializer on the model class.
+            ::Sorcery::Controller::Config.user_config.tap{|blk| blk.call(@sorcery_config) if blk}
+            
+            init_mongoid_support! if defined?(Mongoid) and self.ancestors.include?(Mongoid::Document)
+
+            init_orm_hooks!
+            
+            @sorcery_config.after_config << :add_config_inheritance if @sorcery_config.subclasses_inherit_config
+            @sorcery_config.after_config.each { |c| send(c) }
+          end
+          
+          protected
+          
+          def include_required_submodules!
+            self.class_eval do
               @sorcery_config.submodules = ::Sorcery::Controller::Config.submodules
               @sorcery_config.submodules.each do |mod|
                 begin
@@ -26,28 +44,25 @@ module Sorcery
                 end
               end
             end
-
-            # This runs the options block set in the initializer on the model class.
-            ::Sorcery::Controller::Config.user_config.tap{|blk| blk.call(@sorcery_config) if blk}
-
-            # Mongoid support
+          end
+          
+          def init_mongoid_support!
             self.class_eval do
               field sorcery_config.username_attribute_name,         :type => String
               field sorcery_config.email_attribute_name,            :type => String unless sorcery_config.username_attribute_name == sorcery_config.email_attribute_name
               field sorcery_config.crypted_password_attribute_name, :type => String
               field sorcery_config.salt_attribute_name,             :type => String
-            end if defined?(Mongoid) and self.ancestors.include?(Mongoid::Document)
-
-            # add virtual password accessor and ORM callbacks
+            end
+          end
+          
+          # add virtual password accessor and ORM callbacks
+          def init_orm_hooks!
             self.class_eval do
               attr_accessor @sorcery_config.password_attribute_name
               attr_protected @sorcery_config.crypted_password_attribute_name, @sorcery_config.salt_attribute_name
               before_save :encrypt_password, :if => Proc.new { |record| record.send(sorcery_config.password_attribute_name).present? }
               after_save :clear_virtual_password, :if => Proc.new { |record| record.send(sorcery_config.password_attribute_name).present? }
             end
-            
-            @sorcery_config.after_config << :add_config_inheritance if @sorcery_config.subclasses_inherit_config
-            @sorcery_config.after_config.each { |c| send(c) }
           end
         end
       end
