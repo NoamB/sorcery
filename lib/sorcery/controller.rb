@@ -161,6 +161,10 @@ module Sorcery
           block_given? ? @user_config = blk : @user_config
         end
         
+        def user_class
+          self.class.send(:define_method, :user_class, lambda{@user_class.to_s.constantize}).call
+        end
+        
         def configure(&blk)
           @configure_blk = blk
         end
