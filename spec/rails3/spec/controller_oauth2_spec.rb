@@ -82,6 +82,16 @@ describe ApplicationController do
       end.should change(User, :count).by(1)
       User.first.username.should == "Haifa, Israel"
     end
+    
+    it "should not crash on missing nested attributes" do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      sorcery_controller_external_property_set(:facebook, :user_info_mapping, {:username => "name", :created_at => "does/not/exist"})
+      lambda do
+        get :test_create_from_provider, :provider => "facebook"
+      end.should change(User, :count).by(1)
+      User.first.username.should == "Noam Ben Ari"
+      User.first.created_at.should_not be_nil
+    end
   end
   
   describe ApplicationController, "OAuth with User Activation features" do

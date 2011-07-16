@@ -88,6 +88,16 @@ describe ApplicationController do
       end.should change(User, :count).by(1)
       User.first.username.should == "coming soon to sorcery gem: twitter and facebook authentication support."
     end
+    
+    it "should not crash on missing nested attributes" do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      sorcery_controller_external_property_set(:twitter, :user_info_mapping, {:username => "status/text", :created_at => "does/not/exist"})
+      lambda do
+        get :test_create_from_provider, :provider => "twitter"
+      end.should change(User, :count).by(1)
+      User.first.username.should == "coming soon to sorcery gem: twitter and facebook authentication support."
+      User.first.created_at.should_not be_nil
+    end
   end
   
   describe ApplicationController, "using OAuth with User Activation features" do
