@@ -32,6 +32,8 @@ module Sorcery
           
           protected
           
+          # includes required submodules into the model class, 
+          # which usually is called User.
           def include_required_submodules!
             self.class_eval do
               @sorcery_config.submodules = ::Sorcery::Controller::Config.submodules
@@ -46,6 +48,8 @@ module Sorcery
             end
           end
           
+          # defines mongoid fields on the model class,
+          # using 1.8.x hash syntax to perserve compatibility.
           def init_mongoid_support!
             self.class_eval do
               field sorcery_config.username_attribute_name,         :type => String
@@ -55,7 +59,7 @@ module Sorcery
             end
           end
           
-          # add virtual password accessor and ORM callbacks
+          # add virtual password accessor and ORM callbacks.
           def init_orm_hooks!
             self.class_eval do
               attr_accessor @sorcery_config.password_attribute_name
