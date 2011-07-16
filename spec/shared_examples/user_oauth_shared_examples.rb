@@ -27,4 +27,5 @@ shared_examples_for "rails_3_oauth_model" do
     end
     
   end
+  
 end

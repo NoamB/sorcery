@@ -1,4 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../../shared_examples/controller_oauth_shared_examples')
 require 'ostruct'
 
 def stub_all_oauth_requests!
@@ -63,30 +64,8 @@ describe Sinatra::Application do
     end
   end
   
-  describe Sinatra::Application, "'create_from'" do
-    before(:each) do
-      stub_all_oauth_requests!
-      User.delete_all
-      Authentication.delete_all
-    end
-      
-    it "should create a new user" do
-      sorcery_model_property_set(:authentications_class, Authentication)
-      sorcery_controller_external_property_set(:twitter, :user_info_mapping, {:username => "screen_name"})
-      lambda do
-        get :test_create_from_provider, :provider => "twitter"
-      end.should change(User, :count).by(1)
-      User.first.username.should == "nbenari"
-    end
-    
-    it "should support nested attributes" do
-      sorcery_model_property_set(:authentications_class, Authentication)
-      sorcery_controller_external_property_set(:twitter, :user_info_mapping, {:username => "status/text"})
-      lambda do
-        get :test_create_from_provider, :provider => "twitter"
-      end.should change(User, :count).by(1)
-      User.first.username.should == "coming soon to sorcery gem: twitter and facebook authentication support."
-    end
+  describe Sinatra::Application do
+    it_behaves_like "oauth_controller"
   end
   
   describe Sinatra::Application, "OAuth with User Activation features" do
