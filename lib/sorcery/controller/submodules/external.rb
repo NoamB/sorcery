@@ -43,7 +43,7 @@ module Sorcery
             @provider = Config.send(provider)
             @provider.process_callback(params,session)
             @user_hash = @provider.get_user_hash
-            if user = Config.user_class.load_from_provider(provider,@user_hash[:uid])
+            if user = user_class.load_from_provider(provider,@user_hash[:uid])
               reset_session
               login_user(user)
               user
@@ -65,7 +65,7 @@ module Sorcery
             provider = provider.to_sym
             @provider = Config.send(provider)
             @user_hash = @provider.get_user_hash
-            config = Config.user_class.sorcery_config
+            config = user_class.sorcery_config
             attrs = {}
             @provider.user_info_mapping.each do |k,v|
               if (varr = v.split("/")).size > 1
@@ -75,9 +75,9 @@ module Sorcery
                 attrs.merge!(k => @user_hash[:user_info][v])
               end
             end
-            Config.user_class.transaction do
-              @user = Config.user_class.create!(attrs)
-              Config.user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider, config.provider_uid_attribute_name => @user_hash[:uid]})
+            user_class.transaction do
+              @user = user_class.create!(attrs)
+              user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider, config.provider_uid_attribute_name => @user_hash[:uid]})
             end
             @user
           end

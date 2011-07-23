@@ -51,7 +51,7 @@ module Sorcery
           ::Sorcery::Controller::Config.user_class = nil
           ::Sinatra::Base.send(:include, Sorcery::Controller::Adapters::Sinatra)
           ::Sinatra::Base.send(:include, Sorcery::Controller)
-          ::Sorcery::Controller::Config.user_class = User
+          ::Sorcery::Controller::Config.user_class = "User"
 
           ::Sorcery::Controller::Config.user_config do |user|
             options.each do |property, value|

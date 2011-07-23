@@ -29,7 +29,7 @@ module Sorcery
       # Takes credentials and returns a user on successful authentication.
       # Runs hooks after login or failed login.
       def login(*credentials)
-        user = Config.user_class.authenticate(*credentials)
+        user = user_class.authenticate(*credentials)
         if user
           return_to_url = session[:return_to_url]
           reset_session # protect from session fixation attacks
@@ -91,7 +91,7 @@ module Sorcery
       end
       
       def login_from_session
-        @current_user = (Config.user_class.find_by_id(session[:user_id]) if session[:user_id]) || false
+        @current_user = (user_class.find_by_id(session[:user_id]) if session[:user_id]) || false
       end
       
       def after_login!(user, credentials)
@@ -110,14 +110,15 @@ module Sorcery
         Config.after_logout.each {|c| self.send(c)}
       end
       
+      def user_class
+        @user_class ||= Config.user_class.to_s.constantize
+      end
     end
     
     module Config
       class << self
         attr_accessor :submodules,
-        
                       :user_class,                    # what class to use as the user class. 
-                      
                       :not_authenticated_action,      # what controller action to call for non-authenticated users.
                       
                       :save_return_to_url,            # when a non logged in user tries to enter a page that requires
@@ -128,8 +129,8 @@ module Sorcery
                       :after_login,
                       :after_failed_login,
                       :before_logout,
-                      :after_logout                      
-                      
+                      :after_logout             
+        
         def init!
           @defaults = {
             :@user_class                           => nil,

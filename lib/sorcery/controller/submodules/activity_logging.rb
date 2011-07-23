@@ -22,7 +22,7 @@ module Sorcery
         module InstanceMethods
           # Returns an array of the active users.
           def current_users
-            Config.user_class.current_users
+            user_class.current_users
             # A possible patch here:
             # we'll add the current_user to the users list if he's not in it
             # (can happen when he was inactive for more than activity timeout):

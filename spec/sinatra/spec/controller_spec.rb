@@ -14,8 +14,8 @@ describe Sinatra::Application do
     end
     
     it "should enable configuration option 'user_class'" do
-      sorcery_controller_property_set(:user_class, TestUser)
-      Sorcery::Controller::Config.user_class.should equal(TestUser)
+      sorcery_controller_property_set(:user_class, "TestUser")
+      Sorcery::Controller::Config.user_class.should == "TestUser"
     end
     
     it "should enable configuration option 'not_authenticated_action'" do
