@@ -440,7 +440,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<simplecov>, [">= 0.3.8"])
       s.add_development_dependency(%q<timecop>, [">= 0"])
-      s.add_runtime_dependency(%q<bcrypt-ruby>, ["~> 2.1.4"])
+      s.add_runtime_dependency(%q<bcrypt-ruby>, ["~> 3.0.0"])
       s.add_runtime_dependency(%q<oauth>, [">= 0.4.4"])
       s.add_runtime_dependency(%q<oauth2>, [">= 0.1.1"])
     else
@@ -459,7 +459,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_dependency(%q<simplecov>, [">= 0.3.8"])
       s.add_dependency(%q<timecop>, [">= 0"])
-      s.add_dependency(%q<bcrypt-ruby>, ["~> 2.1.4"])
+      s.add_dependency(%q<bcrypt-ruby>, ["~> 3.0.0"])
       s.add_dependency(%q<oauth>, [">= 0.4.4"])
       s.add_dependency(%q<oauth2>, [">= 0.1.1"])
     end
@@ -479,7 +479,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
     s.add_dependency(%q<simplecov>, [">= 0.3.8"])
     s.add_dependency(%q<timecop>, [">= 0"])
-    s.add_dependency(%q<bcrypt-ruby>, ["~> 2.1.4"])
+    s.add_dependency(%q<bcrypt-ruby>, ["~> 3.0.0"])
     s.add_dependency(%q<oauth>, [">= 0.4.4"])
     s.add_dependency(%q<oauth2>, [">= 0.1.1"])
   end
