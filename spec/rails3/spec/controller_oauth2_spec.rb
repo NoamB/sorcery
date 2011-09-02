@@ -4,7 +4,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../shared_examples/contro
 def stub_all_oauth2_requests!
   @client = OAuth2::Client.new("key","secret", :site => "http://myapi.com")
   OAuth2::Client.stub!(:new).and_return(@client)
-  @acc_token = OAuth2::AccessToken.new(@client, "", "asd", nil, {})
+  @acc_token = OAuth2::AccessToken.new(@client, "asd", {})
   @webby = @client.web_server
   OAuth2::Strategy::WebServer.stub!(:new).and_return(@webby)
   @webby.stub!(:get_access_token).and_return(@acc_token)
