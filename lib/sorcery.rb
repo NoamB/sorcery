@@ -32,6 +32,7 @@ module Sorcery
         module Providers
           autoload :Twitter, 'sorcery/controller/submodules/external/providers/twitter'
           autoload :Facebook, 'sorcery/controller/submodules/external/providers/facebook'
+          autoload :Github, 'sorcery/controller/submodules/external/providers/github'
         end
       end
     end
