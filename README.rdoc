@@ -42,6 +42,7 @@ Below is a summary of the library methods. Most method names are self explaining
   # core
   require_login # this is a before filter
   login(username,password,remember_me = false)
+  auto_login(user)# login without credentials
   logout
   logged_in?      # available to view
   current_user    # available to view
@@ -61,6 +62,7 @@ Below is a summary of the library methods. Most method names are self explaining
   create_from(provider) # create the user in the local app db.
 
   # remember me
+  auto_login(user, should_remember=false)  # login without credentials, optional remember_me
   remember_me!
   forget_me!
 

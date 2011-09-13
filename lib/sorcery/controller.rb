@@ -34,7 +34,7 @@ module Sorcery
           return_to_url = session[:return_to_url]
           reset_session # protect from session fixation attacks
           session[:return_to_url] = return_to_url
-          login_user(user)
+          auto_login(user)
           after_login!(user, credentials)
           current_user
         else
@@ -75,6 +75,14 @@ module Sorcery
         redirect_to root_path
       end
       
+      # login a user instance
+      #
+      # @param [<User-Model>] user the user instance.
+      # @return - do not depend on the return value.
+      def auto_login(user)
+        session[:user_id] = user.id
+      end
+      
       protected
       
       # Tries all available sources (methods) until one doesn't return false.
@@ -84,10 +92,6 @@ module Sorcery
           result = send(source)
         end
         result || false
-      end
-      
-      def login_user(user)
-        session[:user_id] = user.id
       end
       
       def login_from_session

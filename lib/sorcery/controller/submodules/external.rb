@@ -45,7 +45,7 @@ module Sorcery
             @user_hash = @provider.get_user_hash
             if user = user_class.load_from_provider(provider,@user_hash[:uid])
               reset_session
-              login_user(user)
+              auto_login(user)
               user
             end
           end

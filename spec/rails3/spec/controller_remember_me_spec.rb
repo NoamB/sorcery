@@ -31,7 +31,7 @@ describe ApplicationController do
     it "should clear cookie on forget_me!" do
       cookies["remember_me_token"] == {:value => 'asd54234dsfsd43534', :expires => 3600}
       get :test_logout
-      cookies["remember_me_token"].should == nil
+      cookies["remember_me_token"].should be_nil
     end
     
     it "login(username,password,remember_me) should login and remember" do
@@ -43,7 +43,7 @@ describe ApplicationController do
     it "logout should also forget_me!" do
       session[:user_id] = @user.id
       get :test_logout_with_remember
-      cookies["remember_me_token"].should == nil
+      cookies["remember_me_token"].should be_nil
     end
     
     it "should login_from_cookie" do
@@ -59,7 +59,28 @@ describe ApplicationController do
     
     it "should not remember_me! when not asked to" do
       post :test_login, :username => 'gizmo', :password => 'secret'
-      cookies["remember_me_token"].should == nil
+      cookies["remember_me_token"].should be_nil
     end
+    
+    # --- login_user(user) ---
+    specify { should respond_to(:auto_login) }
+        
+    it "auto_login(user) should login a user instance without remembering" do
+      create_new_user
+      session[:user_id] = nil
+      subject.auto_login(@user)
+      get :test_login_from_cookie
+      assigns[:current_user].should == @user
+      cookies["remember_me_token"].should be_nil
+    end
+    
+    it "auto_login(user, true) should login a user instance with remembering" do
+      create_new_user
+      session[:user_id] = nil
+      subject.auto_login(@user, true)
+      get :test_login_from_cookie
+      assigns[:current_user].should == @user
+      cookies["remember_me_token"].should_not be_nil
+    end       
   end
 end

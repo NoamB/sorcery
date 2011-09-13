@@ -26,6 +26,13 @@ module Sorcery
             cookies[:remember_me_token] = nil
           end
           
+          # Override.
+          # logins a user instance, and optionally remembers him.
+          def auto_login(user, should_remember = false)
+            session[:user_id] = user.id
+            remember_me! if should_remember
+          end
+          
           protected
           
           # calls remember_me! if a third credential was passed to the login method.

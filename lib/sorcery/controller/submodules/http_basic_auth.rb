@@ -46,7 +46,7 @@ module Sorcery
           def login_from_basic_auth
             authenticate_with_http_basic do |username, password|
               @current_user = (user_class.authenticate(username, password) if session[:http_authentication_used]) || false
-              login_user(@current_user) if @current_user
+              auto_login(@current_user) if @current_user
               @current_user
             end
           end

@@ -107,6 +107,16 @@ describe ApplicationController do
       flash[:notice].should == "haha!"
     end
     
+    
+    # --- login_user(user) ---
+    specify { should respond_to(:auto_login) }
+        
+    it "auto_login(user) should login a user instance" do
+      create_new_user
+      session[:user_id] = nil
+      subject.auto_login(@user)
+      subject.logged_in?.should be_true
+    end
   end
   
 end
