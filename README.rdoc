@@ -29,7 +29,7 @@ Example Rails 3 app using sorcery: https://github.com/NoamB/sorcery-example-app
 
 Example Sinatra app using sorcery: https://github.com/NoamB/sorcery-example-app-sinatra
 
-Documentation: http://rubydoc.info/gems/sorcery/0.6.0/frames
+Documentation: http://rubydoc.info/gems/sorcery/0.6.1/frames
 
 Check out the tutorials in the github wiki!
 
@@ -43,8 +43,8 @@ Below is a summary of the library methods. Most method names are self explaining
   require_login # this is a before filter
   login(username,password,remember_me = false)
   logout
-  logged_in?
-  current_user
+  logged_in?      # available to view
+  current_user    # available to view
   redirect_back_or_to # used when a user tries to access a page while logged out, is asked to login, and we want to return him back to the page he originally wanted.
   @user.external? # external users, such as facebook/twitter etc.
   User.authenticates_with_sorcery!
