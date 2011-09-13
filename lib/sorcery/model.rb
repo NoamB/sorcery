@@ -15,6 +15,7 @@ module Sorcery
             self.class_eval do
               extend ClassMethods # included here, before submodules, so they can be overriden by them.
               include InstanceMethods
+              include TemporaryToken
             end
             
             include_required_submodules!
@@ -141,7 +142,7 @@ module Sorcery
       # encrypts password with salt and saves it.
       def encrypt_password
         config = sorcery_config
-        self.send(:"#{config.salt_attribute_name}=", new_salt = generate_random_token) if !config.salt_attribute_name.nil?
+        self.send(:"#{config.salt_attribute_name}=", new_salt = TemporaryToken.generate_random_token) if !config.salt_attribute_name.nil?
         self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name),new_salt))
       end
 
@@ -158,11 +159,6 @@ module Sorcery
         if defined?(ActionMailer) and config.send(mailer).superclass == ActionMailer::Base
           mail.deliver
         end
-      end
-      
-      # Random code, used for salt and temporary tokens.
-      def generate_random_token
-        Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
       end
     end
 

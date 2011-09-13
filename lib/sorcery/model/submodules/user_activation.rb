@@ -55,7 +55,6 @@ module Sorcery
           base.sorcery_config.before_authenticate << :prevent_non_active_login
           
           base.extend(ClassMethods)
-          base.send(:include, TemporaryToken)
           base.send(:include, InstanceMethods)
 
 
@@ -101,7 +100,7 @@ module Sorcery
 
           def setup_activation
             config = sorcery_config
-            generated_activation_token = generate_random_token
+            generated_activation_token = TemporaryToken.generate_random_token
             self.send(:"#{config.activation_token_attribute_name}=", generated_activation_token)
             self.send(:"#{config.activation_state_attribute_name}=", "pending")
             self.send(:"#{config.activation_token_expires_at_attribute_name}=", Time.now.utc + config.activation_token_expiration_period) if config.activation_token_expiration_period

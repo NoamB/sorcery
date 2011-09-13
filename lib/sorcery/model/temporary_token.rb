@@ -8,6 +8,11 @@ module Sorcery
         base.extend(ClassMethods)
       end
       
+      # Random code, used for salt and temporary tokens.
+      def self.generate_random_token
+        Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+      end
+      
       module ClassMethods
         def load_from_token(token, token_attr_name, token_expiration_date_attr)
           return nil if token.blank?
