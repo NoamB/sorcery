@@ -83,6 +83,12 @@ module Sorcery
         session[:user_id] = user.id
       end
       
+      # Overwrite Rails' handle unverified request
+      def handle_unverified_request
+        cookies[:remember_me_token] = nil
+        super # call the default behaviour which resets the session
+      end
+      
       protected
       
       # Tries all available sources (methods) until one doesn't return false.
@@ -117,6 +123,7 @@ module Sorcery
       def user_class
         @user_class ||= Config.user_class.to_s.constantize
       end
+      
     end
     
     module Config
