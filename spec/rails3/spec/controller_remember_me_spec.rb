@@ -4,6 +4,7 @@ describe ApplicationController do
   
   # ----------------- REMEMBER ME -----------------------
   describe ApplicationController, "with remember me features" do
+    
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
       sorcery_reload!([:remember_me])
@@ -25,7 +26,9 @@ describe ApplicationController do
     
     it "should set cookie on remember_me!" do
       post :test_login_with_remember, :username => 'gizmo', :password => 'secret'
-      cookies["remember_me_token"].should == assigns[:current_user].remember_me_token
+      @request.cookies.merge!(cookies)
+      cookies = ActionDispatch::Cookies::CookieJar.build(@request)
+      cookies.signed["remember_me_token"].should == assigns[:current_user].remember_me_token
     end
     
     it "should clear cookie on forget_me!" do
@@ -36,8 +39,10 @@ describe ApplicationController do
     
     it "login(username,password,remember_me) should login and remember" do
       post :test_login_with_remember_in_login, :username => 'gizmo', :password => 'secret', :remember => "1"
-      cookies["remember_me_token"].should_not be_nil
-      cookies["remember_me_token"].should == assigns[:user].remember_me_token
+      @request.cookies.merge!(cookies)
+      cookies = ActionDispatch::Cookies::CookieJar.build(@request)
+      cookies.signed["remember_me_token"].should_not be_nil
+      cookies.signed["remember_me_token"].should == assigns[:user].remember_me_token
     end
     
     it "logout should also forget_me!" do
