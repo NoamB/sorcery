@@ -35,6 +35,7 @@ describe ApplicationController do
     after(:each) do
       Sorcery::Controller::Config.reset!
       sorcery_controller_property_set(:user_class, User)
+      sorcery_model_property_set(:username_attribute_name, [:username, :email])
     end
     
     specify { should respond_to(:login) }
@@ -47,6 +48,12 @@ describe ApplicationController do
   
     it "login(username,password) should return the user when success and set the session with user.id" do
       get :test_login, :username => 'gizmo', :password => 'secret'
+      assigns[:user].should == @user
+      session[:user_id].should == @user.id
+    end
+    
+    it "login(email,password) should return the user when success and set the session with user.id" do
+      get :test_login, :username => 'bla@bla.com', :password => 'secret'
       assigns[:user].should == @user
       session[:user_id].should == @user.id
     end

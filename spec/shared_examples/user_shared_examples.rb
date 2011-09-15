@@ -6,7 +6,7 @@ shared_examples_for "rails_3_core_model" do
     
     it "should enable configuration option 'username_attribute_name'" do
       sorcery_model_property_set(:username_attribute_name, :email)
-      User.sorcery_config.username_attribute_name.should equal(:email)
+      User.sorcery_config.username_attribute_name.should == [:email]
     end
       
     it "should enable configuration option 'password_attribute_name'" do
@@ -76,12 +76,12 @@ shared_examples_for "rails_3_core_model" do
   
     it "authenticate should return true if credentials are good" do
       create_new_user
-      User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'secret').should be_true
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_name.first), 'secret').should be_true
     end
   
     it "authenticate should return false if credentials are bad" do
       create_new_user
-      User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'wrong!').should be_false
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_name.first), 'wrong!').should be_false
     end
   
     specify { User.should respond_to(:encrypt) }
@@ -186,7 +186,7 @@ shared_examples_for "rails_3_core_model" do
     it "should work with no password encryption" do
       sorcery_model_property_set(:encryption_algorithm, :none)
       create_new_user
-      User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'secret').should be_true
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_name.first), 'secret').should be_true
     end
   
     it "should work with custom password encryption" do
@@ -202,7 +202,7 @@ shared_examples_for "rails_3_core_model" do
       sorcery_model_property_set(:encryption_algorithm, :custom)
       sorcery_model_property_set(:custom_encryption_provider, MyCrypto)
       create_new_user
-      User.authenticate(@user.send(User.sorcery_config.username_attribute_name), 'secret').should be_true
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_name.first), 'secret').should be_true
     end
   
     it "if encryption algo is aes256, it should set key to crypto provider" do

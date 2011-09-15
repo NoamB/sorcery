@@ -37,7 +37,7 @@ module Sorcery
         def login_user(user=nil)
           user ||= @user
           get_sinatra_app(app).send(:login_user, user)
-          get_sinatra_app(app).send(:after_login!, user, [user.send(user.sorcery_config.username_attribute_name), 'secret'])
+          get_sinatra_app(app).send(:after_login!, user, [user.send(user.sorcery_config.username_attribute_name.first), 'secret'])
         end
 
         def logout_user
