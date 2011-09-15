@@ -80,17 +80,24 @@ module Sorcery
           def initialize(request, response)
             @request = request
             @response = response
+            @secure = false
           end
 
           def [](key)
-            @request.cookies[key.to_s]
+            value = @request.cookies[key.to_s]
           end
 
           def []=(key, value)
+            if @secure
+              value.merge(:secret => Config.sinatra_cookie_secret)
+              @secure = false
+            end
             @response.set_cookie(key, value)
           end
           
+          # mark cookie as signed, which will light a flag, which will cause the next set_cookie to be encrypted.
           def signed
+            @secure = true
             self
           end
         end

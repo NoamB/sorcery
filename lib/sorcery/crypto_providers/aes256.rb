@@ -28,11 +28,15 @@ module Sorcery
         end
     
         def matches?(crypted, *tokens)
-          aes.decrypt
-          aes.key = @key
-          (aes.update(crypted.unpack("m").first) + aes.final) == tokens.join
+          decrypt(crypted) == tokens.join
         rescue OpenSSL::CipherError
           false
+        end
+        
+        def decrypt(crypted)
+          aes.decrypt
+          aes.key = @key
+          (aes.update(crypted.unpack("m").first) + aes.final)
         end
     
         private

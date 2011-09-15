@@ -46,6 +46,8 @@ Rails.application.config.sorcery.configure do |config|
   # config.github.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=github"
   # config.github.user_info_mapping = {:email => "name"}
 
+  # config.sinatra_cookie_secret = 'ch4ng3M3plz'                      # key used to sign cookies in Sinatra
+                                                                      # changing it will invalidate all signed cookies!        
 
   # --- user config ---
   config.user_config do |user|
@@ -75,6 +77,11 @@ Rails.application.config.sorcery.configure do |config|
     # user.encryption_key = nil                                                       # encryption key used to encrypt
                                                                                       # reversible encryptions such as
                                                                                       # AES256.
+                                                                                      #
+                                                                                      # WARNING:
+                                                                                      #
+                                                                                      # If used for users' passwords, changing this key 
+                                                                                      # will leave passwords undecryptable!
 
     # user.custom_encryption_provider = nil                                           # use an external encryption
                                                                                       # class.

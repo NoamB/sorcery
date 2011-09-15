@@ -136,6 +136,8 @@ module Sorcery
                       :save_return_to_url,            # when a non logged in user tries to enter a page that requires
                                                       # login, save the URL he wanted to reach, 
                                                       # and send him there after login.
+                                                      
+                      :sinatra_cookie_secret,         # used to sign cookies in Sinatra.
                       
                       :login_sources,
                       :after_login,
@@ -153,7 +155,8 @@ module Sorcery
             :@after_failed_login                   => [],
             :@before_logout                        => [],
             :@after_logout                         => [],
-            :@save_return_to_url                   => true
+            :@save_return_to_url                   => true,
+            :@sinatra_cookie_secret                => 'ch4ng3M3plz'
           }
         end
         
