@@ -15,7 +15,11 @@ module Sorcery
 
         module ClassMethods
           def find_by_credentials(credentials)
-            where(sorcery_config.username_attribute_name => credentials[0]).first
+            @sorcery_config.username_attribute_name.each do |attribute|
+              @user = where(attribute => credentials[0]).first
+              break if @user
+            end
+            @user
           end
 
           def find_by_provider_and_uid(provider, uid)
