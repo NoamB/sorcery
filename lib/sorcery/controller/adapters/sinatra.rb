@@ -89,6 +89,10 @@ module Sorcery
           def []=(key, value)
             @response.set_cookie(key, value)
           end
+          
+          def signed
+            self
+          end
         end
 
         module ClassMethods
