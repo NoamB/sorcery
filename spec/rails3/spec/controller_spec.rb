@@ -115,12 +115,20 @@ describe ApplicationController do
     end
     
     
-    # --- login_user(user) ---
+    # --- auto_login(user) ---
     specify { should respond_to(:auto_login) }
         
     it "auto_login(user) should login a user instance" do
       create_new_user
       session[:user_id] = nil
+      subject.auto_login(@user)
+      subject.logged_in?.should be_true
+    end
+    
+    it "auto_login(user) should work even if current_user was already set to false" do
+      create_new_user
+      session[:user_id] = nil
+      subject.current_user.should == false
       subject.auto_login(@user)
       subject.logged_in?.should be_true
     end

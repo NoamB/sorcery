@@ -62,6 +62,10 @@ module Sorcery
         @current_user ||= login_from_session || login_from_other_sources unless @current_user == false
       end
       
+      def current_user=(user)
+        @current_user = user
+      end
+      
       # used when a user tries to access a page while logged out, is asked to login, 
       # and we want to return him back to the page he originally wanted.
       def redirect_back_or_to(url, flash_hash = {})
@@ -81,6 +85,7 @@ module Sorcery
       # @return - do not depend on the return value.
       def auto_login(user)
         session[:user_id] = user.id
+        @current_user = user
       end
       
       # Overwrite Rails' handle unverified request
