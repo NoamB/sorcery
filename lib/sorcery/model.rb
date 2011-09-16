@@ -53,7 +53,7 @@ module Sorcery
           # using 1.8.x hash syntax to perserve compatibility.
           def init_mongoid_support!
             self.class_eval do
-              field sorcery_config.username_attribute_name,         :type => String
+              field sorcery_config.username_attribute_name,         :type => Array
               field sorcery_config.email_attribute_name,            :type => String unless sorcery_config.username_attribute_name == sorcery_config.email_attribute_name
               field sorcery_config.crypted_password_attribute_name, :type => String
               field sorcery_config.salt_attribute_name,             :type => String
@@ -199,7 +199,7 @@ module Sorcery
       def initialize
         @defaults = {
           :@submodules                           => [],
-          :@username_attribute_name              => :username,
+          :@username_attribute_name              => [:username],
           :@password_attribute_name              => :password,
           :@email_attribute_name                 => :email,
           :@crypted_password_attribute_name      => :crypted_password,
@@ -222,6 +222,10 @@ module Sorcery
         @defaults.each do |k,v|
           instance_variable_set(k,v)
         end       
+      end
+      
+      def username_attribute_name=(fields)
+        @username_attribute_name = fields.kind_of?(Array) ? fields : [fields]
       end
       
       def custom_encryption_provider=(provider)

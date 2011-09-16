@@ -5,7 +5,7 @@ module Sorcery
       def login_user(user = nil)
         user ||= @user
         @controller.send(:auto_login,user)
-        @controller.send(:after_login!,user,[user.send(user.sorcery_config.username_attribute_name),'secret'])
+        @controller.send(:after_login!,user,[user.send(user.sorcery_config.username_attribute_name.first),'secret'])
       end
 
       def logout_user

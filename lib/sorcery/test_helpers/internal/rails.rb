@@ -12,7 +12,7 @@ module Sorcery
 
         def sorcery_reload!(submodules = [], options = {})
           reload_user_class
-
+          
           # return to no-module configuration
           ::Sorcery::Controller::Config.init!
           ::Sorcery::Controller::Config.reset!
