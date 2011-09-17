@@ -8,15 +8,21 @@ class ApplicationController < ActionController::Base
   before_filter :require_login, :only => [:test_logout, :test_should_be_logged_in, :some_action]
 
   def index
-    render :text => ""
   end
-
+  
   def some_action
     render :nothing => true
   end
 
   def test_login
     @user = login(params[:username], params[:password])
+    render :text => ""
+  end
+  
+  def test_auto_login
+    @user = User.find(:first)
+    auto_login(@user)
+    @result = current_user
     render :text => ""
   end
 

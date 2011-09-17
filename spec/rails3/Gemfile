@@ -10,4 +10,6 @@ group :development, :test do
   gem 'ruby-debug19'
   gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency
   gem 'timecop'
+  gem 'capybara', '~> 1.1.1'
+  gem 'launchy', '~> 2.0.5'
 end

@@ -30,6 +30,7 @@ shared_examples_for "rails_3_remember_me_model" do
       @user.remember_me_token.should_not be_nil
     end
     
+    # FIXME: assert on line 37 sometimes fails by a second
     it "should set an expiration based on 'remember_me_for' attribute" do
       sorcery_model_property_set(:remember_me_for, 2 * 60 * 60 * 24)
       @user.remember_me!

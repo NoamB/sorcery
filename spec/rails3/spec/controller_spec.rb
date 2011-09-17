@@ -28,12 +28,18 @@ describe ApplicationController do
   # ----------------- PLUGIN ACTIVATED -----------------------
   describe ApplicationController, "when activated with sorcery" do
     before(:all) do
+      sorcery_reload!
       User.delete_all
+    end
+    
+    before(:each) do
       create_new_user
     end
   
     after(:each) do
       Sorcery::Controller::Config.reset!
+      sorcery_reload!
+      User.delete_all
       sorcery_controller_property_set(:user_class, User)
       sorcery_model_property_set(:username_attribute_name, [:username, :email])
     end
@@ -119,18 +125,17 @@ describe ApplicationController do
     specify { should respond_to(:auto_login) }
         
     it "auto_login(user) should login a user instance" do
-      create_new_user
       session[:user_id] = nil
       subject.auto_login(@user)
       subject.logged_in?.should be_true
     end
     
     it "auto_login(user) should work even if current_user was already set to false" do
-      create_new_user
-      session[:user_id] = nil
-      subject.current_user.should == false
-      subject.auto_login(@user)
-      subject.logged_in?.should be_true
+      get :test_logout
+      session[:user_id].should be_nil
+      subject.current_user.should be_false
+      get :test_auto_login
+      assigns[:result].should == User.find(:first)
     end
   end
   

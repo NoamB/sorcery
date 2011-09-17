@@ -1,0 +1,17 @@
+<%= form_tag :action => :test_login, :method => :post do %>
+  <div class="field">
+    <%= label_tag :username %><br />
+    <%= text_field_tag :username %>
+  </div>
+  <div class="field">
+    <%= label_tag :password %><br />
+    <%= password_field_tag :password %>
+  </div>
+  <div class="actions">
+    <%= submit_tag "Login" %>
+  </div>
+  <div>
+  	<%= label_tag "keep me logged in" %><br />
+    <%= check_box_tag :remember %>
+  </div>
+<% end %>
