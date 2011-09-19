@@ -108,6 +108,7 @@ For your convenience, Sorcery includes a migrations generator for Rails, which c
 
   rails g sorcery_migration [list of submodules]
 
+Note: There is no migration for the session_timeout module. 
 For example, for only the core functionality use:
 
   rails g sorcery_migration core
