@@ -90,10 +90,31 @@ module Sorcery
           end
           
           # Clears token and tries to update the new password for the user.
-          def change_password!(new_password)
-            clear_reset_password_token
-            self.send(:"#{sorcery_config.password_attribute_name}=", new_password)
-            save
+          # Adds an error to the user if confirmation provided and it does not match
+          # similar to validates_confirmation_of in ActiveRecord.
+          #
+          # new_password          - String, the new password for the user.
+          # password_confirmation - String, can be nil, the confirmation to validate against.
+          #
+          # Examples
+          #
+          #   @user.change_password!('lololol')
+          #   # updates password to 'lololol' and clears the token
+          #
+          #   @user.change_password!('lololol', 'hahaha')
+          #   # returns false and adds an error to the user
+          #
+          #   @user.change_password!('lololol', 'lololol')
+          #   # validation passes, updates password to 'lololol' and clears the token
+          def change_password!(new_password, password_confirmation=nil)
+            if password_confirmation.nil? || new_password == password_confirmation
+              clear_reset_password_token
+              self.send(:"#{sorcery_config.password_attribute_name}=", new_password)
+              save
+            else
+              self.errors.add(sorcery_config.password_attribute_name, :confirmation)
+              return false
+            end
           end
 
           protected

@@ -141,6 +141,24 @@ shared_examples_for "rails_3_reset_password_model" do
       @user.reset_password_token.should be_nil
     end
     
+    it "when change_password! is called, should validate confirmation if provided" do
+      create_new_user
+      @user.deliver_reset_password_instructions!
+      @user.reset_password_token.should_not be_nil
+      @user.change_password!("blabulsdf", "blabulsdf")
+      @user.save!
+      @user.reset_password_token.should be_nil
+    end
+    
+    it "when change_password! is called, should raise validation error if confirmation password does not match" do
+      create_new_user
+      @user.deliver_reset_password_instructions!
+      @user.reset_password_token.should_not be_nil
+      @user.change_password!("blabulsdf", 'lololol').should == false
+      @user.should have(1).error
+      @user.errors[:password].should == ["doesn't match confirmation"]
+    end
+    
     it "should not send an email if time between emails has not passed since last email" do
       create_new_user
       sorcery_model_property_set(:reset_password_time_between_emails, 10000)
