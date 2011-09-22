@@ -30,7 +30,10 @@ Rails.application.config.sorcery.configure do |config|
   # -- external --
   # config.external_providers = []                                    # What providers are supported by this app,
                                                                       # i.e. [:twitter, :facebook, :github] .
-  #
+  # -- oauth2 --
+  # config.ca_file = 'path/to/ca_file'                                # Path to ca_file. By default use a internal ca-bundle.crt.
+                                                                      # You can change it by your server ca_file. i.e. '/etc/pki/tls/certs/ca-bundle.crt' 
+
   # config.twitter.key = "eYVNBjBDi33aa9GkA3w"
   # config.twitter.secret = "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8"
   # config.twitter.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=twitter"
