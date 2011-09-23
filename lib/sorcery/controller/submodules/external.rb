@@ -9,9 +9,11 @@ module Sorcery
           Config.module_eval do
             class << self
               attr_reader :external_providers                           # external providers like twitter.
+              attr_accessor :ca_file                                    # path to ca_file. By default use a internal ca-bundle.crt.
                                           
               def merge_external_defaults!
-                @defaults.merge!(:@external_providers => [])
+                @defaults.merge!(:@external_providers => [],
+                                 :@ca_file => File.join(File.expand_path(File.dirname(__FILE__)), 'certs/ca-bundle.crt'))
               end
               
               def external_providers=(providers)
