@@ -13,7 +13,7 @@ module Sorcery
                                           
               def merge_external_defaults!
                 @defaults.merge!(:@external_providers => [],
-                                 :@ca_file => File.join(File.expand_path(File.dirname(__FILE__)), 'certs/ca-bundle.crt'))
+                                 :@ca_file => File.join(File.expand_path(File.dirname(__FILE__)), 'external/protocols/certs/ca-bundle.crt'))
               end
               
               def external_providers=(providers)
