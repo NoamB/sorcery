@@ -10,12 +10,12 @@ module Sorcery
             end
           
             def authorize_url(*args)
-              client = ::OAuth2::Client.new(@key, @secret, :site => @site)
-              client.web_server.authorize_url(:redirect_uri => @callback_url, :scope => @scope, :ssl => { :ca_file => File.join(File.expand_path(File.dirname(__FILE__)), 'certs/ca-bundle.crt')})
+              client = ::OAuth2::Client.new(@key, @secret, :site => @site, :ssl => { :ca_file => Config.ca_file })
+              client.web_server.authorize_url(:redirect_uri => @callback_url, :scope => @scope)
             end
           
             def get_access_token(args)
-              client.web_server.authorize_url(:redirect_uri => @callback_url, :scope => @scope, :ssl => { :ca_file => File.join(File.expand_path(File.dirname(__FILE__)), 'certs/ca-bundle.crt')})
+              client = ::OAuth2::Client.new(@key, @secret, :site => @site, :ssl => { :ca_file => Config.ca_file })
               client.web_server.get_access_token(args[:code], :redirect_uri => @callback_url)
             end
           end
