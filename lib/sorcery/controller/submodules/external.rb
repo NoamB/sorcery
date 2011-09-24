@@ -63,6 +63,7 @@ module Sorcery
           #   {:username => "user/name"}
           #
           # And this will cause 'moishe' to be set as the value of :username field.
+          # Note: Be careful. This method skips validations model.
           def create_from(provider)
             provider = provider.to_sym
             @provider = Config.send(provider)
@@ -78,7 +79,8 @@ module Sorcery
               end
             end
             user_class.transaction do
-              @user = user_class.create!(attrs)
+              @user = user_class.new(attrs)
+              @user.save(:validate => false)
               user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider, config.provider_uid_attribute_name => @user_hash[:uid]})
             end
             @user
