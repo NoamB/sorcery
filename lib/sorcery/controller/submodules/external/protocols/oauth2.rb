@@ -9,8 +9,12 @@ module Sorcery
               "2.0"
             end
           
-            def authorize_url(*args)
-              client = ::OAuth2::Client.new(@key, @secret, :site => @site, :ssl => { :ca_file => Config.ca_file })
+            def authorize_url(options = {})
+              defaults = {
+                  :site => @site,
+                  :ssl => { :ca_file => Config.ca_file }
+              }
+              client = ::OAuth2::Client.new(@key, @secret, defaults.merge!(options))
               client.web_server.authorize_url(:redirect_uri => @callback_url, :scope => @scope)
             end
           
