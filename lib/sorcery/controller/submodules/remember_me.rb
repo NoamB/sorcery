@@ -39,7 +39,7 @@ module Sorcery
           # calls remember_me! if a third credential was passed to the login method.
           # Runs as a hook after login.
           def remember_me_if_asked_to(user, credentials)
-            remember_me! if credentials.size == 3 && credentials[2]
+            remember_me! if ( credentials.size == 3 && credentials[2] && credentials[2] != "0" )
           end
           
           # Checks the cookie for a remember me token, tried to find a user with that token 

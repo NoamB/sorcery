@@ -62,6 +62,11 @@ describe ApplicationController do
       assigns[:current_user].should == @user
     end
     
+    it "should not remember_me! when not asked to, even if third parameter is used" do
+      post :test_login_with_remember_in_login, :username => 'gizmo', :password => 'secret', :remember => "0"
+      cookies["remember_me_token"].should be_nil
+    end
+    
     it "should not remember_me! when not asked to" do
       post :test_login, :username => 'gizmo', :password => 'secret'
       cookies["remember_me_token"].should be_nil
