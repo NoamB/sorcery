@@ -40,8 +40,8 @@ module Sorcery
                 
                 include Protocols::Oauth1
 				
-				# Override included get_consumer method to provide authorize_path
-				def get_consumer
+				        # Override included get_consumer method to provide authorize_path
+				        def get_consumer
                   ::OAuth::Consumer.new(@key, @secret, :site => @site, :authorize_path => "/oauth/authenticate")
                 end
                 
