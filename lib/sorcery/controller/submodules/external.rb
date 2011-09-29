@@ -79,7 +79,10 @@ module Sorcery
               end
             end
             user_class.transaction do
-              @user = user_class.new(attrs)
+              @user = user_class.new()
+              attrs.each do |k,v|
+                @user.send(:"#{k}=", v)
+              end
               @user.save(:validate => false)
               user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider, config.provider_uid_attribute_name => @user_hash[:uid]})
             end

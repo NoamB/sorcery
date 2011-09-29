@@ -54,13 +54,15 @@ module Sorcery
 
           def lock!
             config = sorcery_config
-            self.update_attributes!(config.lock_expires_at_attribute_name => Time.now.utc + config.login_lock_time_period)
+            self.send(:"#{config.lock_expires_at_attribute_name}=", Time.now.utc + config.login_lock_time_period)
+            self.save!
           end
 
           def unlock!
             config = sorcery_config
-            self.update_attributes!(config.lock_expires_at_attribute_name => nil, 
-                                    config.failed_logins_count_attribute_name => 0)
+            self.send(:"#{config.lock_expires_at_attribute_name}=", nil)
+            self.send(:"#{config.failed_logins_count_attribute_name}=", 0)
+            self.save!
           end
           
           def unlocked?

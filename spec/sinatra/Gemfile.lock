@@ -38,7 +38,7 @@ GEM
     addressable (2.2.6)
     archive-tar-minitar (0.5.2)
     arel (2.0.7)
-    bcrypt-ruby (3.0.0)
+    bcrypt-ruby (3.0.1)
     builder (2.1.2)
     columnize (0.3.2)
     diff-lcs (1.1.2)
