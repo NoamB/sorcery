@@ -39,7 +39,7 @@ module Sorcery
             session_to_use = Config.session_timeout_from_last_action ? session[:last_action_time] : session[:login_time]
             if session_to_use && (Time.now.utc - session_to_use > Config.session_timeout)
               reset_session
-              @current_user = false
+              @current_user = nil
             else
               session[:last_action_time] = Time.now.utc
             end
