@@ -39,6 +39,11 @@ module Sorcery
                               :user_info_mapping
                 
                 include Protocols::Oauth1
+				
+				        # Override included get_consumer method to provide authorize_path
+				        def get_consumer
+                  ::OAuth::Consumer.new(@key, @secret, :site => @site, :authorize_path => "/oauth/authenticate")
+                end
                 
                 def init
                   @site           = "https://api.twitter.com"
