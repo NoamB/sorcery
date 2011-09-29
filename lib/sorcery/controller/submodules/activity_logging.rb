@@ -14,6 +14,20 @@ module Sorcery
       module ActivityLogging
         def self.included(base)
           base.send(:include, InstanceMethods)
+          Config.module_eval do
+            class << self
+              attr_accessor :register_login_time
+              attr_accessor :register_logout_time
+              attr_accessor :register_last_activity_time
+            
+              def merge_activity_logging_defaults!
+                @defaults.merge!(:@register_login_time  => true,
+                                 :@register_logout_time => true,
+                                 :@register_last_activity_time => true)
+              end
+            end
+            merge_activity_logging_defaults!
+          end
           Config.after_login << :register_login_time_to_db
           Config.before_logout << :register_logout_time_to_db
           base.after_filter :register_last_activity_time_to_db
@@ -37,6 +51,7 @@ module Sorcery
           # registers last login time on every login.
           # This runs as a hook just after a successful login.
           def register_login_time_to_db(user, credentials)
+            return unless Config.register_login_time
             user.send(:"#{user.sorcery_config.last_login_at_attribute_name}=", Time.now.utc.to_s(:db))
             user.save!(:validate => false)
           end
@@ -44,6 +59,7 @@ module Sorcery
           # registers last logout time on every logout.
           # This runs as a hook just before a logout.
           def register_logout_time_to_db(user)
+            return unless Config.register_logout_time
             user.send(:"#{user.sorcery_config.last_logout_at_attribute_name}=", Time.now.utc.to_s(:db))
             user.save!(:validate => false)
           end
@@ -51,7 +67,8 @@ module Sorcery
           # Updates last activity time on every request.
           # The only exception is logout - we do not update activity on logout
           def register_last_activity_time_to_db
-            return if !logged_in?
+            return unless Config.register_last_activity_time
+            return unless logged_in?
             current_user.send(:"#{current_user.sorcery_config.last_activity_at_attribute_name}=", Time.now.utc.to_s(:db))
             current_user.save!(:validate => false)
           end

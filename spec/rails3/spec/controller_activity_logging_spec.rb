@@ -78,5 +78,28 @@ describe ApplicationController do
       subject.current_users[1].should == user2
       subject.current_users[2].should == user3
     end
+    
+    it "should not register login time if configured so" do
+      sorcery_controller_property_set(:register_login_time, false)
+      now = Time.now.utc
+      login_user
+      @user.last_login_at.should be_nil
+    end
+    
+    it "should not register logout time if configured so" do
+      sorcery_controller_property_set(:register_logout_time, false)
+      now = Time.now.utc
+      login_user
+      logout_user
+      @user.last_logout_at.should be_nil
+    end
+    
+    it "should not register last activity time if configured so" do
+      sorcery_controller_property_set(:register_last_activity_time, false)
+      now = Time.now.utc
+      login_user
+      get :some_action
+      @user.last_activity_at.should be_nil
+    end
   end
 end
