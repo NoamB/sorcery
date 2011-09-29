@@ -119,7 +119,12 @@ To generate migrations for both the core AND 'remember_me' submodule:
 
 These migrations use the default fields. You can choose to use these migrations or make your own tables and fields. Sorcery tries not to impose a database structure and naming scheme on your application.
 
+Finally, add sorcery to the the model that you will use for authentication:
 
+    class User < ActiveRecord::Base
+      authenticates_with_sorcery!
+    end
+    
 == Sinatra Configuration:
 
 
