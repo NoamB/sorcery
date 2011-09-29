@@ -15,7 +15,7 @@ module Sorcery
 
         module ClassMethods
           def find_by_credentials(credentials)
-            @sorcery_config.username_attribute_name.each do |attribute|
+            @sorcery_config.username_attribute_names.each do |attribute|
               @user = where(attribute => credentials[0]).first
               break if @user
             end
@@ -40,7 +40,7 @@ module Sorcery
           end
 
           def find_by_username(username)
-            where(sorcery_config.username_attribute_name => username).first
+            where(sorcery_config.username_attribute_names => username).first
           end
 
           def transaction(&blk)

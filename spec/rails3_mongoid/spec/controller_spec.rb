@@ -36,7 +36,7 @@ describe ApplicationController do
     after(:each) do
       Sorcery::Controller::Config.reset!
       sorcery_controller_property_set(:user_class, User)
-      sorcery_model_property_set(:username_attribute_name, [:username, :email])
+      sorcery_model_property_set(:username_attribute_names, [:username, :email])
     end
     
     specify { should respond_to(:login) }

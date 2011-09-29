@@ -53,8 +53,8 @@ module Sorcery
           # using 1.8.x hash syntax to perserve compatibility.
           def init_mongoid_support!
             self.class_eval do
-              field sorcery_config.username_attribute_name,         :type => Array
-              field sorcery_config.email_attribute_name,            :type => String unless sorcery_config.username_attribute_name == sorcery_config.email_attribute_name
+              field sorcery_config.username_attribute_names,         :type => Array
+              field sorcery_config.email_attribute_name,            :type => String unless sorcery_config.username_attribute_names == sorcery_config.email_attribute_name
               field sorcery_config.crypted_password_attribute_name, :type => String
               field sorcery_config.salt_attribute_name,             :type => String
             end
@@ -167,7 +167,7 @@ module Sorcery
     # options will be configured from a single place.
     class Config
 
-      attr_accessor :username_attribute_name,           # change default username attribute, for example, to use :email
+      attr_accessor :username_attribute_names,           # change default username attribute, for example, to use :email
                                                         # as the login.
                                                         
                     :password_attribute_name,           # change *virtual* password attribute, the one which is used
@@ -199,7 +199,7 @@ module Sorcery
       def initialize
         @defaults = {
           :@submodules                           => [],
-          :@username_attribute_name              => [:username],
+          :@username_attribute_names              => [:username],
           :@password_attribute_name              => :password,
           :@email_attribute_name                 => :email,
           :@crypted_password_attribute_name      => :crypted_password,
@@ -224,8 +224,8 @@ module Sorcery
         end       
       end
       
-      def username_attribute_name=(fields)
-        @username_attribute_name = fields.kind_of?(Array) ? fields : [fields]
+      def username_attribute_names=(fields)
+        @username_attribute_names = fields.kind_of?(Array) ? fields : [fields]
       end
       
       def custom_encryption_provider=(provider)

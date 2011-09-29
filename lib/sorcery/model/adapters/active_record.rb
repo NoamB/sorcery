@@ -8,7 +8,7 @@ module Sorcery
 
         module ClassMethods
           def find_by_credentials(credentials)
-             sql = @sorcery_config.username_attribute_name.map{|attribute| "#{attribute} = :login"}
+             sql = @sorcery_config.username_attribute_names.map{|attribute| "#{attribute} = :login"}
              where(sql.join(' OR '), :login => credentials[0]).first
           end
 
