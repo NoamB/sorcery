@@ -60,9 +60,9 @@ Rails.application.config.sorcery.configure do |config|
   # --- user config ---
   config.user_config do |user|
     # -- core --
-    # user.username_attribute_names = [:username]                                     # change default username
-                                                                                      # attribute, for example,
-                                                                                      # to use :email as the login.
+    # user.username_attribute_names = [:username]                                     # specify username
+                                                                                      # attributes, for example:
+                                                                                      # [:username, :email].
 
     # user.password_attribute_name = :password                                        # change *virtual* password
                                                                                       # attribute, the one which is used

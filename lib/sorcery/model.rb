@@ -53,8 +53,10 @@ module Sorcery
           # using 1.8.x hash syntax to perserve compatibility.
           def init_mongoid_support!
             self.class_eval do
-              field sorcery_config.username_attribute_names,         :type => Array
-              field sorcery_config.email_attribute_name,            :type => String unless sorcery_config.username_attribute_names == sorcery_config.email_attribute_name
+              sorcery_config.username_attribute_names.each do |username|
+                field username,         :type => String
+              end
+              field sorcery_config.email_attribute_name,            :type => String unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
               field sorcery_config.crypted_password_attribute_name, :type => String
               field sorcery_config.salt_attribute_name,             :type => String
             end
