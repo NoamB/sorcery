@@ -128,7 +128,6 @@ Gem::Specification.new do |s|
     "spec/rails3/public/500.html",
     "spec/rails3/public/favicon.ico",
     "spec/rails3/public/images/rails.png",
-    "spec/rails3/public/index.html",
     "spec/rails3/public/javascripts/application.js",
     "spec/rails3/public/javascripts/controls.js",
     "spec/rails3/public/javascripts/dragdrop.js",
