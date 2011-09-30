@@ -30,7 +30,7 @@ Example Rails 3 app using sorcery: https://github.com/NoamB/sorcery-example-app
 
 Example Sinatra app using sorcery: https://github.com/NoamB/sorcery-example-app-sinatra
 
-Documentation: http://rubydoc.info/gems/sorcery/0.6.1/frames
+Documentation: http://rubydoc.info/gems/sorcery/0.7.0/frames
 
 Check out the tutorials in the github wiki!
 
@@ -159,6 +159,7 @@ Core (see lib/sorcery/model.rb and lib/sorcery/controller.rb):
 * login/logout, optional return user to requested url on login, configurable redirect for non-logged-in users.
 * password encryption, algorithms: bcrypt(default), md5, sha1, sha256, sha512, aes256, custom(yours!), none. Configurable stretches and salt.
 * configurable attribute names for username, password and email.
+* allow multiple fields to serve as username.
 
 User Activation (see lib/sorcery/model/submodules/user_activation.rb):
 * User activation by email with optional success email.
