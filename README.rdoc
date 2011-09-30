@@ -5,7 +5,7 @@ Supports ActiveRecord and Mongoid.
 Inspired by restful_authentication, Authlogic and Devise.
 Crypto code taken almost unchanged from Authlogic.
 OAuth code inspired by OmniAuth and Ryan Bates's railscasts about it.
-
+ 
 
 == Philosophy
 
@@ -24,6 +24,7 @@ Hopefully, I've achieved this. If not, let me know.
 
 == Useful Links:
 
+Railscast: http://railscasts.com/episodes/283-authentication-with-sorcery
 
 Example Rails 3 app using sorcery: https://github.com/NoamB/sorcery-example-app
 
