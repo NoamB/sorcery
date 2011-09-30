@@ -238,6 +238,7 @@ The same cannot be said about upgrading to x.4.0 and above, however.
 
 Important notes while upgrading:
 
+* If upgrading from <= 0.6.1 to >= 0.7.0 you need to change 'username_attribute_name' to 'username_attribute_names' in initializer.
 * If upgrading from <= v0.5.1 to >= v0.5.2 you need to explicitly set your user_class model in the initializer file.
 
     # This line must come after the 'user config' block.
