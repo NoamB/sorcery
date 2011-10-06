@@ -48,8 +48,8 @@ module Sorcery
         if logged_in?
           before_logout!(current_user)
           reset_session
-          @current_user = nil
           after_logout!
+          @current_user = nil
         end
       end
       
