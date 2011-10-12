@@ -3,8 +3,8 @@ module Sorcery
   # It should be included into the ORM base class.
   # In the case of Rails this is usually ActiveRecord (actually, in that case, the plugin does this automatically).
   #
-  # When included it defines a single method: 'activate_sorcery!' which when called adds the other capabilities 
-  # to the class.
+  # When included it defines a single method: 'authenticates_with_sorcery!'
+  # which when called adds the other capabilities to the class.
   # This method is also the place to configure the plugin in the Model layer.
   module Model
     def self.included(klass)
@@ -24,6 +24,9 @@ module Sorcery
             ::Sorcery::Controller::Config.user_config.tap{|blk| blk.call(@sorcery_config) if blk}
             
             init_mongoid_support! if defined?(Mongoid) and self.ancestors.include?(Mongoid::Document)
+            if defined?(MongoMapper) and self.ancestors.include?(MongoMapper::Document)
+              init_mongo_mapper_support!
+            end
 
             init_orm_hooks!
             
@@ -62,6 +65,20 @@ module Sorcery
             end
           end
           
+          # defines mongo_mapper fields on the model class,
+          def init_mongo_mapper_support!
+            self.class_eval do
+              sorcery_config.username_attribute_names.each do |username|
+                key username, String
+              end
+              email_attribute = sorcery_config.email_attribute_name
+              username_attributes = sorcery_config.username_attribute_names
+              key sorcery_config.email_attribute_name, String unless username_attributes.include?(email_attribute)
+              key sorcery_config.crypted_password_attribute_name, String
+              key sorcery_config.salt_attribute_name, String
+            end
+          end
+
           # add virtual password accessor and ORM callbacks.
           def init_orm_hooks!
             self.class_eval do
