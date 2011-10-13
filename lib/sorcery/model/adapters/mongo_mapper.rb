@@ -32,10 +32,10 @@ module Sorcery
             find(id)
           end
           
-          # def find_by_activation_token(token)
-          #   where(sorcery_config.activation_token_attribute_name => token).first
-          # end
-          # 
+          def find_by_activation_token(token)
+            where(sorcery_config.activation_token_attribute_name => token).first
+          end
+          
           # def find_by_remember_me_token(token)
           #   where(sorcery_config.remember_me_token_attribute_name => token).first
           # end

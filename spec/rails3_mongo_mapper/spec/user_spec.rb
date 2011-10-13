@@ -24,9 +24,9 @@ describe "User with no submodules (core)" do
   end
 
   describe User, "when inherited" do
-    it "should inherit mongoid fields" do
+    it "should inherit mongo_mapper fields" do
       User.class_eval do
-        field :blabla
+        key :blabla
       end
       class SubUser < User
       end
