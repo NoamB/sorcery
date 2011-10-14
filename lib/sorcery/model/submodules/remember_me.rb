@@ -24,7 +24,10 @@ module Sorcery
           base.send(:include, InstanceMethods)
 
           base.sorcery_config.after_config << :define_remember_me_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
-
+          if defined?(MongoMapper) and base.ancestors.include?(MongoMapper::Document)
+            base.sorcery_config.after_config << :define_remember_me_mongo_mapper_fields
+          end
+          
           base.extend(ClassMethods)
         end
 
@@ -36,6 +39,10 @@ module Sorcery
             field sorcery_config.remember_me_token_expires_at_attribute_name, :type => Time
           end
 
+          def define_remember_me_mongo_mapper_fields
+            key sorcery_config.remember_me_token_attribute_name, String
+            key sorcery_config.remember_me_token_expires_at_attribute_name, Time
+          end
         end
 
         module InstanceMethods
@@ -44,7 +51,11 @@ module Sorcery
             config = sorcery_config
             self.send(:"#{config.remember_me_token_attribute_name}=", TemporaryToken.generate_random_token)
             self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", Time.now + config.remember_me_for)
-            self.save!(:validate => false)
+            if defined?(MongoMapper)
+              self.save(:validate => false)
+            else
+              self.save!(:validate => false)
+            end
           end
           
           # You shouldn't really use this one yourself - it's called by the controller's 'forget_me!' method.
@@ -52,7 +63,11 @@ module Sorcery
             config = sorcery_config
             self.send(:"#{config.remember_me_token_attribute_name}=", nil)
             self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", nil)
-            self.save!(:validate => false)
+            if defined?(MongoMapper)
+              self.save(:validate => false)
+            else
+              self.save!(:validate => false)
+            end
           end
         end
       end

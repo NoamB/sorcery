@@ -18,9 +18,14 @@ To run framework specs, cd into each directory, bundle, and run the specs. For e
     bundle install
     rake spec
 
-**Note:** the rails3_mongoid sample app does require, well, MongoDB. Installing MongoDB on mac osx is easy with homebrew. Seeing as you're reading the readme for running specs, I'll assume you can install MongoDB on your machine. For the purpose of running these tests, I put mongod in verbose mode and in the background so I can see it log to stdout. 
+**Note:** the rails3_mongoid and rails3_mongo_mapper sample apps do require, well, MongoDB. Installing MongoDB on mac osx is easy with homebrew. Seeing as you're reading the readme for running specs, I'll assume you can install MongoDB on your machine. For the purpose of running these tests, I put mongod in verbose mode and in the background so I can see it log to stdout. 
 
     cd spec/rails3_mongoid
+    bundle install
+    mongod -v &
+    rake spec
+    
+    cd spec/rails3_mongo_mapper
     bundle install
     mongod -v &
     rake spec

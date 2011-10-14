@@ -92,7 +92,8 @@ module Sorcery
             self.class_eval do
               key sorcery_config.activation_state_attribute_name, String
               key sorcery_config.activation_token_attribute_name, String
-              key sorcery_config.activation_token_expires_at_attribute_name, DateTime
+              # no DateTime in MM
+              key sorcery_config.activation_token_expires_at_attribute_name, Time
             end
           end
         end
@@ -104,7 +105,11 @@ module Sorcery
             self.send(:"#{config.activation_token_attribute_name}=", nil)
             self.send(:"#{config.activation_state_attribute_name}=", "active")
             send_activation_success_email! unless self.external?
-            save!(:validate => false) # don't run validations
+            if defined?(MongoMapper)
+              save(:validate => false) # don't run validations
+            else
+              save!(:validate => false) # don't run validations
+            end
           end
           
           protected

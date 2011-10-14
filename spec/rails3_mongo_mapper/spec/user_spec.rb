@@ -24,14 +24,14 @@ describe "User with no submodules (core)" do
   end
 
   describe User, "when inherited" do
-    it "should inherit mongo_mapper fields" do
+    it "should inherit mongo_mapper keys" do
       User.class_eval do
         key :blabla
       end
       class SubUser < User
       end
 
-      SubUser.fields.should include("blabla")
+      SubUser.keys.should include("blabla")
     end
   end
 end
