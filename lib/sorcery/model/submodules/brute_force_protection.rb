@@ -26,6 +26,9 @@ module Sorcery
           
           base.sorcery_config.before_authenticate << :prevent_locked_user_login
           base.sorcery_config.after_config << :define_brute_force_protection_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
+          if defined?(MongoMapper) and base.ancestors.include?(MongoMapper::Document)
+            base.sorcery_config.after_config << :define_brute_force_protection_mongo_mapper_fields
+          end
           base.extend(ClassMethods)
           base.send(:include, InstanceMethods)
         end
@@ -36,6 +39,11 @@ module Sorcery
           def define_brute_force_protection_mongoid_fields
             field sorcery_config.failed_logins_count_attribute_name,  :type => Integer
             field sorcery_config.lock_expires_at_attribute_name,      :type => DateTime
+          end
+
+          def define_brute_force_protection_mongo_mapper_fields
+            key sorcery_config.failed_logins_count_attribute_name, Integer
+            key sorcery_config.lock_expires_at_attribute_name, DateTime
           end
         end
         

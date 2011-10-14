@@ -1,0 +1,11 @@
+require 'rake'
+require 'rspec/core/rake_task'
+
+desc 'Default: Run all specs for a specific rails version.'
+task :default => :spec
+
+desc "Run all specs for a specific rails version"
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.pattern = '**/*_spec.rb'
+  t.rspec_opts = ["--options #{File.dirname(__FILE__)}/spec/spec.opts"]
+end

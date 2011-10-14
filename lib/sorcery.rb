@@ -5,6 +5,7 @@ module Sorcery
     module Adapters
       autoload :ActiveRecord, 'sorcery/model/adapters/active_record'
       autoload :Mongoid, 'sorcery/model/adapters/mongoid'
+      autoload :MongoMapper, 'sorcery/model/adapters/mongo_mapper'
     end
     module Submodules
       autoload :UserActivation, 'sorcery/model/submodules/user_activation'
@@ -75,6 +76,10 @@ module Sorcery
         include Sorcery::Model::Adapters::Mongoid
       end
     end
+  end
+
+  if defined?(MongoMapper)
+    MongoMapper::Document.send(:plugin, Sorcery::Model::Adapters::MongoMapper)
   end
 
   require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
