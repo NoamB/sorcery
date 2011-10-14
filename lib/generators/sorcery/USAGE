@@ -1,0 +1,22 @@
+Description:
+  Generates the necessary files to get you up and running with Sorcery gem
+  
+Examples:
+  rails generate sorcery:install
+
+    This will generate the core migration file, the initializer file and the 'User' model class.
+
+  rails generate sorcery:install remember_me reset_password
+
+    This will generate the migrations files for remember_me and reset_password submodules
+    and will create the initializer file (and add submodules to it), and create the 'User' model class.
+
+  rails generate sorcery:install --model Person
+
+    This will generate the core migration file, the initializer and change the model class
+    (in the initializer and migration files) to the class 'Person' (and it's pluralized version, 'people')
+
+  rails generate sorcery:install http_basic_auth external remember_me --migrations
+
+    This will generate only the migration files for the specified submodules and will
+    add them to the initializer file.
