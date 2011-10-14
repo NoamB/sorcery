@@ -12,6 +12,10 @@ module Sorcery
           def increment(attr)
             self.inc(attr,1)
           end
+          
+          def save!(options={})
+            save(options={})
+          end
         end
 
         module ClassMethods

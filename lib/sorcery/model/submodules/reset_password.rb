@@ -94,11 +94,7 @@ module Sorcery
             self.send(:"#{config.reset_password_token_expires_at_attribute_name}=", Time.now.utc + config.reset_password_expiration_period) if config.reset_password_expiration_period
             self.send(:"#{config.reset_password_email_sent_at_attribute_name}=", Time.now.utc)
             self.class.transaction do
-              if defined?(MongoMapper)
-                self.save(:validate => false)
-              else
-                self.save!(:validate => false)
-              end
+              self.save!(:validate => false)
               generic_send_email(:reset_password_email_method_name, :reset_password_mailer)
             end
           end
