@@ -2,10 +2,9 @@ module Sorcery
   module Model
     module Adapters
       module MongoMapper
-        extend ActiveSupport::Concern
-        
-        included do
-          include Sorcery::Model
+        def self.included(klass)
+          klass.extend ClassMethods
+          klass.send(:include, InstanceMethods)
         end
         
         module InstanceMethods

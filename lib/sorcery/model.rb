@@ -24,9 +24,7 @@ module Sorcery
             ::Sorcery::Controller::Config.user_config.tap{|blk| blk.call(@sorcery_config) if blk}
             
             init_mongoid_support! if defined?(Mongoid) and self.ancestors.include?(Mongoid::Document)
-            if defined?(MongoMapper) and self.ancestors.include?(MongoMapper::Document)
-              init_mongo_mapper_support!
-            end
+            init_mongo_mapper_support! if defined?(MongoMapper) and self.ancestors.include?(MongoMapper::Document)
 
             init_orm_hooks!
             
@@ -71,9 +69,7 @@ module Sorcery
               sorcery_config.username_attribute_names.each do |username|
                 key username, String
               end
-              email_attribute = sorcery_config.email_attribute_name
-              username_attributes = sorcery_config.username_attribute_names
-              key sorcery_config.email_attribute_name, String unless username_attributes.include?(email_attribute)
+              key sorcery_config.email_attribute_name, String unless username_attributes.include?(sorcery_config.email_attribute_name)
               key sorcery_config.crypted_password_attribute_name, String
               key sorcery_config.salt_attribute_name, String
             end

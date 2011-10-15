@@ -29,6 +29,7 @@ describe Sinatra::Application do
   describe Sinatra::Application, "when activated with sorcery" do
     
     before(:all) do
+      sorcery_reload!
       User.delete_all
       create_new_user
     end
