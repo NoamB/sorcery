@@ -1,6 +1,6 @@
 = sorcery
 Magical Authentication for Rails 3 and Sinatra.
-Supports ActiveRecord and Mongoid.
+Supports ActiveRecord, Mongoid and MongoMapper.
 
 Inspired by restful_authentication, Authlogic and Devise.
 Crypto code taken almost unchanged from Authlogic.
