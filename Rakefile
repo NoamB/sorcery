@@ -54,3 +54,16 @@ task :all_sorcery_specs do
     CMD
   end
 end
+
+desc "Bundle all folders"
+task :bundle do
+  sh "bundle"
+  Dir['spec/**'].each do |dir|
+    if Dir.exists?(dir) && File.exists?(dir + "/Gemfile")
+      sh <<-CMD
+        cd #{dir}
+        bundle
+      CMD
+    end
+  end
+end
