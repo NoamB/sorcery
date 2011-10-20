@@ -69,7 +69,7 @@ module Sorcery
               sorcery_config.username_attribute_names.each do |username|
                 key username, String
               end
-              key sorcery_config.email_attribute_name, String unless username_attributes.include?(sorcery_config.email_attribute_name)
+              key sorcery_config.email_attribute_name, String unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
               key sorcery_config.crypted_password_attribute_name, String
               key sorcery_config.salt_attribute_name, String
             end

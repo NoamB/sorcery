@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.3'
-gem "sorcery", '>= 0.1.0', :path => '../../../'
+gem "sorcery", '>= 0.1.0', :path => '../../'
 gem "mongoid", "~> 2.0"
 gem "bson_ext", "~> 1.3"
 

@@ -5,7 +5,7 @@ $: << File.join(File.dirname(__FILE__), '..', '..', 'lib' )
 ENV["RAILS_ENV"] ||= 'in_memory'  
 require File.expand_path("../../config/environment", __FILE__)  
 require 'rspec/rails'  
-require 'capybara/rspec'
+#require 'capybara/rspec'
 require 'timecop'
 # require 'simplecov'
 # SimpleCov.root File.join(File.dirname(__FILE__), "..", "..", "rails3" )
@@ -23,8 +23,6 @@ require 'timecop'
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
-
-
 
 RSpec.configure do |config|
   config.include RSpec::Rails::ControllerExampleGroup, :example_group => { :file_path => /controller(.)*_spec.rb$/ }

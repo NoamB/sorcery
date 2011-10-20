@@ -2,9 +2,10 @@ module Sorcery
   module Model
     module Adapters
       module MongoMapper
-        def self.included(klass)
-          klass.extend ClassMethods
-          klass.send(:include, InstanceMethods)
+        extend ActiveSupport::Concern
+        
+        included do
+          include Sorcery::Model
         end
         
         module InstanceMethods
@@ -12,8 +13,8 @@ module Sorcery
             self.inc(attr,1)
           end
           
-          def save!(options={})
-            save(options={})
+          def save!(options = {})
+            save(options)
           end
         end
 
