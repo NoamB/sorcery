@@ -37,9 +37,6 @@ module Sorcery
         end
       end
     end
-    module Adapters
-      autoload :Sinatra, 'sorcery/controller/adapters/sinatra'
-    end
   end
   module CryptoProviders
     autoload :Common, 'sorcery/crypto_providers/common'
@@ -53,12 +50,9 @@ module Sorcery
   autoload :TestHelpers, 'sorcery/test_helpers'
   module TestHelpers
     autoload :Rails, 'sorcery/test_helpers/rails'
-    autoload :Sinatra, 'sorcery/test_helpers/sinatra'
     autoload :Internal, 'sorcery/test_helpers/internal'
     module Internal
       autoload :Rails, 'sorcery/test_helpers/internal/rails'
-      autoload :Sinatra, 'sorcery/test_helpers/internal/sinatra'
-      autoload :SinatraModular, 'sorcery/test_helpers/internal/sinatra_modular'
     end
 
   end
@@ -83,5 +77,4 @@ module Sorcery
   end
 
   require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
-  require 'sorcery/sinatra' if defined?(Sinatra)
 end

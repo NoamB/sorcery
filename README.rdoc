@@ -1,5 +1,5 @@
 = sorcery
-Magical Authentication for Rails 3 and Sinatra.
+Magical Authentication for Rails 3.
 Supports ActiveRecord, Mongoid and MongoMapper.
 
 Inspired by restful_authentication, Authlogic and Devise.
@@ -27,8 +27,6 @@ Hopefully, I've achieved this. If not, let me know.
 Railscast: http://railscasts.com/episodes/283-authentication-with-sorcery
 
 Example Rails 3 app using sorcery: https://github.com/NoamB/sorcery-example-app
-
-Example Sinatra app using sorcery: https://github.com/NoamB/sorcery-example-app-sinatra
 
 Documentation: http://rubydoc.info/gems/sorcery/0.7.0/frames
 
@@ -126,32 +124,6 @@ Finally, add sorcery to the the model that you will use for authentication:
       authenticates_with_sorcery!
     end
     
-== Sinatra Configuration:
-
-
-For Sinatra you'll need to create the initializer manually. You can do it in the main app file or in a separate file you require (see example in example app). The code looks as follows:
-
-    Sorcery::Controller::Config.submodules = [] # specify here the submodules you want to include
-    
-    Sorcery::Controller::Config.configure do |config|
-      config.session_timeout = 10.minutes
-      ...
-      ...
-    
-      config.user_config do |user|
-        user.username_attribute_name                      = :email
-        ...
-    	...
-    	
-      end
-    end
-
-Finally, to make all the code above take effect, we'll need to re-include the sorcery controller module:
-
-    include Sorcery::Controller::Adapters::Sinatra
-    include Sorcery::Controller
-
-
 == Full Features List by module:
 
 
@@ -216,13 +188,6 @@ I've got some thoughts which include (unordered):
 Have an idea? Let me know, and it might get into the gem!
 
 
-Other stuff:
-* Improve specs speed
-* Provide an easy way to run specs after install
-* Improve documentation
-* Try to reduce the number of library methods, and find better names to some
-
-
 == Backward compatibility
 
 
@@ -243,6 +208,9 @@ Important notes while upgrading:
 
     # This line must come after the 'user config' block.
     config.user_class = User
+
+* Sinatra support existed until v0.7.0 (including), but was dropped later due to being a maintenance nightmare. 
+
 
 == Contributing to sorcery
 
