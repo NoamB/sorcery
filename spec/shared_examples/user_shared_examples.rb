@@ -56,7 +56,6 @@ shared_examples_for "rails_3_core_model" do
       sorcery_model_property_set(:stretches, stretches)
       User.sorcery_config.stretches.should equal(stretches)
     end
-  
   end
   
   # ----------------- PLUGIN ACTIVATED -----------------------
@@ -267,6 +266,35 @@ shared_examples_for "rails_3_core_model" do
       @user.crypted_password.should == Sorcery::CryptoProviders::SHA512.encrypt('secret',@user.salt)
     end
     
+  end
+  
+  describe User, "ORM adapter" do
+    before(:all) do
+      sorcery_reload!()
+      User.delete_all
+    end
+    
+    before(:each) do
+      create_new_user
+    end
+
+    after(:each) do
+      User.delete_all
+      User.sorcery_config.reset!
+    end
+
+    it "find_by_username should work as expected" do
+      User.find_by_username("gizmo").should == @user
+    end
+
+    it "find_by_username should work as expected with multiple username attributes" do
+      sorcery_model_property_set(:username_attribute_names, [:username, :email])
+      User.find_by_username("gizmo").should == @user
+    end
+
+    it "find_by_email should work as expected" do
+      User.find_by_email("bla@bla.com").should == @user
+    end
   end
 end
 

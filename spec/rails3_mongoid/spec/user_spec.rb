@@ -35,27 +35,4 @@ describe "User with no submodules (core)" do
     end
   end
   
-  describe User, "mongoid adapter" do
-    before(:each) do
-      create_new_user
-      @user = User.first
-    end
-    
-    after(:each) do
-      User.delete_all
-    end
-    
-    it "find_by_username should work as expected" do
-      User.find_by_username("gizmo").should == @user
-    end
-    
-    it "find_by_username should work as expected with multiple username attributes" do
-      sorcery_model_property_set(:username_attribute_names, [:username, :email])
-      User.find_by_username("gizmo").should == @user
-    end
-    
-    it "find_by_email should work as expected" do
-      User.find_by_username("bla@bla.com").should == @user
-    end
-  end
 end
