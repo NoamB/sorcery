@@ -57,9 +57,6 @@ Rails.application.config.sorcery.configure do |config|
   # config.github.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=github"
   # config.github.user_info_mapping = {:email => "name"}
 
-  # config.sinatra_cookie_secret = 'ch4ng3M3plz'                      # key used to sign cookies in Sinatra
-                                                                      # changing it will invalidate all signed cookies!        
-
   # --- user config ---
   config.user_config do |user|
     # -- core --

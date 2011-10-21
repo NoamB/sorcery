@@ -145,8 +145,6 @@ module Sorcery
 
                       :cookie_domain,                 # set domain option for cookies
 
-                      :sinatra_cookie_secret,         # used to sign cookies in Sinatra.
-
                       :login_sources,
                       :after_login,
                       :after_failed_login,
@@ -164,8 +162,7 @@ module Sorcery
             :@before_logout                        => [],
             :@after_logout                         => [],
             :@save_return_to_url                   => true,
-            :@cookie_domain                        => nil,
-            :@sinatra_cookie_secret                => 'ch4ng3M3plz'
+            :@cookie_domain                        => nil
           }
         end
 
