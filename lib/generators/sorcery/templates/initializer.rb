@@ -18,6 +18,9 @@ Rails.application.config.sorcery.configure do |config|
                                                                       # and send him there after login, using
                                                                       # 'redirect_back_or_to'.
 
+  # config.cookie_domain = nil                                        # set domain option for cookies
+                                                                      # Useful for remember_me submodule
+
   # -- session timeout --
   # config.session_timeout = 3600                                     # how long in seconds to keep the session alive.
   # config.session_timeout_from_last_action = false                   # use the last action as the beginning of
