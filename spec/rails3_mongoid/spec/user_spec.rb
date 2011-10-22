@@ -34,4 +34,5 @@ describe "User with no submodules (core)" do
       SubUser.fields.should include("blabla")
     end
   end
+  
 end

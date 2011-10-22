@@ -18,6 +18,9 @@ Rails.application.config.sorcery.configure do |config|
                                                                       # and send him there after login, using
                                                                       # 'redirect_back_or_to'.
 
+  # config.cookie_domain = nil                                        # set domain option for cookies
+                                                                      # Useful for remember_me submodule
+
   # -- session timeout --
   # config.session_timeout = 3600                                     # how long in seconds to keep the session alive.
   # config.session_timeout_from_last_action = false                   # use the last action as the beginning of
@@ -53,9 +56,6 @@ Rails.application.config.sorcery.configure do |config|
   # config.github.secret = ""
   # config.github.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=github"
   # config.github.user_info_mapping = {:email => "name"}
-
-  # config.sinatra_cookie_secret = 'ch4ng3M3plz'                      # key used to sign cookies in Sinatra
-                                                                      # changing it will invalidate all signed cookies!        
 
   # --- user config ---
   config.user_config do |user|

@@ -41,7 +41,7 @@ module Sorcery
 
           def find_by_username(username)
             query = sorcery_config.username_attribute_names.map {|name| {name => username}}
-            where(query).first
+            any_of(*query).first
           end
 
           def transaction(&blk)

@@ -59,7 +59,8 @@ module Sorcery
             cookies.signed[:remember_me_token] = { 
               :value => user.send(user.sorcery_config.remember_me_token_attribute_name), 
               :expires => user.send(user.sorcery_config.remember_me_token_expires_at_attribute_name),
-              :httponly => true
+              :httponly => true,
+              :domain => Config.cookie_domain
             }
           end
         end
