@@ -29,6 +29,8 @@ module Sorcery
 
           def find_by_id(id)
             find(id)
+          rescue ::Mongoid::Errors::DocumentNotFound
+            nil
           end
 
           def find_by_activation_token(token)

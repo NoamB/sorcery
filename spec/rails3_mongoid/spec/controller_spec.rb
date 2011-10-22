@@ -94,6 +94,17 @@ describe ApplicationController do
     end
     
     specify { should respond_to(:require_login) }
+
+    it "should call the configured 'not_authenticated_action' when session[:user_id] isn't found" do
+      # If someone passes in a bogus user_id than no big deal, but if a user is deleted
+      # and there is still an active session out there for him this causes problems.
+      user              = User.create(:email => 'test@example.com', :password => 'password')
+      session[:user_id] = user.id
+      user.destroy
+      sorcery_controller_property_set(:not_authenticated_action, :test_not_authenticated_action)
+      get :test_logout
+      response.body.should == "test_not_authenticated_action"      
+    end
     
     it "should call the configured 'not_authenticated_action' when authenticate before_filter fails" do
       session[:user_id] = nil
