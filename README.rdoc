@@ -114,6 +114,9 @@ This will generate the core migration file, the initializer and change the model
 This will generate only the migration files for the specified submodules and will
 add them to the initializer file.
     
+Inside the initializer, the comments will tell you what each setting does.
+
+
 == Full Features List by module:
 
 
