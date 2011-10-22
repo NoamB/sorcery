@@ -1,7 +1,7 @@
 PATH
   remote: ../../
   specs:
-    sorcery (0.7.0)
+    sorcery (0.7.1)
       bcrypt-ruby (~> 3.0.0)
       mongo_mapper
       oauth (~> 0.4.4)

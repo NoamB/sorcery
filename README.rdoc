@@ -28,7 +28,7 @@ Railscast: http://railscasts.com/episodes/283-authentication-with-sorcery
 
 Example Rails 3 app using sorcery: https://github.com/NoamB/sorcery-example-app
 
-Documentation: http://rubydoc.info/gems/sorcery/0.7.1/frames
+Documentation: http://rubydoc.info/gems/sorcery/0.7.2/frames
 
 Check out the tutorials in the github wiki!
 
