@@ -28,7 +28,7 @@ Railscast: http://railscasts.com/episodes/283-authentication-with-sorcery
 
 Example Rails 3 app using sorcery: https://github.com/NoamB/sorcery-example-app
 
-Documentation: http://rubydoc.info/gems/sorcery/0.7.0/frames
+Documentation: http://rubydoc.info/gems/sorcery/0.7.1/frames
 
 Check out the tutorials in the github wiki!
 
@@ -95,34 +95,24 @@ Otherwise simply
 
 == Rails 3 Configuration:
 
+    rails generate sorcery:install
 
-For Rails 3 create an initializer file using:
+This will generate the core migration file, the initializer file and the 'User' model class.
 
-    rake sorcery:bootstrap
+    rails generate sorcery:install remember_me reset_password
 
-This will create the file as config/initializers/sorcery.rb .
-Inside it the comments will tell you everything you need to know.
+This will generate the migrations files for remember_me and reset_password submodules
+and will create the initializer file (and add submodules to it), and create the 'User' model class.
 
-For your convenience, Sorcery includes a migrations generator for Rails, which can be used like so:
+	rails generate sorcery:install --model Person
 
-  rails g sorcery_migration [list of submodules]
+This will generate the core migration file, the initializer and change the model class
+(in the initializer and migration files) to the class 'Person' (and its pluralized version, 'people')
 
-Note: There is no migration for the session_timeout module. 
-For example, for only the core functionality use:
+	rails generate sorcery:install http_basic_auth external remember_me --migrations
 
-  rails g sorcery_migration core
-
-To generate migrations for both the core AND 'remember_me' submodule:
-
-  rails g sorcery_migration core remember_me
-
-These migrations use the default fields. You can choose to use these migrations or make your own tables and fields. Sorcery tries not to impose a database structure and naming scheme on your application.
-
-Finally, add sorcery to the the model that you will use for authentication:
-
-    class User < ActiveRecord::Base
-      authenticates_with_sorcery!
-    end
+This will generate only the migration files for the specified submodules and will
+add them to the initializer file.
     
 == Full Features List by module:
 
