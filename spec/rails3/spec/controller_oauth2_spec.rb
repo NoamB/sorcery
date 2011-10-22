@@ -5,7 +5,9 @@ def stub_all_oauth2_requests!
   @client = OAuth2::Client.new("key","secret", :site => "http://myapi.com")
   OAuth2::Client.stub!(:new).and_return(@client)
   @acc_token = OAuth2::AccessToken.new(@client, "asd", {})
-  @client.stub!(:get_token).and_return(@acc_token)
+  @webby = @client.web_server
+  OAuth2::Strategy::WebServer.stub!(:new).and_return(@webby)
+  @webby.stub!(:get_access_token).and_return(@acc_token)
   @acc_token.stub!(:get).and_return({"id"=>"123", "name"=>"Noam Ben Ari", "first_name"=>"Noam", "last_name"=>"Ben Ari", "link"=>"http://www.facebook.com/nbenari1", "hometown"=>{"id"=>"110619208966868", "name"=>"Haifa, Israel"}, "location"=>{"id"=>"106906559341067", "name"=>"Pardes Hanah, Hefa, Israel"}, "bio"=>"I'm a new daddy, and enjoying it!", "gender"=>"male", "email"=>"nbenari@gmail.com", "timezone"=>2, "locale"=>"en_US", "languages"=>[{"id"=>"108405449189952", "name"=>"Hebrew"}, {"id"=>"106059522759137", "name"=>"English"}, {"id"=>"112624162082677", "name"=>"Russian"}], "verified"=>true, "updated_time"=>"2011-02-16T20:59:38+0000"}.to_json)
 end
 
@@ -41,7 +43,7 @@ describe ApplicationController do
       create_new_user
       get :login_at_test2
       response.should be_a_redirect
-      response.should redirect_to("http://myapi.com/oauth/authorize?redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access")
+      response.should redirect_to("http://myapi.com/oauth/authorize?client_id=key&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&response_type=code")
     end
 
     it "'login_from' logins if user exists" do
@@ -63,7 +65,7 @@ describe ApplicationController do
       create_new_user
       get :login_at_test3
       response.should be_a_redirect
-      response.should redirect_to("http://myapi.com/oauth/authorize?redirect_uri=http%3A%2F%2Fblabla.com&scope=")
+      response.should redirect_to("http://myapi.com/oauth/authorize?client_id=key&redirect_uri=http%3A%2F%2Fblabla.com&scope=&response_type=code")
     end
 
     it "'login_from' logins if user exists (github)" do
