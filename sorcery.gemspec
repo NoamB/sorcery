@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "sorcery"
-  s.version = "0.7.0"
+  s.version = "0.7.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = "2011-10-20"
+  s.date = "2011-10-22"
   s.description = "Provides common authentication needs such as signing in/out, activating by email and resetting password."
   s.email = "nbenari@gmail.com"
   s.extra_rdoc_files = [
@@ -37,7 +37,6 @@ Gem::Specification.new do |s|
     "lib/generators/sorcery/templates/migration/user_activation.rb",
     "lib/sorcery.rb",
     "lib/sorcery/controller.rb",
-    "lib/sorcery/controller/adapters/sinatra.rb",
     "lib/sorcery/controller/submodules/activity_logging.rb",
     "lib/sorcery/controller/submodules/brute_force_protection.rb",
     "lib/sorcery/controller/submodules/external.rb",
@@ -76,11 +75,13 @@ Gem::Specification.new do |s|
     "lib/sorcery/test_helpers/rails.rb",
     "sorcery.gemspec",
     "spec/Gemfile",
+    "spec/Gemfile.lock",
     "spec/README.md",
     "spec/Rakefile",
     "spec/rails3/.gitignore",
     "spec/rails3/.rspec",
     "spec/rails3/Gemfile",
+    "spec/rails3/Gemfile.lock",
     "spec/rails3/README",
     "spec/rails3/Rakefile",
     "spec/rails3/app/controllers/application_controller.rb",
@@ -159,6 +160,7 @@ Gem::Specification.new do |s|
     "spec/rails3_mongo_mapper/.gitignore",
     "spec/rails3_mongo_mapper/.rspec",
     "spec/rails3_mongo_mapper/Gemfile",
+    "spec/rails3_mongo_mapper/Gemfile.lock",
     "spec/rails3_mongo_mapper/Rakefile",
     "spec/rails3_mongo_mapper/app/controllers/application_controller.rb",
     "spec/rails3_mongo_mapper/app/helpers/application_helper.rb",
@@ -220,6 +222,7 @@ Gem::Specification.new do |s|
     "spec/rails3_mongoid/.gitignore",
     "spec/rails3_mongoid/.rspec",
     "spec/rails3_mongoid/Gemfile",
+    "spec/rails3_mongoid/Gemfile.lock",
     "spec/rails3_mongoid/Rakefile",
     "spec/rails3_mongoid/app/controllers/application_controller.rb",
     "spec/rails3_mongoid/app/helpers/application_helper.rb",
@@ -266,6 +269,7 @@ Gem::Specification.new do |s|
     "spec/rails3_mongoid/public/robots.txt",
     "spec/rails3_mongoid/public/stylesheets/.gitkeep",
     "spec/rails3_mongoid/script/rails",
+    "spec/rails3_mongoid/spec/controller_activity_logging_spec.rb",
     "spec/rails3_mongoid/spec/controller_spec.rb",
     "spec/rails3_mongoid/spec/spec.opts",
     "spec/rails3_mongoid/spec/spec_helper.orig.rb",
