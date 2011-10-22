@@ -33,7 +33,7 @@ module Sorcery
         # Generate the model and add 'authenticates_with_sorcery!' unless you passed --migrations
         unless options[:migrations]
           generate "model #{model_class_name} --skip-migration"
-          insert_into_file "app/models/#{model_class_name}.rb", "  authenticates_with_sorcery!\n", :after => "class #{model_class_name} < ActiveRecord::Base\n"
+          insert_into_file "app/models/#{model_class_name.downcase}.rb", "  authenticates_with_sorcery!\n", :after => "class #{model_class_name} < ActiveRecord::Base\n"
         end
       end
 
