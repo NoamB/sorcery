@@ -30,7 +30,7 @@ module Sorcery
           # Runs as a hook after a successful login.
           def reset_failed_logins_count!(user, credentials)
             user.send(:"#{user_class.sorcery_config.failed_logins_count_attribute_name}=", 0)
-            user.save!
+            user.save!(:validate => false)
           end
         end
       end
