@@ -4,7 +4,6 @@ source "http://rubygems.org"
 #   gem "activesupport", ">= 2.3.5"
 gem 'oauth', "~> 0.4.4"
 gem 'oauth2', "~> 0.4.1"
-gem 'mongo_mapper'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
