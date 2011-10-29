@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = "2011-10-22"
+  s.date = "2011-10-29"
   s.description = "Provides common authentication needs such as signing in/out, activating by email and resetting password."
   s.email = "nbenari@gmail.com"
   s.extra_rdoc_files = [
@@ -307,11 +307,8 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<oauth>, ["~> 0.4.4"])
       s.add_runtime_dependency(%q<oauth2>, ["~> 0.4.1"])
-      s.add_runtime_dependency(%q<mongo_mapper>, [">= 0"])
       s.add_development_dependency(%q<rails>, [">= 3.0.0"])
       s.add_development_dependency(%q<json>, [">= 1.5.1"])
-      s.add_development_dependency(%q<mongoid>, ["~> 2.0"])
-      s.add_development_dependency(%q<bson_ext>, ["~> 1.3"])
       s.add_development_dependency(%q<rspec>, ["~> 2.5.0"])
       s.add_development_dependency(%q<rspec-rails>, ["~> 2.5.0"])
       s.add_development_dependency(%q<ruby-debug19>, [">= 0"])
@@ -327,11 +324,8 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<oauth>, ["~> 0.4.4"])
       s.add_dependency(%q<oauth2>, ["~> 0.4.1"])
-      s.add_dependency(%q<mongo_mapper>, [">= 0"])
       s.add_dependency(%q<rails>, [">= 3.0.0"])
       s.add_dependency(%q<json>, [">= 1.5.1"])
-      s.add_dependency(%q<mongoid>, ["~> 2.0"])
-      s.add_dependency(%q<bson_ext>, ["~> 1.3"])
       s.add_dependency(%q<rspec>, ["~> 2.5.0"])
       s.add_dependency(%q<rspec-rails>, ["~> 2.5.0"])
       s.add_dependency(%q<ruby-debug19>, [">= 0"])
@@ -348,11 +342,8 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<oauth>, ["~> 0.4.4"])
     s.add_dependency(%q<oauth2>, ["~> 0.4.1"])
-    s.add_dependency(%q<mongo_mapper>, [">= 0"])
     s.add_dependency(%q<rails>, [">= 3.0.0"])
     s.add_dependency(%q<json>, [">= 1.5.1"])
-    s.add_dependency(%q<mongoid>, ["~> 2.0"])
-    s.add_dependency(%q<bson_ext>, ["~> 1.3"])
     s.add_dependency(%q<rspec>, ["~> 2.5.0"])
     s.add_dependency(%q<rspec-rails>, ["~> 2.5.0"])
     s.add_dependency(%q<ruby-debug19>, [">= 0"])

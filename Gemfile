@@ -10,8 +10,6 @@ gem 'oauth2', "~> 0.4.1"
 group :development do
   gem "rails", ">= 3.0.0"
   gem 'json', ">= 1.5.1"
-  gem "mongoid", "~> 2.0"
-  gem "bson_ext", "~> 1.3"
   gem "rspec", "~> 2.5.0"
   gem 'rspec-rails', "~> 2.5.0"
   gem 'ruby-debug19'
