@@ -50,7 +50,7 @@ module Sorcery
           def remember_me!
             config = sorcery_config
             self.send(:"#{config.remember_me_token_attribute_name}=", TemporaryToken.generate_random_token)
-            self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", Time.now + config.remember_me_for)
+            self.send(:"#{config.remember_me_token_expires_at_attribute_name}=", Time.now.in_time_zone + config.remember_me_for)
             self.save!(:validate => false)
           end
           

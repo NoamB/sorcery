@@ -20,7 +20,7 @@ module Sorcery
           return nil if token.blank?
           user = find_by_sorcery_token(token_attr_name,token)
           if !user.blank? && !user.send(token_expiration_date_attr).nil?
-            return Time.now.utc < user.send(token_expiration_date_attr) ? user : nil
+            return Time.now.in_time_zone < user.send(token_expiration_date_attr) ? user : nil
           end
           user
         end

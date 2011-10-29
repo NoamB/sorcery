@@ -93,7 +93,7 @@ shared_examples_for "rails_3_reset_password_model" do
       create_new_user
       sorcery_model_property_set(:reset_password_expiration_period, 0.1)
       @user.deliver_reset_password_instructions!
-      Timecop.travel(Time.now+0.5)
+      Timecop.travel(Time.now.in_time_zone+0.5)
       User.load_from_reset_password_token(@user.reset_password_token).should == nil
     end
     
@@ -157,7 +157,7 @@ shared_examples_for "rails_3_reset_password_model" do
       old_size = ActionMailer::Base.deliveries.size
       @user.deliver_reset_password_instructions!
       ActionMailer::Base.deliveries.size.should == old_size + 1
-      Timecop.travel(Time.now+0.5)
+      Timecop.travel(Time.now.in_time_zone+0.5)
       @user.deliver_reset_password_instructions!
       ActionMailer::Base.deliveries.size.should == old_size + 2
     end

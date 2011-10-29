@@ -62,7 +62,7 @@ module Sorcery
 
           def lock!
             config = sorcery_config
-            self.send(:"#{config.lock_expires_at_attribute_name}=", Time.now.utc + config.login_lock_time_period)
+            self.send(:"#{config.lock_expires_at_attribute_name}=", Time.now.in_time_zone + config.login_lock_time_period)
             self.save!(validate: false)
           end
 
@@ -83,7 +83,7 @@ module Sorcery
           def prevent_locked_user_login
             config = sorcery_config
             if !self.unlocked? && config.login_lock_time_period != 0
-              self.unlock! if self.send(config.lock_expires_at_attribute_name) <= Time.now.utc
+              self.unlock! if self.send(config.lock_expires_at_attribute_name) <= Time.now.in_time_zone
             end
             unlocked?
           end

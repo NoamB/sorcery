@@ -30,18 +30,18 @@ module Sorcery
           # Registers last login to be used as the timeout starting point.
           # Runs as a hook after a successful login.
           def register_login_time(user, credentials)
-            session[:login_time] = session[:last_action_time] = Time.now.utc
+            session[:login_time] = session[:last_action_time] = Time.now.in_time_zone
           end
           
           # Checks if session timeout was reached and expires the current session if so.
           # To be used as a before_filter, before require_login
           def validate_session
             session_to_use = Config.session_timeout_from_last_action ? session[:last_action_time] : session[:login_time]
-            if session_to_use && (Time.now.utc - session_to_use > Config.session_timeout)
+            if session_to_use && (Time.now.in_time_zone - session_to_use > Config.session_timeout)
               reset_session
               @current_user = nil
             else
-              session[:last_action_time] = Time.now.utc
+              session[:last_action_time] = Time.now.in_time_zone
             end
           end
 

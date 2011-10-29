@@ -47,7 +47,7 @@ describe ApplicationController do
       get :test_login, :username => 'gizmo', :password => 'blabla'
       get :test_login, :username => 'gizmo', :password => 'blabla'
       User.find_by_username('gizmo').lock_expires_at.should_not be_nil
-      Timecop.travel(Time.now + 0.3)
+      Timecop.travel(Time.now.in_time_zone + 0.3)
       get :test_login, :username => 'gizmo', :password => 'blabla'
       User.find_by_username('gizmo').lock_expires_at.should be_nil
     end
@@ -58,7 +58,7 @@ describe ApplicationController do
       get :test_login, :username => 'gizmo', :password => 'blabla'
       get :test_login, :username => 'gizmo', :password => 'blabla'
       unlock_date = User.find_by_username('gizmo').lock_expires_at
-      Timecop.travel(Time.now + 1)
+      Timecop.travel(Time.now.in_time_zone + 1)
       get :test_login, :username => 'gizmo', :password => 'blabla'
       User.find_by_username('gizmo').lock_expires_at.to_s.should == unlock_date.to_s
     end

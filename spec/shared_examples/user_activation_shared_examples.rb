@@ -155,7 +155,7 @@ shared_examples_for "rails_3_activation_model" do
     it "load_from_activation_token should NOT return user when token is found and expired" do
       sorcery_model_property_set(:activation_token_expiration_period, 0.1)
       create_new_user
-      Timecop.travel(Time.now+0.5)
+      Timecop.travel(Time.now.in_time_zone+0.5)
       User.load_from_activation_token(@user.activation_token).should == nil
     end
     

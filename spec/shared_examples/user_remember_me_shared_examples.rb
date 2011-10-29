@@ -34,7 +34,7 @@ shared_examples_for "rails_3_remember_me_model" do
     it "should set an expiration based on 'remember_me_for' attribute" do
       sorcery_model_property_set(:remember_me_for, 2 * 60 * 60 * 24)
       @user.remember_me!
-      @user.remember_me_token_expires_at.utc.to_s.should == (Time.now + 2 * 60 * 60 * 24).utc.to_s
+      @user.remember_me_token_expires_at.utc.to_s.should == (Time.now.in_time_zone + 2 * 60 * 60 * 24).utc.to_s
     end
     
     it "should delete the token and expiration on 'forget_me!'" do
