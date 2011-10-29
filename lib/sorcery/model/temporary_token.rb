@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module Sorcery
   module Model
     # This module encapsulates the logic for temporary token.
@@ -10,7 +12,7 @@ module Sorcery
       
       # Random code, used for salt and temporary tokens.
       def self.generate_random_token
-        Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+        SecureRandom.base64(15).tr('+/=lIO0', 'pqrsxyz')
       end
       
       module ClassMethods
