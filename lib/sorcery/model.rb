@@ -106,6 +106,9 @@ module Sorcery
         raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
         credentials[0].downcase! if @sorcery_config.downcase_username_before_authenticating
         user = find_by_credentials(credentials)
+
+        set_encryption_attributes()
+
         _salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil? && !@sorcery_config.encryption_provider.nil?
         user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && credentials_match?(user.send(@sorcery_config.crypted_password_attribute_name),credentials[1],_salt)
       end
@@ -114,14 +117,19 @@ module Sorcery
       def encrypt(*tokens)
         return tokens.first if @sorcery_config.encryption_provider.nil?
         
-        @sorcery_config.encryption_provider.stretches = @sorcery_config.stretches if @sorcery_config.encryption_provider.respond_to?(:stretches) && @sorcery_config.stretches
-        @sorcery_config.encryption_provider.join_token = @sorcery_config.salt_join_token if @sorcery_config.encryption_provider.respond_to?(:join_token) && @sorcery_config.salt_join_token
+        set_encryption_attributes()
+
         CryptoProviders::AES256.key = @sorcery_config.encryption_key
         @sorcery_config.encryption_provider.encrypt(*tokens)
       end
       
       protected
-      
+
+      def set_encryption_attributes()
+        @sorcery_config.encryption_provider.stretches = @sorcery_config.stretches if @sorcery_config.encryption_provider.respond_to?(:stretches) && @sorcery_config.stretches
+        @sorcery_config.encryption_provider.join_token = @sorcery_config.salt_join_token if @sorcery_config.encryption_provider.respond_to?(:join_token) && @sorcery_config.salt_join_token
+      end
+
       # Calls the configured encryption provider to compare the supplied password with the encrypted one.
       def credentials_match?(crypted, *tokens)
         return crypted == tokens.join if @sorcery_config.encryption_provider.nil?
