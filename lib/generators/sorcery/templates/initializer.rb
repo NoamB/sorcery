@@ -69,6 +69,10 @@ Rails.application.config.sorcery.configure do |config|
                                                                                       # until an encrypted one is
                                                                                       # generated.
 
+    # user.downcase_username_before_authenticating = false                            # downcase the username before 
+                                                                                      # trying to authenticate, default
+                                                                                      # is false
+
     # user.email_attribute_name = :email                                              # change default email attribute.
 
     # user.crypted_password_attribute_name =  :crypted_password                       # change default crypted_password
