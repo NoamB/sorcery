@@ -83,6 +83,21 @@ describe ApplicationController do
       session[:user_id].should == @user.id
     end
 
+    it "login(username,password) should return nil and not set the session when user was created with upper case username, config is default, and log in username is lower case" do
+      create_new_user({:username => 'GIZMO1', :email => "bla1@bla.com", :password => 'secret1'})
+      get :test_login, :username => 'gizmo1', :password => 'secret1'
+      assigns[:user].should be_nil
+      session[:user_id].should be_nil
+    end
+
+    it "login(username,password) should return the user and set the session with user.id when user was created with upper case username and config is downcase before authenticating" do
+      sorcery_model_property_set(:downcase_username_before_authenticating, true)
+      create_new_user({:username => 'GIZMO1', :email => "bla1@bla.com", :password => 'secret1'})
+      get :test_login, :username => 'gizmo1', :password => 'secret1'
+      assigns[:user].should == @user
+      session[:user_id].should == @user.id
+    end
+
     it "logout should clear the session" do
       cookies[:remember_me_token] = nil
       session[:user_id] = @user.id

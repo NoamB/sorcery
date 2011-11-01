@@ -30,11 +30,16 @@ describe ApplicationController do
     before(:all) do
       sorcery_reload!
       User.delete_all
+    end
+
+    before(:each) do
       create_new_user
     end
   
     after(:each) do
       Sorcery::Controller::Config.reset!
+      sorcery_reload!
+      User.delete_all
       sorcery_controller_property_set(:user_class, User)
       sorcery_model_property_set(:username_attribute_names, [:username, :email])
     end
@@ -74,6 +79,21 @@ describe ApplicationController do
     it "login(username,password) should return the user and set the session with user.id when upper case username and config is downcase before authenticating" do
       sorcery_model_property_set(:downcase_username_before_authenticating, true)
       get :test_login, :username => 'GIZMO', :password => 'secret'
+      assigns[:user].should == @user
+      session[:user_id].should == @user.id
+    end
+
+    it "login(username,password) should return nil and not set the session when user was created with upper case username, config is default, and log in username is lower case" do
+      create_new_user({:username => 'GIZMO1', :email => "bla1@bla.com", :password => 'secret1'})
+      get :test_login, :username => 'gizmo1', :password => 'secret1'
+      assigns[:user].should be_nil
+      session[:user_id].should be_nil
+    end
+
+    it "login(username,password) should return the user and set the session with user.id when user was created with upper case username and config is downcase before authenticating" do
+      sorcery_model_property_set(:downcase_username_before_authenticating, true)
+      create_new_user({:username => 'GIZMO1', :email => "bla1@bla.com", :password => 'secret1'})
+      get :test_login, :username => 'gizmo1', :password => 'secret1'
       assigns[:user].should == @user
       session[:user_id].should == @user.id
     end

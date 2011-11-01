@@ -29,7 +29,6 @@ module Sorcery
       # Takes credentials and returns a user on successful authentication.
       # Runs hooks after login or failed login.
       def login(*credentials)
-        logger.info(credentials)
         user = user_class.authenticate(*credentials)
         if user
           return_to_url = session[:return_to_url]
