@@ -54,7 +54,7 @@ module Sorcery
             config = sorcery_config
             return if !unlocked?
             self.increment(config.failed_logins_count_attribute_name)
-            save!(:validate => false)
+            self.save!(:validate => false)
             self.lock! if self.send(config.failed_logins_count_attribute_name) >= config.consecutive_login_retries_amount_limit
           end
           
@@ -63,14 +63,14 @@ module Sorcery
           def lock!
             config = sorcery_config
             self.send(:"#{config.lock_expires_at_attribute_name}=", Time.now.in_time_zone + config.login_lock_time_period)
-            self.save!(validate: false)
+            self.save!(:validate => false)
           end
 
           def unlock!
             config = sorcery_config
             self.send(:"#{config.lock_expires_at_attribute_name}=", nil)
             self.send(:"#{config.failed_logins_count_attribute_name}=", 0)
-            self.save!(validate: false)
+            self.save!(:validate => false)
           end
           
           def unlocked?
