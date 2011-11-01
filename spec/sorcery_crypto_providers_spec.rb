@@ -54,7 +54,11 @@ describe "Crypto Providers wrappers" do
     it "matches? returns false when no match" do
       Sorcery::CryptoProviders::SHA1.matches?(@digest, 'Some Dude').should be_false
     end
-    
+
+    it "matches password encrypted using salt and join token from upstream" do
+      Sorcery::CryptoProviders::SHA1.join_token = "test"
+      Sorcery::CryptoProviders::SHA1.encrypt(['password', 'gq18WBnJYNh2arkC1kgH']).should == '894b5bf1643b8d0e1b2eaddb22426be7036dab70'
+    end
   end
 
   describe Sorcery::CryptoProviders::SHA256 do
