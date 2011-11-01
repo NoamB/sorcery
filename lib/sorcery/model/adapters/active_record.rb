@@ -7,8 +7,13 @@ module Sorcery
         end
 
         module ClassMethods
+          def column_name(attribute)
+            return "LOWER(#{attribute})" if (@sorcery_config.downcase_username_before_authenticating)
+            return "#{attribute}"
+          end
+
           def find_by_credentials(credentials)
-             sql = @sorcery_config.username_attribute_names.map{|attribute| "#{attribute} = :login"}
+             sql = @sorcery_config.username_attribute_names.map{|attribute| column_name(attribute) + " = :login"}
              where(sql.join(' OR '), :login => credentials[0]).first
           end
 

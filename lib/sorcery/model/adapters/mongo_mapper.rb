@@ -19,9 +19,14 @@ module Sorcery
         end
 
         module ClassMethods
+          def credential_regex(credential)
+            return { :$regex =>  /^#{credential}$/i  }  if (@sorcery_config.downcase_username_before_authenticating)
+            return credential
+          end
+
           def find_by_credentials(credentials)
             @sorcery_config.username_attribute_names.each do |attribute|
-              @user = where(attribute => credentials[0]).first
+              @user = where(attribute => credential_regex(credentials[0])).first
               break if @user
             end
             @user

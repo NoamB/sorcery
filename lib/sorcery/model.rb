@@ -104,6 +104,7 @@ module Sorcery
       # returns the user if success, nil otherwise.
       def authenticate(*credentials)
         raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
+        credentials[0].downcase! if @sorcery_config.downcase_username_before_authenticating
         user = find_by_credentials(credentials)
         _salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil? && !@sorcery_config.encryption_provider.nil?
         user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && credentials_match?(user.send(@sorcery_config.crypted_password_attribute_name),credentials[1],_salt)
@@ -193,6 +194,9 @@ module Sorcery
                                                         # until an encrypted one is generated.
                                                         
                     :email_attribute_name,              # change default email attribute.
+
+                    :downcase_username_before_authenticating, # downcase the username before trying to authenticate, default is false
+
                     :crypted_password_attribute_name,   # change default crypted_password attribute.
                     :salt_join_token,                   # what pattern to use to join the password with the salt
                     :salt_attribute_name,               # change default salt attribute.
@@ -220,6 +224,7 @@ module Sorcery
           :@submodules                           => [],
           :@username_attribute_names              => [:username],
           :@password_attribute_name              => :password,
+          :@downcase_username_before_authenticating => false,
           :@email_attribute_name                 => :email,
           :@crypted_password_attribute_name      => :crypted_password,
           :@encryption_algorithm                 => :bcrypt,
