@@ -106,18 +106,19 @@ module Sorcery
         raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
         credentials[0].downcase! if @sorcery_config.downcase_username_before_authenticating
 
-        user = find_by_credentials(credentials)
-        set_encryption_attributes()
+        return nil unless user = find_by_credentials(credentials)
+        crypted_password = user.send(@sorcery_config.crypted_password_attribute_name)
 
-        return nil if user.nil?
-
+        set_encryption_attributes
         if @sorcery_config.salt_attribute_name.present? && @sorcery_config.encryption_provider.present?
           _salt = user.send(@sorcery_config.salt_attribute_name)
         end
 
-        before_auth = @sorcery_config.before_authenticate.all? { |c| user.send(c) }
+        # e.g. bruteforce prevention, locked out users.
+        return nil unless @sorcery_config.before_authenticate.all? { |c| user.send(c) }
 
-        if before_auth && credentials_match?(user.send(@sorcery_config.crypted_password_attribute_name), credentials[1], _salt)
+        # now the comparison
+        if credentials_match?(crypted_password, credentials[1], _salt)
           return user
         else
           return nil
@@ -137,7 +138,7 @@ module Sorcery
       protected
 
       def set_encryption_attributes
-        attrs = [:stretches, :join_token]
+        attrs = [:stretches, :join_token, :pepper_key]
 
         attrs.each do |attr|
           if @sorcery_config.encryption_provider.respond_to?(attr) && @sorcery_config.send(attr).present?
@@ -148,8 +149,12 @@ module Sorcery
 
       # Calls the configured encryption provider to compare the supplied password with the encrypted one.
       def credentials_match?(crypted, *tokens)
-        return crypted == tokens.join if @sorcery_config.encryption_provider.nil?
-        @sorcery_config.encryption_provider.matches?(crypted, *tokens)
+        #FIXME: perhaps there's a not-encrypted-provider?
+        if @sorcery_config.encryption_provider.nil?
+          crypted == tokens.join
+        else
+          @sorcery_config.encryption_provider.matches?(crypted, *tokens)
+        end
       end
 
       def add_config_inheritance
@@ -186,8 +191,11 @@ module Sorcery
       # encrypts password with salt and saves it.
       def encrypt_password
         config = sorcery_config
-        self.send(:"#{config.salt_attribute_name}=", new_salt = TemporaryToken.generate_random_token) if !config.salt_attribute_name.nil?
-        self.send(:"#{config.crypted_password_attribute_name}=", self.class.encrypt(self.send(config.password_attribute_name),new_salt))
+        _salt  = TemporaryToken.generate_random_token # this seems wrong
+        _pass  = self.class.encrypt(self.send(config.password_attribute_name), _salt)
+
+        self.send(:"#{config.salt_attribute_name}=", _salt) if !config.salt_attribute_name.nil?
+        self.send(:"#{config.crypted_password_attribute_name}=", _pass)
       end
 
       def clear_virtual_password
@@ -224,6 +232,7 @@ module Sorcery
                     :crypted_password_attribute_name,   # change default crypted_password attribute.
                     :salt_join_token,                   # what pattern to use to join the password with the salt
                     :salt_attribute_name,               # change default salt attribute.
+                    :pepper_key,                        # an optional pepper which can be used to enhance security (see: devise)
                     :stretches,                         # how many times to apply encryption to the password.
                     :encryption_key,                    # encryption key used to encrypt reversible encryptions such as
                                                         # AES256.
@@ -255,6 +264,7 @@ module Sorcery
           :@encryption_provider                  => CryptoProviders::BCrypt,
           :@custom_encryption_provider           => nil,
           :@encryption_key                       => nil,
+          :pepper_key                            => nil,
           :@salt_join_token                      => "",
           :@salt_attribute_name                  => :salt,
           :@stretches                            => nil,

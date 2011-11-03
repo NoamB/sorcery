@@ -47,7 +47,17 @@ module Sorcery
         def cost
           @cost ||= 10
         end
-        attr_writer :cost
+
+        # devise has a strategy for storing a pepper - a code defined string
+        # that acts as a salt, but it isn't per user. The idea behind this is
+        # if a db gets stolen, it is possible the code would not be disclosed,
+        # offering a weak second level of security.
+        def pepper
+          @pepper_key || nil
+        end
+
+        attr_writer :cost, :pepper_key
+
         alias :stretches= :cost=
 
         # Creates a BCrypt hash for the password passed.
@@ -63,7 +73,10 @@ module Sorcery
         # Does the hash match the tokens? Uses the same tokens that were used to encrypt.
         def matches?(hash, *tokens)
           hash = new_from_hash(hash)
+
+          #return if the hash is nil or empty to save time
           return false if hash.nil? || hash == {}
+
           test = hash_secret(hash.salt, tokens)
           secure_compare(hash, test)
         end
@@ -86,6 +99,7 @@ module Sorcery
         private
 
         def join_tokens(tokens)
+          tokens << pepper
           tokens.flatten.join
         end
 

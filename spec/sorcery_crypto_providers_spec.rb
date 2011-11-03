@@ -182,6 +182,41 @@ describe "Crypto Providers wrappers" do
       Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Some Dude').should be_false
     end
 
+    context 'with a pepper' do
+      before(:all) do
+        Sorcery::CryptoProviders::BCrypt.cost = 1
+        @pepper = "a-reasonably-long-string"
+        @digest = BCrypt::Password.create("Noam Ben-Ari#{@pepper}", :cost => Sorcery::CryptoProviders::BCrypt.cost)
+      end
+
+      it "matches? returns true with a valid pepper and valid password" do
+        Sorcery::CryptoProviders::BCrypt.pepper_key = @pepper
+        Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Noam Ben-Ari').should be_true
+      end
+
+      it "matches? returns false with a valid pepper and invalid password" do
+        Sorcery::CryptoProviders::BCrypt.pepper_key = @pepper
+        Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Some Dude').should be_false
+      end
+
+      it "matches? returns false with an invalid pepper and valid password" do
+        Sorcery::CryptoProviders::BCrypt.pepper_key = "sdfsdf"
+        Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Noam Ben-Ari').should be_false
+      end
+
+      it "matches? returns false with an invalid pepper and invalid password" do
+        Sorcery::CryptoProviders::BCrypt.pepper_key = 'sdfsdf'
+        Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Some Dude').should be_false
+      end
+
+      it "matches? returns false without a pepper and valid password" do
+        Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Noam Ben-Ari').should be_false
+      end
+
+      it "matches? returns false without a pepper and invalid password" do
+        Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Some Dude').should be_false
+      end
+    end
   end
 
 end
