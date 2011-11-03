@@ -141,8 +141,8 @@ module Sorcery
         attrs = [:stretches, :join_token, :pepper_key]
 
         attrs.each do |attr|
-          if @sorcery_config.encryption_provider.respond_to?(attr) && @sorcery_config.send(attr).present?
-            @sorcery_config.encryption_provider.send("#{attr}=", @sorcery_config.send(attr))
+          if @sorcery_config.encryption_provider.respond_to?("#{attr.to_s}=") && @sorcery_config.send(attr).present?
+            @sorcery_config.encryption_provider.send("#{attr.to_s}=", @sorcery_config.send(attr))
           end
         end
       end

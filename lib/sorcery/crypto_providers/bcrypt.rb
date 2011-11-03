@@ -57,7 +57,6 @@ module Sorcery
         end
 
         attr_writer :cost, :pepper_key
-
         alias :stretches= :cost=
 
         # Creates a BCrypt hash for the password passed.
