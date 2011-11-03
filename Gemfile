@@ -8,12 +8,12 @@ gem 'bcrypt-ruby'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
-group :development do
+group :development, :test do
   gem "rails", ">= 3.0.0"
   gem 'json', ">= 1.5.1"
   gem "rspec", "~> 2.5.0"
   gem 'rspec-rails', "~> 2.5.0"
-
+  gem 'awesome_print'
   gem 'ruby-debug', :platform => :ruby_18
   gem 'ruby-debug19', :platform => :ruby_19
 
