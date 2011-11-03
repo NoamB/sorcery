@@ -264,7 +264,7 @@ module Sorcery
           :@encryption_provider                  => CryptoProviders::BCrypt,
           :@custom_encryption_provider           => nil,
           :@encryption_key                       => nil,
-          :pepper_key                            => nil,
+          :@pepper_key                            => nil,
           :@salt_join_token                      => "",
           :@salt_attribute_name                  => :salt,
           :@stretches                            => nil,
