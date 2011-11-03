@@ -76,6 +76,7 @@ module Sorcery
           #return if the hash is nil or empty to save time
           return false if hash.nil? || hash == {}
 
+          tokens = tokens.first # we no longer use the salt from the tokens
           test = hash_secret(hash.salt, tokens)
           secure_compare(hash, test)
         end
