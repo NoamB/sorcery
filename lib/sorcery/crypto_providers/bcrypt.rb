@@ -40,7 +40,7 @@ module Sorcery
     # You are good to go!
     class BCrypt
       class << self
-        # This is the :cost option for the BCrpyt library.
+        # This is the :cost option for the BCrypt library.
         # The higher the cost the more secure it is and the longer is take the generate a hash. By default this is 10.
         # Set this to whatever you want, play around with it to get that perfect balance between
         # security and performance.
@@ -55,11 +55,17 @@ module Sorcery
           ::BCrypt::Password.create(join_tokens(tokens), :cost => cost)
         end
 
+        # Creates a hashed secret given a salt
+        def hash_secret(salt, *tokens)
+          ::BCrypt::Engine.hash_secret(join_tokens(tokens), salt, cost)
+        end
+
         # Does the hash match the tokens? Uses the same tokens that were used to encrypt.
         def matches?(hash, *tokens)
           hash = new_from_hash(hash)
           return false if hash.nil? || hash == {}
-          hash == join_tokens(tokens)
+          test = hash_secret(hash.salt, tokens)
+          secure_compare(hash, test)
         end
 
         # This method is used as a flag to tell Sorcery to "resave" the password
@@ -89,6 +95,24 @@ module Sorcery
           rescue ::BCrypt::Errors::InvalidHash
             return nil
           end
+        end
+
+        # constant-time comparison algorithm to prevent timing attacks,
+        # taken from devise at:
+        # https://github.com/plataformatec/devise/blob/d448e7d841d578045d8d5bf2a1184119ce77a359/lib/devise.rb#L428
+        def secure_compare(a, b)
+          # ensure both are strings
+          a = a.to_s
+          b = b.to_s
+          # quick return if we can't run the compare
+          return false if a.empty? || b.empty? || a.bytesize != b.bytesize
+
+          # then perform constant time comparison
+          l = a.unpack "C#{a.bytesize}"
+
+          res = 0
+          b.each_byte { |byte| res |= byte ^ l.shift }
+          res == 0
         end
       end
     end
