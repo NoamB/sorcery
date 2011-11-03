@@ -150,6 +150,14 @@ shared_examples_for "rails_3_reset_password_model" do
       @user.deliver_reset_password_instructions!
       ActionMailer::Base.deliveries.size.should == old_size + 1
     end
+
+    it "should return false if time between emails has not passed since last email" do
+      create_new_user
+      sorcery_model_property_set(:reset_password_time_between_emails, 10000)
+      old_size = ActionMailer::Base.deliveries.size
+      @user.deliver_reset_password_instructions!
+      @user.deliver_reset_password_instructions!.should == false
+    end
     
     it "should send an email if time between emails has passed since last email" do
       create_new_user
