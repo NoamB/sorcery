@@ -105,12 +105,23 @@ module Sorcery
       def authenticate(*credentials)
         raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
         credentials[0].downcase! if @sorcery_config.downcase_username_before_authenticating
-        user = find_by_credentials(credentials)
 
+        user = find_by_credentials(credentials)
         set_encryption_attributes()
 
-        _salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil? && !@sorcery_config.encryption_provider.nil?
-        user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && credentials_match?(user.send(@sorcery_config.crypted_password_attribute_name),credentials[1],_salt)
+        return nil if user.nil?
+
+        if @sorcery_config.salt_attribute_name.present? && @sorcery_config.encryption_provider.present?
+          _salt = user.send(@sorcery_config.salt_attribute_name)
+        end
+
+        before_auth = @sorcery_config.before_authenticate.all? { |c| user.send(c) }
+
+        if before_auth && credentials_match?(user.send(@sorcery_config.crypted_password_attribute_name), credentials[1], _salt)
+          return user
+        else
+          return nil
+        end
       end
 
       # encrypt tokens using current encryption_provider.
