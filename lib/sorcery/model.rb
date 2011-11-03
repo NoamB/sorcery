@@ -128,7 +128,7 @@ module Sorcery
       def encrypt(*tokens)
         return tokens.first if @sorcery_config.encryption_provider.nil?
 
-        set_encryption_attributes()
+        set_encryption_attributes
 
         CryptoProviders::AES256.key = @sorcery_config.encryption_key
         @sorcery_config.encryption_provider.encrypt(*tokens)
@@ -136,9 +136,14 @@ module Sorcery
 
       protected
 
-      def set_encryption_attributes()
-        @sorcery_config.encryption_provider.stretches = @sorcery_config.stretches if @sorcery_config.encryption_provider.respond_to?(:stretches) && @sorcery_config.stretches
-        @sorcery_config.encryption_provider.join_token = @sorcery_config.salt_join_token if @sorcery_config.encryption_provider.respond_to?(:join_token) && @sorcery_config.salt_join_token
+      def set_encryption_attributes
+        attrs = [:stretches, :join_token]
+
+        attrs.each do |attr|
+          if @sorcery_config.encryption_provider.respond_to?(attr) && @sorcery_config.send(attr).present?
+            @sorcery_config.encryption_provider.send("#{attr}=", @sorcery_config.send(attr))
+          end
+        end
       end
 
       # Calls the configured encryption provider to compare the supplied password with the encrypted one.
