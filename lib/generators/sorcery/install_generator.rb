@@ -39,6 +39,9 @@ module Sorcery
 
       # Copy the migrations files to db/migrate folder
       def copy_migration_files
+        # Copy core migration file in all cases except when you pass --migrations.
+        migration_template "migration/core.rb", "db/migrate/sorcery_core.rb" unless options[:migrations]
+
         if submodules
           submodules.each do |submodule|
             unless submodule == "http_basic_auth" || submodule == "session_timeout"
@@ -47,8 +50,7 @@ module Sorcery
           end
         end
         
-        # Copy core migration file in all cases except when you pass --migrations.
-        migration_template "migration/core.rb", "db/migrate/sorcery_core.rb" unless options[:migrations]
+
       end
       
       # Define the next_migration_number method (necessary for the migration_template method to work)
