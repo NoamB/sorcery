@@ -72,13 +72,12 @@ module Sorcery
 
           def define_reset_password_mongoid_fields
             field sorcery_config.reset_password_token_attribute_name,             :type => String
-            field sorcery_config.reset_password_token_expires_at_attribute_name,  :type => DateTime
-            field sorcery_config.reset_password_email_sent_at_attribute_name,     :type => DateTime
+            field sorcery_config.reset_password_token_expires_at_attribute_name,  :type => Time
+            field sorcery_config.reset_password_email_sent_at_attribute_name,     :type => Time
           end
           
           def define_reset_password_mongo_mapper_fields
             key sorcery_config.reset_password_token_attribute_name, String
-            # no DateTime in MM
             key sorcery_config.reset_password_token_expires_at_attribute_name, Time
             key sorcery_config.reset_password_email_sent_at_attribute_name, Time
           end
@@ -89,7 +88,7 @@ module Sorcery
           def deliver_reset_password_instructions!
             config = sorcery_config
             # hammering protection
-            return if config.reset_password_time_between_emails && self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.ago.utc
+            return false if config.reset_password_time_between_emails && self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.ago.utc
             self.send(:"#{config.reset_password_token_attribute_name}=", TemporaryToken.generate_random_token)
             self.send(:"#{config.reset_password_token_expires_at_attribute_name}=", Time.now.in_time_zone + config.reset_password_expiration_period) if config.reset_password_expiration_period
             self.send(:"#{config.reset_password_email_sent_at_attribute_name}=", Time.now.in_time_zone)
