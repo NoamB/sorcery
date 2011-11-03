@@ -72,13 +72,12 @@ module Sorcery
 
           def define_reset_password_mongoid_fields
             field sorcery_config.reset_password_token_attribute_name,             :type => String
-            field sorcery_config.reset_password_token_expires_at_attribute_name,  :type => DateTime
-            field sorcery_config.reset_password_email_sent_at_attribute_name,     :type => DateTime
+            field sorcery_config.reset_password_token_expires_at_attribute_name,  :type => Time
+            field sorcery_config.reset_password_email_sent_at_attribute_name,     :type => Time
           end
           
           def define_reset_password_mongo_mapper_fields
             key sorcery_config.reset_password_token_attribute_name, String
-            # no DateTime in MM
             key sorcery_config.reset_password_token_expires_at_attribute_name, Time
             key sorcery_config.reset_password_email_sent_at_attribute_name, Time
           end
