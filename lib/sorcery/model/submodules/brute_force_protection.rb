@@ -38,12 +38,12 @@ module Sorcery
 
           def define_brute_force_protection_mongoid_fields
             field sorcery_config.failed_logins_count_attribute_name,  :type => Integer
-            field sorcery_config.lock_expires_at_attribute_name,      :type => DateTime
+            field sorcery_config.lock_expires_at_attribute_name,      :type => Time
           end
 
           def define_brute_force_protection_mongo_mapper_fields
             key sorcery_config.failed_logins_count_attribute_name, Integer
-            key sorcery_config.lock_expires_at_attribute_name, DateTime
+            key sorcery_config.lock_expires_at_attribute_name, Time
           end
         end
         

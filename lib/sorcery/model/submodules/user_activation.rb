@@ -84,7 +84,7 @@ module Sorcery
             self.class_eval do
               field sorcery_config.activation_state_attribute_name,            :type => String
               field sorcery_config.activation_token_attribute_name,            :type => String
-              field sorcery_config.activation_token_expires_at_attribute_name, :type => DateTime
+              field sorcery_config.activation_token_expires_at_attribute_name, :type => Time
             end
           end
 
@@ -92,7 +92,6 @@ module Sorcery
             self.class_eval do
               key sorcery_config.activation_state_attribute_name, String
               key sorcery_config.activation_token_attribute_name, String
-              # no DateTime in MM
               key sorcery_config.activation_token_expires_at_attribute_name, Time
             end
           end

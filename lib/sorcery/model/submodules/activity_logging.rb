@@ -39,9 +39,9 @@ module Sorcery
           protected
 
           def define_activity_logging_mongoid_fields
-            field sorcery_config.last_login_at_attribute_name,    :type => DateTime
-            field sorcery_config.last_logout_at_attribute_name,   :type => DateTime
-            field sorcery_config.last_activity_at_attribute_name, :type => DateTime
+            field sorcery_config.last_login_at_attribute_name,    :type => Time
+            field sorcery_config.last_logout_at_attribute_name,   :type => Time
+            field sorcery_config.last_activity_at_attribute_name, :type => Time
           end
         end
       end
