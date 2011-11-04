@@ -191,11 +191,19 @@ module Sorcery
       # encrypts password with salt and saves it.
       def encrypt_password
         config = sorcery_config
-        _salt  = TemporaryToken.generate_random_token # this seems wrong
-        _pass  = self.class.encrypt(self.send(config.password_attribute_name), _salt)
 
-        self.send(:"#{config.salt_attribute_name}=", _salt) if !config.salt_attribute_name.nil?
-        self.send(:"#{config.crypted_password_attribute_name}=", _pass)
+        if requires_salt_generation?
+          _salt = TemporaryToken.generate_random_token
+          self.send("#{config.salt_attribute_name}=", _salt)
+        else
+          _salt = nil
+        end
+        _pass = self.class.encrypt(self.send(config.password_attribute_name), _salt)
+        self.send("#{config.crypted_password_attribute_name}=", _pass)
+      end
+
+      def requires_salt_generation?
+        sorcery_config.salt_attribute_name.present?
       end
 
       def clear_virtual_password
@@ -231,7 +239,8 @@ module Sorcery
 
                     :crypted_password_attribute_name,   # change default crypted_password attribute.
                     :salt_join_token,                   # what pattern to use to join the password with the salt
-                    :salt_attribute_name,               # change default salt attribute.
+                    :salt_attribute_name,               # change default salt attribute, which is nil (you should use bcrypt, 
+                                                        # which is saltless)
                     :pepper_key,                        # an optional pepper which can be used to enhance security (see: devise)
                     :stretches,                         # how many times to apply encryption to the password.
                     :encryption_key,                    # encryption key used to encrypt reversible encryptions such as
@@ -266,7 +275,7 @@ module Sorcery
           :@encryption_key                       => nil,
           :@pepper_key                            => nil,
           :@salt_join_token                      => "",
-          :@salt_attribute_name                  => :salt,
+          :@salt_attribute_name                  => nil,
           :@stretches                            => nil,
           :@subclasses_inherit_config            => false,
           :@before_authenticate                  => [],
