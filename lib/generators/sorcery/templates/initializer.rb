@@ -1,53 +1,36 @@
 # Hey There Developer!
 # there are lots of things you are able to configure here and, to keep this
 # file light and easy to read, but also to give you guys some solid
-# documentation, You should visit the link below to learn more about what 
+# documentation, You should visit the link below to learn more about what
 # each config option does.
-
+#
+#  https://github.com/NoamB/sorcery/blob/master/SORCERY_CONFIGURATION.md
+#
 # The first thing you need to configure is which modules you need in your app.
 # The default is nothing which will include only core features (password encryption, login/logout).
-#
-# Available submodules are: :user_activation, :http_basic_auth, :remember_me,
-# :reset_password, :session_timeout, :brute_force_protection, :activity_logging, :external
 Rails.application.config.sorcery.submodules = []
 
 # Here you can configure each submodule's features.
 Rails.application.config.sorcery.configure do |config|
-  # -- core --
-  # config.not_authenticated_action = :not_authenticated              # what controller action to call for
-                                                                      # non-authenticated users.
-                                                                      # You can also override 'not_authenticated'
-                                                                      # instead.
-
-  # config.save_return_to_url = true                                  # when a non logged in user tries to enter
-                                                                      # a page that requires login,
-                                                                      # save the URL he wanted to reach,
-                                                                      # and send him there after login, using
-                                                                      # 'redirect_back_or_to'.
-
-  # config.cookie_domain = nil                                        # set domain option for cookies
-                                                                      # Useful for remember_me submodule
+  # config.not_authenticated_action = :not_authenticated
+  # config.save_return_to_url = true
+  # config.cookie_domain = nil
 
   # -- session timeout --
-  # config.session_timeout = 3600                                     # how long in seconds to keep the session alive.
-  # config.session_timeout_from_last_action = false                   # use the last action as the beginning of
-                                                                      # session timeout.
+  # config.session_timeout = 3600
+  # config.session_timeout_from_last_action = false
 
   # -- http_basic_auth --
-  # config.controller_to_realm_map = {"application" => "Application"} # What realm to display for which controller name.
-                                                                      # For example {"My App" => "Application"}
+  # config.controller_to_realm_map = {"application" => "Application"}
 
   # -- activity logging --
-  # config.register_login_time = true                                 # will register the time of last user login, every login.
-  # config.register_logout_time = true                                # will register the time of last user logout, every logout.
-  # config.register_last_activity_time = true                         # will register the time of last user action, every action.
+  # config.register_login_time = true
+  # config.register_logout_time = true
+  # config.register_last_activity_time = true
 
   # -- external --
-  # config.external_providers = []                                    # What providers are supported by this app,
-                                                                      # i.e. [:twitter, :facebook, :github] .
-  # config.ca_file = 'path/to/ca_file'                                # Path to ca_file. By default use a internal ca-bundle.crt.
-                                                                      # You can change it by your local ca_file.
-                                                                      # i.e. '/etc/pki/tls/certs/ca-bundle.crt'
+  # config.external_providers = []
+  # config.ca_file = 'path/to/ca_file'
 
   # config.twitter.key = "eYVNBjBDi33aa9GkA3w"
   # config.twitter.secret = "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8"
