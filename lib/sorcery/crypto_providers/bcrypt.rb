@@ -40,6 +40,7 @@ module Sorcery
     # You are good to go!
     class BCrypt
       class << self
+        attr_writer :cost, :pepper_key
         # This is the :cost option for the BCrypt library.
         # The higher the cost the more secure it is and the longer is take the generate a hash. By default this is 10.
         # Set this to whatever you want, play around with it to get that perfect balance between
@@ -47,6 +48,7 @@ module Sorcery
         def cost
           @cost ||= 10
         end
+        alias :stretches= :cost=
 
         # devise has a strategy for storing a pepper - a code defined string
         # that acts as a salt, but it isn't per user. The idea behind this is
@@ -56,8 +58,10 @@ module Sorcery
           @pepper_key || nil
         end
 
-        attr_writer :cost, :pepper_key
-        alias :stretches= :cost=
+        # BCrypt self-salts
+        def requires_salt?
+          false
+        end
 
         # Creates a BCrypt hash for the password passed.
         def encrypt(*tokens)

@@ -59,7 +59,9 @@ module Sorcery
               end
               field sorcery_config.email_attribute_name,            :type => String unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
               field sorcery_config.crypted_password_attribute_name, :type => String
-              field sorcery_config.salt_attribute_name,             :type => String
+              if sorcery_config.encryption_provider.requires_salt?
+                field sorcery_config.salt_attribute_name,             :type => String
+              end
             end
           end
 
@@ -110,7 +112,7 @@ module Sorcery
         crypted_password = user.send(@sorcery_config.crypted_password_attribute_name)
 
         set_encryption_attributes
-        if @sorcery_config.salt_attribute_name.present? && @sorcery_config.encryption_provider.present?
+        if @sorcery_config.encryption_provider.requires_salt?
           _salt = user.send(@sorcery_config.salt_attribute_name)
         end
 
@@ -136,7 +138,6 @@ module Sorcery
       end
 
       protected
-
       def set_encryption_attributes
         attrs = [:stretches, :join_token, :pepper_key]
 
@@ -192,7 +193,7 @@ module Sorcery
       def encrypt_password
         config = sorcery_config
 
-        if requires_salt_generation?
+        if sorcery_config.encryption_provider.requires_salt?
           _salt = TemporaryToken.generate_random_token
           self.send("#{config.salt_attribute_name}=", _salt)
         else
@@ -200,10 +201,6 @@ module Sorcery
         end
         _pass = self.class.encrypt(self.send(config.password_attribute_name), _salt)
         self.send("#{config.crypted_password_attribute_name}=", _pass)
-      end
-
-      def requires_salt_generation?
-        sorcery_config.salt_attribute_name.present?
       end
 
       def clear_virtual_password
@@ -227,39 +224,24 @@ module Sorcery
     # options will be configured from a single place.
     class Config
 
-      attr_accessor :username_attribute_names,           # change default username attribute, for example, to use :email
-                                                        # as the login.
+      attr_accessor :username_attribute_names,
+                    :password_attribute_name,
+                    :email_attribute_name,
+                    :downcase_username_before_authenticating,
+                    :crypted_password_attribute_name,
+                    :salt_join_token,
+                    :salt_attribute_name,
+                    :pepper_key,
+                    :stretches,
+                    :encryption_key,
+                    :subclasses_inherit_config,
+                    :submodules,
+                    :before_authenticate,
+                    :after_config
 
-                    :password_attribute_name,           # change *virtual* password attribute, the one which is used
-                                                        # until an encrypted one is generated.
-
-                    :email_attribute_name,              # change default email attribute.
-
-                    :downcase_username_before_authenticating, # downcase the username before trying to authenticate, default is false
-
-                    :crypted_password_attribute_name,   # change default crypted_password attribute.
-                    :salt_join_token,                   # what pattern to use to join the password with the salt
-                    :salt_attribute_name,               # change default salt attribute, which is nil (you should use bcrypt, 
-                                                        # which is saltless)
-                    :pepper_key,                        # an optional pepper which can be used to enhance security (see: devise)
-                    :stretches,                         # how many times to apply encryption to the password.
-                    :encryption_key,                    # encryption key used to encrypt reversible encryptions such as
-                                                        # AES256.
-
-                    :subclasses_inherit_config,         # make this configuration inheritable for subclasses. Useful for
-                                                        # ActiveRecord's STI.
-
-                    :submodules,                        # configured in config/application.rb
-                    :before_authenticate,               # an array of method names to call before authentication
-                                                        # completes. used internally.
-
-                    :after_config                       # an array of method names to call after configuration by user.
-                                                        # used internally.
-
-      attr_reader   :encryption_provider,               # change default encryption_provider.
-                    :custom_encryption_provider,        # use an external encryption class.
-                    :encryption_algorithm               # encryption algorithm name. See 'encryption_algorithm=' below
-                                                        # for available options.
+      attr_reader   :encryption_provider,
+                    :custom_encryption_provider,
+                    :encryption_algorithm
 
       def initialize
         @defaults = {
