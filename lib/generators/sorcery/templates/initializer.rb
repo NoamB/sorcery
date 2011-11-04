@@ -1,5 +1,12 @@
+# Hey There Developer!
+# there are lots of things you are able to configure here and, to keep this
+# file light and easy to read, but also to give you guys some solid
+# documentation, You should visit the link below to learn more about what 
+# each config option does.
+
 # The first thing you need to configure is which modules you need in your app.
 # The default is nothing which will include only core features (password encryption, login/logout).
+#
 # Available submodules are: :user_activation, :http_basic_auth, :remember_me,
 # :reset_password, :session_timeout, :brute_force_protection, :activity_logging, :external
 Rails.application.config.sorcery.submodules = []
@@ -81,7 +88,7 @@ Rails.application.config.sorcery.configure do |config|
     # user.salt_join_token = ""                                                       # what pattern to use to join the
                                                                                       # password with the salt
 
-    # user.salt_attribute_name = :salt                                                # change default salt attribute.
+    # user.salt_attribute_name = :salt                                                # Specify salt attribute
 
     # user.stretches = nil                                                            # how many times to apply
                                                                                       # encryption to the password.
