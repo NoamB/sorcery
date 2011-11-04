@@ -10,14 +10,14 @@ You can amend the submodules array to define which parts of Sorcery you wish to 
 
 Available options are:
 
-  :user_activation        # to require users to confirm
-  :http_basic_auth        # to use basic auth.
-  :remember_me            # cookie based persistence
-  :reset_password         # reset password token
-  :session_timeout        # force a session to expire
-  :brute_force_protection # prevents DOS login attacks
-  :activity_logging       # keep notes on all user activity
-  :external               # use external auth e.g. GitHub.
+      :user_activation        # to require users to confirm
+      :http_basic_auth        # to use basic auth.
+      :remember_me            # cookie based persistence
+      :reset_password         # reset password token
+      :session_timeout        # force a session to expire
+      :brute_force_protection # prevents DOS login attacks
+      :activity_logging       # keep notes on all user activity
+      :external               # use external auth e.g. GitHub.
 
 ### Configuring the submodules
 
