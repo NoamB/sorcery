@@ -29,12 +29,12 @@ Rails.application.config.sorcery.configure do |config|
   # -- http_basic_auth --
   # config.controller_to_realm_map = {"application" => "Application"} # What realm to display for which controller name.
                                                                       # For example {"My App" => "Application"}
-  
+
   # -- activity logging --
   # config.register_login_time = true                                 # will register the time of last user login, every login.
   # config.register_logout_time = true                                # will register the time of last user logout, every logout.
   # config.register_last_activity_time = true                         # will register the time of last user action, every action.
-                                                                                                                                          
+
   # -- external --
   # config.external_providers = []                                    # What providers are supported by this app,
                                                                       # i.e. [:twitter, :facebook, :github] .
@@ -69,7 +69,7 @@ Rails.application.config.sorcery.configure do |config|
                                                                                       # until an encrypted one is
                                                                                       # generated.
 
-    # user.downcase_username_before_authenticating = false                            # downcase the username before 
+    # user.downcase_username_before_authenticating = false                            # downcase the username before
                                                                                       # trying to authenticate, default
                                                                                       # is false
 
@@ -92,7 +92,7 @@ Rails.application.config.sorcery.configure do |config|
                                                                                       #
                                                                                       # WARNING:
                                                                                       #
-                                                                                      # If used for users' passwords, changing this key 
+                                                                                      # If used for users' passwords, changing this key
                                                                                       # will leave passwords undecryptable!
 
     # user.custom_encryption_provider = nil                                           # use an external encryption
