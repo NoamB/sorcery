@@ -15,13 +15,16 @@ describe ApplicationController do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
     sorcery_reload!([:external])
-    sorcery_controller_property_set(:external_providers, [:facebook, :github])
+    sorcery_controller_property_set(:external_providers, [:facebook, :github, :google])
     sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
     sorcery_controller_external_property_set(:github, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:github, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:github, :callback_url, "http://blabla.com")
+    sorcery_controller_external_property_set(:google, :key, "eYVNBjBDi33aa9GkA3w")
+    sorcery_controller_external_property_set(:google, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+    sorcery_controller_external_property_set(:google, :callback_url, "http://blabla.com")
   end
 
   after(:all) do
@@ -82,6 +85,28 @@ describe ApplicationController do
       flash[:alert].should == "Failed!"
     end
 
+  # provider: google
+    it "login_at redirects correctly (google)" do
+      create_new_user
+      get :login_at_test4
+      response.should be_a_redirect
+      response.should redirect_to("http://myapi.com/oauth/authorize?client_id=key&redirect_uri=http%3A%2F%2Fblabla.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&response_type=code")
+    end
+
+    it "'login_from' logins if user exists (google)" do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      create_new_external_user(:google)
+      get :test_login_from4
+      flash[:notice].should == "Success!"
+    end
+
+    it "'login_from' fails if user doesn't exist (google)" do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      create_new_user
+      get :test_login_from4
+      flash[:alert].should == "Failed!"
+    end
+
   end
 
 
@@ -100,6 +125,10 @@ describe ApplicationController do
       sorcery_controller_external_property_set(:github, :key, "eYVNBjBDi33aa9GkA3w")
       sorcery_controller_external_property_set(:github, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
       sorcery_controller_external_property_set(:github, :callback_url, "http://blabla.com")
+      sorcery_controller_external_property_set(:google, :key, "eYVNBjBDi33aa9GkA3w")
+      sorcery_controller_external_property_set(:google, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+      sorcery_controller_external_property_set(:google, :callback_url, "http://blabla.com")
+
     end
 
     after(:all) do
@@ -134,6 +163,21 @@ describe ApplicationController do
     it "should not send external users an activation success email (github)" do
       sorcery_model_property_set(:activation_success_email_method_name, nil)
       create_new_external_user(:github)
+      old_size = ActionMailer::Base.deliveries.size
+      @user.activate!
+      ActionMailer::Base.deliveries.size.should == old_size
+    end
+
+  # provider: google
+    it "should not send activation email to external users (google)" do
+      old_size = ActionMailer::Base.deliveries.size
+      create_new_external_user(:google)
+      ActionMailer::Base.deliveries.size.should == old_size
+    end
+
+    it "should not send external users an activation success email (google)" do
+      sorcery_model_property_set(:activation_success_email_method_name, nil)
+      create_new_external_user(:google)
       old_size = ActionMailer::Base.deliveries.size
       @user.activate!
       ActionMailer::Base.deliveries.size.should == old_size

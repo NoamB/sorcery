@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   def index
   end
-  
+
   def some_action
     render :nothing => true
   end
@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
     @user = login(params[:username], params[:password])
     render :text => ""
   end
-  
+
   def test_auto_login
     @user = User.find(:first)
     auto_login(@user)
@@ -84,6 +84,10 @@ class ApplicationController < ActionController::Base
     login_at(:github)
   end
 
+  def login_at_test4
+    login_at(:google)
+  end
+
   def test_login_from
     if @user = login_from(:twitter)
       redirect_to "bla", :notice => "Success!"
@@ -102,6 +106,14 @@ class ApplicationController < ActionController::Base
 
   def test_login_from3
     if @user = login_from(:github)
+      redirect_to "bla", :notice => "Success!"
+    else
+      redirect_to "blu", :alert => "Failed!"
+    end
+  end
+
+  def test_login_from4
+    if @user = login_from(:google)
       redirect_to "bla", :notice => "Success!"
     else
       redirect_to "blu", :alert => "Failed!"
