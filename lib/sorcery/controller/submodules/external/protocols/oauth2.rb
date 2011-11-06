@@ -8,7 +8,7 @@ module Sorcery
             def oauth_version
               "2.0"
             end
-            
+
             def authorize_url(options = {})
               defaults = {
                 :site => @site,
@@ -24,13 +24,16 @@ module Sorcery
                 :scope => @scope
               )
             end
-            
-            def get_access_token(args)
+
+            def get_access_token(args, options = {})
+              defaults = {
+                :site => @site,
+                :ssl => { :ca_file => Config.ca_file }
+              }
               client = ::OAuth2::Client.new(
                 @key,
                 @secret,
-                :site => @site,
-                :ssl => { :ca_file => Config.ca_file }
+                defaults.merge!(options)
               )
               client.web_server.get_access_token(
                 args[:code],

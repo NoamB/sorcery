@@ -29,15 +29,15 @@ Rails.application.config.sorcery.configure do |config|
   # -- http_basic_auth --
   # config.controller_to_realm_map = {"application" => "Application"} # What realm to display for which controller name.
                                                                       # For example {"My App" => "Application"}
-  
+
   # -- activity logging --
   # config.register_login_time = true                                 # will register the time of last user login, every login.
   # config.register_logout_time = true                                # will register the time of last user logout, every logout.
   # config.register_last_activity_time = true                         # will register the time of last user action, every action.
-                                                                                                                                          
+
   # -- external --
   # config.external_providers = []                                    # What providers are supported by this app,
-                                                                      # i.e. [:twitter, :facebook, :github] .
+                                                                      # i.e. [:twitter, :facebook, :github, :google] .
   # config.ca_file = 'path/to/ca_file'                                # Path to ca_file. By default use a internal ca-bundle.crt.
                                                                       # You can change it by your local ca_file.
                                                                       # i.e. '/etc/pki/tls/certs/ca-bundle.crt'
@@ -56,6 +56,11 @@ Rails.application.config.sorcery.configure do |config|
   # config.github.secret = ""
   # config.github.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=github"
   # config.github.user_info_mapping = {:email => "name"}
+  #
+  # config.google.key = "491253340633.apps.googleusercontent.com"
+  # config.google.secret = "4oE6kXqbL_LN-VGcGcg7qgdL"
+  # config.google.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=google"
+  # config.google.user_info_mapping = {:email => "email", :username => "name"}
 
   # --- user config ---
   config.user_config do |user|
@@ -92,7 +97,7 @@ Rails.application.config.sorcery.configure do |config|
                                                                                       #
                                                                                       # WARNING:
                                                                                       #
-                                                                                      # If used for users' passwords, changing this key 
+                                                                                      # If used for users' passwords, changing this key
                                                                                       # will leave passwords undecryptable!
 
     # user.custom_encryption_provider = nil                                           # use an external encryption
