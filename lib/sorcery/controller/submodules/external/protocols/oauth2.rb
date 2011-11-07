@@ -10,15 +10,7 @@ module Sorcery
             end
 
             def authorize_url(options = {})
-              defaults = {
-                :site => @site,
-                :ssl => { :ca_file => Config.ca_file }
-              }
-              client = ::OAuth2::Client.new(
-                @key,
-                @secret,
-                defaults.merge!(options)
-              )
+              client = build_client(options)
               client.web_server.authorize_url(
                 :redirect_uri => @callback_url,
                 :scope => @scope
@@ -26,18 +18,22 @@ module Sorcery
             end
 
             def get_access_token(args, options = {})
+              client = build_client(options)
+              client.web_server.get_access_token(
+                args[:code],
+                :redirect_uri => @callback_url
+              )
+            end
+
+            def build_client(options = {})
               defaults = {
                 :site => @site,
                 :ssl => { :ca_file => Config.ca_file }
               }
-              client = ::OAuth2::Client.new(
+              ::OAuth2::Client.new(
                 @key,
                 @secret,
                 defaults.merge!(options)
-              )
-              client.web_server.get_access_token(
-                args[:code],
-                :redirect_uri => @callback_url
               )
             end
           end
