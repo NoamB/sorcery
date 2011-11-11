@@ -50,7 +50,7 @@ GEM
     faraday (0.6.1)
       addressable (~> 2.2.4)
       multipart-post (~> 1.1.0)
-      rack (< 2, >= 1.1.0)
+      rack (>= 1.1.0, < 2)
     i18n (0.6.0)
     launchy (2.0.5)
       addressable (~> 2.2.6)
@@ -123,7 +123,7 @@ GEM
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.30)
+    tzinfo (0.3.31)
 
 PLATFORMS
   ruby
