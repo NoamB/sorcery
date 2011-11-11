@@ -4,14 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{sorcery}
-  s.version = "0.7.4"
+  s.name = "sorcery"
+  s.version = "0.7.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{Noam Ben Ari}]
-  s.date = %q{2011-11-06}
-  s.description = %q{Provides common authentication needs such as signing in/out, activating by email and resetting password.}
-  s.email = %q{nbenari@gmail.com}
+  s.authors = ["Noam Ben Ari"]
+  s.date = "2011-11-11"
+  s.description = "Provides common authentication needs such as signing in/out, activating by email and resetting password."
+  s.email = "nbenari@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -46,6 +46,7 @@ Gem::Specification.new do |s|
     "lib/sorcery/controller/submodules/external/providers/facebook.rb",
     "lib/sorcery/controller/submodules/external/providers/github.rb",
     "lib/sorcery/controller/submodules/external/providers/google.rb",
+    "lib/sorcery/controller/submodules/external/providers/liveid.rb",
     "lib/sorcery/controller/submodules/external/providers/twitter.rb",
     "lib/sorcery/controller/submodules/http_basic_auth.rb",
     "lib/sorcery/controller/submodules/remember_me.rb",
@@ -296,131 +297,11 @@ Gem::Specification.new do |s|
     "spec/spec.opts",
     "spec/spec_helper.rb"
   ]
-  s.homepage = %q{http://github.com/NoamB/sorcery}
-  s.licenses = [%q{MIT}]
-  s.require_paths = [%q{lib}]
-  s.rubygems_version = %q{1.8.4}
-  s.summary = %q{Magical authentication for Rails 3 applications}
-  s.test_files = [
-    "spec/rails3/app/controllers/application_controller.rb",
-    "spec/rails3/app/helpers/application_helper.rb",
-    "spec/rails3/app/mailers/sorcery_mailer.rb",
-    "spec/rails3/app/models/authentication.rb",
-    "spec/rails3/app/models/user.rb",
-    "spec/rails3/config/application.rb",
-    "spec/rails3/config/boot.rb",
-    "spec/rails3/config/environment.rb",
-    "spec/rails3/config/environments/development.rb",
-    "spec/rails3/config/environments/in_memory.rb",
-    "spec/rails3/config/environments/production.rb",
-    "spec/rails3/config/environments/test.rb",
-    "spec/rails3/config/initializers/backtrace_silencers.rb",
-    "spec/rails3/config/initializers/inflections.rb",
-    "spec/rails3/config/initializers/mime_types.rb",
-    "spec/rails3/config/initializers/secret_token.rb",
-    "spec/rails3/config/initializers/session_store.rb",
-    "spec/rails3/config/routes.rb",
-    "spec/rails3/db/migrate/activation/20101224223622_add_activation_to_users.rb",
-    "spec/rails3/db/migrate/activity_logging/20101224223624_add_activity_logging_to_users.rb",
-    "spec/rails3/db/migrate/brute_force_protection/20101224223626_add_brute_force_protection_to_users.rb",
-    "spec/rails3/db/migrate/core/20101224223620_create_users.rb",
-    "spec/rails3/db/migrate/external/20101224223628_create_authentications.rb",
-    "spec/rails3/db/migrate/remember_me/20101224223623_add_remember_me_token_to_users.rb",
-    "spec/rails3/db/migrate/reset_password/20101224223622_add_reset_password_to_users.rb",
-    "spec/rails3/db/schema.rb",
-    "spec/rails3/db/seeds.rb",
-    "spec/rails3/spec/controller_activity_logging_spec.rb",
-    "spec/rails3/spec/controller_brute_force_protection_spec.rb",
-    "spec/rails3/spec/controller_http_basic_auth_spec.rb",
-    "spec/rails3/spec/controller_oauth2_spec.rb",
-    "spec/rails3/spec/controller_oauth_spec.rb",
-    "spec/rails3/spec/controller_remember_me_spec.rb",
-    "spec/rails3/spec/controller_session_timeout_spec.rb",
-    "spec/rails3/spec/controller_spec.rb",
-    "spec/rails3/spec/integration_spec.rb",
-    "spec/rails3/spec/spec_helper.orig.rb",
-    "spec/rails3/spec/spec_helper.rb",
-    "spec/rails3/spec/user_activation_spec.rb",
-    "spec/rails3/spec/user_activity_logging_spec.rb",
-    "spec/rails3/spec/user_brute_force_protection_spec.rb",
-    "spec/rails3/spec/user_oauth_spec.rb",
-    "spec/rails3/spec/user_remember_me_spec.rb",
-    "spec/rails3/spec/user_reset_password_spec.rb",
-    "spec/rails3/spec/user_spec.rb",
-    "spec/rails3_mongo_mapper/app/controllers/application_controller.rb",
-    "spec/rails3_mongo_mapper/app/helpers/application_helper.rb",
-    "spec/rails3_mongo_mapper/app/mailers/sorcery_mailer.rb",
-    "spec/rails3_mongo_mapper/app/models/authentication.rb",
-    "spec/rails3_mongo_mapper/app/models/user.rb",
-    "spec/rails3_mongo_mapper/config/application.rb",
-    "spec/rails3_mongo_mapper/config/boot.rb",
-    "spec/rails3_mongo_mapper/config/environment.rb",
-    "spec/rails3_mongo_mapper/config/environments/development.rb",
-    "spec/rails3_mongo_mapper/config/environments/in_memory.rb",
-    "spec/rails3_mongo_mapper/config/environments/production.rb",
-    "spec/rails3_mongo_mapper/config/environments/test.rb",
-    "spec/rails3_mongo_mapper/config/initializers/backtrace_silencers.rb",
-    "spec/rails3_mongo_mapper/config/initializers/inflections.rb",
-    "spec/rails3_mongo_mapper/config/initializers/mime_types.rb",
-    "spec/rails3_mongo_mapper/config/initializers/mongo.rb",
-    "spec/rails3_mongo_mapper/config/initializers/secret_token.rb",
-    "spec/rails3_mongo_mapper/config/initializers/session_store.rb",
-    "spec/rails3_mongo_mapper/config/routes.rb",
-    "spec/rails3_mongo_mapper/db/schema.rb",
-    "spec/rails3_mongo_mapper/db/seeds.rb",
-    "spec/rails3_mongo_mapper/spec/controller_spec.rb",
-    "spec/rails3_mongo_mapper/spec/spec_helper.orig.rb",
-    "spec/rails3_mongo_mapper/spec/spec_helper.rb",
-    "spec/rails3_mongo_mapper/spec/user_activation_spec.rb",
-    "spec/rails3_mongo_mapper/spec/user_activity_logging_spec.rb",
-    "spec/rails3_mongo_mapper/spec/user_brute_force_protection_spec.rb",
-    "spec/rails3_mongo_mapper/spec/user_oauth_spec.rb",
-    "spec/rails3_mongo_mapper/spec/user_remember_me_spec.rb",
-    "spec/rails3_mongo_mapper/spec/user_reset_password_spec.rb",
-    "spec/rails3_mongo_mapper/spec/user_spec.rb",
-    "spec/rails3_mongoid/app/controllers/application_controller.rb",
-    "spec/rails3_mongoid/app/helpers/application_helper.rb",
-    "spec/rails3_mongoid/app/mailers/sorcery_mailer.rb",
-    "spec/rails3_mongoid/app/models/authentication.rb",
-    "spec/rails3_mongoid/app/models/user.rb",
-    "spec/rails3_mongoid/config/application.rb",
-    "spec/rails3_mongoid/config/boot.rb",
-    "spec/rails3_mongoid/config/environment.rb",
-    "spec/rails3_mongoid/config/environments/development.rb",
-    "spec/rails3_mongoid/config/environments/in_memory.rb",
-    "spec/rails3_mongoid/config/environments/production.rb",
-    "spec/rails3_mongoid/config/environments/test.rb",
-    "spec/rails3_mongoid/config/initializers/backtrace_silencers.rb",
-    "spec/rails3_mongoid/config/initializers/inflections.rb",
-    "spec/rails3_mongoid/config/initializers/mime_types.rb",
-    "spec/rails3_mongoid/config/initializers/secret_token.rb",
-    "spec/rails3_mongoid/config/initializers/session_store.rb",
-    "spec/rails3_mongoid/config/routes.rb",
-    "spec/rails3_mongoid/db/schema.rb",
-    "spec/rails3_mongoid/db/seeds.rb",
-    "spec/rails3_mongoid/spec/controller_activity_logging_spec.rb",
-    "spec/rails3_mongoid/spec/controller_spec.rb",
-    "spec/rails3_mongoid/spec/spec_helper.orig.rb",
-    "spec/rails3_mongoid/spec/spec_helper.rb",
-    "spec/rails3_mongoid/spec/user_activation_spec.rb",
-    "spec/rails3_mongoid/spec/user_activity_logging_spec.rb",
-    "spec/rails3_mongoid/spec/user_brute_force_protection_spec.rb",
-    "spec/rails3_mongoid/spec/user_oauth_spec.rb",
-    "spec/rails3_mongoid/spec/user_remember_me_spec.rb",
-    "spec/rails3_mongoid/spec/user_reset_password_spec.rb",
-    "spec/rails3_mongoid/spec/user_spec.rb",
-    "spec/shared_examples/controller_oauth2_shared_examples.rb",
-    "spec/shared_examples/controller_oauth_shared_examples.rb",
-    "spec/shared_examples/user_activation_shared_examples.rb",
-    "spec/shared_examples/user_activity_logging_shared_examples.rb",
-    "spec/shared_examples/user_brute_force_protection_shared_examples.rb",
-    "spec/shared_examples/user_oauth_shared_examples.rb",
-    "spec/shared_examples/user_remember_me_shared_examples.rb",
-    "spec/shared_examples/user_reset_password_shared_examples.rb",
-    "spec/shared_examples/user_shared_examples.rb",
-    "spec/sorcery_crypto_providers_spec.rb",
-    "spec/spec_helper.rb"
-  ]
+  s.homepage = "http://github.com/NoamB/sorcery"
+  s.licenses = ["MIT"]
+  s.require_paths = ["lib"]
+  s.rubygems_version = "1.8.11"
+  s.summary = "Magical authentication for Rails 3 applications"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
