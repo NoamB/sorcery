@@ -8,7 +8,7 @@ describe "the login process", :type => :request do
   
   after(:all) do
   end
-
+end
 #   it "handles unverified request", :js => true do
 #     visit root_path
 #     #save_and_open_page
