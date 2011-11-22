@@ -21,7 +21,11 @@ module Sorcery
 
           def find_by_credentials(credentials)
             @sorcery_config.username_attribute_names.each do |attribute|
-              @user = where(attribute => credential_regex(credentials[0])).first
+              if @sorcery_config.use_case_insensitive_matching.present?
+                @user = where(attribute => credential_regex(credentials[0])).first
+              else
+                @user = where(attribute => credentials[0]).first
+              end
               break if @user
             end
             @user
