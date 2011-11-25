@@ -13,7 +13,8 @@ module Sorcery
               client = build_client(options)
               client.web_server.authorize_url(
                 :redirect_uri => @callback_url,
-                :scope => @scope
+                :scope => @scope,
+                :display => @display
               )
             end
 
