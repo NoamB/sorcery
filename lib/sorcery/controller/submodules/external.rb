@@ -51,6 +51,12 @@ module Sorcery
               user
             end
           end
+
+          # get provider access account
+          def access_token(provider)
+            @provider = Config.send(provider)
+            @provider.access_token
+          end
           
           # this method automatically creates a new user from the data in the external user hash.
           # The mappings from user hash fields to user db fields are set at controller config.
