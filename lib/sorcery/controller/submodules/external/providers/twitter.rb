@@ -37,7 +37,8 @@ module Sorcery
                               :site,
                               :user_info_path,
                               :user_info_mapping
-                
+                attr_reader   :access_token
+
                 include Protocols::Oauth1
 				
 				        # Override included get_consumer method to provide authorize_path
