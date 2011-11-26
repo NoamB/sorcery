@@ -37,7 +37,7 @@ module Sorcery
                               :user_info_mapping,
                               :display
                 attr_reader   :access_token
-                            
+
                 include Protocols::Oauth2
             
                 def init
