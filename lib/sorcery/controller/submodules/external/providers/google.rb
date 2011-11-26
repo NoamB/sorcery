@@ -37,6 +37,7 @@ module Sorcery
                               :user_info_url,
                               :scope,
                               :user_info_mapping
+                attr_reader   :access_token
 
                 include Protocols::Oauth2
 
