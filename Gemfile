@@ -24,3 +24,9 @@ group :development, :test do
   gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency
   gem 'timecop'
 end
+
+
+group :test do
+  gem 'rspec-rails'
+  gem 'shoulda-matchers'
+end
