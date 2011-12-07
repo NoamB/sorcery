@@ -34,8 +34,10 @@ module Sorcery
                               :site,
                               :user_info_path,
                               :scope,
-                              :user_info_mapping
-                            
+                              :user_info_mapping,
+                              :display
+                attr_reader   :access_token
+
                 include Protocols::Oauth2
             
                 def init
@@ -43,6 +45,7 @@ module Sorcery
                   @user_info_path = "/me"
                   @scope          = "email,offline_access"
                   @user_info_mapping = {}
+                  @display        = "page"
                 end
                 
                 def get_user_hash

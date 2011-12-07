@@ -62,7 +62,7 @@ describe ApplicationController do
       create_new_user
       get :login_at_test2
       response.should be_a_redirect
-      response.should redirect_to("https://graph.facebook.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&response_type=code")
+      response.should redirect_to("https://graph.facebook.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&display=page&response_type=code")
     end
 
     it "'login_from' logins if user exists" do
@@ -84,7 +84,7 @@ describe ApplicationController do
       create_new_user
       get :login_at_test3
       response.should be_a_redirect
-      response.should redirect_to("https://github.com/login/oauth/authorize?client_id=#{::Sorcery::Controller::Config.github.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=&response_type=code")
+      response.should redirect_to("https://github.com/login/oauth/authorize?client_id=#{::Sorcery::Controller::Config.github.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=&display=&response_type=code")
     end
 
     it "'login_from' logins if user exists (github)" do
@@ -106,7 +106,7 @@ describe ApplicationController do
       create_new_user
       get :login_at_test4
       response.should be_a_redirect
-      response.should redirect_to("https://accounts.google.com/o/oauth2/auth?client_id=#{::Sorcery::Controller::Config.google.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&response_type=code")
+      response.should redirect_to("https://accounts.google.com/o/oauth2/auth?client_id=#{::Sorcery::Controller::Config.google.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&display=&response_type=code")
     end
 
     it "'login_from' logins if user exists (google)" do
@@ -128,7 +128,7 @@ describe ApplicationController do
       create_new_user
       get :login_at_test5
       response.should be_a_redirect
-      response.should redirect_to("https://oauth.live.com/authorize?client_id=#{::Sorcery::Controller::Config.liveid.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=wl.basic%20wl.emails%20wl.offline_access&response_type=code")
+      response.should redirect_to("https://oauth.live.com/authorize?client_id=#{::Sorcery::Controller::Config.liveid.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=wl.basic%20wl.emails%20wl.offline_access&display=&response_type=code")
     end
 
     it "'login_from' logins if user exists (liveid)" do
