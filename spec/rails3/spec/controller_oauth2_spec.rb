@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require File.expand_path(File.dirname(__FILE__) + '/../../shared_examples/controller_oauth2_shared_examples')
 
 def stub_all_oauth2_requests!
-  web_server      = OAuth2::Strategy::WebServer.any_instance
+  auth_code       = OAuth2::Strategy::AuthCode.any_instance
   access_token    = mock(OAuth2::AccessToken)
   access_token.stub(:token_param=)
   access_token.stub(:get).and_return({
@@ -21,7 +21,7 @@ def stub_all_oauth2_requests!
     "languages"=>[{"id"=>"108405449189952", "name"=>"Hebrew"}, {"id"=>"106059522759137", "name"=>"English"}, {"id"=>"112624162082677", "name"=>"Russian"}],
     "verified"=>true,
     "updated_time"=>"2011-02-16T20:59:38+0000"}.to_json)
-  web_server.stub(:get_access_token).and_return(access_token)
+  auth_code.stub(:get_access_token).and_return(access_token)
 end
 
 describe ApplicationController do
@@ -62,7 +62,7 @@ describe ApplicationController do
       create_new_user
       get :login_at_test2
       response.should be_a_redirect
-      response.should redirect_to("https://graph.facebook.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&display=page&response_type=code")
+      response.should redirect_to("https://graph.facebook.com/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&display=page")
     end
 
     it "'login_from' logins if user exists" do
@@ -84,7 +84,7 @@ describe ApplicationController do
       create_new_user
       get :login_at_test3
       response.should be_a_redirect
-      response.should redirect_to("https://github.com/login/oauth/authorize?client_id=#{::Sorcery::Controller::Config.github.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=&display=&response_type=code")
+      response.should redirect_to("https://github.com/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.github.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=&display=")
     end
 
     it "'login_from' logins if user exists (github)" do
@@ -106,7 +106,7 @@ describe ApplicationController do
       create_new_user
       get :login_at_test4
       response.should be_a_redirect
-      response.should redirect_to("https://accounts.google.com/o/oauth2/auth?client_id=#{::Sorcery::Controller::Config.google.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&display=&response_type=code")
+      response.should redirect_to("https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=#{::Sorcery::Controller::Config.google.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&display=")
     end
 
     it "'login_from' logins if user exists (google)" do
@@ -128,7 +128,7 @@ describe ApplicationController do
       create_new_user
       get :login_at_test5
       response.should be_a_redirect
-      response.should redirect_to("https://oauth.live.com/authorize?client_id=#{::Sorcery::Controller::Config.liveid.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=wl.basic%20wl.emails%20wl.offline_access&display=&response_type=code")
+      response.should redirect_to("https://oauth.live.com/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.liveid.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=wl.basic%20wl.emails%20wl.offline_access&display=")
     end
 
     it "'login_from' logins if user exists (liveid)" do
