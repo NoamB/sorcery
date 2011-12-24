@@ -27,7 +27,7 @@ Jeweler::Tasks.new do |gem|
   #  gem.add_development_dependency 'rspec', '> 1.2.3'
   gem.add_runtime_dependency 'bcrypt-ruby', '~> 3.0.0'
   gem.add_runtime_dependency 'oauth', '~> 0.4.4'
-  gem.add_runtime_dependency 'oauth2', '~> 0.5.1' #necessary to working with omniauth-facebook
+  gem.add_runtime_dependency 'oauth2', '~> 0.5.0' #necessary to working with omniauth-facebook
 end
 Jeweler::RubygemsDotOrgTasks.new
 
