@@ -52,14 +52,14 @@ module Sorcery
           # This runs as a hook just after a successful login.
           def register_login_time_to_db(user, credentials)
             return unless Config.register_login_time
-            update_activity_attribute(user, user.sorcery_config.last_login_at_attribute_name)
+            user.update_single_attribute(user.sorcery_config.last_login_at_attribute_name, Time.now.in_time_zone)
           end
           
           # registers last logout time on every logout.
           # This runs as a hook just before a logout.
           def register_logout_time_to_db(user)
             return unless Config.register_logout_time
-            update_activity_attribute(user, user.sorcery_config.last_logout_at_attribute_name)
+            user.update_single_attribute(user.sorcery_config.last_logout_at_attribute_name, Time.now.in_time_zone)
           end
           
           # Updates last activity time on every request.
@@ -67,20 +67,7 @@ module Sorcery
           def register_last_activity_time_to_db
             return unless Config.register_last_activity_time
             return unless logged_in?
-            update_activity_attribute(current_user, current_user.sorcery_config.last_activity_at_attribute_name)
-          end
-          
-          private
-          
-          def update_activity_attribute(user, activity_attribute)
-            time = Time.now.in_time_zone
-            begin
-              user.send(:"#{activity_attribute}=", time)
-              user.class.where(:id => current_user.id).update_all(activity_attribute => time)
-            rescue
-              # Mongoid does not seem to like ActiveSupport::TimeWithZone in combination with update_all
-              user.update_attribute(activity_attribute, time)
-            end
+            current_user.update_single_attribute(current_user.sorcery_config.last_activity_at_attribute_name, Time.now.in_time_zone)
           end
         end
       end

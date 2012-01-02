@@ -47,7 +47,7 @@ describe ApplicationController do
       User.first.last_activity_at.to_s(:db).should <= (now+2).to_s(:db)
     end
 
-    pending "should update nothing but activity fields" do
+    it "should update nothing but activity fields" do
       original_user_name = User.first.username
       login_user
       get :some_action_making_a_non_persisted_change_to_the_user
