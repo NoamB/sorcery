@@ -11,6 +11,12 @@ module Sorcery
           def increment(attr)
             self.inc(attr,1)
           end
+          
+          def update_single_attribute(name, value)
+            value = value.utc if value.is_a?(ActiveSupport::TimeWithZone)
+            self.send(:"#{name}=", value)
+            self.class.where(:_id => self.id).update_all(name => value)
+          end
         end
 
         module ClassMethods
