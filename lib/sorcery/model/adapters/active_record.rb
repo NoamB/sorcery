@@ -4,8 +4,18 @@ module Sorcery
       module ActiveRecord
         def self.included(klass)
           klass.extend ClassMethods
+          klass.send(:include, InstanceMethods)
         end
 
+        module InstanceMethods
+          def update_single_attribute(name, value)
+            self.send(:"#{name}=", value)
+            
+            primary_key = self.class.primary_key
+            self.class.where(:"#{primary_key}" => self.send(:"#{primary_key}")).update_all(name => value)
+          end
+        end
+        
         module ClassMethods
           def column_name(attribute)
             return "LOWER(#{attribute})" if (@sorcery_config.downcase_username_before_authenticating)
