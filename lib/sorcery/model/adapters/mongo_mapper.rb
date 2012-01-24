@@ -10,7 +10,7 @@ module Sorcery
         
         module InstanceMethods
           def increment(attr)
-            self.inc(attr,1)
+            self.class.increment(id, attr => 1)
           end
           
           def save!(options = {})
