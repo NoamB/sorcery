@@ -138,7 +138,12 @@ Rails.application.config.sorcery.configure do |config|
                                                                                       # activation code expires. nil for
                                                                                       # never expires.
 
-    # user.user_activation_mailer = nil                                               # your mailer class. Required.
+    # user.user_activation_mailer = nil                                               # your mailer class. Required when
+                                                                                      # user_activation_manually_manage_email == false
+
+    # user.activation_manually_manage_email = false                                   # when true sorcery will not automatically
+                                                                                      # email activation details and allow you to
+                                                                                      # manually handle how and when email is sent
 
     # user.activation_needed_email_method_name = :activation_needed_email             # activation needed email method
                                                                                       # on your mailer class.
