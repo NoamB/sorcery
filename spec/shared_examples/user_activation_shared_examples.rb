@@ -35,17 +35,17 @@ shared_examples_for "rails_3_activation_model" do
       User.sorcery_config.activation_success_email_method_name.should equal(:my_activation_email)
     end
 
-    it "should enable configuration option 'activation_manually_manage_email'" do
-      sorcery_model_property_set(:activation_manually_manage_email, :my_activation_manually_manage_email)
-      User.sorcery_config.activation_manually_manage_email.should equal(:my_activation_manually_manage_email)
+    it "should enable configuration option 'activation_mailer_disabled'" do
+      sorcery_model_property_set(:activation_mailer_disabled, :my_activation_mailer_disabled)
+      User.sorcery_config.activation_mailer_disabled.should equal(:my_activation_mailer_disabled)
     end
     
-    it "if mailer is nil on activation and not manually managing emails, throw exception!" do
-      expect{sorcery_reload!([:user_activation], :activation_manually_manage_email => false)}.to raise_error(ArgumentError)
+    it "if mailer is nil and mailer is enabled, throw exception!" do
+      expect{sorcery_reload!([:user_activation], :activation_mailer_disabled => false)}.to raise_error(ArgumentError)
     end
 
-    it "if manually managing activation emails and mailer is nil, do NOT throw exception" do
-      expect{sorcery_reload!([:user_activation], :activation_manually_manage_email => true)}.to_not raise_error
+    it "if mailer is disabled and mailer is nil, do NOT throw exception" do
+      expect{sorcery_reload!([:user_activation], :activation_mailer_disabled => true)}.to_not raise_error
     end
   end
 
@@ -75,7 +75,7 @@ shared_examples_for "rails_3_activation_model" do
     end
 
 
-    context "manual email managing is disabled" do
+    context "mailer is enabled" do
       it "should send the user an activation email" do
         old_size = ActionMailer::Base.deliveries.size
         create_new_user
@@ -118,9 +118,9 @@ shared_examples_for "rails_3_activation_model" do
       end
     end
 
-    context "manual email managing is enabled" do
+    context "mailer has been disabled" do
       before(:each) do
-        sorcery_reload!([:user_activation], :activation_manually_manage_email => true, :user_activation_mailer => ::SorceryMailer)
+        sorcery_reload!([:user_activation], :activation_mailer_disabled => true, :user_activation_mailer => ::SorceryMailer)
       end
 
       it "should not send the user an activation email" do
