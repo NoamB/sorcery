@@ -24,10 +24,12 @@ module Sorcery
       def configure_initializer_file
         # Add submodules to the initializer file.
         if submodules
-          str = submodules.collect{ |submodule| ':' + submodule + ', ' }
-          str.last.delete!(", ")
-          
-          gsub_file "config/initializers/sorcery.rb", /submodules = \[\]/, "submodules = [#{str.join()}]"
+          submodule_names = submodules.collect{ |submodule| ':' + submodule }
+
+          gsub_file "config/initializers/sorcery.rb", /submodules = \[.*\]/ do |str|
+            current_submodule_names = (str =~ /\[(.*)\]/ ? $1 : '').delete(' ').split(',')
+            "submodules = [#{(current_submodule_names | submodule_names).join(', ')}]"
+          end
         end
 
         # Generate the model and add 'authenticates_with_sorcery!' unless you passed --migrations
