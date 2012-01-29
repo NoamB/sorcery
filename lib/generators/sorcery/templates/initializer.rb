@@ -138,7 +138,12 @@ Rails.application.config.sorcery.configure do |config|
                                                                                       # activation code expires. nil for
                                                                                       # never expires.
 
-    # user.user_activation_mailer = nil                                               # your mailer class. Required.
+    # user.user_activation_mailer = nil                                               # your mailer class. Required when
+                                                                                      # activation_mailer_disabled == false
+
+    # user.activation_mailer_disabled = false                                         # when true sorcery will not automatically
+                                                                                      # email activation details and allow you to
+                                                                                      # manually handle how and when email is sent
 
     # user.activation_needed_email_method_name = :activation_needed_email             # activation needed email method
                                                                                       # on your mailer class.
@@ -162,6 +167,10 @@ Rails.application.config.sorcery.configure do |config|
                                                                                                 # protection.
 
     # user.reset_password_mailer = nil                                                          # mailer class. Needed.
+
+    # user.reset_password_mailer_disabled = false                                     # when true sorcery will not automatically
+                                                                                      # email password reset details and allow you to
+                                                                                      # manually handle how and when email is sent
 
     # user.reset_password_email_method_name = :reset_password_email                             # reset password email
                                                                                                 # method on your mailer
