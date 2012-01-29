@@ -34,9 +34,18 @@ shared_examples_for "rails_3_activation_model" do
       sorcery_model_property_set(:activation_success_email_method_name, :my_activation_email)
       User.sorcery_config.activation_success_email_method_name.should equal(:my_activation_email)
     end
+
+    it "should enable configuration option 'activation_mailer_disabled'" do
+      sorcery_model_property_set(:activation_mailer_disabled, :my_activation_mailer_disabled)
+      User.sorcery_config.activation_mailer_disabled.should equal(:my_activation_mailer_disabled)
+    end
     
-    it "if mailer is nil on activation, throw exception!" do
-      expect{sorcery_reload!([:user_activation])}.to raise_error(ArgumentError)
+    it "if mailer is nil and mailer is enabled, throw exception!" do
+      expect{sorcery_reload!([:user_activation], :activation_mailer_disabled => false)}.to raise_error(ArgumentError)
+    end
+
+    it "if mailer is disabled and mailer is nil, do NOT throw exception" do
+      expect{sorcery_reload!([:user_activation], :activation_mailer_disabled => true)}.to_not raise_error
     end
   end
 
@@ -64,46 +73,67 @@ shared_examples_for "rails_3_activation_model" do
       @user2.activation_state.should == "active"
       User.find_by_activation_token(activation_token).should be_nil
     end
-    
-    it "should send the user an activation email" do
-      old_size = ActionMailer::Base.deliveries.size
-      create_new_user
-      ActionMailer::Base.deliveries.size.should == old_size + 1
+
+
+    context "mailer is enabled" do
+      it "should send the user an activation email" do
+        old_size = ActionMailer::Base.deliveries.size
+        create_new_user
+        ActionMailer::Base.deliveries.size.should == old_size + 1
+      end
+
+      it "subsequent saves do not send activation email" do
+        old_size = ActionMailer::Base.deliveries.size
+        @user.username = "Shauli"
+        @user.save!
+        ActionMailer::Base.deliveries.size.should == old_size
+      end
+
+      it "should send the user an activation success email on successful activation" do
+        old_size = ActionMailer::Base.deliveries.size
+        @user.activate!
+        ActionMailer::Base.deliveries.size.should == old_size + 1
+      end
+
+      it "subsequent saves do not send activation success email" do
+        @user.activate!
+        old_size = ActionMailer::Base.deliveries.size
+        @user.username = "Shauli"
+        @user.save!
+        ActionMailer::Base.deliveries.size.should == old_size
+      end
+
+      it "activation needed email is optional" do
+        sorcery_model_property_set(:activation_needed_email_method_name, nil)
+        old_size = ActionMailer::Base.deliveries.size
+        create_new_user
+        ActionMailer::Base.deliveries.size.should == old_size
+      end
+
+      it "activation success email is optional" do
+        sorcery_model_property_set(:activation_success_email_method_name, nil)
+        old_size = ActionMailer::Base.deliveries.size
+        @user.activate!
+        ActionMailer::Base.deliveries.size.should == old_size
+      end
     end
-    
-    it "subsequent saves do not send activation email" do
-      old_size = ActionMailer::Base.deliveries.size
-      @user.username = "Shauli"
-      @user.save!
-      ActionMailer::Base.deliveries.size.should == old_size
-    end
-    
-    it "should send the user an activation success email on successful activation" do
-      old_size = ActionMailer::Base.deliveries.size
-      @user.activate!
-      ActionMailer::Base.deliveries.size.should == old_size + 1
-    end
-    
-    it "subsequent saves do not send activation success email" do
-      @user.activate!
-      old_size = ActionMailer::Base.deliveries.size
-      @user.username = "Shauli"
-      @user.save!
-      ActionMailer::Base.deliveries.size.should == old_size
-    end
-    
-    it "activation needed email is optional" do
-      sorcery_model_property_set(:activation_needed_email_method_name, nil)
-      old_size = ActionMailer::Base.deliveries.size
-      create_new_user
-      ActionMailer::Base.deliveries.size.should == old_size
-    end
-    
-    it "activation success email is optional" do
-      sorcery_model_property_set(:activation_success_email_method_name, nil)
-      old_size = ActionMailer::Base.deliveries.size
-      @user.activate!
-      ActionMailer::Base.deliveries.size.should == old_size
+
+    context "mailer has been disabled" do
+      before(:each) do
+        sorcery_reload!([:user_activation], :activation_mailer_disabled => true, :user_activation_mailer => ::SorceryMailer)
+      end
+
+      it "should not send the user an activation email" do
+        old_size = ActionMailer::Base.deliveries.size
+        create_new_user
+        ActionMailer::Base.deliveries.size.should == old_size
+      end
+
+      it "should not send the user an activation success email on successful activation" do
+        old_size = ActionMailer::Base.deliveries.size
+        @user.activate!
+        ActionMailer::Base.deliveries.size.should == old_size
+      end
     end
   end
 
