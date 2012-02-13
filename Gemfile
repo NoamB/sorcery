@@ -20,4 +20,5 @@ group :development do
   gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency
   gem 'timecop'
 	gem 'capybara'
+	gem 'bcrypt-ruby', "~> 3.0.0"
 end
