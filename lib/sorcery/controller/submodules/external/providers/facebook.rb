@@ -46,12 +46,16 @@ module Sorcery
                   @scope          = "email,offline_access"
                   @user_info_mapping = {}
                   @display        = "page"
+                  @token_url      = "oauth/access_token"
+                  @mode           = :query
+                  @parse          = :query
+                  @param_name     = "access_token"
                 end
                 
                 def get_user_hash
                   user_hash = {}
                   response = @access_token.get(@user_info_path)
-                  user_hash[:user_info] = JSON.parse(response)
+                  user_hash[:user_info] = JSON.parse(response.body)
                   user_hash[:uid] = user_hash[:user_info]['id']
                   user_hash
                 end
@@ -69,8 +73,9 @@ module Sorcery
                 # tries to login the user from access token
                 def process_callback(params,session)
                   args = {}
+                  options = { :token_url => @token_url, :mode => @mode, :param_name => @param_name, :parse => @parse }
                   args.merge!({:code => params[:code]}) if params[:code]
-                  @access_token = self.get_access_token(args)
+                  @access_token = self.get_access_token(args, options)
                 end
                 
               end

@@ -5,7 +5,8 @@ def stub_all_oauth2_requests!
   auth_code       = OAuth2::Strategy::AuthCode.any_instance
   access_token    = mock(OAuth2::AccessToken)
   access_token.stub(:token_param=)
-  access_token.stub(:get).and_return({
+  response        = mock(OAuth2::Response)
+  response.stub(:body).and_return({
     "id"=>"123",
     "name"=>"Noam Ben Ari",
     "first_name"=>"Noam",
@@ -21,7 +22,8 @@ def stub_all_oauth2_requests!
     "languages"=>[{"id"=>"108405449189952", "name"=>"Hebrew"}, {"id"=>"106059522759137", "name"=>"English"}, {"id"=>"112624162082677", "name"=>"Russian"}],
     "verified"=>true,
     "updated_time"=>"2011-02-16T20:59:38+0000"}.to_json)
-  auth_code.stub(:get_access_token).and_return(access_token)
+  access_token.stub(:get).and_return(response)
+  auth_code.stub(:get_token).and_return(access_token)
 end
 
 describe ApplicationController do
