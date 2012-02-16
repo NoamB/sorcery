@@ -45,7 +45,7 @@ module Sorcery
             @provider = Config.send(provider)
             @provider.process_callback(params,session)
             @user_hash = @provider.get_user_hash
-            if user = user_class.load_from_provider(provider,@user_hash[:uid])
+            if user = user_class.load_from_provider(provider,@user_hash[:uid].to_s)
               reset_session
               auto_login(user)
               user
