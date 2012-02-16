@@ -63,7 +63,7 @@ module Sorcery
                 # calculates and returns the url to which the user should be redirected,
                 # to get authenticated at the external provider's site.
                 def login_url(params,session)
-                  self.authorize_url({:authorize_path => @auth_path})
+                  self.authorize_url({:authorize_url => @auth_path})
                 end
 
                 # tries to login the user from access token
@@ -71,8 +71,8 @@ module Sorcery
                   args = {}
                   args.merge!({:code => params[:code]}) if params[:code]
                   options = {
-                    :access_token_path => @token_path,
-                    :access_token_method => :post
+                    :token_url    => @token_path,
+                    :token_method => :post
                   }
                   @access_token = self.get_access_token(args, options)
                 end
