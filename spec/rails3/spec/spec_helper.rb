@@ -2,16 +2,16 @@ $: << File.join(File.dirname(__FILE__), '..', '..', 'lib' )
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 
 # Set the default environment to sqlite3's in_memory database
-ENV["RAILS_ENV"] ||= 'in_memory'  
-require File.expand_path("../../config/environment", __FILE__)  
-require 'rspec/rails'  
+ENV["RAILS_ENV"] ||= 'in_memory'
+require File.expand_path("../../config/environment", __FILE__)
+require 'rspec/rails'
 require 'capybara/rspec'
 require 'timecop'
 # require 'simplecov'
 # SimpleCov.root File.join(File.dirname(__FILE__), "..", "..", "rails3" )
 # SimpleCov.start do
 #   add_filter "/config/"
-#   
+#
 #   add_group 'Controllers', 'app/controllers'
 #   add_group 'Models', 'app/models'
 #   add_group 'Helpers', 'app/helpers'
@@ -42,7 +42,7 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
-  
+
   #ActiveRecord::Base.logger = Logger.new(STDOUT)
   config.before(:suite) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")

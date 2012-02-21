@@ -11,7 +11,7 @@ module Sorcery
           def increment(attr)
             self.inc(attr,1)
           end
-          
+
           def update_single_attribute(name, value)
             value = value.utc if value.is_a?(ActiveSupport::TimeWithZone)
             self.send(:"#{name}=", value)
@@ -20,14 +20,15 @@ module Sorcery
         end
 
         module ClassMethods
-          def credential_regex(credential)
-            return { :$regex =>  /^#{credential}$/i  }  if (@sorcery_config.downcase_username_before_authenticating)
-            return credential
-          end
-
           def find_by_credentials(credentials)
+            credentials[0] = credentials[0].downcase if @sorcery_config.downcase_username_before_authenticating
+
             @sorcery_config.username_attribute_names.each do |attribute|
-              @user = where(attribute => credential_regex(credentials[0])).first
+              if @sorcery_config.use_case_insensitive_matching.present?
+                @user = where(attribute => {:$regex => /^#{credentials[0]}/i}).first
+              else
+                @user = where(attribute => credentials[0]).first
+              end
               break if @user
             end
             @user

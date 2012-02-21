@@ -47,3 +47,6 @@ tmtags
 # For vim:
 #*.swp
 #
+bin
+
+*.swp
