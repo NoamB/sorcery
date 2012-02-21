@@ -44,7 +44,7 @@ module Sorcery
                 def init
                   @site              = "https://accounts.google.com"
                   @auth_url          = "/o/oauth2/auth"
-                  @token_path        = "/o/oauth2/token"
+                  @token_url         = "/o/oauth2/token"
                   @user_info_url     = "https://www.googleapis.com/oauth2/v1/userinfo"
                   @scope             = "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
                   @user_info_mapping = {}
@@ -53,7 +53,7 @@ module Sorcery
                 def get_user_hash
                   user_hash = {}
                   response = @access_token.get(@user_info_url)
-                  user_hash[:user_info] = JSON.parse(response)
+                  user_hash[:user_info] = JSON.parse(response.body)
                   user_hash[:uid] = user_hash[:user_info]['id']
                   user_hash
                 end
@@ -73,8 +73,8 @@ module Sorcery
                   args = {}
                   args.merge!({:code => params[:code]}) if params[:code]
                   options = {
-                    :access_token_path => @token_path,
-                    :access_token_method => :post
+                    :token_url => @token_url,
+                    :token_method => :post
                   }
                   @access_token = self.get_access_token(args, options)
                 end

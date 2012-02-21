@@ -1,3 +1,5 @@
+{<img src="https://secure.travis-ci.org/NoamB/sorcery.png" />}[http://travis-ci.org/NoamB/sorcery]
+
 = sorcery
 Magical Authentication for Rails 3.
 Supports ActiveRecord, Mongoid and MongoMapper.
@@ -5,7 +7,6 @@ Supports ActiveRecord, Mongoid and MongoMapper.
 Inspired by restful_authentication, Authlogic and Devise.
 Crypto code taken almost unchanged from Authlogic.
 OAuth code inspired by OmniAuth and Ryan Bates's railscasts about it.
- 
 
 == Philosophy
 
@@ -84,7 +85,7 @@ If using bundler, first add 'sorcery' to your Gemfile:
 
 	gem "sorcery"
 
-And run 
+And run
 	
 	bundle install
 
@@ -113,7 +114,7 @@ This will generate the core migration file, the initializer and change the model
 
 This will generate only the migration files for the specified submodules and will
 add them to the initializer file.
-    
+
 Inside the initializer, the comments will tell you what each setting does.
 
 
