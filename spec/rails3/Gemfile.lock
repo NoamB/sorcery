@@ -2,10 +2,7 @@ PATH
   remote: ../../
   specs:
     sorcery (0.7.6)
-      bcrypt-ruby (~> 3.0.0)
       oauth (~> 0.4.4)
-      oauth (~> 0.4.4)
-      oauth2 (~> 0.5.1)
       oauth2 (~> 0.5.1)
 
 GEM
@@ -73,7 +70,7 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.17.2)
     multi_json (1.0.4)
-    multipart-post (1.1.4)
+    multipart-post (1.1.5)
     nokogiri (1.5.0)
     oauth (0.4.5)
     oauth2 (0.5.2)
@@ -148,6 +145,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt-ruby (~> 3.0.0)
   capybara (~> 1.1.1)
   launchy (~> 2.0.5)
   rails (= 3.0.3)
