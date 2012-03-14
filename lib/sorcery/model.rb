@@ -79,7 +79,7 @@ module Sorcery
           def init_orm_hooks!
             self.class_eval do
               attr_accessor @sorcery_config.password_attribute_name
-              attr_protected @sorcery_config.crypted_password_attribute_name, @sorcery_config.salt_attribute_name
+              attr_protected @sorcery_config.crypted_password_attribute_name, @sorcery_config.salt_attribute_name if using_black_list_for_mass_assignment?
               before_save :encrypt_password, :if => Proc.new { |record|
                 record.send(sorcery_config.password_attribute_name).present?
               }
@@ -135,7 +135,11 @@ module Sorcery
         return crypted == tokens.join if @sorcery_config.encryption_provider.nil?
         @sorcery_config.encryption_provider.matches?(crypted, *tokens)
       end
-      
+
+      def using_black_list_for_mass_assignment?
+        active_authorizers.default_proc.call({}, :key).instance_of? ::ActiveModel::MassAssignmentSecurity::BlackList
+      end
+
       def add_config_inheritance
         self.class_eval do
           def self.inherited(subclass)
