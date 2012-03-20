@@ -83,15 +83,15 @@ Please see the tutorials in the github wiki for detailed usage information.
 
 If using bundler, first add 'sorcery' to your Gemfile:
 
-	gem "sorcery"
+    gem "sorcery"
 
 And run
-	
-	bundle install
+
+    bundle install
 
 Otherwise simply
 
-	gem install sorcery
+    gem install sorcery
 
 
 == Rails 3 Configuration:
