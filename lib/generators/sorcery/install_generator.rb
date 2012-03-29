@@ -35,7 +35,7 @@ module Sorcery
         # Generate the model and add 'authenticates_with_sorcery!' unless you passed --migrations
         unless options[:migrations]
           generate "model #{model_class_name} --skip-migration"
-          insert_into_file "app/models/#{model_class_name.downcase}.rb", "  authenticates_with_sorcery!\n", :after => "class #{model_class_name} < ActiveRecord::Base\n"
+          insert_into_file "app/models/#{model_class_name.underscore}.rb", "  authenticates_with_sorcery!\n", :after => "class #{model_class_name} < ActiveRecord::Base\n"
         end
       end
 
@@ -68,9 +68,9 @@ module Sorcery
       
       private
 
-      # Either return the model passed in a capitalized form or return the default "User".
+      # Either return the model passed in a classified form or return the default "User".
       def model_class_name
-        options[:model] ? options[:model].capitalize : "User"
+        options[:model] ? options[:model].classify : "User"
       end
     end
   end
