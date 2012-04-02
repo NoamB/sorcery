@@ -329,6 +329,26 @@ Rails.application.config.sorcery.configure do |config|
     #
     # user.login_lock_time_period =
 
+    # Unlock token attribute name
+    # Default: `:unlock_token`
+    #
+    # user.unlock_token_attribute_name =
+
+    # Unlock token mailer method
+    # Default: `:send_unlock_token_email`
+    #
+    # user.unlock_token_email_method_name =
+
+    # when true sorcery will not automatically
+    # send email with unlock token
+    # Default: `false`
+    #
+    # user.unlock_token_mailer_disabled = true
+
+    # Unlock token mailer class
+    # Default: `nil`
+    # 
+    # user.unlock_token_mailer = UserMailer
 
     # -- activity logging --
     # Last login attribute name.
