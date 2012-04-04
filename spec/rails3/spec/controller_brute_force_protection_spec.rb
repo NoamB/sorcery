@@ -21,6 +21,27 @@ describe ApplicationController do
       sorcery_controller_property_set(:user_class, User)
       Timecop.return
     end
+
+    it "should generate unlock token after user locked" do
+      sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
+      sorcery_model_property_set(:login_lock_time_period, 0)
+      sorcery_model_property_set(:unlock_token_mailer, SorceryMailer)
+      3.times {get :test_login, :username => "gizmo", :password => "blabla"}
+      User.find_by_username('gizmo').unlock_token.should_not be_nil
+    end
+
+    it "should unlock after entering unlock token" do
+      sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
+      sorcery_model_property_set(:login_lock_time_period, 0)
+      sorcery_model_property_set(:unlock_token_mailer, SorceryMailer)
+      3.times {get :test_login, :username => "gizmo", :password => "blabla"}
+      User.find_by_username('gizmo').unlock_token.should_not be_nil
+      token = User.find_by_username('gizmo').unlock_token
+      user = User.load_from_unlock_token(token)
+      user.should_not be_nil
+      user.unlock!
+      User.load_from_unlock_token(token).should be_nil
+    end
     
     it "should count login retries" do
       3.times {get :test_login, :username => 'gizmo', :password => 'blabla'}
