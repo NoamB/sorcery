@@ -29,6 +29,7 @@ module Sorcery
       # Takes credentials and returns a user on successful authentication.
       # Runs hooks after login or failed login.
       def login(*credentials)
+        @current_user = nil
         user = user_class.authenticate(*credentials)
         if user
           return_to_url = session[:return_to_url]
@@ -71,6 +72,7 @@ module Sorcery
       # and we want to return him back to the page he originally wanted.
       def redirect_back_or_to(url, flash_hash = {})
         redirect_to(session[:return_to_url] || url, :flash => flash_hash)
+        session[:return_to_url] = nil
       end
 
       # The default action for denying non-authenticated users.

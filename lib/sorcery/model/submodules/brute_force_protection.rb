@@ -12,15 +12,25 @@ module Sorcery
                           :lock_expires_at_attribute_name,            # this field indicates whether user 
                                                                       # is banned and when it will be active again.
                           :consecutive_login_retries_amount_limit,    # how many failed logins allowed.
-                          :login_lock_time_period                     # how long the user should be banned. 
+                          :login_lock_time_period,                    # how long the user should be banned. 
                                                                       # in seconds. 0 for permanent.
+
+                          :unlock_token_attribute_name,               # Unlock token attribute name
+                          :unlock_token_email_method_name,            # Mailer method name
+                          :unlock_token_mailer_disabled,              # When true, dont send unlock token via email
+                          :unlock_token_mailer                        # Mailer class
           end
           
           base.sorcery_config.instance_eval do
             @defaults.merge!(:@failed_logins_count_attribute_name              => :failed_logins_count,
                              :@lock_expires_at_attribute_name                  => :lock_expires_at,
                              :@consecutive_login_retries_amount_limit          => 50,
-                             :@login_lock_time_period                          => 60 * 60)
+                             :@login_lock_time_period                          => 60 * 60,
+
+                             :@unlock_token_attribute_name                     => :unlock_token,
+                             :@unlock_token_email_method_name                  => :send_unlock_token_email,
+                             :@unlock_token_mailer_disabled                    => false,
+                             :@unlock_token_mailer                             => nil)
             reset!
           end
           
@@ -31,18 +41,28 @@ module Sorcery
           end
           base.extend(ClassMethods)
           base.send(:include, InstanceMethods)
+
+          base.class_eval do
+            after_update :send_unlock_token_email!, :if => Proc.new { |user| user.send(sorcery_config.unlock_token_attribute_name).present? }
+          end
         end
         
         module ClassMethods
+          def load_from_unlock_token(token)
+            return nil if token.blank?
+            user = find_by_sorcery_token(sorcery_config.unlock_token_attribute_name,token)
+            user
+          end
+
           protected
 
           def define_brute_force_protection_mongoid_fields
-            field sorcery_config.failed_logins_count_attribute_name,  :type => Integer
+            field sorcery_config.failed_logins_count_attribute_name,  :type => Integer, :default => 0
             field sorcery_config.lock_expires_at_attribute_name,      :type => Time
           end
 
           def define_brute_force_protection_mongo_mapper_fields
-            key sorcery_config.failed_logins_count_attribute_name, Integer
+            key sorcery_config.failed_logins_count_attribute_name, Integer, :default => 0
             key sorcery_config.lock_expires_at_attribute_name, Time
           end
         end
@@ -58,24 +78,33 @@ module Sorcery
             self.lock! if self.send(config.failed_logins_count_attribute_name) >= config.consecutive_login_retries_amount_limit
           end
           
+          # /!\
+          # Moved out of protected for use like activate! in controller
+          # /!\
+          def unlock!
+            config = sorcery_config
+            self.send(:"#{config.lock_expires_at_attribute_name}=", nil)
+            self.send(:"#{config.failed_logins_count_attribute_name}=", 0)
+            self.send(:"#{config.unlock_token_attribute_name}=", nil) unless config.unlock_token_mailer_disabled or config.unlock_token_mailer.nil?
+            self.save!(:validate => false)
+          end
+
           protected
 
           def lock!
             config = sorcery_config
             self.send(:"#{config.lock_expires_at_attribute_name}=", Time.now.in_time_zone + config.login_lock_time_period)
-            self.save!(:validate => false)
-          end
-
-          def unlock!
-            config = sorcery_config
-            self.send(:"#{config.lock_expires_at_attribute_name}=", nil)
-            self.send(:"#{config.failed_logins_count_attribute_name}=", 0)
+            self.send(:"#{config.unlock_token_attribute_name}=", TemporaryToken.generate_random_token) unless config.unlock_token_mailer_disabled or config.unlock_token_mailer.nil?
             self.save!(:validate => false)
           end
           
           def unlocked?
             config = sorcery_config
             self.send(config.lock_expires_at_attribute_name).nil?
+          end
+
+          def send_unlock_token_email!
+            generic_send_email(:unlock_token_email_method_name, :unlock_token_mailer) unless sorcery_config.unlock_token_email_method_name.nil? or sorcery_config.unlock_token_mailer_disabled == true
           end
           
           # Prevents a locked user from logging in, and unlocks users that expired their lock time.

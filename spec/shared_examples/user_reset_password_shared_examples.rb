@@ -33,7 +33,20 @@ shared_examples_for "rails_3_reset_password_model" do
       sorcery_model_property_set(:reset_password_mailer, TestUser)
       User.sorcery_config.reset_password_mailer.should equal(TestUser)
     end
+
+    it "should enable configuration option 'reset_password_mailer_disabled'" do
+      sorcery_model_property_set(:reset_password_mailer_disabled, :my_reset_password_mailer_disabled)
+      User.sorcery_config.reset_password_mailer_disabled.should equal(:my_reset_password_mailer_disabled)
+    end
     
+    it "if mailer is nil and mailer is enabled, throw exception!" do
+      expect{sorcery_reload!([:reset_password], :reset_password_mailer_disabled => false)}.to raise_error(ArgumentError)
+    end
+
+    it "if mailer is disabled and mailer is nil, do NOT throw exception" do
+      expect{sorcery_reload!([:reset_password], :reset_password_mailer_disabled => true)}.to_not raise_error
+    end    
+
     it "should allow configuration option 'reset_password_email_method_name'" do
       sorcery_model_property_set(:reset_password_email_method_name, :my_mailer_method)
       User.sorcery_config.reset_password_email_method_name.should equal(:my_mailer_method)
@@ -125,11 +138,69 @@ shared_examples_for "rails_3_reset_password_model" do
       @user.reset_password_token.should_not == old_password_code
     end
 
-    it "should send an email on reset" do
-      create_new_user
-      old_size = ActionMailer::Base.deliveries.size
-      @user.deliver_reset_password_instructions!
-      ActionMailer::Base.deliveries.size.should == old_size + 1
+    context "mailer is enabled" do
+      it "should send an email on reset" do
+        create_new_user
+        old_size = ActionMailer::Base.deliveries.size
+        @user.deliver_reset_password_instructions!
+        ActionMailer::Base.deliveries.size.should == old_size + 1
+      end
+
+      it "should not send an email if time between emails has not passed since last email" do
+        create_new_user
+        sorcery_model_property_set(:reset_password_time_between_emails, 10000)
+        old_size = ActionMailer::Base.deliveries.size
+        @user.deliver_reset_password_instructions!
+        ActionMailer::Base.deliveries.size.should == old_size + 1
+        @user.deliver_reset_password_instructions!
+        ActionMailer::Base.deliveries.size.should == old_size + 1
+      end
+
+      it "should send an email if time between emails has passed since last email" do
+        create_new_user
+        sorcery_model_property_set(:reset_password_time_between_emails, 0.5)
+        old_size = ActionMailer::Base.deliveries.size
+        @user.deliver_reset_password_instructions!
+        ActionMailer::Base.deliveries.size.should == old_size + 1
+        Timecop.travel(Time.now.in_time_zone+0.5)
+        @user.deliver_reset_password_instructions!
+        ActionMailer::Base.deliveries.size.should == old_size + 2
+      end
+    end
+
+    context "mailer is disabled" do
+
+      before(:all) do
+        sorcery_reload!([:reset_password], :reset_password_mailer_disabled => true, :reset_password_mailer => ::SorceryMailer)
+      end
+
+      it "should send an email on reset" do
+        create_new_user
+        old_size = ActionMailer::Base.deliveries.size
+        @user.deliver_reset_password_instructions!
+        ActionMailer::Base.deliveries.size.should == old_size
+      end
+
+      it "should not send an email if time between emails has not passed since last email" do
+        create_new_user
+        sorcery_model_property_set(:reset_password_time_between_emails, 10000)
+        old_size = ActionMailer::Base.deliveries.size
+        @user.deliver_reset_password_instructions!
+        ActionMailer::Base.deliveries.size.should == old_size
+        @user.deliver_reset_password_instructions!
+        ActionMailer::Base.deliveries.size.should == old_size
+      end
+
+      it "should send an email if time between emails has passed since last email" do
+        create_new_user
+        sorcery_model_property_set(:reset_password_time_between_emails, 0.5)
+        old_size = ActionMailer::Base.deliveries.size
+        @user.deliver_reset_password_instructions!
+        ActionMailer::Base.deliveries.size.should == old_size
+        Timecop.travel(Time.now.in_time_zone+0.5)
+        @user.deliver_reset_password_instructions!
+        ActionMailer::Base.deliveries.size.should == old_size
+      end
     end
 
     it "when change_password! is called, should delete reset_password_token" do
@@ -140,26 +211,12 @@ shared_examples_for "rails_3_reset_password_model" do
       @user.save!
       @user.reset_password_token.should be_nil
     end
-    
-    it "should not send an email if time between emails has not passed since last email" do
+
+    it "should return false if time between emails has not passed since last email" do
       create_new_user
       sorcery_model_property_set(:reset_password_time_between_emails, 10000)
-      old_size = ActionMailer::Base.deliveries.size
       @user.deliver_reset_password_instructions!
-      ActionMailer::Base.deliveries.size.should == old_size + 1
-      @user.deliver_reset_password_instructions!
-      ActionMailer::Base.deliveries.size.should == old_size + 1
-    end
-    
-    it "should send an email if time between emails has passed since last email" do
-      create_new_user
-      sorcery_model_property_set(:reset_password_time_between_emails, 0.5)
-      old_size = ActionMailer::Base.deliveries.size
-      @user.deliver_reset_password_instructions!
-      ActionMailer::Base.deliveries.size.should == old_size + 1
-      Timecop.travel(Time.now.in_time_zone+0.5)
-      @user.deliver_reset_password_instructions!
-      ActionMailer::Base.deliveries.size.should == old_size + 2
+      @user.deliver_reset_password_instructions!.should == false
     end
 
     it "should encrypt properly on reset" do
@@ -167,10 +224,6 @@ shared_examples_for "rails_3_reset_password_model" do
       @user.deliver_reset_password_instructions!
       @user.change_password!("blagu")
       Sorcery::CryptoProviders::BCrypt.matches?(@user.crypted_password,"blagu",@user.salt).should be_true
-    end
-
-    it "if mailer is nil on activation, throw exception!" do
-      expect{sorcery_reload!([:reset_password])}.to raise_error(ArgumentError)
     end
 
   end

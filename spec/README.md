@@ -7,25 +7,25 @@ Each sample app runs a set of shared specs ( `spec/shared_examples/*_example.rb`
 Sorcery has one set of specs (`sorcery_crypto_providers_spec.rb`) that can be run outside of any of the frameworks. To run it simply:
     
     cd spec/
-    bundle install
-    rake spec
+    bundle
+    bundle exec rake spec
 
 Running Framework Specs
 -----------------------
 To run framework specs, cd into each directory, bundle, and run the specs. For example, to run the rails3 specs you would:
 
     cd spec/rails3/
-    bundle install
-    rake spec
+    bundle
+    bundle exec rake spec
 
 **Note:** the rails3_mongoid and rails3_mongo_mapper sample apps do require, well, MongoDB. Installing MongoDB on mac osx is easy with homebrew. Seeing as you're reading the readme for running specs, I'll assume you can install MongoDB on your machine. For the purpose of running these tests, I put mongod in verbose mode and in the background so I can see it log to stdout. 
 
     cd spec/rails3_mongoid
-    bundle install
+    bundle
     mongod -v &
-    rake spec
+    bundle exec rake spec
     
     cd spec/rails3_mongo_mapper
-    bundle install
+    bundle
     mongod -v &
-    rake spec
+    bundle exec rake spec

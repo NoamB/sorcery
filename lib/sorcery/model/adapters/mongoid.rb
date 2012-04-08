@@ -11,6 +11,12 @@ module Sorcery
           def increment(attr)
             self.inc(attr,1)
           end
+          
+          def update_single_attribute(name, value)
+            value = value.utc if value.is_a?(ActiveSupport::TimeWithZone)
+            self.send(:"#{name}=", value)
+            self.class.where(:_id => self.id).update_all(name => value)
+          end
         end
 
         module ClassMethods
@@ -66,8 +72,8 @@ module Sorcery
           def get_current_users
             config = sorcery_config
             where(config.last_activity_at_attribute_name.ne => nil) \
-            .any_of({config.last_logout_at_attribute_name => nil},{config.last_activity_at_attribute_name.gt => config.last_logout_at_attribute_name}) \
-            .and(config.last_activity_at_attribute_name.gt => config.activity_timeout.seconds.ago.utc.to_s(:db)).order_by([:_id,:asc])
+            .and("this.#{config.last_logout_at_attribute_name} == null || this.#{config.last_activity_at_attribute_name} > this.#{config.last_logout_at_attribute_name}") \
+            .and(config.last_activity_at_attribute_name.gt => config.activity_timeout.seconds.ago.utc).order_by([:_id,:asc])
           end
         end
       end

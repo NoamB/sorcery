@@ -5,7 +5,7 @@ $: << File.join(File.dirname(__FILE__), '..', '..', 'lib' )
 ENV["RAILS_ENV"] ||= 'in_memory'  
 require File.expand_path("../../config/environment", __FILE__)  
 require 'rspec/rails'  
-#require 'capybara/rspec'
+require 'capybara/rspec'
 require 'timecop'
 # require 'simplecov'
 # SimpleCov.root File.join(File.dirname(__FILE__), "..", "..", "rails3" )

@@ -20,7 +20,13 @@ module Sorcery
                           :activation_token_expiration_period,            # how many seconds before the activation code
                                                                           # expires. nil for never expires.
                                                                           
-                          :user_activation_mailer,                        # your mailer class. Required.
+                          :user_activation_mailer,                        # your mailer class. Required when
+                                                                          # activation_mailer_disabled == false.
+
+                          :activation_mailer_disabled,                    # when true sorcery will not automatically
+                                                                          # email activation details and allow you to
+                                                                          # manually handle how and when email is sent
+
                           :activation_needed_email_method_name,           # activation needed email method on your
                                                                           # mailer class.
                                                                           
@@ -37,6 +43,7 @@ module Sorcery
                              :@activation_token_expires_at_attribute_name  => :activation_token_expires_at,
                              :@activation_token_expiration_period          => nil,
                              :@user_activation_mailer                      => nil,
+                             :@activation_mailer_disabled                  => false,
                              :@activation_needed_email_method_name         => :activation_needed_email,
                              :@activation_success_email_method_name        => :activation_success_email,
                              :@prevent_non_active_users_to_login           => true)
@@ -47,7 +54,7 @@ module Sorcery
             # don't setup activation if no password supplied - this user is created automatically
             before_create :setup_activation, :if => Proc.new { |user| user.send(sorcery_config.password_attribute_name).present? }
             # don't send activation needed email if no crypted password created - this user is external (OAuth etc.)
-            after_create  :send_activation_needed_email!, :if => Proc.new { |user| !user.external?}
+            after_create  :send_activation_needed_email!, :if => Proc.new { |user| !user.external? }
           end
           
           base.sorcery_config.after_config << :validate_mailer_defined
@@ -74,10 +81,11 @@ module Sorcery
           
           protected
           
-          # This submodule requires the developer to define his own mailer class to be used by it.
+          # This submodule requires the developer to define his own mailer class to be used by it
+          # when activation_mailer_disabled is false
           def validate_mailer_defined
             msg = "To use user_activation submodule, you must define a mailer (config.user_activation_mailer = YourMailerClass)."
-            raise ArgumentError, msg if @sorcery_config.user_activation_mailer == nil
+            raise ArgumentError, msg if @sorcery_config.user_activation_mailer == nil and @sorcery_config.activation_mailer_disabled == false
           end
 
           def define_user_activation_mongoid_fields
@@ -119,11 +127,11 @@ module Sorcery
 
           # called automatically after user initial creation.
           def send_activation_needed_email!
-            generic_send_email(:activation_needed_email_method_name, :user_activation_mailer) unless sorcery_config.activation_needed_email_method_name.nil?
+            generic_send_email(:activation_needed_email_method_name, :user_activation_mailer) unless sorcery_config.activation_needed_email_method_name.nil? or sorcery_config.activation_mailer_disabled == true
           end
 
           def send_activation_success_email!
-            generic_send_email(:activation_success_email_method_name, :user_activation_mailer) unless sorcery_config.activation_success_email_method_name.nil?
+            generic_send_email(:activation_success_email_method_name, :user_activation_mailer) unless sorcery_config.activation_success_email_method_name.nil? or sorcery_config.activation_mailer_disabled == true
           end
           
           def prevent_non_active_login

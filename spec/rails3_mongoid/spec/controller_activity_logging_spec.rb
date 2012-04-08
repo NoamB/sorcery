@@ -23,28 +23,35 @@ describe ApplicationController do
     end
 
     it "should log login time on login" do
-      now = Time.now.in_time_zone
+      now = Time.now
       login_user
       @user.last_login_at.should_not be_nil
-      @user.last_login_at.to_s(:db).should >= now.to_s(:db)
-      @user.last_login_at.to_s(:db).should <= (now+2).to_s(:db)
+      @user.last_login_at.to_s.should >= now.to_s
+      @user.last_login_at.to_s.should <= (now+2).to_s
     end
 
     it "should log logout time on logout" do
       login_user
-      now = Time.now.in_time_zone
+      now = Time.now
       logout_user
       User.first.last_logout_at.should_not be_nil
-      User.first.last_logout_at.to_s(:db).should >= now.to_s(:db)
-      User.first.last_logout_at.to_s(:db).should <= (now+2).to_s(:db)
+      User.first.last_logout_at.to_s.should >= now.to_s
+      User.first.last_logout_at.to_s.should <= (now+2).to_s
     end
 
     it "should log last activity time when logged in" do
       login_user
-      now = Time.now.in_time_zone
+      now = Time.now
       get :some_action
-      User.first.last_activity_at.to_s(:db).should >= now.to_s(:db)
-      User.first.last_activity_at.to_s(:db).should <= (now+2).to_s(:db)
+      User.first.last_activity_at.to_s.should >= now.to_s
+      User.first.last_activity_at.to_s.should <= (now+2).to_s
+    end
+
+    it "should update nothing but activity fields" do
+      original_user_name = User.first.username
+      login_user
+      get :some_action_making_a_non_persisted_change_to_the_user
+      User.first.username.should == original_user_name
     end
 
     it "'current_users' should hold the user object when 1 user is logged in" do

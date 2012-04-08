@@ -16,6 +16,11 @@ class ApplicationController < ActionController::Base
     render :nothing => true
   end
   
+  def some_action_making_a_non_persisted_change_to_the_user
+    current_user.username = "to_be_ignored"
+    render :nothing => true
+  end
+  
   def test_login
     @user = login(params[:username], params[:password])
     render :text => ""

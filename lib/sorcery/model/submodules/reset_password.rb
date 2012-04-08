@@ -18,6 +18,11 @@ module Sorcery
                                                                              # protection.
                                                                              
                           :reset_password_mailer,                            # mailer class. Needed.
+
+                          :reset_password_mailer_disabled,                   # when true sorcery will not automatically
+                                                                             # email password reset details and allow you to
+                                                                             # manually handle how and when email is sent
+
                           :reset_password_email_method_name,                 # reset password email method on your
                                                                              # mailer class.
                                                                              
@@ -34,6 +39,7 @@ module Sorcery
                              :@reset_password_token_expires_at_attribute_name => :reset_password_token_expires_at,
                              :@reset_password_email_sent_at_attribute_name    => :reset_password_email_sent_at,
                              :@reset_password_mailer                          => nil,
+                             :@reset_password_mailer_disabled                 => false,
                              :@reset_password_email_method_name               => :reset_password_email,
                              :@reset_password_expiration_period               => nil,
                              :@reset_password_time_between_emails             => 5 * 60 )
@@ -64,10 +70,11 @@ module Sorcery
           
           protected
           
-          # This submodule requires the developer to define his own mailer class to be used by it.
+          # This submodule requires the developer to define his own mailer class to be used by it
+          # when reset_password_mailer_disabled is false
           def validate_mailer_defined
             msg = "To use reset_password submodule, you must define a mailer (config.reset_password_mailer = YourMailerClass)."
-            raise ArgumentError, msg if @sorcery_config.reset_password_mailer == nil
+            raise ArgumentError, msg if @sorcery_config.reset_password_mailer == nil and @sorcery_config.reset_password_mailer_disabled == false
           end
 
           def define_reset_password_mongoid_fields
@@ -88,13 +95,13 @@ module Sorcery
           def deliver_reset_password_instructions!
             config = sorcery_config
             # hammering protection
-            return if config.reset_password_time_between_emails && self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.ago.utc
+            return false if config.reset_password_time_between_emails && self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.ago.utc
             self.send(:"#{config.reset_password_token_attribute_name}=", TemporaryToken.generate_random_token)
             self.send(:"#{config.reset_password_token_expires_at_attribute_name}=", Time.now.in_time_zone + config.reset_password_expiration_period) if config.reset_password_expiration_period
             self.send(:"#{config.reset_password_email_sent_at_attribute_name}=", Time.now.in_time_zone)
             self.class.transaction do
               self.save!(:validate => false)
-              generic_send_email(:reset_password_email_method_name, :reset_password_mailer)
+              generic_send_email(:reset_password_email_method_name, :reset_password_mailer) unless config.reset_password_mailer_disabled
             end
           end
           

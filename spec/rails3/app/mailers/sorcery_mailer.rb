@@ -22,4 +22,11 @@ class SorceryMailer < ActionMailer::Base
     mail(:to => user.email,
          :subject => "Your password has been reset")
   end
+
+  def send_unlock_token_email(user)
+    @user = user
+    @url = "http://example.com/unlock/#{user.unlock_token}"
+    mail(:to => user.email,
+         :subject => "Your account has been locked due to many wrong logins")
+  end
 end
