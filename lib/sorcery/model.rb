@@ -99,11 +99,18 @@ module Sorcery
       end
       
       # The default authentication method.
-      # Takes a username and password,
+      # Takes a username and password or hash containing username and password,
       # Finds the user by the username and compares the user's password to the one supplied to the method.
       # returns the user if success, nil otherwise.
       def authenticate(*credentials)
-        raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
+        raise ArgumentError, "at least 1 argument required" if credentials.size == 0
+
+        if credentials[0].is_a? Hash
+          username = credentials[0][(@sorcery_config.username_attribute_names & credentials[0].keys).first]
+          password = credentials[0][@sorcery_config.password_attribute_name]
+          credentials = [username, password]
+        end
+        
         credentials[0].downcase! if @sorcery_config.downcase_username_before_authenticating
         user = find_by_credentials(credentials)
 

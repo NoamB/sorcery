@@ -83,6 +83,14 @@ shared_examples_for "rails_3_core_model" do
       User.authenticate(@user.send(User.sorcery_config.username_attribute_names.first), 'wrong!').should be_false
     end
   
+    it "autenticate should accept a hash of credentials" do
+      create_new_user
+      User.authenticate({
+          User.sorcery_config.username_attribute_names.first => @user.send(User.sorcery_config.username_attribute_names.first),
+          User.sorcery_config.password_attribute_name => 'secret'
+      }).should be_true
+    end
+
     specify { User.should respond_to(:encrypt) }
     
     it "subclass should inherit config if defined so" do
