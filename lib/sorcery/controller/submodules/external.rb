@@ -72,27 +72,25 @@ module Sorcery
           # Note: Be careful. This method skips validations model.
           def create_from(provider)
             provider = provider.to_sym
-            @provider = Config.send(provider)
-            @user_hash = @provider.get_user_hash
+            provider = Config.send(provider)
+            user_hash = provider.get_user_hash
             config = user_class.sorcery_config
             attrs = {}
-            @provider.user_info_mapping.each do |k,v|
+            provider.user_info_mapping.each do |k,v|
               if (varr = v.split("/")).size > 1
-                attribute_value = varr.inject(@user_hash[:user_info]) {|hsh,v| hsh[v] } rescue nil
+                attribute_value = varr.inject(user_hash[:user_info]) {|hash, value| hash[value] } rescue nil
                 attribute_value.nil? ? attrs : attrs.merge!(k => attribute_value)
               else
-                attrs.merge!(k => @user_hash[:user_info][v])
+                attrs.merge!(k => user_hash[:user_info][v])
               end
             end
             user_class.transaction do
-              @user = user_class.new()
-              attrs.each do |k,v|
-                @user.send(:"#{k}=", v)
-              end
-              @user.save(:validate => false)
-              user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider, config.provider_uid_attribute_name => @user_hash[:uid]})
+              user = user_class.new
+              attrs.each { |key, value| user.send :"#{key}=", value }
+              user_class.sorcery_config.authentications_class.new config.authentications_user_id_attribute_name => user.id, config.provider_attribute_name => provider, config.provider_uid_attribute_name => user_hash[:uid]
+              user.save(:validate => false)
             end
-            @user
+            user
           end
         end
       end
