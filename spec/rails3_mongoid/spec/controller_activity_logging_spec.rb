@@ -26,25 +26,25 @@ describe ApplicationController do
       now = Time.now.utc
       login_user
       @user.last_login_at.should_not be_nil
-      @user.last_login_at.to_s.should >= now.to_s
-      @user.last_login_at.to_s.should <= (now+2).to_s
+      @user.last_login_at.utc.to_s.should >= now.utc.to_s
+      @user.last_login_at.utc.to_s.should <= (now.utc+2).to_s
     end
 
     it "should log logout time on logout" do
       login_user
       now = Time.now.utc
       logout_user
-      User.first.last_logout_at.should_not be_nil
-      User.first.last_logout_at.to_s.should >= now.to_s
-      User.first.last_logout_at.to_s.should <= (now+2).to_s
+      User.first.last_logout_at.utc.should_not be_nil
+      User.first.last_logout_at.utc.to_s.should >= now.utc.to_s
+      User.first.last_logout_at.utc.to_s.should <= (now.utc+2).to_s
     end
 
     it "should log last activity time when logged in" do
       login_user
       now = Time.now.utc
       get :some_action
-      User.first.last_activity_at.to_s.should >= now.to_s
-      User.first.last_activity_at.to_s.should <= (now+2).to_s
+      User.first.last_activity_at.utc.should >= now.utc
+      User.first.last_activity_at.utc.should <= (now.utc+2)
     end
 
     it "should update nothing but activity fields" do

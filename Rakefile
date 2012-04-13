@@ -51,6 +51,7 @@ task :all_sorcery_specs do
     directory_name = File.dirname(rakefile)
     sh <<-CMD
       cd #{directory_name}
+      bundle
       bundle exec rake
     CMD
   end

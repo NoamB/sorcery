@@ -6,6 +6,7 @@ class AddBruteForceProtectionToUsers < ActiveRecord::Migration
   end
 
   def self.down
+    remove_column :users, :unlock_token
     remove_column :users, :lock_expires_at
     remove_column :users, :failed_logins_count
   end
