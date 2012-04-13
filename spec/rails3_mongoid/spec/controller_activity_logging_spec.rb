@@ -23,7 +23,7 @@ describe ApplicationController do
     end
 
     it "should log login time on login" do
-      now = Time.now
+      now = Time.now.utc
       login_user
       @user.last_login_at.should_not be_nil
       @user.last_login_at.to_s.should >= now.to_s
@@ -32,7 +32,7 @@ describe ApplicationController do
 
     it "should log logout time on logout" do
       login_user
-      now = Time.now
+      now = Time.now.utc
       logout_user
       User.first.last_logout_at.should_not be_nil
       User.first.last_logout_at.to_s.should >= now.to_s
@@ -41,7 +41,7 @@ describe ApplicationController do
 
     it "should log last activity time when logged in" do
       login_user
-      now = Time.now
+      now = Time.now.utc
       get :some_action
       User.first.last_activity_at.to_s.should >= now.to_s
       User.first.last_activity_at.to_s.should <= (now+2).to_s
