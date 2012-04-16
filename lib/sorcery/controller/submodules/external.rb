@@ -83,10 +83,10 @@ module Sorcery
             attrs = user_attrs(@provider.user_info_mapping, @user_hash)
 
             user = user_class.new(attrs)
-            user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => user_hash[:uid], config.provider_attribute_name => provider_name)
+            user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => @provider_name)
 
             session[:incomplete_user] = {
-              :provider => {config.provider_uid_attribute_name => user_hash[:uid], config.provider_attribute_name => provider_name},
+              :provider => {config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => @provider_name},
               :user_hash => attrs
             } unless user.save
 
