@@ -77,7 +77,7 @@ module Sorcery
           def create_and_validate_from(provider)
             provider = provider.to_sym
             @provider = Config.send(provider)
-            @user_hash = provider.get_user_hash
+            @user_hash = @provider.get_user_hash
             config = user_class.sorcery_config
 
             attrs = user_attrs(@provider.user_info_mapping, @user_hash)
