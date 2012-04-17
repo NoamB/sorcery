@@ -6,7 +6,6 @@ PATH
       bundler (>= 1.1.0)
       oauth (~> 0.4.4)
       oauth2 (~> 0.5.1)
-      sorcery
 
 GEM
   remote: http://rubygems.org/
