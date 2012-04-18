@@ -21,5 +21,6 @@ group :development do
   gem 'timecop'
 	gem 'capybara'
 	gem 'bcrypt-ruby', "~> 3.0.0"
+	gem 'mongo_mapper'
 	gem 'mongoid', "~> 2.4.4"
 end
