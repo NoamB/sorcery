@@ -81,6 +81,14 @@ describe ApplicationController do
       flash[:alert].should == "Failed!"
     end
 
+    it "on successful login_from the user should be redirected to the url he originally wanted" do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      create_new_external_user(:facebook)
+      get :test_return_to_with_external2, {}, :return_to_url => "fuu"
+      response.should redirect_to("fuu")
+      flash[:notice].should == "Success!"
+    end
+
   # provider: github
     it "login_at redirects correctly (github)" do
       create_new_user
@@ -101,6 +109,14 @@ describe ApplicationController do
       create_new_user
       get :test_login_from3
       flash[:alert].should == "Failed!"
+    end
+
+    it "on successful login_from the user should be redirected to the url he originally wanted (github)" do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      create_new_external_user(:github)
+      get :test_return_to_with_external3, {}, :return_to_url => "fuu"
+      response.should redirect_to("fuu")
+      flash[:notice].should == "Success!"
     end
 
   # provider: google
@@ -125,6 +141,14 @@ describe ApplicationController do
       flash[:alert].should == "Failed!"
     end
 
+    it "on successful login_from the user should be redirected to the url he originally wanted (google)" do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      create_new_external_user(:google)
+      get :test_return_to_with_external4, {}, :return_to_url => "fuu"
+      response.should redirect_to("fuu")
+      flash[:notice].should == "Success!"
+    end
+
   # provider: liveid
     it "login_at redirects correctly (liveid)" do
       create_new_user
@@ -145,6 +169,14 @@ describe ApplicationController do
       create_new_user
       get :test_login_from5
       flash[:alert].should == "Failed!"
+    end
+
+    it "on successful login_from the user should be redirected to the url he originally wanted (liveid)" do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      create_new_external_user(:liveid)
+      get :test_return_to_with_external5, {}, :return_to_url => "fuu"
+      response.should redirect_to("fuu")
+      flash[:notice].should == "Success!"
     end
 
   end
