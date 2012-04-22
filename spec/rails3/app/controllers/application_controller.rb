@@ -137,6 +137,46 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def test_return_to_with_external
+    if @user = login_from(:twitter)
+      redirect_back_or_to "bla", :notice => "Success!"
+    else
+      redirect_to "blu", :alert => "Failed!"
+    end
+  end
+
+  def test_return_to_with_external2
+    if @user = login_from(:facebook)
+      redirect_back_or_to "bla", :notice => "Success!"
+    else
+      redirect_to "blu", :alert => "Failed!"
+    end
+  end
+
+  def test_return_to_with_external3
+    if @user = login_from(:github)
+      redirect_back_or_to "bla", :notice => "Success!"
+    else
+      redirect_to "blu", :alert => "Failed!"
+    end
+  end
+
+  def test_return_to_with_external4
+    if @user = login_from(:google)
+      redirect_back_or_to "bla", :notice => "Success!"
+    else
+      redirect_to "blu", :alert => "Failed!"
+    end
+  end
+
+  def test_return_to_with_external5
+    if @user = login_from(:liveid)
+      redirect_back_or_to "bla", :notice => "Success!"
+    else
+      redirect_to "blu", :alert => "Failed!"
+    end
+  end
+
   def test_create_from_provider
     provider = params[:provider]
     login_from(provider)

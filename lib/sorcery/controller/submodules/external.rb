@@ -46,7 +46,9 @@ module Sorcery
             @provider.process_callback(params,session)
             @user_hash = @provider.get_user_hash
             if user = user_class.load_from_provider(provider,@user_hash[:uid].to_s)
+              return_to_url = session[:return_to_url]
               reset_session
+              session[:return_to_url] = return_to_url
               auto_login(user)
               user
             end
