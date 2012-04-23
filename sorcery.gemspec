@@ -182,8 +182,7 @@ Gem::Specification.new do |s|
     "spec/sinatra/views/test_login.erb",
     "spec/sorcery_crypto_providers_spec.rb",
     "spec/spec.opts",
-    "spec/spec_helper.rb",
-    "spec/untitled folder"
+    "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://github.com/NoamB/sorcery}
   s.licenses = ["MIT"]
