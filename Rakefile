@@ -46,10 +46,7 @@ task :all_sorcery_specs do
   # we need to be empty, otherwise bundler will use parent bundler.
   env = {
     'BUNDLE_GEMFILE' => nil,
-    'GEM_PATH' => nil,
-    'GEM_HOME' => nil,
-    'BUNDLE_BIN_PATH' => nil,
-    'RUBYOPT' => nil
+    'GEM_HOME'       => nil
   }
   Dir['spec/**/Rakefile'].each do |rakefile|
     directory_name = File.dirname(rakefile)
