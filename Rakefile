@@ -53,7 +53,7 @@ task :all_sorcery_specs do
   }
   Dir['spec/**/Rakefile'].each do |rakefile|
     directory_name = File.dirname(rakefile)
-    system(env, "cd #{directory_name} && pwd && bundle && bundle exec rake")
+    system(env, "cd #{directory_name} && bundle && bundle exec rake")
   end
 end
 
