@@ -41,10 +41,6 @@ module Sorcery
           end
           base.extend(ClassMethods)
           base.send(:include, InstanceMethods)
-
-          base.class_eval do
-            after_update :send_unlock_token_email!, :if => Proc.new { |user| user.send(sorcery_config.unlock_token_attribute_name).present? }
-          end
         end
         
         module ClassMethods
@@ -59,11 +55,13 @@ module Sorcery
           def define_brute_force_protection_mongoid_fields
             field sorcery_config.failed_logins_count_attribute_name,  :type => Integer, :default => 0
             field sorcery_config.lock_expires_at_attribute_name,      :type => Time
+            field sorcery_config.unlock_token_attribute_name,         :type => String
           end
 
           def define_brute_force_protection_mongo_mapper_fields
             key sorcery_config.failed_logins_count_attribute_name, Integer, :default => 0
             key sorcery_config.lock_expires_at_attribute_name, Time
+            key sorcery_config.unlock_token_attribute_name, String
           end
         end
         
@@ -94,7 +92,11 @@ module Sorcery
           def lock!
             config = sorcery_config
             self.send(:"#{config.lock_expires_at_attribute_name}=", Time.now.in_time_zone + config.login_lock_time_period)
-            self.send(:"#{config.unlock_token_attribute_name}=", TemporaryToken.generate_random_token) unless config.unlock_token_mailer_disabled or config.unlock_token_mailer.nil?
+
+            unless config.unlock_token_mailer_disabled || config.unlock_token_mailer.nil?
+              self.send(:"#{config.unlock_token_attribute_name}=", TemporaryToken.generate_random_token) 
+              send_unlock_token_email!
+            end
             self.save!(:validate => false)
           end
           
