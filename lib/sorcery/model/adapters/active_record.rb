@@ -8,11 +8,16 @@ module Sorcery
         end
 
         module InstanceMethods
-          def update_single_attribute(name, value)
-            self.send(:"#{name}=", value)
-            
+          def update_many_attributes(attrs)
+            attrs.each do |name, value|
+              self.send(:"#{name}=", value)
+            end
             primary_key = self.class.primary_key
-            self.class.where(:"#{primary_key}" => self.send(:"#{primary_key}")).update_all(name => value)
+            self.class.where(:"#{primary_key}" => self.send(:"#{primary_key}")).update_all(attrs)
+          end
+
+          def update_single_attribute(name, value)
+            update_many_attributes(name => value)
           end
         end
         
