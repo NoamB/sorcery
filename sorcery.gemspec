@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "sorcery"
-  s.version = "0.7.11"
+  s.version = "0.7.12"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = "2012-04-25"
+  s.date = "2012-05-06"
   s.description = "Provides common authentication needs such as signing in/out, activating by email and resetting password."
   s.email = "nbenari@gmail.com"
   s.extra_rdoc_files = [
