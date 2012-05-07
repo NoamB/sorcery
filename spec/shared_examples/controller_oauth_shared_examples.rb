@@ -33,5 +33,23 @@ shared_examples_for "oauth_controller" do
       User.first.username.should == "coming soon to sorcery gem: twitter and facebook authentication support."
       User.first.created_at.should_not be_nil
     end
+    
+    describe "with a block" do
+      
+      before(:each) do
+        user = User.new(:username => 'nbenari')
+        user.save!(:validate => false)
+        user.authentications.create(:provider => 'github', :uid => '456')
+      end
+      
+      it "should not create user" do
+        sorcery_model_property_set(:authentications_class, Authentication)
+        sorcery_controller_external_property_set(:twitter, :user_info_mapping, {:username => "screen_name"})
+        lambda do
+          get :test_create_from_provider_with_block, :provider => "twitter"
+        end.should_not change(User, :count)
+      end
+    
+    end
   end
 end
