@@ -186,6 +186,20 @@ class ApplicationController < ActionController::Base
       redirect_to "blu", :alert => "Failed!"
     end
   end
+  
+  def test_create_from_provider_with_block
+    provider = params[:provider]
+    login_from(provider)
+    @user = create_from(provider) do |user|
+      # check uniqueness of username
+      User.where(:username => user.username).empty?
+    end
+    if @user 
+      redirect_to "bla", :notice => "Success!"
+    else
+      redirect_to "blu", :alert => "Failed!"
+    end
+  end
 
   protected
 

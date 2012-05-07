@@ -32,6 +32,25 @@ shared_examples_for "oauth2_controller" do
       end.should change(User, :count).by(1)
       User.first.username.should == "Noam Ben Ari"
       User.first.created_at.should_not be_nil
-    end 
+    end
+   
+    describe "with a block" do
+      
+      before(:each) do
+        user = User.new(:username => 'Noam Ben Ari')
+        user.save!(:validate => false)
+        user.authentications.create(:provider => 'twitter', :uid => '456')
+      end
+      
+      it "should not create user" do
+        sorcery_model_property_set(:authentications_class, Authentication)
+        sorcery_controller_external_property_set(:facebook, :user_info_mapping, {:username => "name"})
+        lambda do
+          # test_create_from_provider_with_block in controller will check for uniqueness of username
+          get :test_create_from_provider_with_block, :provider => "facebook"
+        end.should_not change(User, :count)
+      end
+    
+    end
   end
 end
