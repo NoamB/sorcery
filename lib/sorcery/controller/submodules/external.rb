@@ -72,6 +72,10 @@ module Sorcery
           #
           # And this will cause 'moishe' to be set as the value of :username field.
           # Note: Be careful. This method skips validations model.
+          # Instead you can pass a block, if the block returns false the user will not be created
+          #
+          #   create_from(provider) {|user| user.some_check }
+          #
           def create_from(provider)
             provider = provider.to_sym
             @provider = Config.send(provider)
@@ -91,11 +95,17 @@ module Sorcery
               attrs.each do |k,v|
                 @user.send(:"#{k}=", v)
               end
+              
+              if block_given?
+                return false unless yield @user
+              end
+              
               @user.save(:validate => false)
               user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider, config.provider_uid_attribute_name => @user_hash[:uid]})
             end
             @user
           end
+          
         end
       end
     end
