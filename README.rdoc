@@ -138,6 +138,10 @@ the `config/initializers/sorcery.rb` file. After that all emails will be sent as
   end
 
 
+== Single Table Inheritance (STI) Support
+STI is supported via a single setting in config/initializers/sorcery.rb.
+
+
 == Full Features List by module:
 
 
