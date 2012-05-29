@@ -20,7 +20,7 @@ group :development do
   gem "jeweler", "~> 1.8.3"
   gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency
   gem 'timecop'
-	gem 'capybara'
-	gem 'mongo_mapper'
-	gem 'mongoid', "~> 2.4.4"
+  gem 'capybara'
+  gem 'mongo_mapper'
+  gem 'mongoid', "~> 2.4.4"
 end
