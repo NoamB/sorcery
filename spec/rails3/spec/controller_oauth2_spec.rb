@@ -26,23 +26,27 @@ def stub_all_oauth2_requests!
   auth_code.stub(:get_token).and_return(access_token)
 end
 
+def set_external_property
+  sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid])
+  sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
+  sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+  sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
+  sorcery_controller_external_property_set(:github, :key, "eYVNBjBDi33aa9GkA3w")
+  sorcery_controller_external_property_set(:github, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+  sorcery_controller_external_property_set(:github, :callback_url, "http://blabla.com")
+  sorcery_controller_external_property_set(:google, :key, "eYVNBjBDi33aa9GkA3w")
+  sorcery_controller_external_property_set(:google, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+  sorcery_controller_external_property_set(:google, :callback_url, "http://blabla.com")
+  sorcery_controller_external_property_set(:liveid, :key, "eYVNBjBDi33aa9GkA3w")
+  sorcery_controller_external_property_set(:liveid, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+  sorcery_controller_external_property_set(:liveid, :callback_url, "http://blabla.com")
+end
+
 describe ApplicationController do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
     sorcery_reload!([:external])
-    sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid])
-    sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
-    sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
-    sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
-    sorcery_controller_external_property_set(:github, :key, "eYVNBjBDi33aa9GkA3w")
-    sorcery_controller_external_property_set(:github, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
-    sorcery_controller_external_property_set(:github, :callback_url, "http://blabla.com")
-    sorcery_controller_external_property_set(:google, :key, "eYVNBjBDi33aa9GkA3w")
-    sorcery_controller_external_property_set(:google, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
-    sorcery_controller_external_property_set(:google, :callback_url, "http://blabla.com")
-    sorcery_controller_external_property_set(:liveid, :key, "eYVNBjBDi33aa9GkA3w")
-    sorcery_controller_external_property_set(:liveid, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
-    sorcery_controller_external_property_set(:liveid, :callback_url, "http://blabla.com")
+    set_external_property
   end
 
   after(:all) do
