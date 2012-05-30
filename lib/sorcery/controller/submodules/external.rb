@@ -50,6 +50,7 @@ module Sorcery
               reset_session
               session[:return_to_url] = return_to_url
               auto_login(user)
+              after_login!(user)
               user
             end
           end
