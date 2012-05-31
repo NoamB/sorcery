@@ -7,6 +7,9 @@ describe ApplicationController do
   
   after(:all) do
     ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activity_logging")
+    sorcery_controller_property_set(:register_login_time, true)
+    sorcery_controller_property_set(:register_logout_time, true)
+    sorcery_controller_property_set(:register_last_activity_time, true)
   end
   
   # ----------------- ACTIVITY LOGGING -----------------------

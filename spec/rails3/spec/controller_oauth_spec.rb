@@ -107,4 +107,83 @@ describe ApplicationController do
       ActionMailer::Base.deliveries.size.should == old_size
     end
   end
+
+  describe ApplicationController, "OAuth with user activation features"  do
+    before(:all) do
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activity_logging")
+      sorcery_reload!([:activity_logging, :external])
+    end
+
+    after(:all) do
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activity_logging")
+    end
+
+    context "when twitter" do
+      before(:each) do
+        User.delete_all
+        Authentication.delete_all
+        sorcery_controller_property_set(:register_login_time, true)
+        stub_all_oauth_requests!
+        sorcery_model_property_set(:authentications_class, Authentication)
+        create_new_external_user(:twitter)
+      end
+
+      it "should register login time" do
+        now = Time.now.in_time_zone
+        get :test_login_from
+        User.last.last_login_at.should_not be_nil
+        User.last.last_login_at.to_s(:db).should >= now.to_s(:db)
+        User.last.last_login_at.to_s(:db).should <= (now+2).to_s(:db)
+      end
+
+      it "should not register login time if configured so" do
+        sorcery_controller_property_set(:register_login_time, false)
+        now = Time.now.in_time_zone
+        get :test_login_from
+        User.last.last_login_at.should be_nil
+      end
+    end
+  end
+
+  describe ApplicationController, "OAuth with session timeout features" do
+    before(:all) do
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+      sorcery_reload!([:session_timeout, :external])
+    end
+
+    after(:all) do
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+    end
+
+    context "when twitter" do
+      before(:each) do
+        User.delete_all
+        Authentication.delete_all
+        sorcery_model_property_set(:authentications_class, Authentication)
+        sorcery_controller_property_set(:session_timeout,0.5)
+        stub_all_oauth_requests!
+        create_new_external_user(:twitter)
+      end
+
+      after(:each) do
+        Timecop.return
+      end
+
+      it "should not reset session before session timeout" do
+        get :test_login_from
+        session[:user_id].should_not be_nil
+        flash[:notice].should == "Success!"
+      end
+
+      it "should reset session after session timeout" do
+        get :test_login_from
+        Timecop.travel(Time.now.in_time_zone+0.6)
+        get :test_should_be_logged_in
+        session[:user_id].should be_nil
+        response.should be_a_redirect
+      end
+    end
+  end
 end
