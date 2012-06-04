@@ -113,7 +113,7 @@ module Sorcery
         @current_user = (user_class.find_by_id(session[:user_id]) if session[:user_id]) || false
       end
 
-      def after_login!(user, credentials)
+      def after_login!(user, credentials = [])
         Config.after_login.each {|c| self.send(c, user, credentials)}
       end
 
