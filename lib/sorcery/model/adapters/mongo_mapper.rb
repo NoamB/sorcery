@@ -8,7 +8,7 @@ module Sorcery
           include Sorcery::Model
         end
         
-        module InstanceMethods
+        #module InstanceMethods
           def increment(attr)
             self.class.increment(id, attr => 1)
           end
@@ -16,7 +16,7 @@ module Sorcery
           def save!(options = {})
             save(options)
           end
-        end
+        #end
 
         module ClassMethods
           def credential_regex(credential)
