@@ -63,15 +63,14 @@ module Sorcery
 
           # If user is logged, he can add all available providers into his account
           def add_provider_to_user(provider)
-            provider_name = provider.to_sym
-            provider = Config.send(provider_name)
-            user_hash = provider.get_user_hash
+            @provider = Config.send(provider)
+            @user_hash = @provider.get_user_hash
             config = user_class.sorcery_config
 
-            user = current_user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => user_hash[:uid], config.provider_attribute_name => provider)
-            user.save(:validate => false)
+            authentication = current_user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider)
+            authentication.save(:validate => false)
 
-            return user
+            current_user
           end
 
           # Initialize new user from provider informations.
