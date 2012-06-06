@@ -4,6 +4,7 @@ source :rubygems
 #   gem "activesupport", ">= 2.3.5"
 gem 'oauth', "~> 0.4.4"
 gem 'oauth2', "~> 0.5.1"
+gem 'bcrypt-ruby', "~> 3.0.0"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
@@ -20,6 +21,6 @@ group :development do
   gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency
   gem 'timecop'
 	gem 'capybara'
-	gem 'bcrypt-ruby', "~> 3.0.0"
+	gem 'mongo_mapper'
 	gem 'mongoid', "~> 2.4.4"
 end

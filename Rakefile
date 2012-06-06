@@ -43,13 +43,14 @@ task :default => :all_sorcery_specs
 
 desc "Run all sorcery specs"
 task :all_sorcery_specs do
+  # we need to be empty, otherwise bundler will use parent bundler.
+  env = {
+    'BUNDLE_GEMFILE' => nil,
+    'GEM_HOME'       => nil
+  }
   Dir['spec/**/Rakefile'].each do |rakefile|
     directory_name = File.dirname(rakefile)
-    sh <<-CMD
-      cd #{directory_name}
-      bundle
-      bundle exec rake
-    CMD
+    system(env, "cd #{directory_name} && bundle && bundle exec rake")
   end
 end
 

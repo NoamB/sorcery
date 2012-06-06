@@ -63,6 +63,15 @@ describe ApplicationController do
       get :test_login_from, :oauth_verifier => "blablaRERASDFcxvSDFA"
       flash[:alert].should == "Failed!"
     end
+
+    it "on successful 'login_from' the user should be redirected to the url he originally wanted" do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      create_new_external_user(:twitter)
+      get :test_return_to_with_external, {}, :return_to_url => "fuu"
+      response.should redirect_to("fuu")
+      flash[:notice].should == "Success!"
+    end
+
   end
   
   describe ApplicationController do
