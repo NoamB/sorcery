@@ -1,6 +1,7 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    abstract (1.0.0)
     actionmailer (3.2.2)
       actionpack (= 3.2.2)
       mail (~> 2.4.0)
@@ -168,6 +169,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  abstract (>= 1.0.0)
   bcrypt-ruby (~> 3.0.0)
   bundler (>= 1.1.0)
   capybara
