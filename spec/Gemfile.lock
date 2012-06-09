@@ -1,12 +1,10 @@
 PATH
   remote: ../
   specs:
-    sorcery (0.7.10)
+    sorcery (0.7.12)
       bcrypt-ruby (~> 3.0.0)
-      bundler (>= 1.1.0)
       oauth (~> 0.4.4)
       oauth2 (~> 0.5.1)
-      sorcery
 
 GEM
   remote: http://rubygems.org/
