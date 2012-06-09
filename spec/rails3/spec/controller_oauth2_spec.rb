@@ -98,7 +98,7 @@ describe ApplicationController do
       create_new_user
       get :login_at_test3
       response.should be_a_redirect
-      response.should redirect_to("https://github.com/login/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.github.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=&display=")
+      response.should redirect_to("https://github.com/login/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.github.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope&display")
     end
 
     it "'login_from' logins if user exists (github)" do
