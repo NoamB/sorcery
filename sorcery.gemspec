@@ -310,7 +310,7 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<oauth>, ["~> 0.4.4"])
-      s.add_runtime_dependency(%q<oauth2>, ["~> 0.5.1"])
+      s.add_runtime_dependency(%q<oauth2>, ["~> 0.6.0"])
       s.add_runtime_dependency(%q<bcrypt-ruby>, ["~> 3.0.0"])
       s.add_development_dependency(%q<rails>, [">= 3.0.0"])
       s.add_development_dependency(%q<json>, [">= 1.5.1"])
@@ -328,7 +328,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<mongoid>, ["~> 2.4.4"])
     else
       s.add_dependency(%q<oauth>, ["~> 0.4.4"])
-      s.add_dependency(%q<oauth2>, ["~> 0.5.1"])
+      s.add_dependency(%q<oauth2>, ["~> 0.6.0"])
       s.add_dependency(%q<bcrypt-ruby>, ["~> 3.0.0"])
       s.add_dependency(%q<rails>, [">= 3.0.0"])
       s.add_dependency(%q<json>, [">= 1.5.1"])
@@ -347,7 +347,7 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<oauth>, ["~> 0.4.4"])
-    s.add_dependency(%q<oauth2>, ["~> 0.5.1"])
+    s.add_dependency(%q<oauth2>, ["~> 0.6.0"])
     s.add_dependency(%q<bcrypt-ruby>, ["~> 3.0.0"])
     s.add_dependency(%q<rails>, [">= 3.0.0"])
     s.add_dependency(%q<json>, [">= 1.5.1"])
