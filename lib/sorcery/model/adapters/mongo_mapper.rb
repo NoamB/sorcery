@@ -16,6 +16,10 @@ module Sorcery
           def save!(options = {})
             save(options)
           end
+
+          def update_many_attributes(attrs)
+            update_attributes(attrs)
+          end
         end
 
         module ClassMethods
