@@ -4,7 +4,7 @@ gem "rails", '3.0.3'
 gem 'bcrypt-ruby', :require => 'bcrypt'
 gem "sorcery", '>= 0.1.0', :path => '../'
 gem 'oauth', "~> 0.4.4"
-gem 'oauth2', "~> 0.5.1"
+gem 'oauth2', "~> 0.6.0"
 group :development do
   gem "rspec", "~> 2.5.0"
   gem 'ruby-debug19'
