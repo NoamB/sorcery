@@ -64,13 +64,30 @@ describe ApplicationController do
       Authentication.delete_all
     end
 
-    it "login_at redirects correctly" do
-      create_new_user
-      get :login_at_test2
-      response.should be_a_redirect
-      response.should redirect_to("https://graph.facebook.com/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&display=page")
+    context "when callback_url begin with /" do 
+      before do
+        sorcery_controller_external_property_set(:facebook, :callback_url, "/oauth/twitter/callback")
+      end
+      it "login_at redirects correctly" do
+        create_new_user
+        get :login_at_test2
+        response.should be_a_redirect
+        response.should redirect_to("https://graph.facebook.com/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&scope=email%2Coffline_access&display=page")
+      end
+      after do
+        sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
+      end
     end
 
+    context "when callback_url begin with http://" do 
+      it "login_at redirects correctly" do
+        create_new_user
+        get :login_at_test2
+        response.should be_a_redirect
+        response.should redirect_to("https://graph.facebook.com/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&display=page")
+      end
+    end
+    
     it "'login_from' logins if user exists" do
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:facebook)
