@@ -72,7 +72,7 @@ module Sorcery
             config = sorcery_config
             return if !unlocked?
             self.increment(config.failed_logins_count_attribute_name)
-            self.save!(:validate => false)
+            self.update_many_attributes(config.failed_logins_count_attribute_name => self.send(config.failed_logins_count_attribute_name))
             self.lock! if self.send(config.failed_logins_count_attribute_name) >= config.consecutive_login_retries_amount_limit
           end
           
@@ -81,23 +81,23 @@ module Sorcery
           # /!\
           def unlock!
             config = sorcery_config
-            self.send(:"#{config.lock_expires_at_attribute_name}=", nil)
-            self.send(:"#{config.failed_logins_count_attribute_name}=", 0)
-            self.send(:"#{config.unlock_token_attribute_name}=", nil) unless config.unlock_token_mailer_disabled or config.unlock_token_mailer.nil?
-            self.save!(:validate => false)
+            attributes = {config.lock_expires_at_attribute_name => nil,
+                          config.failed_logins_count_attribute_name => 0}
+            attributes[config.unlock_token_attribute_name] = nil unless config.unlock_token_mailer_disabled or config.unlock_token_mailer.nil?
+            self.update_many_attributes(attributes)
           end
 
           protected
 
           def lock!
             config = sorcery_config
-            self.send(:"#{config.lock_expires_at_attribute_name}=", Time.now.in_time_zone + config.login_lock_time_period)
+            attributes = {config.lock_expires_at_attribute_name => Time.now.in_time_zone + config.login_lock_time_period}
 
             unless config.unlock_token_mailer_disabled || config.unlock_token_mailer.nil?
-              self.send(:"#{config.unlock_token_attribute_name}=", TemporaryToken.generate_random_token) 
+              attributes[config.unlock_token_attribute_name] = TemporaryToken.generate_random_token
               send_unlock_token_email!
             end
-            self.save!(:validate => false)
+            self.update_many_attributes(attributes)
           end
           
           def unlocked?
