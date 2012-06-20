@@ -43,11 +43,28 @@ describe ApplicationController do
       Authentication.delete_all
     end
     
-    it "login_at redirects correctly" do
-      create_new_user
-      get :login_at_test
-      response.should be_a_redirect
-      response.should redirect_to("http://myapi.com/oauth/authorize?oauth_callback=http%3A%2F%2Fblabla.com&oauth_token=")
+    context "when callback_url begin with /" do 
+      before do
+        sorcery_controller_external_property_set(:twitter, :callback_url, "/oauth/twitter/callback")
+      end
+      it "login_at redirects correctly" do
+        create_new_user
+        get :login_at_test
+        response.should be_a_redirect
+        response.should redirect_to("http://myapi.com/oauth/authorize?oauth_callback=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&oauth_token=")
+      end
+      after do
+        sorcery_controller_external_property_set(:twitter, :callback_url, "http://blabla.com")
+      end
+    end
+
+    context "when callback_url begin with http://" do 
+      it "login_at redirects correctly" do
+        create_new_user
+        get :login_at_test
+        response.should be_a_redirect
+        response.should redirect_to("http://myapi.com/oauth/authorize?oauth_callback=http%3A%2F%2Fblabla.com&oauth_token=")
+      end
     end
     
     it "logins if user exists" do
