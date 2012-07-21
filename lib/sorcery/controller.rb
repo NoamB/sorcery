@@ -110,7 +110,7 @@ module Sorcery
       end
 
       def login_from_session
-        @current_user = (user_class.find_by_id(session[:user_id]) if session[:user_id]) || false
+        @current_user = (user_class.find(session[:user_id]) if session[:user_id]) || false
       end
 
       def after_login!(user, credentials = [])
