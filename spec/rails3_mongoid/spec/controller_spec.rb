@@ -152,6 +152,13 @@ describe ApplicationController do
       response.should redirect_to("http://test.host/")
     end
     
+    it "require_login before_filter should not save the url that the user originally wanted upon all non-get http methods" do
+      [:post, :put, :delete].each do |m|
+        self.send(m, :some_action)
+        session[:return_to_url].should be_nil
+      end
+    end
+    
     it "on successful login the user should be redirected to the url he originally wanted" do
       session[:return_to_url] = "http://test.host/some_action"
       post :test_return_to, :username => 'gizmo', :password => 'secret'
