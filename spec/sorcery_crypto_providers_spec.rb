@@ -181,6 +181,15 @@ describe "Crypto Providers wrappers" do
     it "matches? returns false when no match" do
       Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Some Dude').should be_false
     end
+
+    it "respond_to?(:stretches) returns true" do
+      Sorcery::CryptoProviders::BCrypt.respond_to?(:stretches).should be_true
+    end
+
+    it "sets cost when stretches is set" do
+      Sorcery::CryptoProviders::BCrypt.stretches = 4
+      Sorcery::CryptoProviders::BCrypt.cost.should == 4
+    end
     
   end
   
