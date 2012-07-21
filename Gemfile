@@ -9,6 +9,7 @@ gem 'bcrypt-ruby', "~> 3.0.0"
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
+  gem 'abstract', '>= 1.0.0'
   gem "rails", ">= 3.0.0"
   gem 'json', ">= 1.5.1"
   gem "rspec", "~> 2.5.0"
