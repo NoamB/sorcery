@@ -10,12 +10,12 @@ module Sorcery
             class << self
               attr_reader :external_providers                           # external providers like twitter.
               attr_accessor :ca_file                                    # path to ca_file. By default use a internal ca-bundle.crt.
-                                          
+
               def merge_external_defaults!
                 @defaults.merge!(:@external_providers => [],
                                  :@ca_file => File.join(File.expand_path(File.dirname(__FILE__)), 'external/protocols/certs/ca-bundle.crt'))
               end
-              
+
               def external_providers=(providers)
                 providers.each do |provider|
                   include Providers.const_get(provider.to_s.split("_").map {|p| p.capitalize}.join(""))
@@ -28,7 +28,7 @@ module Sorcery
 
         module InstanceMethods
           protected
-          
+
           # sends user to authenticate at the provider's website.
           # after authentication the user is redirected to the callback defined in the provider config
           def login_at(provider, args = {})
@@ -47,7 +47,7 @@ module Sorcery
               #@provider.login(args)
             end
           end
-          
+
           # tries to login the user from provider's callback
           def login_from(provider)
             @provider = Config.send(provider)
@@ -72,14 +72,14 @@ module Sorcery
           # If user is logged, he can add all available providers into his account
           def add_provider_to_user(provider)
             provider_name = provider.to_sym
-            @provider = Config.send(provider)
+            @provider = Config.send(provider_name)
             @provider.process_callback(params,session)
             @user_hash = @provider.get_user_hash
             config = user_class.sorcery_config
 
             # first check to see if user has a particular authentication already
             unless (current_user.send(config.authentications_class.to_s.downcase.pluralize).send("find_by_#{config.provider_attribute_name}_and_#{config.provider_uid_attribute_name}", provider, @user_hash[:uid]))
-              user = current_user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider)
+              user = current_user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name.to_s)
               user.save(:validate => false)
             else
               user = false
@@ -109,7 +109,7 @@ module Sorcery
 
             return user
           end
-          
+
           # this method automatically creates a new user from the data in the external user hash.
           # The mappings from user hash fields to user db fields are set at controller config.
           # If the hash field you would like to map is nested, use slashes. For example, Given a hash like:
@@ -139,11 +139,11 @@ module Sorcery
               attrs.each do |k,v|
                 @user.send(:"#{k}=", v)
               end
-              
+
               if block_given?
                 return false unless yield @user
               end
-              
+
               @user.save(:validate => false)
               user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider, config.provider_uid_attribute_name => @user_hash[:uid]})
             end
