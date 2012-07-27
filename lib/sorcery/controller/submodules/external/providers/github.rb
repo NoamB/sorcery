@@ -34,6 +34,7 @@ module Sorcery
                               :auth_path,
                               :token_path,
                               :site,
+                              :scope,
                               :user_info_path,
                               :user_info_mapping
                 attr_reader   :access_token
@@ -43,6 +44,7 @@ module Sorcery
                 def init
                   @site           = "https://github.com/"
                   @user_info_path = "https://api.github.com/user"
+                  @scope          = nil
                   @auth_path      = "/login/oauth/authorize"
                   @token_path     = "/login/oauth/access_token"
                   @user_info_mapping = {}
