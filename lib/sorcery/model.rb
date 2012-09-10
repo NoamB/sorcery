@@ -266,7 +266,7 @@ module Sorcery
       
       def encryption_algorithm=(algo)
         @encryption_algorithm = algo
-        @encryption_provider = case @encryption_algorithm
+        @encryption_provider = case @encryption_algorithm.to_sym
         when :none   then nil
         when :md5    then CryptoProviders::MD5
         when :sha1   then CryptoProviders::SHA1
@@ -275,6 +275,7 @@ module Sorcery
         when :aes256 then CryptoProviders::AES256
         when :bcrypt then CryptoProviders::BCrypt
         when :custom then @custom_encryption_provider
+        else raise ArgumentError.new("Encryption algorithm supplied, #{algo}, is invalid")
         end
       end
       
