@@ -112,6 +112,7 @@ module Sorcery
       def login_from_session
         @current_user = (user_class.find(session[:user_id]) if session[:user_id]) || false
       rescue => exception
+        return false if exception.is_a?(ActiveRecord::RecordNotFound)
         return false if defined?(Mongoid) and exception.is_a?(Mongoid::Errors::DocumentNotFound)
         raise exception
       end
