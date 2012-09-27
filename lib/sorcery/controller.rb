@@ -33,7 +33,9 @@ module Sorcery
         user = user_class.authenticate(*credentials)
         if user
           return_to_url = session[:return_to_url]
+          old_session = session
           reset_session # protect from session fixation attacks
+          session.reverse_merge!(old_session)
           session[:return_to_url] = return_to_url
           auto_login(user)
           after_login!(user, credentials)
