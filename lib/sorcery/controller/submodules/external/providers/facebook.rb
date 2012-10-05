@@ -16,7 +16,7 @@ module Sorcery
               base.module_eval do
                 class << self
                   attr_reader :facebook                           # access to facebook_client.
-                  
+
                   def merge_facebook_defaults!
                     @defaults.merge!(:@facebook => FacebookClient)
                   end
@@ -25,7 +25,7 @@ module Sorcery
                 update!
               end
             end
-          
+
             module FacebookClient
               class << self
                 attr_accessor :key,
@@ -39,7 +39,7 @@ module Sorcery
                 attr_reader   :access_token
 
                 include Protocols::Oauth2
-            
+
                 def init
                   @site           = "https://graph.facebook.com"
                   @user_info_path = "/me"
@@ -51,7 +51,7 @@ module Sorcery
                   @parse          = :query
                   @param_name     = "access_token"
                 end
-                
+
                 def get_user_hash
                   user_hash = {}
                   response = @access_token.get(@user_info_path)
@@ -59,31 +59,35 @@ module Sorcery
                   user_hash[:uid] = user_hash[:user_info]['id']
                   user_hash
                 end
-                
+
                 def has_callback?
                   true
                 end
-                
+
                 # calculates and returns the url to which the user should be redirected,
                 # to get authenticated at the external provider's site.
                 def login_url(params,session)
                   self.authorize_url
                 end
-                
+
                 # tries to login the user from access token
                 def process_callback(params,session)
-                  args = {}
-                  options = { :token_url => @token_url, :mode => @mode, :param_name => @param_name, :parse => @parse }
-                  args.merge!({:code => params[:code]}) if params[:code]
-                  @access_token = self.get_access_token(args, options)
+                  unless (@access_token = params[:access_token]).nil?
+                    args = {}
+                    options = { :token_url => @token_url, :mode => @mode, :param_name => @param_name, :parse => @parse }
+                    args.merge!({:code => params[:code]}) if params[:code]
+                    @access_token = self.get_access_token(args, options)
+                  end
+
+                  @access_token
                 end
-                
+
               end
               init
             end
-            
+
           end
-        end    
+        end
       end
     end
   end
