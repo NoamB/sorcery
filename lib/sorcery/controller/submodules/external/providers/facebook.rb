@@ -35,7 +35,8 @@ module Sorcery
                               :user_info_path,
                               :scope,
                               :user_info_mapping,
-                              :display
+                              :display,
+                              :access_permissions
                 attr_reader   :access_token
 
                 include Protocols::Oauth2
@@ -69,7 +70,13 @@ module Sorcery
                 def login_url(params,session)
                   self.authorize_url
                 end
-                
+
+                # overrides oauth2#authorize_url to allow customized scope.
+                def authorize_url
+                  @scope = self.access_permissions.present? ? self.access_permissions.join(",") : @scope
+                  super
+                end
+
                 # tries to login the user from access token
                 def process_callback(params,session)
                   args = {}
