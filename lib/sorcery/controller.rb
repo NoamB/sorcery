@@ -28,13 +28,15 @@ module Sorcery
 
       # Takes credentials and returns a user on successful authentication.
       # Runs hooks after login or failed login.
-      def login(*credentials)
+       def login(*credentials)
         @current_user = nil
         user = user_class.authenticate(*credentials)
         if user
-          return_to_url = session[:return_to_url]
+          old_session = session
           reset_session # protect from session fixation attacks
-          session[:return_to_url] = return_to_url
+          old_session.to_hash.each_pair do |k,v|
+            session[k.to_sym] = v
+          end
           auto_login(user)
           after_login!(user, credentials)
           current_user
