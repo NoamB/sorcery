@@ -42,16 +42,14 @@ module Sorcery
           def load_from_provider(provider, uid)
             find(user_id) if user_id = get_id_from_provider(provider, uid)
           end
-
-          def add_provider(provider, uid)
-            send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => uid, config.provider_attribute_name => provider)
-          end
         end
         
         module InstanceMethods
-
+          def add_provider(provider, uid)
+            config = sorcery_config
+            send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => uid, config.provider_attribute_name => provider)
+          end
         end
-      
       end
     end
   end
