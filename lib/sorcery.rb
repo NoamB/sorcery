@@ -36,6 +36,7 @@ module Sorcery
           autoload :Github, 'sorcery/controller/submodules/external/providers/github'
           autoload :Google, 'sorcery/controller/submodules/external/providers/google'
           autoload :Liveid, 'sorcery/controller/submodules/external/providers/liveid'
+          autoload :Linkedin, 'sorcery/controller/submodules/external/providers/linkedin'
         end
       end
     end
