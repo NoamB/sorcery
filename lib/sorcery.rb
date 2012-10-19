@@ -79,5 +79,5 @@ module Sorcery
     MongoMapper::Document.send(:plugin, Sorcery::Model::Adapters::MongoMapper)
   end
 
-  require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR == 3
+  require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR >= 3
 end
