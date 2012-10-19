@@ -80,6 +80,17 @@ Rails.application.config.sorcery.configure do |config|
   # config.ca_file =
 
 
+  # For information about LinkedIn API:
+  # - user info fields go to https://developer.linkedin.com/documents/profile-fields
+  # - access permissions go to https://developer.linkedin.com/documents/authentication#granting
+  #
+  # config.linkedin.key = ""
+  # config.linkedin.secret = ""
+  # config.linkedin.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=linkedin"
+  # config.linkedin.user_info_fields = ['first-name', 'last-name']
+  # config.linkedin.user_info_mapping = {first_name: "firstName", last_name: "lastName"}
+  # config.linkedin.access_permissions = ['r_basicprofile'] 
+  #
   # Twitter wil not accept any requests nor redirect uri containing localhost,
   # make sure you use 0.0.0.0:3000 to access your app in development
   #
