@@ -1,4 +1,24 @@
-{<img src="https://secure.travis-ci.org/NoamB/sorcery.png" />}[http://travis-ci.org/NoamB/sorcery]
+{<img src="https://secure.travis-ci.org/kuboon/sorcery.png" />}[http://travis-ci.org/kuboon/sorcery]
+
+= Restful OAuth
+sorcery も deviseも、Facebook と twitter を両方連携したりしようとすると苦労するので、なんとかしたい。
+* authentication table に provider 毎にレコードを作り、 belongs_to :user にする (sorcery 準拠)
+* Authentication model に対し RESTful な controller を用意する
+
+= 遷移
+* 未ログインから authenticate#new 
+ * provider へリダイレクトし、 authenticate#create で callback を受ける
+ * 新規?
+  * authentication model を生成、フォーム編集、 update でユーザ作成、 先ほど生成した authentication model を紐付け
+  * フォーム上でユーザーが作業を継続しなかった場合に authentication modelのゴミが残るが、これは仕方ないので定期的に掃除する
+ * 既存?
+  * ログイン
+* ログイン状態から authenticate#new
+ * provider へリダイレクトし、 authenticate#create で callback を受ける
+ * 新規?
+  * current_user へ紐付け
+ * 既存?
+  * エラー
 
 = sorcery
 Magical Authentication for Rails 3.
