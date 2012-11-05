@@ -135,19 +135,19 @@ module Sorcery
             attrs = user_attrs(provider.user_info_mapping, user_hash)
 
             user_class.transaction do
-              @user = user_class.new()
+              user = user_class.new()
               attrs.each do |k,v|
-                @user.send(:"#{k}=", v)
+                user.send(:"#{k}=", v)
               end
 
               if block_given?
-                return false unless yield @user
+                return false unless yield user
               end
 
-              @user.save(:validate => false)
-              user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider_name, config.provider_uid_attribute_name => user_hash[:uid]})
+              user.save(:validate => false)
+              user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => user.id, config.provider_attribute_name => provider_name, config.provider_uid_attribute_name => user_hash[:uid]})
             end
-            @user
+            user
           end
 
           def user_attrs(user_info_mapping, user_hash)
