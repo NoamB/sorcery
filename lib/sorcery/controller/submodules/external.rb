@@ -32,27 +32,27 @@ module Sorcery
           # sends user to authenticate at the provider's website.
           # after authentication the user is redirected to the callback defined in the provider config
           def login_at(provider_name, args = {})
-            @provider = Config.send(provider_name)
-            if @provider.callback_url.present? && @provider.callback_url[0] == '/'
+            provider = Config.send(provider_name)
+            if provider.callback_url.present? && provider.callback_url[0] == '/'
               uri = URI.parse(request.url.gsub(/\?.*$/,''))
               uri.path = ''
               uri.query = nil
               uri.scheme = 'https' if(request.env['HTTP_X_FORWARDED_PROTO'] == 'https')
               host = uri.to_s
-              @provider.callback_url = "#{host}#{@provider.callback_url}"
+              provider.callback_url = "#{host}#{provider.callback_url}"
             end
-            if @provider.has_callback?
-              redirect_to @provider.login_url(params,session)
+            if provider.has_callback?
+              redirect_to provider.login_url(params,session)
             else
-              #@provider.login(args)
+              #provider.login(args)
             end
           end
 
           # tries to login the user from provider's callback
           def login_from(provider_name)
-            @provider = Config.send(provider_name)
-            @provider.process_callback(params,session)
-            @user_hash = @provider.get_user_hash
+            provider = Config.send(provider_name)
+            provider.process_callback(params,session)
+            @user_hash = provider.get_user_hash
             if user = user_class.load_from_provider(provider_name,@user_hash[:uid].to_s)
               return_to_url = session[:return_to_url]
               reset_session
@@ -65,16 +65,16 @@ module Sorcery
 
           # get provider access account
           def access_token(provider_name)
-            @provider = Config.send(provider_name)
-            @provider.access_token
+            provider = Config.send(provider_name)
+            provider.access_token
           end
 
           # If user is logged, he can add all available providers into his account
           def add_provider_to_user(provider_name)
             provider_name = provider_name.to_sym
-            @provider = Config.send(provider_name)
-            @provider.process_callback(params,session)
-            @user_hash = @provider.get_user_hash
+            provider = Config.send(provider_name)
+            provider.process_callback(params,session)
+            @user_hash = provider.get_user_hash
             config = user_class.sorcery_config
 
             # first check to see if user has a particular authentication already
@@ -93,11 +93,11 @@ module Sorcery
           # we store provider/user infos into a session and can be rendered into registration form
           def create_and_validate_from(provider_name)
             provider_name = provider_name.to_sym
-            @provider = Config.send(provider_name)
-            @user_hash = @provider.get_user_hash
+            provider = Config.send(provider_name)
+            @user_hash = provider.get_user_hash
             config = user_class.sorcery_config
 
-            attrs = user_attrs(@provider.user_info_mapping, @user_hash)
+            attrs = user_attrs(provider.user_info_mapping, @user_hash)
 
             user = user_class.new(attrs)
             user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name)
@@ -128,11 +128,11 @@ module Sorcery
           #
           def create_from(provider_name)
             provider_name = provider_name.to_sym
-            @provider = Config.send(provider_name)
-            @user_hash = @provider.get_user_hash
+            provider = Config.send(provider_name)
+            @user_hash = provider.get_user_hash
             config = user_class.sorcery_config
 
-            attrs = user_attrs(@provider.user_info_mapping, @user_hash)
+            attrs = user_attrs(provider.user_info_mapping, @user_hash)
 
             user_class.transaction do
               @user = user_class.new()
