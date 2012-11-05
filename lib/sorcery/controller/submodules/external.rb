@@ -52,8 +52,8 @@ module Sorcery
           def login_from(provider_name)
             provider = Config.send(provider_name)
             provider.process_callback(params,session)
-            @user_hash = provider.get_user_hash
-            if user = user_class.load_from_provider(provider_name,@user_hash[:uid].to_s)
+            user_hash = provider.get_user_hash
+            if user = user_class.load_from_provider(provider_name,user_hash[:uid].to_s)
               return_to_url = session[:return_to_url]
               reset_session
               session[:return_to_url] = return_to_url
@@ -74,12 +74,12 @@ module Sorcery
             provider_name = provider_name.to_sym
             provider = Config.send(provider_name)
             provider.process_callback(params,session)
-            @user_hash = provider.get_user_hash
+            user_hash = provider.get_user_hash
             config = user_class.sorcery_config
 
             # first check to see if user has a particular authentication already
-            unless (current_user.send(config.authentications_class.to_s.downcase.pluralize).send("find_by_#{config.provider_attribute_name}_and_#{config.provider_uid_attribute_name}", provider_name, @user_hash[:uid].to_s))
-              user = current_user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name.to_s)
+            unless (current_user.send(config.authentications_class.to_s.downcase.pluralize).send("find_by_#{config.provider_attribute_name}_and_#{config.provider_uid_attribute_name}", provider_name, user_hash[:uid].to_s))
+              user = current_user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => user_hash[:uid], config.provider_attribute_name => provider_name.to_s)
               user.save(:validate => false)
             else
               user = false
@@ -94,16 +94,16 @@ module Sorcery
           def create_and_validate_from(provider_name)
             provider_name = provider_name.to_sym
             provider = Config.send(provider_name)
-            @user_hash = provider.get_user_hash
+            user_hash = provider.get_user_hash
             config = user_class.sorcery_config
 
-            attrs = user_attrs(provider.user_info_mapping, @user_hash)
+            attrs = user_attrs(provider.user_info_mapping, user_hash)
 
             user = user_class.new(attrs)
-            user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name)
+            user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => user_hash[:uid], config.provider_attribute_name => provider_name)
 
             session[:incomplete_user] = {
-              :provider => {config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name},
+              :provider => {config.provider_uid_attribute_name => user_hash[:uid], config.provider_attribute_name => provider_name},
               :user_hash => attrs
             } unless user.save
 
@@ -129,10 +129,10 @@ module Sorcery
           def create_from(provider_name)
             provider_name = provider_name.to_sym
             provider = Config.send(provider_name)
-            @user_hash = provider.get_user_hash
+            user_hash = provider.get_user_hash
             config = user_class.sorcery_config
 
-            attrs = user_attrs(provider.user_info_mapping, @user_hash)
+            attrs = user_attrs(provider.user_info_mapping, user_hash)
 
             user_class.transaction do
               @user = user_class.new()
@@ -145,7 +145,7 @@ module Sorcery
               end
 
               @user.save(:validate => false)
-              user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider_name, config.provider_uid_attribute_name => @user_hash[:uid]})
+              user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider_name, config.provider_uid_attribute_name => user_hash[:uid]})
             end
             @user
           end
