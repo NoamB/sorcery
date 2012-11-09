@@ -8,6 +8,15 @@ module Sorcery
       module RememberMe
         def self.included(base)
           base.send(:include, InstanceMethods)
+          Config.module_eval do
+            class << self
+              attr_accessor :remember_me_httponly
+              def merge_remember_me_defaults!
+                @defaults.merge!(:@remember_me_httponly => true)
+              end
+            end
+            merge_remember_me_defaults!
+          end
           Config.login_sources << :login_from_cookie
           Config.after_login << :remember_me_if_asked_to
           Config.after_logout << :forget_me!
@@ -60,7 +69,7 @@ module Sorcery
             cookies.signed[:remember_me_token] = {
               :value => user.send(user.sorcery_config.remember_me_token_attribute_name),
               :expires => user.send(user.sorcery_config.remember_me_token_expires_at_attribute_name),
-              :httponly => true,
+              :httponly => Config.remember_me_httponly,
               :domain => Config.cookie_domain
             }
           end
