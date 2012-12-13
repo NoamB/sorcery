@@ -26,6 +26,13 @@ Rails.application.config.sorcery.configure do |config|
   #
   # config.cookie_domain =
 
+  
+  # -- remember_me --
+  # allow the remember_me cookie to settable through AJAX
+  # Default: `true`
+  #
+  # user.remember_me_httponly =
+  
 
   # -- session timeout --
   # How long in seconds to keep the session alive.
