@@ -58,7 +58,7 @@ module Sorcery
               while current_controller != ActionController::Base
                 result = Config.controller_to_realm_map[current_controller.controller_name]
                 return result if result
-                current_controller = self.class.superclass
+                current_controller = current_controller.superclass
               end
               nil
             else
