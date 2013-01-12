@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "sorcery"
-  s.version = "0.7.13"
+  s.version = "0.8.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = "2012-07-22"
+  s.date = "2013-01-12"
   s.description = "Provides common authentication needs such as signing in/out, activating by email and resetting password."
   s.email = "nbenari@gmail.com"
   s.extra_rdoc_files = [
@@ -47,8 +47,10 @@ Gem::Specification.new do |s|
     "lib/sorcery/controller/submodules/external/providers/facebook.rb",
     "lib/sorcery/controller/submodules/external/providers/github.rb",
     "lib/sorcery/controller/submodules/external/providers/google.rb",
+    "lib/sorcery/controller/submodules/external/providers/linkedin.rb",
     "lib/sorcery/controller/submodules/external/providers/liveid.rb",
     "lib/sorcery/controller/submodules/external/providers/twitter.rb",
+    "lib/sorcery/controller/submodules/external/providers/vkontakte.rb",
     "lib/sorcery/controller/submodules/http_basic_auth.rb",
     "lib/sorcery/controller/submodules/remember_me.rb",
     "lib/sorcery/controller/submodules/session_timeout.rb",
