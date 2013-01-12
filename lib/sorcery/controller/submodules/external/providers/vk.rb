@@ -3,30 +3,30 @@ module Sorcery
     module Submodules
       module External
         module Providers
-          # This module adds support for OAuth with vkontakte.com.
-          # When included in the 'config.providers' option, it adds a new option, 'config.vkontakte'.
-          # Via this new option you can configure Vkontakte specific settings like your app's key and secret.
+          # This module adds support for OAuth with vk.com.
+          # When included in the 'config.providers' option, it adds a new option, 'config.vk'.
+          # Via this new option you can configure Vk specific settings like your app's key and secret.
           #
-          #   config.vkontakte.key = <key>
-          #   config.vkontakte.secret = <secret>
+          #   config.vk.key = <key>
+          #   config.vk.secret = <secret>
           #   ...
           #
-          module Vkontakte
+          module Vk
             def self.included(base)
               base.module_eval do
                 class << self
-                  attr_reader :vkontakte                           # access to vkontakte_client.
+                  attr_reader :vk                           # access to vk_client.
 
-                  def merge_vkontakte_defaults!
-                    @defaults.merge!(:@vkontakte => VkontakteClient)
+                  def merge_vk_defaults!
+                    @defaults.merge!(:@vk => VkClient)
                   end
                 end
-                merge_vkontakte_defaults!
+                merge_vk_defaults!
                 update!
               end
             end
 
-            module VkontakteClient
+            module VkClient
               class << self
                 attr_accessor :key,
                               :secret,
@@ -34,8 +34,6 @@ module Sorcery
                               :auth_path,
                               :token_path,
                               :site,
-                              :scope,
-                              :user_info_path,
                               :user_info_mapping
                 attr_reader   :access_token
 
@@ -43,8 +41,7 @@ module Sorcery
 
                 def init
                   @site           = "https://oauth.vk.com/"
-                  @user_info_url = "https://api.vk.com/method/getUserInfo"
-                  @scope          = nil
+                  @user_info_url  = "https://api.vk.com/method/getProfiles"
                   @auth_path      = "/authorize"
                   @token_path     = "/access_token"
                   @user_info_mapping = {}
@@ -52,12 +49,20 @@ module Sorcery
 
                 def get_user_hash
                   user_hash = {}
-                  response = @access_token.get("#{@user_info_url}?access_token=#{@access_token.token}")
-                  user_hash[:user_info] = JSON.parse(response.body)
-                  if user_hash[:user_info]
-                    user_hash[:user_info] = user_hash[:user_info]["response"]
+
+                  params = {
+                    :access_token => @access_token.token,
+                    :uids         => @access_token.params["user_id"],
+                    :fields       => @user_info_mapping.values.join(",")
+                  }
+
+                  response = @access_token.get(@user_info_url, :params => params)
+                  if user_hash[:user_info] = JSON.parse(response.body)
+                    user_hash[:user_info] = user_hash[:user_info]["response"][0]
+                    # add full_name - useful if you do not store it in separate fields
+                    user_hash[:user_info]["full_name"] = [user_hash[:user_info]["first_name"], user_hash[:user_info]["last_name"]].join(" ")
+                    user_hash[:uid] = user_hash[:user_info]["uid"]
                   end
-                  user_hash[:uid] = user_hash[:user_info]['user_id']
                   user_hash
                 end
 
