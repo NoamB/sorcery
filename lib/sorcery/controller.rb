@@ -37,9 +37,10 @@ module Sorcery
           old_session.to_hash.each_pair do |k,v|
             session[k.to_sym] = v
           end
+          @current_user = user
           auto_login(user)
           after_login!(user, credentials)
-          current_user
+          @current_user
         else
           after_failed_login!(credentials)
           nil
