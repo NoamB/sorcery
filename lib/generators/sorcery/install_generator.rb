@@ -47,7 +47,7 @@ module Sorcery
 
         if submodules
           submodules.each do |submodule|
-            unless submodule == "http_basic_auth" || submodule == "session_timeout"
+            unless submodule == "http_basic_auth" || submodule == "session_timeout" || submodule == "core"
               migration_template "migration/#{submodule}.rb", "db/migrate/sorcery_#{submodule}.rb"
             end
           end
