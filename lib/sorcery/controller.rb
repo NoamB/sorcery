@@ -32,9 +32,9 @@ module Sorcery
         @current_user = nil
         user = user_class.authenticate(*credentials)
         if user
-          old_session = session.dup
+          old_session = session.dup.to_hash
           reset_session # protect from session fixation attacks
-          old_session.to_hash.each_pair do |k,v|
+          old_session.each_pair do |k,v|
             session[k.to_sym] = v
           end
           auto_login(user)
