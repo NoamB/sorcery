@@ -22,7 +22,7 @@ module Sorcery
       def require_login
         if !logged_in?
           session[:return_to_url] = request.url if Config.save_return_to_url && request.get?
-          self.send(Config.not_authenticated_action)
+          redirect_to new_user_session_url
         end
       end
 
