@@ -78,6 +78,10 @@ module Sorcery
             self.update_many_attributes(attributes)
           end
 
+          def locked?
+            !unlocked?
+          end
+
           protected
 
           def lock!
