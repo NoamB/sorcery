@@ -51,6 +51,7 @@ task :all_sorcery_specs do
   Dir['spec/**/Rakefile'].each do |rakefile|
     directory_name = File.dirname(rakefile)
     system(env, "cd #{directory_name} && bundle && bundle exec rake")
+    abort unless $?.success?
   end
 end
 
