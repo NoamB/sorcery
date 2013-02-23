@@ -26,17 +26,6 @@ Rails.application.config.sorcery.configure do |config|
   #
   # config.cookie_domain =
 
-  
-  # -- remember_me --
-  # allow the remember_me cookie to settable through AJAX
-  # Default: `true`
-  #
-  # user.remember_me_httponly =
-  
-  # How long in seconds the session length will be
-  # Default: `604800`
-  #
-  # user.remember_me_for =
 
   # -- session timeout --
   # How long in seconds to keep the session alive.
@@ -215,6 +204,18 @@ Rails.application.config.sorcery.configure do |config|
     # Default: `false`
     #
     # user.subclasses_inherit_config =
+
+
+    # -- remember_me --
+    # allow the remember_me cookie to settable through AJAX
+    # Default: `true`
+    #
+    # user.remember_me_httponly =
+
+    # How long in seconds the session length will be
+    # Default: `604800`
+    #
+    # user.remember_me_for =
 
 
     # -- user_activation --
