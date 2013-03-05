@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 # Add dependencies required to use your gem here.
 # Example:
 #   gem "activesupport", ">= 2.3.5"
@@ -11,10 +11,10 @@ gem 'bcrypt-ruby', "~> 3.0.0"
 group :development do
   gem 'abstract', '>= 1.0.0'
   gem "rails", ">= 3.0.0"
-  gem 'json', ">= 1.5.1"
+  gem 'json', ">= 1.7.7"
   gem "rspec", "~> 2.5.0"
   gem 'rspec-rails', "~> 2.5.0"
-  gem 'ruby-debug19'
+  #gem 'ruby-debug19'
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem "yard", "~> 0.6.0"
   gem "bundler", ">= 1.1.0"
