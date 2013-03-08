@@ -5,7 +5,6 @@ module Sorcery
         def self.included(klass)          
           klass.extend ClassMethods
           klass.send(:include, InstanceMethods)
-          klass.send(:plugin, SequelSimpleCallbacks)
         end
 
         module InstanceMethods
