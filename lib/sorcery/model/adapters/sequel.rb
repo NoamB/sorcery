@@ -5,6 +5,9 @@ module Sorcery
         def self.included(klass)          
           klass.extend ClassMethods
           klass.send(:include, InstanceMethods)
+          # This is required for compatibility with ActiveRecord API for class hooks
+          # (i.e. before_create, after_create, etc.)
+          klass.send(:plugin, SequelSimpleCallbacks)
         end
 
         module InstanceMethods

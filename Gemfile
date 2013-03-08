@@ -25,4 +25,5 @@ group :development do
   gem 'mongo_mapper'
   gem 'mongoid', "~> 2.4.4"
   gem 'sequel', '~> 3.40.0'
+  gem 'sequel_simple_callbacks', "~> 0.1.2"
 end
