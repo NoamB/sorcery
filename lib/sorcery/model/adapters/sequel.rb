@@ -13,7 +13,7 @@ module Sorcery
               self.send(:"#{name}=", value)
             end
             primary_key = self.class.primary_key
-            self.dataset.where(:"#{primary_key}" => self.send(:"#{primary_key}")).all{ |a| a.update(attrs) }
+            self.class.dataset.where(:"#{primary_key}" => self.send(:"#{primary_key}")).all{ |a| a.update(attrs) }
           end
 
           def update_single_attribute(name, value)
