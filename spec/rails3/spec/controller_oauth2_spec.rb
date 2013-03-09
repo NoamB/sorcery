@@ -2,10 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require File.expand_path(File.dirname(__FILE__) + '/../../shared_examples/controller_oauth2_shared_examples')
 
 def stub_all_oauth2_requests!
-  auth_code       = OAuth2::Strategy::AuthCode.any_instance
-  access_token    = mock(OAuth2::AccessToken)
-  access_token.stub(:token_param=)
-  response        = mock(OAuth2::Response)
+  response = mock(OAuth2::Response)
   response.stub(:body).and_return({
     "id"=>"123",
     "name"=>"Noam Ben Ari",
@@ -22,8 +19,10 @@ def stub_all_oauth2_requests!
     "languages"=>[{"id"=>"108405449189952", "name"=>"Hebrew"}, {"id"=>"106059522759137", "name"=>"English"}, {"id"=>"112624162082677", "name"=>"Russian"}],
     "verified"=>true,
     "updated_time"=>"2011-02-16T20:59:38+0000"}.to_json)
-  access_token.stub(:get).and_return(response)
-  auth_code.stub(:get_token).and_return(access_token)
+  access_token = mock(OAuth2::AccessToken)
+  access_token.stub(:get => response)
+  access_token.stub(:token_param= => nil)
+  OAuth2::Strategy::AuthCode.any_instance.stub(:get_token => access_token)
 end
 
 def set_external_property
@@ -376,5 +375,69 @@ describe ApplicationController do
         end
       end
     end
+  end
+
+  describe ApplicationController, "OAuth login from client-side application (Implicit Grant)" do
+    before(:all) do
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/access_token")
+      sorcery_reload!([:external, :access_token])
+      set_external_property
+      sorcery_controller_property_set(:restful_json_api, true)
+      sorcery_model_property_set(:access_token_mode, 'session')
+      sorcery_model_property_set(:access_token_max_per_user, 3)
+      sorcery_model_property_set(:access_token_duration, 120)
+      sorcery_model_property_set(:authentications_class, Authentication)
+    end
+
+    after(:all) do
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/access_token")
+    end
+
+    before(:each) do
+      stub_all_oauth2_requests!
+    end
+
+    after(:each) do
+      User.delete_all
+      Authentication.delete_all
+    end
+
+    it "'login_from_client_side' logins if user exists" do
+      pending("Fix stub of OAuth2::AccessToken.from_hash") # FIXME
+      create_new_external_user(:google)
+      access_token_hash = {
+        'access_token' => '1/fFBGRNJru1FQd44AzqT3Zg',
+        'token_type'   => 'Bearer',
+        'expires_in'   => 3600
+      }
+      post(:test_login_from_client_side4, :provider => 'google',
+           :access_token_hash => access_token_hash,
+           :format => :json)
+
+      assigns[:api_access_token].should_not be_nil
+
+      response.code.should == '200'
+      response.header['Content-Type'].should include('application/json')
+      parsed_body = JSON.parse(response.body)
+      parsed_body.key?('access_token').should be_true
+      parsed_body['access_token'].length.should be > 0
+    end
+
+    it "'login_from_client_side' fails if user doesn't exist" do
+      create_new_user
+      access_token_hash = {
+        'access_token' => '1/fFBGRNJru1FQd44AzqT3Zg',
+        'token_type'   => 'Bearer',
+        'expires_in'   => 3600
+      }
+      post(:test_login_from_client_side4, :provider => 'google',
+           :access_token_hash => access_token_hash,
+           :format => :json)
+
+      response.code.should == '401'
+    end
+
   end
 end

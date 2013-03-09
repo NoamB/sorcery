@@ -5,7 +5,9 @@ class ApplicationController < ActionController::Base
 
   #before_filter :validate_session, :only => [:test_should_be_logged_in] if defined?(:validate_session)
   before_filter :require_login_from_http_basic, :only => [:test_http_basic_auth]
-  before_filter :require_login, :only => [:test_logout, :test_should_be_logged_in, :some_action]
+  before_filter :require_login, :only => [:test_logout, :test_should_be_logged_in,
+                                          :some_action, :test_action_access_token,
+                                          :test_logout_access_token]
 
   def index
   end
@@ -137,6 +139,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def test_login_from_client_side4
+    @user = login_from_client_side(params[:provider], params[:access_token_hash])
+    if @api_access_token
+      render :json => { access_token: @api_access_token.token }
+    else
+      head :unauthorized
+    end
+  end
+
   def test_return_to_with_external
     if @user = login_from(:twitter)
       redirect_back_or_to "bla", :notice => "Success!"
@@ -199,6 +210,40 @@ class ApplicationController < ActionController::Base
     else
       redirect_to "blu", :alert => "Failed!"
     end
+  end
+
+  ##
+  # Access Token
+
+  # Login, returns access_token on successful login or unauthorized
+  def test_login_access_token
+    @user = login(params[:username], params[:password])
+    respond_to do |format|
+      format.json do
+        if @api_access_token
+          render :json => { access_token: @api_access_token.token }
+        else
+          head :unauthorized
+        end
+      end
+    end
+  end
+
+  # Action, unauthorized if access_token is invalid (default)
+  def test_action_access_token
+    respond_to do |format|
+      format.json do
+        if @api_access_token
+          head :ok
+        end
+      end
+    end
+  end
+
+  # Logout
+  def test_logout_access_token
+    logout
+    head :ok
   end
 
   protected

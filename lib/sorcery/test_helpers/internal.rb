@@ -44,6 +44,14 @@ module Sorcery
         end
       end
 
+      def create_new_access_token(attributes_hash = {})
+        attributes_hash[:user_id] ||= 1
+        @api_access_token = AccessToken.new
+        @api_access_token.user_id = attributes_hash[:user_id]
+        @api_access_token.save!
+        @api_access_token
+      end
+
       private
 
       # reload user class between specs

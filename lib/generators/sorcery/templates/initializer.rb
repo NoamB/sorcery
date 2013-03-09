@@ -26,6 +26,10 @@ Rails.application.config.sorcery.configure do |config|
   #
   # config.cookie_domain =
 
+  # -- RESTful JSON API ( access_token ) --
+  # (required by access_token submodule)
+  #
+  # config.restful_json_api = false
 
   # -- session timeout --
   # How long in seconds to keep the session alive.
@@ -419,6 +423,38 @@ Rails.application.config.sorcery.configure do |config|
     # Default: `:uid`
     #
     # user.provider_uid_attribute_name =
+
+    # -- access_token --
+    # NOTE requires config.restful_json_api to be true
+    #
+
+    # Set access token mode:
+    #  - 'single_token' : A single access token per user, shared between all
+    #                     user clients, a new access token is generated on each login
+    #                     iff previous expired.
+    #  - 'session'      : Allows multiple access tokens per user,
+    #                     deletes user expired access tokens on each login.
+    #
+    # user.access_token_mode = 'single_token'
+
+    # Set access token duration (in seconds), if present this value is used
+    # to evaluate token expiration.
+    #
+    # user.access_token_duration = nil
+
+    # Set access token expiration to be evaluated against token last activity time
+    #
+    # user.access_token_duration_from_last_activity = false
+
+    # Set max number of access token allowed per user for 'session' mode,
+    # past this value, on each login the returned access token is a valid
+    # stored token.
+    #
+    # user.access_token_max_per_user = nil
+
+    # Always register last activity time of token
+    #
+    # user.access_token_register_last_activity = false
   end
 
   # This line must come after the 'user config' block.

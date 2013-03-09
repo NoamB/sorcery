@@ -37,6 +37,11 @@ module Sorcery
           generate "model #{model_class_name} --skip-migration"
           insert_into_file "app/models/#{model_class_name.underscore}.rb", "  authenticates_with_sorcery!\n", :after => "class #{model_class_name} < ActiveRecord::Base\n"
         end
+
+        if submodules && submodules.include?("access_token")
+          generate_access_token_model
+        end
+
       end
 
       # Copy the migrations files to db/migrate folder
@@ -71,6 +76,16 @@ module Sorcery
       # Either return the model passed in a classified form or return the default "User".
       def model_class_name
         options[:model] ? options[:model].classify : "User"
+      end
+
+      def generate_access_token_model
+        access_token_class_name = 'AccessToken'
+        access_token_model_file = "app/models/#{access_token_class_name.underscore}.rb"
+        template "models/access_token.rb", access_token_model_file
+
+        insert_into_file("app/models/#{model_class_name.underscore}.rb",
+                         "\n  has_many :access_tokens, :dependent => :delete_all\n",
+                         :after => "  authenticates_with_sorcery!")
       end
     end
   end
