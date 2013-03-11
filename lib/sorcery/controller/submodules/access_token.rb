@@ -43,7 +43,10 @@ module Sorcery
           def login_from_access_token
             @api_access_token = nil
             client_token  = params[:access_token].to_s
-            access_token  = ::AccessToken.find_token(client_token)
+            access_token  = nil
+            if ! client_token.blank?
+              access_token  = ::AccessToken.find_token(client_token)
+            end
             if access_token && access_token.valid?(:auth)
               update_token_last_activity_time(access_token)
               @api_access_token = access_token.reload
