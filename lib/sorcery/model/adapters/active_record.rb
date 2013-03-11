@@ -32,10 +32,6 @@ module Sorcery
              where(sql.join(' OR '), :login => credentials[0]).first
           end
 
-          def find_by_sorcery_token(token_attr_name, token)
-            where("#{token_attr_name} = ?", token).first
-          end
-
           def get_current_users
             config = sorcery_config
             where("#{config.last_activity_at_attribute_name} IS NOT NULL") \

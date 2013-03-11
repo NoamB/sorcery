@@ -81,6 +81,11 @@ module Sorcery
                   @access_token = self.get_access_token(args)
                 end
 
+                # Returns options for building the client.
+                def client_options
+                  return {}
+                end
+
               end  
               init
             end

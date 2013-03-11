@@ -190,6 +190,187 @@ External (see lib/sorcery/controller/submodules/external.rb):
 * OAuth1 and OAuth2 support (currently twitter & facebook)
 * configurable db field names and authentications table.
 
+AccessToken (see lib/sorcery/model/submodules/access_token.rb)
+* OAuth 2.0 For Login - RESTful JSON APIs.
+* Please read instructions below.
+
+== AccessToken Submodule (rails-api)
+
+This submodule is intended to be used with rails as the backend server to
+rich client-side applications.
+
+See the rails-api project for building RESTful JSON APIs.
+
+=== Supported Modes:
+
+* *single_token*: One access token per user, shared between all user clients. Creates an access token on user creation.
+
+* *session*: Allows multiple tokens per user, a user can have many clients acting on its behalf, with this mode each client can have its own access token. A maximum value can be defined using the 'max_per_user' configuration option.
+
+=== Expiration:
+
+Tokens expiration can be configured by setting the 'duration' value (in seconds),
+this value will be used against token's creation time to know if the token has expired.
+
+Expiration can also be evaluated against token's last actvity time by setting
+'duration_from_last_activity' to true.
+
+Expired tokens will be automatically deleted for each user after login.
+
+Tokens are deleted on client logout.
+
+==== Permanent Tokens:
+
+All tokens are set to expire by default, permanent tokens can be created by setting
+its 'expirable' attribute to false.
+
+Example use case: mobile applications where the user never logs in/out.
+
+=== Security Considerations:
+
+* Use of TLS is *required* (HTTPS).
+
+=== OAuth 2.0 For Login:
+
+Outsources user authentication to OAuth 2.0 providers.
+
+Flow: Implicit Grant [1]
+
+==== How does it work?
+
+Client-side application gets an access token from an OAuth 2.0 provider,
+validates the received token, and sends the token with the rest of its
+properties to this API server for 'login'.
+
+The API server then attempts to login the user by sending a request to the
+provider with the access token, if the access token is valid the API server
+uses the user identifier included in the provider's response to find
+and login (and optionaly create) the external user in the local database.
+
+Please see links below for more information, in particular Ryan Boyd's
+excellent talk about OAuth 2.0 [2] and Google's OAuth2 playground
+(use the settings button to change the OAuth flow to Client-side,
+you can also enter your own OAuth credentials) [4].
+
+==== Notes:
+- After login, the API server can then return one of its own api_access_token to the client application.
+- Tested with the following providers: Google.
+- The client-side application only needs to store the OAuth Client ID, the secret can be set in the API server configuration file.
+
+==== References:
+
+1. {https://tools.ietf.org/html/draft-ietf-oauth-v2-30#section-1.3.2}[https://tools.ietf.org/html/draft-ietf-oauth-v2-30#section-1.3.2]
+2. {Google I/O 2012 - OAuth 2.0 for Identity and Data Access}[http://www.youtube.com/watch?v=YLHyeSuBspI]
+3. {https://developers.google.com/accounts/docs/OAuth2}[https://developers.google.com/accounts/docs/OAuth2]
+4. {https://developers.google.com/oauthplayground}[https://developers.google.com/oauthplayground]
+
+
+=== Setup Example (OAuth 2.0 For Login):
+
+* Installation
+  rails generate sorcery:install access_token external
+
+* Example configuration file config/initializers/sorcery.rb
+    Rails.application.config.sorcery.submodules = [:access_token, :external]
+    config.restful_json_api = true
+    config.external_providers = [:google]
+    config.google.key = "client_id"
+    config.google.secret = "client_secret"
+    config.user_config do |user|
+      user.username_attribute_names = [:email]
+      user.access_token_mode = 'single_token'
+      user.access_token_duration = 10.minutes.to_i
+      user.access_token_duration_from_last_activity = true
+      user.access_token_register_last_activity = true
+    end
+
+* Example user model:
+
+
+    class User < ActiveRecord::Base
+      authenticates_with_sorcery! do |config|
+        config.authentications_class = Authentication
+      end
+      attr_accessible :email, :password, :password_confirmation, :authentications_attributes
+      has_many :access_tokens, :dependent => :delete_all
+      has_many :authentications, :dependent => :destroy
+  
+      accepts_nested_attributes_for :authentications
+  
+    end
+
+* Example authentication model
+
+    class Authentication < ActiveRecord::Base
+      attr_accessible :user_id, :provider, :uid
+      belongs_to :user
+    end
+
+
+* Example sessions controller
+
+
+    class SessionsController < ApplicationController
+      skip_before_filter :require_login
+  
+      def create
+        # Login
+        if params[:provider] && params[:access_token_hash]
+          login_or_create_from_client_side(params[:provider], params[:access_token_hash])
+        elsif params[:email] && params[:password]
+          login(params[:email], params[:password])
+        end
+  
+        # Response
+        if @api_access_token
+          render :json => {:access_token => @api_access_token.token }
+        else
+          head :unauthorized
+        end
+      end
+  
+      def destroy
+        logout
+        head :ok
+      end
+    end
+
+* Example application controller
+
+    class ApplicationController < ActionController::API
+      before_filter :require_login
+    end
+
+
+=== Notes:
+
+* It should be compatible with the following submodules:
+  activity_logging, brute_force_protection, external, reset_password, user_activation
+
+* curl examples:
+
+    # Examples, remember to use HTTPS.
+  
+    # GET request
+    curl -v -H "Accept: application/json" -H "Content-type: application/json" \
+    -X GET http://localhost:3000/apples?access_token=DdQoWMGzsVdPAL5egq67
+  
+    # POST login request with email and password credentials
+    curl -v -H "Accept: application/json" -H "Content-type: application/json" \
+    -X POST -d '{"email": "johndoe@example.com", "password": "secret_passwd"}'  http://localhost:3000/sessions
+  
+    # POST login request with provider's access token
+    curl -v -H "Accept: application/json" -H "Content-type: application/json" \
+    -X POST -d '{"provider": "google", "access_token_hash": { \
+      "access_token": "9d2H0I9AEa834B45cRTfBEcA82bF010B53BFGT83eFDB6097", \
+      "token_type": "Bearer", "expires_in": 3600 } }'  http://localhost:3000/sessions
+
+* Mongoid and MongoMapper
+
+Support included but not completely tested, please review code before using it.
+
+* Code review, feedback and contributions much appreciated.
+
 
 == Next Planned Features:
 

@@ -36,8 +36,8 @@ module Sorcery
                               :scope,
                               :user_info_mapping,
                               :display,
-                              :access_permissions
-                attr_reader   :access_token
+                              :access_permissions,
+                              :access_token
 
                 include Protocols::Oauth2
             
@@ -80,9 +80,19 @@ module Sorcery
                 # tries to login the user from access token
                 def process_callback(params,session)
                   args = {}
-                  options = { :token_url => @token_url, :mode => @mode, :param_name => @param_name, :parse => @parse }
+                  options = client_options
                   args.merge!({:code => params[:code]}) if params[:code]
                   @access_token = self.get_access_token(args, options)
+                end
+
+                # Returns options for building the client.
+                def client_options
+                  return {
+                    :token_url => @token_url,
+                    :mode => @mode,
+                    :param_name => @param_name,
+                    :parse => @parse
+                  }
                 end
                 
               end

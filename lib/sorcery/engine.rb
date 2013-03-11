@@ -8,9 +8,11 @@ module Sorcery
     config.sorcery = ::Sorcery::Controller::Config
     
     initializer "extend Controller with sorcery" do |app|
-      ActionController::Base.send(:include, Sorcery::Controller)
-      ActionController::Base.helper_method :current_user
-      ActionController::Base.helper_method :logged_in?
+      klass = ActionController::Base
+      klass = ActionController::API if defined?(ActionController::API) # rails-api
+      klass.send(:include, Sorcery::Controller)
+      klass.helper_method :current_user
+      klass.helper_method :logged_in?
     end
     
     rake_tasks do
