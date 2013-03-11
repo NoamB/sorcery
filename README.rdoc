@@ -362,7 +362,7 @@ you can also enter your own OAuth credentials) [4].
     # POST login request with provider's access token
     curl -v -H "Accept: application/json" -H "Content-type: application/json" \
     -X POST -d '{"provider": "google", "access_token_hash": { \
-      "access_token": "9d2H0I9AEa834B45cRTfBEcA82bF010B53BFGT83eFDB6097" \
+      "access_token": "9d2H0I9AEa834B45cRTfBEcA82bF010B53BFGT83eFDB6097", \
       "token_type": "Bearer", "expires_in": 3600 } }'  http://localhost:3000/sessions
 
 * Mongoid and MongoMapper
