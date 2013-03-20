@@ -7,7 +7,7 @@ PATH
       oauth2 (~> 0.8.0)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     abstract (1.0.0)
     actionmailer (3.0.3)

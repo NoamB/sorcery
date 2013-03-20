@@ -103,6 +103,24 @@ describe ApplicationController do
       session[:user_id].should == @user.id
     end
 
+    it "login(username,password) should return the user when success, set the session with user.id and maintain the old session data" do
+      session[:foo] = "Bar"
+      get :test_login, :username => 'gizmo', :password => 'secret'
+      assigns[:user].should == @user
+      session[:user_id].should == @user.id
+      session[:foo].should == "Bar"
+    end
+
+
+    it "login(username,password) should return the user when success, set the session with user.id and discard the old session data when :skip_session_data_restoration config is true" do
+      session[:foo] = "Bar"
+      Sorcery::Controller::Config.skip_session_data_restoration = true
+      get :test_login, :username => 'gizmo', :password => 'secret'
+      assigns[:user].should == @user
+      session[:user_id].should == @user.id
+      session[:foo].should be_nil
+    end
+
     it "logout should clear the session" do
       cookies[:remember_me_token] = nil
       session[:user_id] = @user.id
