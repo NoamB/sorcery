@@ -67,7 +67,7 @@ Rails.application.config.sorcery.configure do |config|
 
 
   # -- external --
-  # What providers are supported by this app, i.e. [:twitter, :facebook, :github, :google, :liveid] .
+  # What providers are supported by this app, i.e. [:twitter, :facebook, :github, :linkedin, :xing, :google, :liveid] .
   # Default: `[]`
   #
   # config.external_providers =
@@ -89,7 +89,17 @@ Rails.application.config.sorcery.configure do |config|
   # config.linkedin.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=linkedin"
   # config.linkedin.user_info_fields = ['first-name', 'last-name']
   # config.linkedin.user_info_mapping = {first_name: "firstName", last_name: "lastName"}
-  # config.linkedin.access_permissions = ['r_basicprofile'] 
+  # config.linkedin.access_permissions = ['r_basicprofile']
+  #
+  #
+  # For information about XING API:
+  # - user info fields go to https://dev.xing.com/docs/get/users/me
+  #
+  # config.xing.key = ""
+  # config.xing.secret = ""
+  # config.xing.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=xing"
+  # config.xing.user_info_mapping = {first_name: "first_name", last_name: "last_name"}
+  #
   #
   # Twitter wil not accept any requests nor redirect uri containing localhost,
   # make sure you use 0.0.0.0:3000 to access your app in development
