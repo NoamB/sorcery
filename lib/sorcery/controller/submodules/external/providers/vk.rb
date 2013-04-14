@@ -27,6 +27,7 @@ module Sorcery
             end
 
             module VkClient
+              include Base::BaseClient
               class << self
                 attr_accessor :key,
                               :secret,

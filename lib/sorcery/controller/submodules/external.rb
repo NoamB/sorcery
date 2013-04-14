@@ -33,13 +33,14 @@ module Sorcery
           # after authentication the user is redirected to the callback defined in the provider config
           def login_at(provider_name, args = {})
             provider = Config.send(provider_name)
-            if provider.callback_url.present? && provider.callback_url[0] == '/'
+            provider.original_callback_url ||= provider.callback_url
+            if provider.original_callback_url.present? && provider.original_callback_url[0] == '/'
               uri = URI.parse(request.url.gsub(/\?.*$/,''))
               uri.path = ''
               uri.query = nil
               uri.scheme = 'https' if(request.env['HTTP_X_FORWARDED_PROTO'] == 'https')
               host = uri.to_s
-              provider.callback_url = "#{host}#{provider.callback_url}"
+              provider.callback_url = "#{host}#{provider.original_callback_url}"
             end
             if provider.has_callback?
               redirect_to provider.login_url(params,session)
