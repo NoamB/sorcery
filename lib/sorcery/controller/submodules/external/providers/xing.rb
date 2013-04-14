@@ -27,6 +27,7 @@ module Sorcery
             end
 
             module XingClient
+              include Base::BaseClient
               class << self
                 attr_accessor :key,
                               :secret,

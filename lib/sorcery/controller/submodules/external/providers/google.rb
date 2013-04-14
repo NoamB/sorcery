@@ -27,6 +27,7 @@ module Sorcery
             end
 
             module GoogleClient
+              include Base::BaseClient
               class << self
                 attr_accessor :key,
                               :secret,
