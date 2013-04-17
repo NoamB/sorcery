@@ -118,6 +118,7 @@ module Sorcery
             config = sorcery_config
             self.public_send(:update_column, :"#{config.reset_password_token_attribute_name}", nil)
             self.public_send(:update_column, :"#{config.reset_password_token_expires_at_attribute_name}", nil) if config.reset_password_expiration_period
+            true
           end
         end
 
