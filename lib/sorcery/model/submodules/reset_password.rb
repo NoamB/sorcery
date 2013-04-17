@@ -116,8 +116,8 @@ module Sorcery
           # Clears the token.
           def clear_reset_password_token
             config = sorcery_config
-            self.public_send(:update_column, :"#{config.reset_password_token_attribute_name}=", nil)
-            self.public_send(:update_column, :"#{config.reset_password_token_expires_at_attribute_name}=", nil) if config.reset_password_expiration_period
+            self.public_send(:update_column, :"#{config.reset_password_token_attribute_name}", nil)
+            self.public_send(:update_column, :"#{config.reset_password_token_expires_at_attribute_name}", nil) if config.reset_password_expiration_period
           end
         end
 
