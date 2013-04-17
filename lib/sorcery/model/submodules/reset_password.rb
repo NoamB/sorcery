@@ -107,7 +107,7 @@ module Sorcery
 
           # Clears token and tries to update the new password for the user.
           def change_password!(new_password)
-            self.send(:"#{sorcery_config.password_attribute_name}=", new_password)
+            self.public_send(:"#{sorcery_config.password_attribute_name}=", new_password)
             clear_reset_password_token if save
           end
 
@@ -116,8 +116,8 @@ module Sorcery
           # Clears the token.
           def clear_reset_password_token
             config = sorcery_config
-            self.send(:update_column, :"#{config.reset_password_token_attribute_name}=", nil)
-            self.send(:update_column, :"#{config.reset_password_token_expires_at_attribute_name}=", nil) if config.reset_password_expiration_period
+            self.public_send(:update_column, :"#{config.reset_password_token_attribute_name}=", nil)
+            self.public_send(:update_column, :"#{config.reset_password_token_expires_at_attribute_name}=", nil) if config.reset_password_expiration_period
           end
         end
 
