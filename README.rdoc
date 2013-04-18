@@ -267,6 +267,8 @@ you can also enter your own OAuth credentials) [4].
 
 === Setup Example (OAuth 2.0 For Login):
 
+* Update: demo with rails-api and Google's OAuth 2.0 For Login: https://github.com/fzagarzazu/sorcery_access_token_demo
+
 * Installation
   rails generate sorcery:install access_token external
 
@@ -278,6 +280,7 @@ you can also enter your own OAuth credentials) [4].
     config.google.secret = "client_secret"
     config.user_config do |user|
       user.username_attribute_names = [:email]
+      user.authentications_class = Authentication
       user.access_token_mode = 'single_token'
       user.access_token_duration = 10.minutes.to_i
       user.access_token_duration_from_last_activity = true
@@ -311,7 +314,7 @@ you can also enter your own OAuth credentials) [4].
 
 
     class SessionsController < ApplicationController
-      skip_before_filter :require_login
+      skip_before_filter :require_login, :except => [:destroy]
   
       def create
         # Login
