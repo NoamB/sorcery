@@ -1,5 +1,3 @@
-require 'fileutils'
-
 namespace :sorcery do
   desc "Adds sorcery's initializer file"
   task :bootstrap do
