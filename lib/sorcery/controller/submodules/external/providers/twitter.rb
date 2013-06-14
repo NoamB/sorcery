@@ -48,7 +48,7 @@ module Sorcery
                 
                 def init
                   @site           = "https://api.twitter.com"
-                  @user_info_path = "/1/account/verify_credentials.json"
+                  @user_info_path = "/1.1/account/verify_credentials.json"
                   @user_info_mapping = {}
                 end
                 
