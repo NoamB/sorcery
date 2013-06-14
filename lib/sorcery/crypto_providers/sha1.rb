@@ -10,18 +10,21 @@ module Sorcery
         def join_token
           @join_token ||= "--"
         end
-        
+
         # Turns your raw password into a Sha1 hash.
         def encrypt(*tokens)
-          tokens = tokens.flatten
-          digest = tokens.shift
-          stretches.times { digest = secure_digest([digest, *tokens].join(join_token)) }
+          digest = ''
+          password = tokens.first
+          salt = tokens.last
+          pepper = ''
+          stretches.times { digest = secure_digest(salt, digest, password, pepper) }
           digest
         end
-        
-        def secure_digest(digest)
-          Digest::SHA1.hexdigest(digest)
+
+        def secure_digest(*tokens)
+          Digest::SHA1.hexdigest('--' << tokens.flatten.join('--') << '--')
         end
+
       end
     end
   end
