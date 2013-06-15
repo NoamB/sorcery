@@ -51,7 +51,8 @@ module Sorcery
       # Resets the session and runs hooks before and after.
       def logout
         if logged_in?
-          before_logout!(current_user)
+          @current_user = current_user if @current_user.nil?
+          before_logout!(@current_user)
           reset_session
           after_logout!
           @current_user = nil
