@@ -47,6 +47,12 @@ describe ApplicationController do
       User.first.last_activity_at.utc.should <= (now.utc+2)
     end
 
+    it "should log last IP address when logged in" do
+      login_user
+      get :some_action
+      User.first.last_login_from_ip_address.should == "0.0.0.0"
+    end
+
     it "should update nothing but activity fields" do
       original_user_name = User.first.username
       login_user
