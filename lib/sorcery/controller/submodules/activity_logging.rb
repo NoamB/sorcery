@@ -19,16 +19,20 @@ module Sorcery
               attr_accessor :register_login_time
               attr_accessor :register_logout_time
               attr_accessor :register_last_activity_time
+              attr_accessor :register_last_ip_address
             
               def merge_activity_logging_defaults!
                 @defaults.merge!(:@register_login_time         => true,
                                  :@register_logout_time        => true,
-                                 :@register_last_activity_time => true)
+                                 :@register_last_activity_time => true,
+                                 :@register_last_ip_address    => true
+                                 )
               end
             end
             merge_activity_logging_defaults!
           end
           Config.after_login    << :register_login_time_to_db
+          Config.after_login    << :register_last_ip_address
           Config.before_logout  << :register_logout_time_to_db
           base.after_filter :register_last_activity_time_to_db
         end
@@ -68,6 +72,13 @@ module Sorcery
             return unless Config.register_last_activity_time
             return unless logged_in?
             current_user.update_single_attribute(current_user.sorcery_config.last_activity_at_attribute_name, Time.now.in_time_zone)
+          end
+
+          # Updates IP address on every login.
+          # This runs as a hook just after a successful login.
+          def register_last_ip_address(user, credentials)
+            return unless Config.register_last_ip_address
+            current_user.update_single_attribute(current_user.sorcery_config.last_login_from_ip_address_name, request.remote_ip)
           end
         end
       end

@@ -10,6 +10,7 @@ describe ApplicationController do
     sorcery_controller_property_set(:register_login_time, true)
     sorcery_controller_property_set(:register_logout_time, true)
     sorcery_controller_property_set(:register_last_activity_time, true)
+    sorcery_controller_property_set(:last_login_from_ip_address, true)
   end
   
   # ----------------- ACTIVITY LOGGING -----------------------
@@ -55,6 +56,12 @@ describe ApplicationController do
       get :some_action
       User.first.last_activity_at.to_s(:db).should >= now.to_s(:db)
       User.first.last_activity_at.to_s(:db).should <= (now+2).to_s(:db)
+    end
+
+    it "should log last IP address when logged in" do
+      login_user
+      get :some_action
+      User.first.last_login_from_ip_address.should == "0.0.0.0"
     end
 
     it "should update nothing but activity fields" do
@@ -107,6 +114,14 @@ describe ApplicationController do
     it "should not register last activity time if configured so" do
       sorcery_controller_property_set(:register_last_activity_time, false)
       now = Time.now.in_time_zone
+      login_user
+      get :some_action
+      @user.last_activity_at.should be_nil
+    end
+
+    it "should not register last IP address if configured so" do
+      sorcery_controller_property_set(:register_last_ip_address, false)
+      ip_address = "127.0.0.1"
       login_user
       get :some_action
       @user.last_activity_at.should be_nil

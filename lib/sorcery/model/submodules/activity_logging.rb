@@ -14,6 +14,7 @@ module Sorcery
             attr_accessor :last_login_at_attribute_name,                  # last login attribute name.
                           :last_logout_at_attribute_name,                 # last logout attribute name.
                           :last_activity_at_attribute_name,               # last activity attribute name.
+                          :last_login_from_ip_address_name,               # last activity login source
                           :activity_timeout                               # how long since last activity is 
                                                                           #the user defined logged out?
           end
@@ -22,6 +23,7 @@ module Sorcery
             @defaults.merge!(:@last_login_at_attribute_name                => :last_login_at,
                              :@last_logout_at_attribute_name               => :last_logout_at,
                              :@last_activity_at_attribute_name             => :last_activity_at,
+                             :@last_login_from_ip_address_name             => :last_login_from_ip_address,
                              :@activity_timeout                            => 10 * 60)
             reset!
           end
@@ -42,6 +44,7 @@ module Sorcery
             field sorcery_config.last_login_at_attribute_name,    :type => Time
             field sorcery_config.last_logout_at_attribute_name,   :type => Time
             field sorcery_config.last_activity_at_attribute_name, :type => Time
+            field sorcery_config.last_login_from_ip_address_name, :type => String
           end
         end
       end

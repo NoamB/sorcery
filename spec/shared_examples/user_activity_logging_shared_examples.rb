@@ -23,5 +23,10 @@ shared_examples_for "rails_3_activity_logging_model" do
       sorcery_model_property_set(:last_activity_at_attribute_name, :activity_time)
       User.sorcery_config.last_activity_at_attribute_name.should equal(:activity_time)
     end
+
+    it "should allow configuration option 'last_login_from_ip_adress'" do
+      sorcery_model_property_set(:last_login_from_ip_address_name, :ip_address)
+      User.sorcery_config.last_login_from_ip_address_name.should equal(:ip_address)
+    end
   end
 end
