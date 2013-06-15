@@ -27,6 +27,7 @@ module Sorcery
             end
 
             module GithubClient
+              include Base::BaseClient
               class << self
                 attr_accessor :key,
                               :secret,
