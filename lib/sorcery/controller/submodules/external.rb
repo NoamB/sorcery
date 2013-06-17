@@ -36,7 +36,7 @@ module Sorcery
 
           # get the login URL from the provider, if applicable.  Returns nil if the provider
           # does not provide a login URL.  (as of v0.8.1 all providers provide a login URL)
-          def sorcery_login_url provider_name
+          def sorcery_login_url(provider_name)
             @provider = sorcery_get_provider provider_name
             sorcery_fixup_callback_url @provider
             if @provider.respond_to?(:login_url) && @provider.has_callback?
@@ -47,7 +47,7 @@ module Sorcery
           end
 
           # get the user hash from a provider using information from the params and session.
-          def sorcery_fetch_user_hash provider_name
+          def sorcery_fetch_user_hash(provider_name)
             # the application should never ask for user hashes from two different providers
             # on the same request.  But if they do, we should be ready: on the second request,
             # clear out the instance variables if the provider is different
@@ -66,7 +66,7 @@ module Sorcery
 
 
           # this method should be somewhere else.  It only does something once per application per provider.
-          def sorcery_fixup_callback_url provider
+          def sorcery_fixup_callback_url(provider)
             provider.original_callback_url ||= provider.callback_url
             if provider.original_callback_url.present? && provider.original_callback_url[0] == '/'
               uri = URI.parse(request.url.gsub(/\?.*$/,''))
