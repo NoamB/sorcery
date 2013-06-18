@@ -51,10 +51,10 @@ module Sorcery
                   @user_info_mapping = {}
                 end
 
-                def get_user_hash
+                def get_user_hash(access_token)
                   user_hash = {}
-                  @access_token.token_param = "access_token"
-                  response = @access_token.get(@user_info_url)
+                  access_token.token_param = "access_token"
+                  response = access_token.get(@user_info_url)
                   user_hash[:user_info] = JSON.parse(response.body)
                   user_hash[:uid] = user_hash[:user_info]['id']
                   user_hash
@@ -78,7 +78,7 @@ module Sorcery
                     :access_token_path => @token_path,
                     :access_token_method => :post
                   }
-                  @access_token = self.get_access_token(args, options)
+                  return self.get_access_token(args, options)
                 end
               end
               init
