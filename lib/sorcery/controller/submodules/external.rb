@@ -64,6 +64,11 @@ module Sorcery
             @user_hash ||= @provider.get_user_hash(@access_token) # uses the token to send another request to the oauth agent requesting user info
           end
 
+          # for backwards compatibility
+          def access_token(*args)
+            @access_token
+          end
+
 
           # this method should be somewhere else.  It only does something once per application per provider.
           def sorcery_fixup_callback_url(provider)
