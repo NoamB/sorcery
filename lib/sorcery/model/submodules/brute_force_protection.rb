@@ -1,18 +1,18 @@
 module Sorcery
   module Model
     module Submodules
-      # This module helps protect user accounts by locking them down after too many failed attemps 
+      # This module helps protect user accounts by locking them down after too many failed attemps
       # to login were detected.
-      # This is the model part of the submodule which provides configuration options and methods 
+      # This is the model part of the submodule which provides configuration options and methods
       # for locking and unlocking the user.
       module BruteForceProtection
         def self.included(base)
           base.sorcery_config.class_eval do
             attr_accessor :failed_logins_count_attribute_name,        # failed logins attribute name.
-                          :lock_expires_at_attribute_name,            # this field indicates whether user 
+                          :lock_expires_at_attribute_name,            # this field indicates whether user
                                                                       # is banned and when it will be active again.
                           :consecutive_login_retries_amount_limit,    # how many failed logins allowed.
-                          :login_lock_time_period,                    # how long the user should be banned. 
+                          :login_lock_time_period,                    # how long the user should be banned.
                                                                       # in seconds. 0 for permanent.
 
                           :unlock_token_attribute_name,               # Unlock token attribute name
@@ -20,7 +20,7 @@ module Sorcery
                           :unlock_token_mailer_disabled,              # When true, dont send unlock token via email
                           :unlock_token_mailer                        # Mailer class
           end
-          
+
           base.sorcery_config.instance_eval do
             @defaults.merge!(:@failed_logins_count_attribute_name              => :failed_logins_count,
                              :@lock_expires_at_attribute_name                  => :lock_expires_at,
@@ -33,7 +33,7 @@ module Sorcery
                              :@unlock_token_mailer                             => nil)
             reset!
           end
-          
+
           base.sorcery_config.before_authenticate << :prevent_locked_user_login
           base.sorcery_config.after_config << :define_brute_force_protection_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
           if defined?(MongoMapper) and base.ancestors.include?(MongoMapper::Document)
@@ -42,7 +42,7 @@ module Sorcery
           base.extend(ClassMethods)
           base.send(:include, InstanceMethods)
         end
-        
+
         module ClassMethods
           def load_from_unlock_token(token)
             return nil if token.blank?
@@ -64,7 +64,7 @@ module Sorcery
             key sorcery_config.unlock_token_attribute_name, String
           end
         end
-        
+
         module InstanceMethods
           # Called by the controller to increment the failed logins counter.
           # Calls 'lock!' if login retries limit was reached.
@@ -75,7 +75,7 @@ module Sorcery
             self.update_many_attributes(config.failed_logins_count_attribute_name => self.send(config.failed_logins_count_attribute_name))
             self.lock! if self.send(config.failed_logins_count_attribute_name) >= config.consecutive_login_retries_amount_limit
           end
-          
+
           # /!\
           # Moved out of protected for use like activate! in controller
           # /!\
@@ -95,11 +95,13 @@ module Sorcery
 
             unless config.unlock_token_mailer_disabled || config.unlock_token_mailer.nil?
               attributes[config.unlock_token_attribute_name] = TemporaryToken.generate_random_token
+              self.update_many_attributes(attributes)
               send_unlock_token_email!
+            else
+              self.update_many_attributes(attributes)
             end
-            self.update_many_attributes(attributes)
           end
-          
+
           def unlocked?
             config = sorcery_config
             self.send(config.lock_expires_at_attribute_name).nil?
@@ -108,7 +110,7 @@ module Sorcery
           def send_unlock_token_email!
             generic_send_email(:unlock_token_email_method_name, :unlock_token_mailer) unless sorcery_config.unlock_token_email_method_name.nil? or sorcery_config.unlock_token_mailer_disabled == true
           end
-          
+
           # Prevents a locked user from logging in, and unlocks users that expired their lock time.
           # Runs as a hook before authenticate.
           def prevent_locked_user_login
