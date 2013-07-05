@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Noam Ben Ari"]
-  s.date = "2013-01-25"
+  s.date = "2013-07-05"
   s.description = "Provides common authentication needs such as signing in/out, activating by email and resetting password."
   s.email = "nbenari@gmail.com"
   s.extra_rdoc_files = [
@@ -44,6 +44,7 @@ Gem::Specification.new do |s|
     "lib/sorcery/controller/submodules/external/protocols/certs/ca-bundle.crt",
     "lib/sorcery/controller/submodules/external/protocols/oauth1.rb",
     "lib/sorcery/controller/submodules/external/protocols/oauth2.rb",
+    "lib/sorcery/controller/submodules/external/providers/base.rb",
     "lib/sorcery/controller/submodules/external/providers/facebook.rb",
     "lib/sorcery/controller/submodules/external/providers/github.rb",
     "lib/sorcery/controller/submodules/external/providers/google.rb",
@@ -51,6 +52,7 @@ Gem::Specification.new do |s|
     "lib/sorcery/controller/submodules/external/providers/liveid.rb",
     "lib/sorcery/controller/submodules/external/providers/twitter.rb",
     "lib/sorcery/controller/submodules/external/providers/vk.rb",
+    "lib/sorcery/controller/submodules/external/providers/xing.rb",
     "lib/sorcery/controller/submodules/http_basic_auth.rb",
     "lib/sorcery/controller/submodules/remember_me.rb",
     "lib/sorcery/controller/submodules/session_timeout.rb",
@@ -304,7 +306,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/NoamB/sorcery"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.21"
+  s.rubygems_version = "1.8.24"
   s.summary = "Magical authentication for Rails 3 applications"
 
   if s.respond_to? :specification_version then
@@ -316,11 +318,10 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<bcrypt-ruby>, ["~> 3.0.0"])
       s.add_development_dependency(%q<abstract>, [">= 1.0.0"])
       s.add_development_dependency(%q<rails>, [">= 3.0.0"])
-      s.add_development_dependency(%q<json>, [">= 1.5.1"])
+      s.add_development_dependency(%q<json>, [">= 1.7.7"])
       s.add_development_dependency(%q<rspec>, ["~> 2.5.0"])
       s.add_development_dependency(%q<rspec-rails>, ["~> 2.5.0"])
-      s.add_development_dependency(%q<ruby-debug19>, [">= 0"])
-      s.add_development_dependency(%q<sqlite3-ruby>, [">= 0"])
+      s.add_development_dependency(%q<sqlite3>, [">= 0"])
       s.add_development_dependency(%q<yard>, ["~> 0.6.0"])
       s.add_development_dependency(%q<bundler>, [">= 1.1.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
@@ -335,11 +336,10 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<bcrypt-ruby>, ["~> 3.0.0"])
       s.add_dependency(%q<abstract>, [">= 1.0.0"])
       s.add_dependency(%q<rails>, [">= 3.0.0"])
-      s.add_dependency(%q<json>, [">= 1.5.1"])
+      s.add_dependency(%q<json>, [">= 1.7.7"])
       s.add_dependency(%q<rspec>, ["~> 2.5.0"])
       s.add_dependency(%q<rspec-rails>, ["~> 2.5.0"])
-      s.add_dependency(%q<ruby-debug19>, [">= 0"])
-      s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
+      s.add_dependency(%q<sqlite3>, [">= 0"])
       s.add_dependency(%q<yard>, ["~> 0.6.0"])
       s.add_dependency(%q<bundler>, [">= 1.1.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
@@ -355,11 +355,10 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<bcrypt-ruby>, ["~> 3.0.0"])
     s.add_dependency(%q<abstract>, [">= 1.0.0"])
     s.add_dependency(%q<rails>, [">= 3.0.0"])
-    s.add_dependency(%q<json>, [">= 1.5.1"])
+    s.add_dependency(%q<json>, [">= 1.7.7"])
     s.add_dependency(%q<rspec>, ["~> 2.5.0"])
     s.add_dependency(%q<rspec-rails>, ["~> 2.5.0"])
-    s.add_dependency(%q<ruby-debug19>, [">= 0"])
-    s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
+    s.add_dependency(%q<sqlite3>, [">= 0"])
     s.add_dependency(%q<yard>, ["~> 0.6.0"])
     s.add_dependency(%q<bundler>, [">= 1.1.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
