@@ -4,18 +4,18 @@ describe ApplicationController do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/brute_force_protection")
   end
-  
+
   after(:all) do
     ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/brute_force_protection")
   end
-  
+
   # ----------------- SESSION TIMEOUT -----------------------
   describe ApplicationController, "with brute force protection features" do
     before(:all) do
       sorcery_reload!([:brute_force_protection])
       create_new_user
     end
-    
+
     after(:each) do
       Sorcery::Controller::Config.reset!
       sorcery_controller_property_set(:user_class, User)
@@ -26,13 +26,21 @@ describe ApplicationController do
       3.times {get :test_login, :username => 'gizmo', :password => 'blabla'}
       User.find_by_username('gizmo').failed_logins_count.should == 3
     end
-    
+
     it "should generate unlock token after user locked" do
       sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
       sorcery_model_property_set(:login_lock_time_period, 0)
       sorcery_model_property_set(:unlock_token_mailer, SorceryMailer)
       3.times {get :test_login, :username => "gizmo", :password => "blabla"}
       User.find_by_username('gizmo').unlock_token.should_not be_nil
+    end
+
+    it "should generate unlock token before mail is sent" do
+      sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
+      sorcery_model_property_set(:login_lock_time_period, 0)
+      sorcery_model_property_set(:unlock_token_mailer, SorceryMailer)
+      3.times {get :test_login, :username => "gizmo", :password => "blabla"}
+      ActionMailer::Base.deliveries.last.body.to_s.match(User.find_by_username('gizmo').unlock_token).should_not be_nil
     end
 
     it "should unlock after entering unlock token" do
@@ -48,14 +56,14 @@ describe ApplicationController do
       User.load_from_unlock_token(token).should be_nil
     end
 
-    
+
     it "should reset the counter on a good login" do
       sorcery_model_property_set(:consecutive_login_retries_amount_limit, 5)
       3.times {get :test_login, :username => 'gizmo', :password => 'blabla'}
       get :test_login, :username => 'gizmo', :password => 'secret'
       User.find_by_username('gizmo').failed_logins_count.should == 0
     end
-    
+
     it "should lock user when number of retries reached the limit" do
       User.find_by_username('gizmo').lock_expires_at.should be_nil
       sorcery_model_property_set(:consecutive_login_retries_amount_limit, 1)
