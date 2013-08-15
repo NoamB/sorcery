@@ -18,8 +18,15 @@ module Sorcery
           save!(options)
         end
 
+
+        def update_single_attribute(name, value)
+            update_many_attributes(name => value)
+        end
+
         def update_many_attributes(attrs)
-          update_attributes(attrs)
+          attrs.each do |name,value|
+              write_attribute(name,value)
+          end
         end
 
         module ClassMethods
