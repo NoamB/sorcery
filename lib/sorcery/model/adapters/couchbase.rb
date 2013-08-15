@@ -26,7 +26,7 @@ module Sorcery
 
           def find_by_credentials(credentials)
             @sorcery_config.username_attribute_names.each do |attribute|
-              @user = send("by_#{attribute}").first
+              @user = send("by_#{attribute}",:key => credentials[0]).first
               break if @user
             end
             @user
@@ -45,7 +45,7 @@ module Sorcery
           end
 
           def find_by_sorcery_token(token_attr_name, token)
-            by_sorcery_token(:key => token).first
+            send("by_#{token_attr_name}",:key => token).first
           end
         end
       end
