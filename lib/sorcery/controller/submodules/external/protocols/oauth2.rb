@@ -14,7 +14,8 @@ module Sorcery
               client.auth_code.authorize_url(
                 :redirect_uri => @callback_url,
                 :scope => @scope,
-                :display => @display
+                :display => @display,
+                :state => @state
               )
             end
 
