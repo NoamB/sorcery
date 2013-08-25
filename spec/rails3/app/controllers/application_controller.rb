@@ -96,6 +96,10 @@ class ApplicationController < ActionController::Base
   def login_at_test5
     login_at(:liveid)
   end
+  
+  def login_at_test_with_state
+    login_at(:facebook, {:state => "bla"})
+  end
 
   def test_login_from
     if @user = login_from(:twitter)
