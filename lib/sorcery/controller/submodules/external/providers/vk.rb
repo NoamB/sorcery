@@ -35,7 +35,8 @@ module Sorcery
                               :auth_path,
                               :token_path,
                               :site,
-                              :user_info_mapping
+                              :user_info_mapping,
+                              :state
                 attr_reader   :access_token
 
                 include Protocols::Oauth2

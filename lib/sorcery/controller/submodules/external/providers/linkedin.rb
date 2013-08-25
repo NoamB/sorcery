@@ -39,7 +39,8 @@ module Sorcery
                               :user_info_path,
                               :user_info_mapping,
                               :user_info_fields,
-                              :access_permissions
+                              :access_permissions,
+                              :state
                 attr_reader   :access_token
 
                 include Protocols::Oauth1

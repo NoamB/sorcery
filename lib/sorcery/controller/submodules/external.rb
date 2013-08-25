@@ -36,10 +36,11 @@ module Sorcery
 
           # get the login URL from the provider, if applicable.  Returns nil if the provider
           # does not provide a login URL.  (as of v0.8.1 all providers provide a login URL)
-          def sorcery_login_url(provider_name)
+          def sorcery_login_url(provider_name, args = {})
             @provider = sorcery_get_provider provider_name
             sorcery_fixup_callback_url @provider
             if @provider.respond_to?(:login_url) && @provider.has_callback?
+              @provider.state = args[:state] if args[:state] 
               return @provider.login_url(params, session)
             else
               return nil
@@ -86,7 +87,7 @@ module Sorcery
           # sends user to authenticate at the provider's website.
           # after authentication the user is redirected to the callback defined in the provider config
           def login_at(provider_name, args = {})
-            redirect_to sorcery_login_url(provider_name)
+            redirect_to sorcery_login_url(provider_name, args)
           end
 
           # tries to login the user from provider's callback
