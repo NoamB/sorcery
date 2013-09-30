@@ -123,12 +123,12 @@ describe ApplicationController do
     it "current_user should return the user instance if logged in" do
       create_new_user
       session[:user_id] = @user.id
-      subject.current_user.should == @user
+      2.times { subject.current_user.should == @user } # memoized!
     end
 
     it "current_user should return false if not logged in" do
       session[:user_id] = nil
-      subject.current_user.should == false
+      2.times { subject.current_user.should == false } # memoized!
     end
 
     specify { should respond_to(:require_login) }
