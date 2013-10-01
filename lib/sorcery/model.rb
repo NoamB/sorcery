@@ -25,6 +25,7 @@ module Sorcery
 
             init_mongoid_support! if defined?(Mongoid) and self.ancestors.include?(Mongoid::Document)
             init_mongo_mapper_support! if defined?(MongoMapper) and self.ancestors.include?(MongoMapper::Document)
+            init_couchbase_support! if defined?(Couchbase) and self.ancestors.include?(Couchbase::Model)
 
             init_orm_hooks!
 
@@ -72,6 +73,18 @@ module Sorcery
               key sorcery_config.email_attribute_name, String unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
               key sorcery_config.crypted_password_attribute_name, String
               key sorcery_config.salt_attribute_name, String
+            end
+          end
+
+          # defines couchbase fields on the model class,
+          def init_couchbase_support!
+            self.class_eval do
+              sorcery_config.username_attribute_names.each do |username|
+                attribute username
+              end
+              attribute sorcery_config.email_attribute_name unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
+              attribute sorcery_config.crypted_password_attribute_name
+              attribute sorcery_config.salt_attribute_name
             end
           end
 

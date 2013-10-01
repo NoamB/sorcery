@@ -2,7 +2,7 @@
 
 = sorcery
 Magical Authentication for Rails 3.
-Supports ActiveRecord, Mongoid and MongoMapper.
+Supports ActiveRecord, Mongoid, MongoMapper and Couchbase
 
 Inspired by restful_authentication, Authlogic and Devise.
 Crypto code taken almost unchanged from Authlogic.
@@ -120,10 +120,10 @@ Inside the initializer, the comments will tell you what each setting does.
 
 == DelayedJob Integration
 
-By default emails are sent synchronously. You can send them asynchronously by using the 
+By default emails are sent synchronously. You can send them asynchronously by using the
 [delayed_job gem](https://github.com/collectiveidea/delayed_job).
 
-After implementing the `delayed_job` into your project add the code below at the end of 
+After implementing the `delayed_job` into your project add the code below at the end of
 the `config/initializers/sorcery.rb` file. After that all emails will be sent asynchronously.
 
   module Sorcery
@@ -145,7 +145,7 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 == Full Features List by module:
 
 
-Core (see lib/sorcery/model.rb and lib/sorcery/controller.rb): 
+Core (see lib/sorcery/model.rb and lib/sorcery/controller.rb):
 * login/logout, optional return user to requested url on login, configurable redirect for non-logged-in users.
 * password encryption, algorithms: bcrypt(default), md5, sha1, sha256, sha512, aes256, custom(yours!), none. Configurable stretches and salt.
 * configurable attribute names for username, password and email.
@@ -227,7 +227,7 @@ Important notes while upgrading:
     # This line must come after the 'user config' block.
     config.user_class = User
 
-* Sinatra support existed until v0.7.0 (including), but was dropped later due to being a maintenance nightmare. 
+* Sinatra support existed until v0.7.0 (including), but was dropped later due to being a maintenance nightmare.
 
 
 == Contributing to sorcery
@@ -250,11 +250,11 @@ If you feel sorcery has made your life easier, and you would like to express you
 
 
 Feel free to ask questions using these contact details:
-	
+
 	email: nbenari@gmail.com ( also for paypal )
 	twitter: @nbenari
-	
-	
+
+
 == Copyright
 
 
