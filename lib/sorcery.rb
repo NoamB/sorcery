@@ -6,6 +6,7 @@ module Sorcery
       autoload :ActiveRecord, 'sorcery/model/adapters/active_record'
       autoload :Mongoid, 'sorcery/model/adapters/mongoid'
       autoload :MongoMapper, 'sorcery/model/adapters/mongo_mapper'
+      autoload :Sequel, 'sorcery/model/adapters/sequel'
     end
     module Submodules
       autoload :UserActivation, 'sorcery/model/submodules/user_activation'
@@ -67,7 +68,12 @@ module Sorcery
     ActiveRecord::Base.send(:include, Sorcery::Model)
     ActiveRecord::Base.send(:include, Sorcery::Model::Adapters::ActiveRecord)
   end
-
+  
+  if defined?(Sequel)
+    Sequel::Model.send(:include, Sorcery::Model)
+    Sequel::Model.send(:include, Sorcery::Model::Adapters::Sequel)
+  end
+  
   if defined?(Mongoid)
     Mongoid::Document.module_eval do
       included do

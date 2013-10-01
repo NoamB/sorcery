@@ -68,6 +68,7 @@ Gem::Specification.new do |s|
     "lib/sorcery/model/adapters/active_record.rb",
     "lib/sorcery/model/adapters/mongo_mapper.rb",
     "lib/sorcery/model/adapters/mongoid.rb",
+    "lib/sorcery/model/adapters/sequel.rb",
     "lib/sorcery/model/submodules/activity_logging.rb",
     "lib/sorcery/model/submodules/brute_force_protection.rb",
     "lib/sorcery/model/submodules/external.rb",
@@ -330,6 +331,8 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<capybara>, [">= 0"])
       s.add_development_dependency(%q<mongo_mapper>, [">= 0"])
       s.add_development_dependency(%q<mongoid>, ["~> 2.4.4"])
+      s.add_development_dependency(%q<sequel>, ["~> 3.40.0"])
+      s.add_development_dependency(%q<sequel_simple_callbacks>, ["~> 0.1.2"])
     else
       s.add_dependency(%q<oauth>, ["~> 0.4.4"])
       s.add_dependency(%q<oauth2>, ["~> 0.8.0"])
@@ -348,6 +351,8 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<capybara>, [">= 0"])
       s.add_dependency(%q<mongo_mapper>, [">= 0"])
       s.add_dependency(%q<mongoid>, ["~> 2.4.4"])
+      s.add_dependency(%q<sequel>, ["~> 3.40.0"])
+      s.add_dependency(%q<sequel_simple_callbacks>, ["~> 0.1.2"])
     end
   else
     s.add_dependency(%q<oauth>, ["~> 0.4.4"])
@@ -367,6 +372,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<capybara>, [">= 0"])
     s.add_dependency(%q<mongo_mapper>, [">= 0"])
     s.add_dependency(%q<mongoid>, ["~> 2.4.4"])
+    s.add_dependency(%q<sequel>, ["~> 3.40.0"])
+    s.add_dependency(%q<sequel_simple_callbacks>, ["~> 0.1.2"])
   end
 end
 
