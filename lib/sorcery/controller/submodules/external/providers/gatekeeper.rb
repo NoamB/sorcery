@@ -3,30 +3,30 @@ module Sorcery
     module Submodules
       module External
         module Providers
-          # This module adds support for OAuth with myama.com.
-          # When included in the 'config.providers' option, it adds a new option, 'config.myama'.
-          # Via this new option you can configure Myama specific settings like your app's key and secret.
+          # This module adds support for OAuth with gatekeeper.com.
+          # When included in the 'config.providers' option, it adds a new option, 'config.gatekeeper'.
+          # Via this new option you can configure Gatekeeper specific settings like your app's key and secret.
           #
-          #   config.myama.key = <key>
-          #   config.myama.secret = <secret>
+          #   config.gatekeeper.key = <key>
+          #   config.gatekeeper.secret = <secret>
           #   ...
           #
-          module Myama
+          module Gatekeeper
             def self.included(base)
               base.module_eval do
                 class << self
-                  attr_reader :myama                           # access to myama_client.
+                  attr_reader :gatekeeper                           # access to gatekeeper_client.
 
-                  def merge_myama_defaults!
-                    @defaults.merge!(:@myama => MyamaClient)
+                  def merge_gatekeeper_defaults!
+                    @defaults.merge!(:@gatekeeper => GatekeeperClient)
                   end
                 end
-                merge_myama_defaults!
+                merge_gatekeeper_defaults!
                 update!
               end
             end
 
-            module MyamaClient
+            module GatekeeperClient
               class << self
                 attr_accessor :key,
                               :secret,
@@ -42,8 +42,8 @@ module Sorcery
                 include Protocols::Oauth2
 
                 def init
-                  @site           = ENV["MYAMA_SITE"]
-                  @user_info_path = ENV["MYAMA_USER_INFO_PATH"]
+                  @site           = ENV["GATEKEEPER_SITE"]
+                  @user_info_path = ENV["GATEKEEPER_USER_INFO_PATH"]
                   @scope          = nil
                   @auth_path      = "/oauth/authorize"
                   @token_path     = "/oauth/token"
