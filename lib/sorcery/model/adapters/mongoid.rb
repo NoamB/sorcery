@@ -9,7 +9,7 @@ module Sorcery
 
         module InstanceMethods
           def increment(attr)
-            self.inc(attr,1)
+            self.inc(attr, 1)
           end
 
           def update_many_attributes(attrs)
@@ -27,8 +27,8 @@ module Sorcery
 
         module ClassMethods
           def credential_regex(credential)
-            return { :$regex =>  /^#{credential}$/i  }  if (@sorcery_config.downcase_username_before_authenticating)
-            return credential
+            return { :$regex =>  /^#{credential}$/i  } if (@sorcery_config.downcase_username_before_authenticating)
+            credential
           end
 
           def find_by_credentials(credentials)
