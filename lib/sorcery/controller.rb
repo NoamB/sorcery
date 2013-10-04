@@ -32,10 +32,13 @@ module Sorcery
         @current_user = nil
         user = user_class.authenticate(*credentials)
         if user
-          old_session = session.dup.to_hash
+
+          old_session = session.dup.to_hash unless Config.skip_session_data_restoration
           reset_session # protect from session fixation attacks
-          old_session.each_pair do |k,v|
-            session[k.to_sym] = v
+          if !Config.skip_session_data_restoration
+            old_session.each_pair do |k,v|
+              session[k.to_sym] = v
+            end
           end
           form_authenticity_token
 
@@ -164,22 +167,24 @@ module Sorcery
                       :after_login,
                       :after_failed_login,
                       :before_logout,
-                      :after_logout
+                      :after_logout, 
+                      :skip_session_data_restoration
 
-        def init!
-          @defaults = {
-            :@user_class                           => nil,
-            :@submodules                           => [],
-            :@not_authenticated_action             => :not_authenticated,
-            :@login_sources                        => [],
-            :@after_login                          => [],
-            :@after_failed_login                   => [],
-            :@before_logout                        => [],
-            :@after_logout                         => [],
-            :@save_return_to_url                   => true,
-            :@cookie_domain                        => nil
-          }
-        end
+                      def init!
+                        @defaults = {
+                          :@user_class                           => nil,
+                          :@submodules                           => [],
+                          :@not_authenticated_action             => :not_authenticated,
+                          :@login_sources                        => [],
+                          :@after_login                          => [],
+                          :@after_failed_login                   => [],
+                          :@before_logout                        => [],
+                          :@after_logout                         => [],
+                          :@save_return_to_url                   => true,
+                          :@cookie_domain                        => nil,
+                          :@skip_session_data_restoration        => false
+                        }
+                      end
 
         # Resets all configuration options to their default values.
         def reset!
