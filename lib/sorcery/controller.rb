@@ -95,7 +95,7 @@ module Sorcery
       #
       # @param [<User-Model>] user the user instance.
       # @return - do not depend on the return value.
-      def auto_login(user)
+      def auto_login(user, should_remember = false)
         session[:user_id] = user.id
         @current_user = user
       end
