@@ -68,7 +68,7 @@ module Sorcery
 
                 # calculates and returns the url to which the user should be redirected,
                 # to get authenticated at the external provider's site.
-                def login_url(params,session)
+                def login_url(params, session)
                   req_token = self.get_request_token
                   session[:request_token]         = req_token.token
                   session[:request_token_secret]  = req_token.secret

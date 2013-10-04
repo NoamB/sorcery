@@ -40,7 +40,7 @@ module Sorcery
             @provider = sorcery_get_provider provider_name
             sorcery_fixup_callback_url @provider
             if @provider.respond_to?(:login_url) && @provider.has_callback?
-              @provider.state = args[:state] if args[:state] 
+              @provider.state = args[:state] if args[:state]
               return @provider.login_url(params, session)
             else
               return nil
@@ -93,7 +93,7 @@ module Sorcery
           # tries to login the user from provider's callback
           def login_from(provider_name, should_remember = false)
             sorcery_fetch_user_hash provider_name
-            
+
             if user = user_class.load_from_provider(provider_name, @user_hash[:uid].to_s)
               # we found the user.
               # clear the session
