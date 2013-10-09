@@ -9,7 +9,10 @@
 # end
 # --
 
-require 'rake'
+require 'bundler'
+require 'bundler/setup'
+
+# require 'rake'
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
@@ -32,14 +35,14 @@ require 'rspec/core'
 require 'rspec/core/rake_task'
 
 RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.pattern = FileList['spec/**/*_spec.rb']
+  # spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
 require 'yard'
 YARD::Rake::YardocTask.new
 
 desc 'Default: Run all sorcery specs.'
-task :default => :all_sorcery_specs
+task :default => :spec
 
 desc "Run all sorcery specs"
 task :all_sorcery_specs do

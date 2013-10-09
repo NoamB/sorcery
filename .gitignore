@@ -20,7 +20,7 @@ pkg
 # for RubyMine
 .idea
 
-# Have editor/IDE/OS specific files you need to ignore? Consider using a global gitignore: 
+# Have editor/IDE/OS specific files you need to ignore? Consider using a global gitignore:
 #
 # * Create a file at ~/.gitignore
 # * Include files you want ignored
@@ -47,3 +47,6 @@ tmtags
 # For vim:
 #*.swp
 #
+spec/rails_app/log/*
+*.log
+*.sqlite3

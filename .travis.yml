@@ -1,3 +1,10 @@
 language: ruby
 rvm:
-  - 1.9.2
+  - 2.0.0
+
+services: mongodb
+
+script:
+  - "bundle exec rake spec SPEC=spec/models"
+  - "SORCERY_ORM=mongoid bundle exec rake spec SPEC=spec/mongoid"
+  - "SORCERY_ORM=mongo_mapper bundle exec rake spec SPEC=spec/mongo_mapper"
