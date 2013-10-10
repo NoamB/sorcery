@@ -1,18 +1,5 @@
-# require 'bundler'
-# -- Commented because it's slow
-# begin
-#   Bundler.setup(:default, :development)
-# rescue Bundler::BundlerError => e
-#   $stderr.puts e.message
-#   $stderr.puts "Run `bundle install` to install missing gems"
-#   exit e.status_code
-# end
-# --
-
 require 'bundler'
 require 'bundler/setup'
-
-# require 'rake'
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
@@ -31,55 +18,10 @@ Jeweler::Tasks.new do |gem|
 end
 Jeweler::RubygemsDotOrgTasks.new
 
-require 'rspec/core'
-require 'rspec/core/rake_task'
-
-RSpec::Core::RakeTask.new(:spec) do |spec|
-  # spec.pattern = FileList['spec/**/*_spec.rb']
-end
-
 require 'yard'
 YARD::Rake::YardocTask.new
 
-desc 'Default: Run all sorcery specs.'
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec)
+
 task :default => :spec
-
-desc "Run all sorcery specs"
-task :all_sorcery_specs do
-  # we need to be empty, otherwise bundler will use parent bundler.
-  env = {
-    'BUNDLE_GEMFILE' => nil,
-    'GEM_HOME'       => nil
-  }
-  Dir['spec/**/Rakefile'].each do |rakefile|
-    directory_name = File.dirname(rakefile)
-    system(env, "cd #{directory_name} && bundle && bundle exec rake")
-    abort unless $?.success?
-  end
-end
-
-desc "Bundle all folders"
-task :bundle do
-  sh "bundle"
-  Dir['spec', 'spec/**'].each do |dir|
-    if Dir.exists?(dir) && File.exists?(dir + "/Gemfile")
-      sh <<-CMD
-        cd #{dir}
-        bundle
-      CMD
-    end
-  end
-end
-
-desc "Bundle update all folders"
-task :bundle_update do
-  sh "bundle update"
-  Dir['spec', 'spec/**'].each do |dir|
-    if Dir.exists?(dir) && File.exists?(dir + "/Gemfile")
-      sh <<-CMD
-        cd #{dir}
-        bundle update
-      CMD
-    end
-  end
-end
