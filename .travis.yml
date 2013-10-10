@@ -5,6 +5,10 @@ rvm:
 
 services: mongodb
 
+gemfile:
+  - Gemfile
+  - Gemfile.rails4
+
 script:
   - "SORCERY_ORM=active_record bundle exec rake spec SPEC=spec/active_record"
   - "SORCERY_ORM=mongoid bundle exec rake spec SPEC=spec/mongoid"

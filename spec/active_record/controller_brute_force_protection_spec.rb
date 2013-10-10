@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ApplicationController do
+describe SorceryController do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/brute_force_protection")
     User.reset_column_information
@@ -11,7 +11,7 @@ describe ApplicationController do
   end
 
   # ----------------- SESSION TIMEOUT -----------------------
-  describe ApplicationController, "with brute force protection features" do
+  describe SorceryController, "with brute force protection features" do
     before(:all) do
       sorcery_reload!([:brute_force_protection])
       create_new_user
@@ -59,6 +59,9 @@ describe ApplicationController do
 
 
     it "should reset the counter on a good login" do
+      # dirty hack for rails 4
+      @controller.stub(:register_last_activity_time_to_db)
+
       sorcery_model_property_set(:consecutive_login_retries_amount_limit, 5)
       3.times {get :test_login, :username => 'gizmo', :password => 'blabla'}
       get :test_login, :username => 'gizmo', :password => 'secret'

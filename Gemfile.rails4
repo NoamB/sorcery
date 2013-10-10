@@ -1,0 +1,25 @@
+source 'https://rubygems.org'
+
+gem 'oauth', "~> 0.4.4"
+gem 'oauth2', "~> 0.8.0"
+gem 'bcrypt-ruby', "~> 3.0.0"
+
+gem "rspec", "~> 2.14.0"
+gem 'rspec-rails', "~> 2.14.0"
+#gem 'ruby-debug19'
+gem 'sqlite3'
+gem "yard", "~> 0.6.0"
+gem "bundler", ">= 1.1.0"
+gem "jeweler", "~> 1.8.3"
+gem 'timecop'
+
+group :mongomapper do
+  gem 'mongo_mapper', github: 'jnunemaker/mongomapper'
+end
+
+group :mongoid do
+  gem 'mongoid', github: 'mongoid/mongoid', ref: 'f91feef0a0c6b83a1b878e154f1014536aa1c298'
+  gem 'bson_ext'
+end
+
+gem 'rails', '4.0.0'

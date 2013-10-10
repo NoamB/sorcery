@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe ApplicationController do
+describe SorceryController do
 
   # ----------------- SESSION TIMEOUT -----------------------
-  describe ApplicationController, "with session timeout features" do
+  describe SorceryController, "with session timeout features" do
     before(:all) do
       sorcery_reload!([:session_timeout])
       sorcery_controller_property_set(:session_timeout,0.5)

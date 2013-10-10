@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ApplicationController do
+describe SorceryController do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activity_logging")
     User.reset_column_information
@@ -16,7 +16,7 @@ describe ApplicationController do
   end
 
   # ----------------- ACTIVITY LOGGING -----------------------
-  describe ApplicationController, "with activity logging features" do
+  describe SorceryController, "with activity logging features" do
     before(:all) do
       sorcery_reload!([:activity_logging])
     end
@@ -47,10 +47,11 @@ describe ApplicationController do
       login_user
       now = Time.now.in_time_zone
       logout_user
-      User.first.last_logout_at.should_not be_nil
 
-      User.first.last_logout_at.to_s(:db).should >= now.to_s(:db)
-      User.first.last_logout_at.to_s(:db).should <= (now+2).to_s(:db)
+      User.last.last_logout_at.should_not be_nil
+
+      User.last.last_logout_at.to_s(:db).should >= now.to_s(:db)
+      User.last.last_logout_at.to_s(:db).should <= (now+2).to_s(:db)
     end
 
     it "should log last activity time when logged in" do
@@ -60,7 +61,7 @@ describe ApplicationController do
       now = Time.now.in_time_zone
       get :some_action
 
-      last_activity_at = User.first.last_activity_at
+      last_activity_at = User.last.last_activity_at
 
       last_activity_at.should be_present
       last_activity_at.to_s(:db).should >= now.to_s(:db)
@@ -70,14 +71,14 @@ describe ApplicationController do
     it "should log last IP address when logged in" do
       login_user
       get :some_action
-      User.first.last_login_from_ip_address.should == "0.0.0.0"
+      User.last.last_login_from_ip_address.should == "0.0.0.0"
     end
 
     it "should update nothing but activity fields" do
-      original_user_name = User.first.username
+      original_user_name = User.last.username
       login_user
       get :some_action_making_a_non_persisted_change_to_the_user
-      User.first.username.should == original_user_name
+      User.last.username.should == original_user_name
     end
 
     it "'current_users' should hold the user object when 1 user is logged in" do

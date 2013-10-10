@@ -1,11 +1,13 @@
 require 'spec_helper'
 
-describe ApplicationController do
+describe SorceryController do
 
   # ----------------- HTTP BASIC AUTH -----------------------
-  describe ApplicationController, "with http basic auth features" do
+  describe SorceryController, "with http basic auth features" do
     before(:all) do
       sorcery_reload!([:http_basic_auth])
+
+      sorcery_controller_property_set(:controller_to_realm_map, {"sorcery" => "sorcery"})
       create_new_user
     end
 
@@ -19,6 +21,9 @@ describe ApplicationController do
     end
 
     it "authenticates from http basic if credentials are sent" do
+      # dirty hack for rails 4
+      @controller.stub(:register_last_activity_time_to_db)
+
       @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.username}:secret")
       get :test_http_basic_auth, nil, :http_authentication_used => true
       response.should be_a_success
@@ -36,12 +41,16 @@ describe ApplicationController do
     end
 
     it "should display the correct realm name configured for the controller" do
-      sorcery_controller_property_set(:controller_to_realm_map, {"application" => "Salad"})
+      sorcery_controller_property_set(:controller_to_realm_map, {"sorcery" => "Salad"})
+
       get :test_http_basic_auth
       response.headers["WWW-Authenticate"].should == "Basic realm=\"Salad\""
     end
 
     it "should sign in the user's session on successful login" do
+      # dirty hack for rails 4
+      @controller.stub(:register_last_activity_time_to_db)
+
       @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.username}:secret")
       get :test_http_basic_auth, nil, :http_authentication_used => true
       session[:user_id].should == User.find_by_username(@user.username).id

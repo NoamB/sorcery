@@ -2,7 +2,7 @@ require 'spec_helper'
 
 require 'shared_examples/controller_oauth2_shared_examples'
 
-describe ApplicationController do
+describe SorceryController do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
     User.reset_column_information
@@ -15,7 +15,7 @@ describe ApplicationController do
     ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
   end
   # ----------------- OAuth -----------------------
-  describe ApplicationController, "with OAuth features" do
+  describe SorceryController, "with OAuth features" do
 
     before(:each) do
       stub_all_oauth2_requests!
@@ -59,6 +59,9 @@ describe ApplicationController do
     end
 =end
     it "'login_from' logins if user exists" do
+      # dirty hack for rails 4
+      @controller.stub(:register_last_activity_time_to_db)
+
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:facebook)
       get :test_login_from2
@@ -73,6 +76,9 @@ describe ApplicationController do
     end
 
     it "on successful login_from the user should be redirected to the url he originally wanted" do
+      # dirty hack for rails 4
+      @controller.stub(:register_last_activity_time_to_db)
+
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:facebook)
       get :test_return_to_with_external2, {}, :return_to_url => "fuu"
@@ -89,6 +95,9 @@ describe ApplicationController do
     end
 
     it "'login_from' logins if user exists (github)" do
+      # dirty hack for rails 4
+      @controller.stub(:register_last_activity_time_to_db)
+
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:github)
       get :test_login_from3
@@ -103,6 +112,9 @@ describe ApplicationController do
     end
 
     it "on successful login_from the user should be redirected to the url he originally wanted (github)" do
+      # dirty hack for rails 4
+      @controller.stub(:register_last_activity_time_to_db)
+
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:github)
       get :test_return_to_with_external3, {}, :return_to_url => "fuu"
@@ -119,6 +131,9 @@ describe ApplicationController do
     end
 
     it "'login_from' logins if user exists (google)" do
+      # dirty hack for rails 4
+      @controller.stub(:register_last_activity_time_to_db)
+
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:google)
       get :test_login_from4
@@ -133,6 +148,9 @@ describe ApplicationController do
     end
 
     it "on successful login_from the user should be redirected to the url he originally wanted (google)" do
+      # dirty hack for rails 4
+      @controller.stub(:register_last_activity_time_to_db)
+
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:google)
       get :test_return_to_with_external4, {}, :return_to_url => "fuu"
@@ -149,6 +167,9 @@ describe ApplicationController do
     end
 
     it "'login_from' logins if user exists (liveid)" do
+      # dirty hack for rails 4
+      @controller.stub(:register_last_activity_time_to_db)
+
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:liveid)
       get :test_login_from5
@@ -163,6 +184,9 @@ describe ApplicationController do
     end
 
     it "on successful login_from the user should be redirected to the url he originally wanted (liveid)" do
+      # dirty hack for rails 4
+      @controller.stub(:register_last_activity_time_to_db)
+
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:liveid)
       get :test_return_to_with_external5, {}, :return_to_url => "fuu"
@@ -173,11 +197,11 @@ describe ApplicationController do
   end
 
 
-  describe ApplicationController do
+  describe SorceryController do
     it_behaves_like "oauth2_controller"
   end
 
-  describe ApplicationController, "OAuth with User Activation features" do
+  describe SorceryController, "OAuth with User Activation features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
       sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
@@ -265,7 +289,7 @@ describe ApplicationController do
     end
   end
 
-  describe ApplicationController, "OAuth with user activation features"  do
+  describe SorceryController, "OAuth with user activation features"  do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activity_logging")
@@ -307,7 +331,7 @@ describe ApplicationController do
     end
   end
 
-  describe ApplicationController, "OAuth with session timeout features" do
+  describe SorceryController, "OAuth with session timeout features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
       User.reset_column_information

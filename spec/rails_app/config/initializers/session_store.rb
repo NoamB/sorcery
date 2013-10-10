@@ -6,3 +6,7 @@ AppRoot::Application.config.session_store :cookie_store, :key => '_app_root_sess
 # which shouldn't be used to store highly confidential information
 # (create the session table with "rails generate session_migration")
 # AppRoot::Application.config.session_store :active_record_store
+
+if AppRoot::Application.config.respond_to?(:secret_key_base=)
+  AppRoot::Application.config.secret_key_base = "foobar"
+end

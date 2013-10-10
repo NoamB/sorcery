@@ -129,7 +129,7 @@ shared_examples_for "rails_3_core_model" do
     it "should not clear the virtual password field if save failed due to validity" do
       create_new_user
       User.class_eval do
-        validates_format_of :email, :with => /^(.)+@(.)+$/, :if => Proc.new {|r| r.email}, :message => "is invalid"
+        validates_format_of :email, :with => /\A(.)+@(.)+\Z/, :if => Proc.new {|r| r.email}, :message => "is invalid"
       end
       @user.password = 'blupush'
       @user.email = 'asd'

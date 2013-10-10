@@ -19,7 +19,7 @@ def stub_all_oauth_requests!
   @acc_token.stub(:get).and_return(response)
 end
 
-describe ApplicationController do
+describe SorceryController do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
     User.reset_column_information
@@ -35,7 +35,7 @@ describe ApplicationController do
     ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
   end
   # ----------------- OAuth -----------------------
-  describe ApplicationController, "'using external API to login'" do
+  describe SorceryController, "'using external API to login'" do
 
     before(:each) do
       stub_all_oauth_requests!
@@ -94,11 +94,11 @@ describe ApplicationController do
 
   end
 
-  describe ApplicationController do
+  describe SorceryController do
     it_behaves_like "oauth_controller"
   end
 
-  describe ApplicationController, "using OAuth with User Activation features" do
+  describe SorceryController, "using OAuth with User Activation features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
       sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
@@ -128,7 +128,7 @@ describe ApplicationController do
     end
   end
 
-  describe ApplicationController, "OAuth with user activation features"  do
+  describe SorceryController, "OAuth with user activation features"  do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activity_logging")
@@ -169,7 +169,7 @@ describe ApplicationController do
     end
   end
 
-  describe ApplicationController, "OAuth with session timeout features" do
+  describe SorceryController, "OAuth with session timeout features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
       User.reset_column_information

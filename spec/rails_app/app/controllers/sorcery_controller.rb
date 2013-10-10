@@ -1,6 +1,6 @@
 require 'oauth'
 
-class ApplicationController < ActionController::Base
+class SorceryController < ActionController::Base
   protect_from_forgery
 
   #before_filter :validate_session, :only => [:test_should_be_logged_in] if defined?(:validate_session)

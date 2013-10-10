@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe ApplicationController do
+describe SorceryController do
 
   # ----------------- PLUGIN CONFIGURATION -----------------------
-  describe ApplicationController, "plugin configuration" do
+  describe SorceryController, "plugin configuration" do
     before(:all) do
       sorcery_reload!
     end
@@ -26,7 +26,7 @@ describe ApplicationController do
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
-  describe ApplicationController, "when activated with sorcery" do
+  describe SorceryController, "when activated with sorcery" do
     before(:all) do
       sorcery_reload!
       User.delete_all
@@ -142,7 +142,7 @@ describe ApplicationController do
 
     it "require_login before_filter should save the url that the user originally wanted" do
       get :some_action
-      session[:return_to_url].should == "http://test.host/application/some_action"
+      session[:return_to_url].should == "http://test.host/some_action"
       response.should redirect_to("http://test.host/")
     end
 

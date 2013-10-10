@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe ApplicationController do
+describe SorceryController do
 
   # ----------------- REMEMBER ME -----------------------
-  describe ApplicationController, "with remember me features" do
+  describe SorceryController, "with remember me features" do
 
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
