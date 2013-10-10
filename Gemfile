@@ -14,14 +14,12 @@ gem "rails", ">= 3.0.0"
 gem 'json', ">= 1.7.7"
 gem "rspec", "~> 2.14.0"
 gem 'rspec-rails', "~> 2.14.0"
-#gem 'ruby-debug19'
 gem 'sqlite3'
 gem "yard", "~> 0.6.0"
 gem "bundler", ">= 1.1.0"
 gem "jeweler", "~> 1.8.3"
 gem 'simplecov', '>= 0.3.8', :require => false # Will install simplecov-html as a dependency
 gem 'timecop'
-# gem 'capybara'
 
 group :mongomapper do
   gem 'mongo_mapper'
