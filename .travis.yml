@@ -6,6 +6,6 @@ rvm:
 services: mongodb
 
 script:
-  - "SORCERY_ORM=active_record bundle exec rake spec SPEC=spec/models"
+  - "SORCERY_ORM=active_record bundle exec rake spec SPEC=spec/active_record"
   - "SORCERY_ORM=mongoid bundle exec rake spec SPEC=spec/mongoid"
   - "SORCERY_ORM=mongo_mapper bundle exec rake spec SPEC=spec/mongo_mapper"
