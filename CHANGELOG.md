@@ -1,0 +1,179 @@
+# Changelog
+
+## 0.7.2
+
+* Fixed a bug in the new generator
+
+
+## 0.7.1
+
+* Many bugfixes
+* MongoMapper added to supported ORMs list, thanks @kbighorse
+* Sinatra support discontinued!
+* New generator contributed by @ahazem
+* Cookie domain setting contributed by @Highcode
+
+
+## 0.7.0
+
+* Many bugfixes
+* Added default SSL certificate for oauth2
+* Added multi-username ability
+* Security fixes (CSRF, cookie digesting)
+* Added auto_login(user) to the API
+* Updated gem versions of oauth(1/2)
+* Added logged_in? as a view helper
+* Github provider added to external submodule
+
+
+## 0.6.1
+
+Gemfile versions updated due to public demand.
+(bcrypt 3.0.0 and oauth2 0.4.1)
+
+
+## 0.6.0
+
+Fixes issues with external user_hash not including some fields, and an issue with User model not loaded when user_class is called. Now config.user_class should be a string or a symbol.
+
+Improved specs.
+
+## 0.5.3
+
+Fixed #9
+Fixed hardcoded method names in remember_me submodule.
+Improved specs.
+
+## 0.5.21
+
+Fixed typo in initializer - MUST be "config.user_class = User"
+
+## 0.5.2
+
+Fixed #3 and #4 - Modular Sinatra apps work now, and User model isn't cached in development mode.
+
+## 0.5.1
+
+Fixed bug in reset_password - after reset can't login due to bad salt creation. Affected only Mongoid.
+
+## 0.5.0
+
+Added support for Mongoid! (still buggy and not recommended for serious use)
+
+'reset_password!(:password => new_password)' changed into 'change_password!(new_password)'
+
+## 0.4.2
+
+Added test helpers for Rails 3 & Sinatra.
+
+## 0.4.1
+
+Fixing Rails app name in initializer.
+
+## 0.4.0
+
+Changed the way Sorcery is configured.
+Now inside the model only add:
+
+```
+authenticates_with_sorcery!
+```
+
+In the controller no code is needed! All configuration is done in an initializer.
+Added a rake task to create it.
+
+```
+rake sorcery:bootstrap
+```
+
+## 0.3.1
+
+Renamed "oauth" module to "external" and made API prettier.
+```
+auth_at_provider(provider) => login_at(provider)
+login_from_access_token(provider) => login_from(provider)
+create_from_provider!(provider) => create_from(provider)
+```
+
+## 0.3.0
+
+Added Sinatra support!
+
+
+Added Rails 3 generator for migrations
+
+
+## 0.2.1
+
+Fixed bug with OAuth submodule - oauth gems were not required properly in gem.
+
+
+Fixed bug with OAuth submodule - Authentications class was not passed between model and controller in all cases resulting in Nil exception.
+
+
+## 0.2.0
+
+Added OAuth submodule.
+
+### OAuth:
+* OAuth1 and OAuth2 support (currently twitter & facebook)
+* configurable db field names and authentications table.
+
+Some bug fixes: 'return_to' feature, brute force permanent ban.
+
+
+## 0.1.4
+
+Added activity logging submodule.
+
+
+### Activity Logging:
+* automatic logging of last login, last logout and last activity time.
+* an easy method of collecting the list of currently logged in users.
+* configurable timeout by which to decide whether to include a user in the list of logged in users.
+
+
+Fixed bug in basic_auth - it didn't set the session[:user_id] on successful login and tried to relogin from basic_auth on every action.
+
+
+Added Reset Password hammering protection and updated the API.
+
+
+Totally rewritten Brute Force Protection submodule.
+
+
+## 0.1.3
+
+Added support for Basic HTTP Auth.
+
+## 0.1.2
+
+Separated mailers between user_activation and password_reset and updated readme.
+
+## 0.1.1
+
+Fixed bug with BCrypt not being used properly by the lib and thus not working for authentication.
+
+## 0.1.0
+
+### Core Features:
+* login/logout, optional redirect on login to where the user tried to reach before, configurable redirect for non-logged-in users.
+* password encryption, algorithms: bcrypt(default), md5, sha1, sha256, sha512, aes256, custom(yours!), none. Configurable stretches and salt.
+* configurable attribute names for username, password and email.
+### User Activation:
+* User activation by email with optional success email.
+* configurable attribute names.
+* configurable mailer.
+* Optionally prevent active users to login.
+### Password Reset:
+* Reset password with email verification.
+* configurable mailer, method name, and attribute name.
+### Remember Me:
+* Remember me with configurable expiration.
+* configurable attribute names.
+## Session Timeout:
+* Configurable session timeout.
+* Optionally session timeout will be calculated from last user action.
+### Brute Force Protection:
+* Brute force login hammering protection.
+* configurable logins before ban, logins within time period before ban, ban time and ban action.
