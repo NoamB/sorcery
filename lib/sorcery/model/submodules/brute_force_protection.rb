@@ -91,15 +91,12 @@ module Sorcery
 
           def lock!
             config = sorcery_config
-            attributes = {config.lock_expires_at_attribute_name => Time.now.in_time_zone + config.login_lock_time_period}
-
-            attributes[config.unlock_token_attribute_name] = TemporaryToken.generate_random_token
+            attributes = {config.lock_expires_at_attribute_name => Time.now.in_time_zone + config.login_lock_time_period,
+                          config.unlock_token_attribute_name => TemporaryToken.generate_random_token}
             self.update_many_attributes(attributes)
 
             unless config.unlock_token_mailer_disabled || config.unlock_token_mailer.nil?
               send_unlock_token_email!
-            else
-              self.update_many_attributes(attributes)
             end
           end
 
