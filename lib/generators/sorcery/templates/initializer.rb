@@ -144,7 +144,7 @@ Rails.application.config.sorcery.configure do |config|
   config.user_config do |user|
     # -- core --
     # specify username attributes, for example: [:username, :email].
-    # Default: `[:username]`
+    # Default: `[:email]`
     #
     # user.username_attribute_names =
 
