@@ -1,12 +1,47 @@
 # Changelog
 
-## 0.7.2
+## 0.8.3 (not released)
+
+
+## 0.8.2
+<!-- TO BE WRITTEN -->
+
+## 0.8.1
+<!-- TO BE WRITTEN -->
+
+## 0.8.0
+<!-- TO BE WRITTEN -->
+
+## 0.7.13
+<!-- TO BE WRITTEN -->
+
+## 0.7.12
+<!-- TO BE WRITTEN -->
+
+## 0.7.11
+<!-- TO BE WRITTEN -->
+
+## 0.7.10
+<!-- TO BE WRITTEN -->
+
+## 0.7.9
+<!-- TO BE WRITTEN -->
+
+## 0.7.8
+<!-- TO BE WRITTEN -->
+
+## 0.7.7
+<!-- TO BE WRITTEN -->
+
+## 0.7.6
+<!-- TO BE WRITTEN -->
+
+## 0.7.5
+<!-- TO BE WRITTEN -->
+
+## 0.7.1-0.7.4
 
 * Fixed a bug in the new generator
-
-
-## 0.7.1
-
 * Many bugfixes
 * MongoMapper added to supported ORMs list, thanks @kbighorse
 * Sinatra support discontinued!
