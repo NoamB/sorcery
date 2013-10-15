@@ -57,7 +57,6 @@ describe SorceryController do
       User.load_from_unlock_token(token).should be_nil
     end
 
-
     it "should reset the counter on a good login" do
       # dirty hack for rails 4
       @controller.stub(:register_last_activity_time_to_db)
@@ -96,5 +95,50 @@ describe SorceryController do
       get :test_login, :username => 'gizmo', :password => 'blabla'
       User.find_by_username('gizmo').lock_expires_at.to_s.should == unlock_date.to_s
     end
+
+    context "unlock_token_mailer_disabled is true" do
+
+      before(:each) do
+        sorcery_model_property_set(:unlock_token_mailer_disabled, true)
+        sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
+        sorcery_model_property_set(:login_lock_time_period, 0)
+        sorcery_model_property_set(:unlock_token_mailer, SorceryMailer)
+      end
+
+      it "should generate unlock token after user locked" do
+        3.times {get :test_login, :username => "gizmo", :password => "blabla"}
+        User.find_by_username('gizmo').unlock_token.should_not be_nil
+      end
+
+      it "should *not* automatically send unlock mail" do
+        old_size = ActionMailer::Base.deliveries.size
+        3.times {get :test_login, :username => "gizmo", :password => "blabla"}
+        ActionMailer::Base.deliveries.size.should == old_size
+      end
+
+    end
+
+    context "unlock_token_mailer_disabled is false" do
+
+      before(:each) do
+        sorcery_model_property_set(:unlock_token_mailer_disabled, false)
+        sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
+        sorcery_model_property_set(:login_lock_time_period, 0)
+        sorcery_model_property_set(:unlock_token_mailer, SorceryMailer)
+      end
+
+      it "should set the unlock token after user locked" do
+        3.times {get :test_login, :username => "gizmo", :password => "blabla"}
+        User.find_by_username('gizmo').unlock_token.should_not be_nil
+      end
+
+      it "should automatically send unlock mail" do
+        old_size = ActionMailer::Base.deliveries.size
+        3.times {get :test_login, :username => "gizmo", :password => "blabla"}
+        ActionMailer::Base.deliveries.size.should == old_size + 1
+      end
+
+    end
+
   end
 end
