@@ -82,8 +82,8 @@ module Sorcery
           def unlock!
             config = sorcery_config
             attributes = {config.lock_expires_at_attribute_name => nil,
-                          config.failed_logins_count_attribute_name => 0}
-            attributes[config.unlock_token_attribute_name] = nil unless config.unlock_token_mailer_disabled or config.unlock_token_mailer.nil?
+                          config.failed_logins_count_attribute_name => 0,
+                          config.unlock_token_attribute_name => nil}
             self.update_many_attributes(attributes)
           end
 
@@ -91,14 +91,12 @@ module Sorcery
 
           def lock!
             config = sorcery_config
-            attributes = {config.lock_expires_at_attribute_name => Time.now.in_time_zone + config.login_lock_time_period}
+            attributes = {config.lock_expires_at_attribute_name => Time.now.in_time_zone + config.login_lock_time_period,
+                          config.unlock_token_attribute_name => TemporaryToken.generate_random_token}
+            self.update_many_attributes(attributes)
 
             unless config.unlock_token_mailer_disabled || config.unlock_token_mailer.nil?
-              attributes[config.unlock_token_attribute_name] = TemporaryToken.generate_random_token
-              self.update_many_attributes(attributes)
               send_unlock_token_email!
-            else
-              self.update_many_attributes(attributes)
             end
           end
 
@@ -108,7 +106,7 @@ module Sorcery
           end
 
           def send_unlock_token_email!
-            generic_send_email(:unlock_token_email_method_name, :unlock_token_mailer) unless sorcery_config.unlock_token_email_method_name.nil? or sorcery_config.unlock_token_mailer_disabled == true
+            generic_send_email(:unlock_token_email_method_name, :unlock_token_mailer) unless sorcery_config.unlock_token_email_method_name.nil?
           end
 
           # Prevents a locked user from logging in, and unlocks users that expired their lock time.
