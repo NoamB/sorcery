@@ -1,3 +1,4 @@
+require 'dm-types'
 module Sorcery
   module TestHelpers
     module Internal
@@ -34,6 +35,11 @@ module Sorcery
             end
           end
           User.authenticates_with_sorcery!
+          if defined?(DataMapper) and User.ancestors.include?(DataMapper::Resource)
+            DataMapper.auto_migrate!
+            User.finalize
+            Authentication.finalize
+          end
         end
 
         def sorcery_controller_property_set(property, value)

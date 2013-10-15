@@ -136,7 +136,11 @@ module Sorcery
             # first check to see if user has a particular authentication already
             unless (current_user.send(config.authentications_class.name.underscore.pluralize).send("find_by_#{config.provider_attribute_name}_and_#{config.provider_uid_attribute_name}", provider_name, @user_hash[:uid].to_s))
               user = current_user.send(config.authentications_class.name.underscore.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name.to_s)
-              user.save(:validate => false)
+              if defined?(DataMapper) and user.class.ancestors.include?(DataMapper::Resource)
+                user.save!
+              else
+                user.save(:validate => false)
+              end
             else
               user = false
             end
@@ -196,7 +200,11 @@ module Sorcery
                 return false unless yield @user
               end
 
-              @user.save(:validate => false)
+              if defined?(DataMapper) and user.class.ancestors.include?(DataMapper::Resource)
+                @user.save!
+              else
+                @user.save(:validate => false)
+              end
               user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider_name, config.provider_uid_attribute_name => @user_hash[:uid]})
             end
             @user

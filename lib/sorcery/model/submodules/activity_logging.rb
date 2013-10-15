@@ -1,3 +1,4 @@
+require 'dm-types'
 module Sorcery
   module Model
     module Submodules
@@ -29,6 +30,9 @@ module Sorcery
           end
 
           base.sorcery_config.after_config << :define_activity_logging_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
+          if defined?(DataMapper) and base.ancestors.include?(DataMapper::Resource)
+            base.sorcery_config.after_config << :define_activity_logging_datamapper_fields
+          end
         end
         
         module ClassMethods
@@ -45,6 +49,23 @@ module Sorcery
             field sorcery_config.last_logout_at_attribute_name,   :type => Time
             field sorcery_config.last_activity_at_attribute_name, :type => Time
             field sorcery_config.last_login_from_ip_address_name, :type => String
+          end
+
+          def define_activity_logging_datamapper_fields
+            property sorcery_config.last_login_at_attribute_name,    Time
+            property sorcery_config.last_logout_at_attribute_name,   Time
+            property sorcery_config.last_activity_at_attribute_name, Time
+            property sorcery_config.last_login_from_ip_address_name, String
+            # Workaround local timezone retrieval problem NOTE dm-core issue #193
+            [sorcery_config.last_login_at_attribute_name,
+             sorcery_config.last_logout_at_attribute_name,
+             sorcery_config.last_activity_at_attribute_name].each do |sym|
+               alias_method "orig_#{sym}", sym
+               define_method(sym) do
+                 t = send("orig_#{sym}")
+                 t && Time.new(t.year, t.month, t.day, t.hour, t.min, t.sec, 0)
+               end
+             end
           end
         end
       end

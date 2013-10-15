@@ -28,3 +28,10 @@ group :mongoid do
   gem 'mongoid', "~> 2.4.4"
   gem 'bson_ext'
 end
+
+group :datamapper do
+  gem 'data_mapper'
+  gem 'dm-sqlite-adapter'
+  gem 'dm-mysql-adapter'
+  gem 'dm-types'
+end
