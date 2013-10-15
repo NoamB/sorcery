@@ -13,6 +13,8 @@ describe ApplicationController do
     end
 
     after(:each) do
+      # NOTE dm-constraints supports only pg and mysql
+      Authentication.all.destroy
       User.delete_all
     end
 

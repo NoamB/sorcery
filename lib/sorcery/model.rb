@@ -79,12 +79,8 @@ module Sorcery
           # defines datamapper fields on the model class
           def init_datamapper_support!
             self.class_eval do
-              #property :id, Serial
               sorcery_config.username_attribute_names.each do |username|
                 property username, String, :length => 255
-                # DM creates tables in MySQL case insensitive by default
-                # NOTE http://datamapper.lighthouseapp.com/projects/20609-datamapper/tickets/1105
-                validates_uniqueness_of username
               end
               unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
                 property sorcery_config.email_attribute_name, String, :length => 255

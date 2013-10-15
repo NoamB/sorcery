@@ -36,7 +36,10 @@ module Sorcery
             destroy
           end
 
-          # NOTE DM creates MySQL tables case insensitive by default, sqlite3 cs
+          # NOTE
+          # DM Adapter dependent
+          # DM creates MySQL tables case insensitive by default
+          # http://datamapper.lighthouseapp.com/projects/20609-datamapper/tickets/1105
           def find_by_credentials(credentials)
             credential = credentials[0].dup
             credential.downcase! if @sorcery_config.downcase_username_before_authenticating
@@ -92,6 +95,8 @@ module Sorcery
             !!user ? get(user.id) : nil
           end
 
+          # NOTE
+          # DM Adapter dependent
           def get_current_users
             config = sorcery_config
             ret = all(config.last_logout_at_attribute_name => nil) |

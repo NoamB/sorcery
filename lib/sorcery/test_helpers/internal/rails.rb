@@ -1,4 +1,3 @@
-require 'dm-types'
 module Sorcery
   module TestHelpers
     module Internal

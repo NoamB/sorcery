@@ -31,6 +31,10 @@ module Sorcery
 
           base.sorcery_config.after_config << :define_activity_logging_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
           if defined?(DataMapper) and base.ancestors.include?(DataMapper::Resource)
+            # NOTE raise exception if data-store is not supported
+            unless base.repository.adapter.is_a?(DataMapper::Adapters::MysqlAdapter)
+              raise 'Unsupported DataMapper Adapter'
+            end
             base.sorcery_config.after_config << :define_activity_logging_datamapper_fields
           end
         end

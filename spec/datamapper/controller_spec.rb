@@ -39,6 +39,7 @@ describe ApplicationController do
     after(:each) do
       Sorcery::Controller::Config.reset!
       sorcery_reload!
+      Authentication.all.destroy
       User.delete_all
       sorcery_controller_property_set(:user_class, User)
       sorcery_model_property_set(:username_attribute_names, [:username, :email])
@@ -83,7 +84,6 @@ describe ApplicationController do
     end
 
     it "login(username,password) should return the user and set the session with user.id when upper case username and config is downcase before authenticating" do
-      pending('DM creates tables in mysql case insensitive by default')
       sorcery_model_property_set(:downcase_username_before_authenticating, true)
       get :test_login, :username => 'GIZMO', :password => 'secret'
       assigns[:user].should == @user
@@ -91,7 +91,7 @@ describe ApplicationController do
     end
 
     it "login(username,password) should return nil and not set the session when user was created with upper case username, config is default, and log in username is lower case" do
-      pending('DM creates tables in mysql case insensitive by default')
+      pending('DM Adapter dependant')
       create_new_user({:username => 'GIZMO1', :email => "bla1@bla.com", :password => 'secret1'})
       get :test_login, :username => 'gizmo1', :password => 'secret1'
       assigns[:user].should be_nil
@@ -99,7 +99,7 @@ describe ApplicationController do
     end
 
     it "login(username,password) should return the user and set the session with user.id when user was created with upper case username and config is downcase before authenticating" do
-      pending('DM creates tables in mysql case insensitive by default')
+      pending('DM Adapter dependant')
       sorcery_model_property_set(:downcase_username_before_authenticating, true)
       create_new_user({:username => 'GIZMO1', :email => "bla1@bla.com", :password => 'secret1'})
       get :test_login, :username => 'gizmo1', :password => 'secret1'

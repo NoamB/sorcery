@@ -86,6 +86,7 @@ shared_examples_for "rails_3_reset_password_model" do
     it "load_from_reset_password_token should return user when token is found" do
       create_new_user
       @user.deliver_reset_password_instructions!
+      @user = User.find(@user.id) if defined?(DataMapper) && @user.class.ancestors.include?(DataMapper::Resource)
       User.load_from_reset_password_token(@user.reset_password_token).should == @user
     end
 
@@ -99,6 +100,7 @@ shared_examples_for "rails_3_reset_password_model" do
       create_new_user
       sorcery_model_property_set(:reset_password_expiration_period, 500)
       @user.deliver_reset_password_instructions!
+      @user = User.find(@user.id) if defined?(DataMapper) && @user.class.ancestors.include?(DataMapper::Resource)
       User.load_from_reset_password_token(@user.reset_password_token).should == @user
     end
 
@@ -114,6 +116,7 @@ shared_examples_for "rails_3_reset_password_model" do
       create_new_user
       sorcery_model_property_set(:reset_password_expiration_period, nil)
       @user.deliver_reset_password_instructions!
+      @user = User.find(@user.id) if defined?(DataMapper) && @user.class.ancestors.include?(DataMapper::Resource)
       User.load_from_reset_password_token(@user.reset_password_token).should == @user
     end
 

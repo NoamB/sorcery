@@ -37,8 +37,6 @@ RSpec.configure do |config|
     end
     if SORCERY_ORM.to_sym == :datamapper
       DataMapper.auto_migrate!
-      User.finalize
-      Authentication.finalize
       DataMapper.finalize
     end
 
@@ -53,8 +51,6 @@ RSpec.configure do |config|
     end
     if SORCERY_ORM.to_sym == :datamapper
       DataMapper.auto_migrate!
-      User.finalize
-      Authentication.finalize
       DataMapper.finalize
     end
   end

@@ -65,6 +65,7 @@ shared_examples_for "rails_3_core_model" do
     end
 
     before(:each) do
+      Authentication.all.destroy if defined?(DataMapper)
       User.delete_all
     end
 
@@ -159,7 +160,11 @@ shared_examples_for "rails_3_core_model" do
         validates_presence_of :username
       end
       begin
-        @user.save! # triggers validation exception since username field is required.
+        if defined?(DataMapper) && @user.class.ancestors.include?(DataMapper::Resource)
+          @user.save
+        else
+          @user.save! # triggers validation exception since username field is required.
+        end
       rescue
       end
       @user.password.should_not be_nil
@@ -168,14 +173,22 @@ shared_examples_for "rails_3_core_model" do
     it "should not encrypt the password twice when a user is updated" do
       create_new_user
       @user.email = "blup@bla.com"
-      @user.save!
+      if defined?(DataMapper) && @user.class.ancestors.include?(DataMapper::Resource)
+        @user.save
+      else
+        @user.save!
+      end
       User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be_true
     end
 
     it "should replace the crypted_password in case a new password is set" do
       create_new_user
       @user.password = 'new_secret'
-      @user.save!
+      if defined?(DataMapper) && @user.class.ancestors.include?(DataMapper::Resource)
+        @user.save
+      else
+        @user.save!
+      end
       User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be_false
     end
 
