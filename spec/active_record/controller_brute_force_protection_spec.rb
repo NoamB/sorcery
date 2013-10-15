@@ -28,14 +28,6 @@ describe SorceryController do
       User.find_by_username('gizmo').failed_logins_count.should == 3
     end
 
-    it "should generate unlock token after user locked" do
-      sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
-      sorcery_model_property_set(:login_lock_time_period, 0)
-      sorcery_model_property_set(:unlock_token_mailer, SorceryMailer)
-      3.times {get :test_login, :username => "gizmo", :password => "blabla"}
-      User.find_by_username('gizmo').unlock_token.should_not be_nil
-    end
-
     it "should generate unlock token before mail is sent" do
       sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
       sorcery_model_property_set(:login_lock_time_period, 0)
