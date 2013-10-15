@@ -1,7 +1,7 @@
 # Changelog
 
 ## 0.8.3 (not released)
-
+* Fixed unlock_token_mailer_disabled to only disable automatic mailing (#467)
 
 ## 0.8.2
 <!-- TO BE WRITTEN -->
