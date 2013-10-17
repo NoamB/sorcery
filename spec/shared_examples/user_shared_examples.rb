@@ -65,7 +65,6 @@ shared_examples_for "rails_3_core_model" do
     end
 
     before(:each) do
-      Authentication.all.destroy if defined?(DataMapper)
       User.delete_all
     end
 

@@ -200,7 +200,7 @@ module Sorcery
                 return false unless yield @user
               end
 
-              if defined?(DataMapper) and user.class.ancestors.include?(DataMapper::Resource)
+              if defined?(DataMapper) and @user.class.ancestors.include?(DataMapper::Resource)
                 @user.save!
               else
                 @user.save(:validate => false)
