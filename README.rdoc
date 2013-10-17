@@ -225,13 +225,13 @@ The same cannot be said about upgrading to x.4.0 and above, however.
 
 Important notes while upgrading:
 
+* If are upgrading to 0.8.2 and use activity_logging feature with ActiveRecord, you will have to add a new column `last_login_from_ip_address` [#465](https://github.com/NoamB/sorcery/issues/465)
+* Sinatra support existed until v0.7.0 (including), but was dropped later due to being a maintenance nightmare.
 * If upgrading from <= 0.6.1 to >= 0.7.0 you need to change 'username_attribute_name' to 'username_attribute_names' in initializer.
 * If upgrading from <= v0.5.1 to >= v0.5.2 you need to explicitly set your user_class model in the initializer file.
 
     # This line must come after the 'user config' block.
     config.user_class = User
-
-* Sinatra support existed until v0.7.0 (including), but was dropped later due to being a maintenance nightmare.
 
 
 == Contributing to sorcery

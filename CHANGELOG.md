@@ -4,7 +4,8 @@
 * Fixed unlock_token_mailer_disabled to only disable automatic mailing (#467)
 
 ## 0.8.2
-<!-- TO BE WRITTEN -->
+
+* Activity logging feature has a new column called `last_login_from_ip_address` (string type). If you use ActiveRecord, you will have to add this column to DB ([#465](https://github.com/NoamB/sorcery/issues/465))
 
 ## 0.8.1
 <!-- TO BE WRITTEN -->
