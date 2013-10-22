@@ -143,9 +143,10 @@ module Sorcery
 
         return false if credentials[0].blank?
 
-        if ! defined?(DataMapper) || ! self.ancestors.include?(DataMapper::Resource)
-          credentials[0].downcase! if @sorcery_config.downcase_username_before_authenticating
+        if @sorcery_config.downcase_username_before_authenticating
+          credentials[0].downcase!
         end
+
         user = find_by_credentials(credentials)
 
         set_encryption_attributes

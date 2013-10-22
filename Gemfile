@@ -32,8 +32,5 @@ end
 group :datamapper do
   gem 'mysql2'
   gem 'data_mapper'
-  gem 'dm-sqlite-adapter'
   gem 'dm-mysql-adapter'
-  gem 'dm-redis-adapter'
-  gem 'dm-types'
 end

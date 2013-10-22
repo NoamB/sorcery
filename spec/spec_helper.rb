@@ -49,10 +49,6 @@ RSpec.configure do |config|
     if SORCERY_ORM.to_sym == :active_record
       ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
     end
-    if SORCERY_ORM.to_sym == :datamapper
-      DataMapper.auto_migrate!
-      DataMapper.finalize
-    end
   end
 
   config.include ::Sorcery::TestHelpers::Internal

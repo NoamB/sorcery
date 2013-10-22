@@ -1,5 +1,4 @@
 require 'data_mapper'
-require 'dm-types'
 require 'dm-migrations'
 
 #DataMapper.setup(:default, 'sqlite::memory:')
