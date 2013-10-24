@@ -101,7 +101,7 @@ module Sorcery
             attributes[config.reset_password_token_expires_at_attribute_name] = Time.now.in_time_zone + config.reset_password_expiration_period if config.reset_password_expiration_period
             self.class.transaction do
               self.update_many_attributes(attributes)
-              generic_send_email(:reset_password_email_method_name, :reset_password_mailer) unless config.reset_password_mailer_disabled
+              send_reset_password_email! unless sorcery_config.reset_password_mailer_disabled
             end
           end
           
@@ -113,6 +113,10 @@ module Sorcery
           end
 
           protected
+          
+          def send_reset_password_email!
+            generic_send_email(:reset_password_email_method_name, :reset_password_mailer)
+          end
 
           # Clears the token.
           def clear_reset_password_token
