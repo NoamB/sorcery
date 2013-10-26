@@ -11,9 +11,9 @@ Inspired by restful_authentication, Authlogic and Devise. Crypto code taken
 almost unchanged from Authlogic. OAuth code inspired by OmniAuth and Ryan
 Bates's railscasts about it.
 
-Rails 4 status: basicly it works without issues, except the issue with
-[protect_from_forgery](https://github.com/NoamB/sorcery/issues/464). We will
-release new version soon, which will be totally updated for Rails 4.
+**Rails 4 status:** basicly it works without issues, except 
+[the issue with protect_from_forgery](https://github.com/NoamB/sorcery/issues/464).
+We will release new version soon, which will be updated for Rails 4.
 
 https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication
 
