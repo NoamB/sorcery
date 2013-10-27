@@ -22,10 +22,14 @@ module Sorcery
           clear
         end
       end
-
-      def create_new_user(attributes_hash = nil)
+      
+      def build_new_user(attributes_hash = nil)
         user_attributes_hash = attributes_hash || {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
         @user = User.new(user_attributes_hash)
+      end
+
+      def create_new_user(attributes_hash = nil)
+        @user = build_new_user(attributes_hash)
         @user.save!
         @user
       end
