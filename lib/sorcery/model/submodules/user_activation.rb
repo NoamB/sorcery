@@ -143,11 +143,7 @@ module Sorcery
             self.send(:"#{config.activation_token_attribute_name}=", nil)
             self.send(:"#{config.activation_state_attribute_name}=", "active")
             send_activation_success_email! if send_activation_success_email?
-            if defined?(DataMapper) and self.class.ancestors.include?(DataMapper::Resource)
-              save!
-            else
-              save!(:validate => false) # don't run validations
-            end
+            save!(:validate => false) # don't run validations
           end
 
           protected

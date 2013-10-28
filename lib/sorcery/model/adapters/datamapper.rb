@@ -5,6 +5,20 @@ module Sorcery
         def self.included(klass)
           klass.extend ClassMethods
           klass.send(:include, InstanceMethods)
+
+          klass.class_eval do
+            # Invoke all callbacks on save unless validate => false
+            alias_method :orig_save, :save
+            def save(options = {})
+              options.key?(:validate) && ! options[:validate] ? save! : orig_save
+            end
+
+            # Skip callbacks iff validate => true
+            alias_method :orig_save!, :save!
+            def save!(options = {})
+              options[:validate] ? save : orig_save!
+            end
+          end
         end
 
         module InstanceMethods

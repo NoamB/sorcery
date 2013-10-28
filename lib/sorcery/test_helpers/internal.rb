@@ -30,22 +30,14 @@ module Sorcery
 
       def create_new_user(attributes_hash = nil)
         @user = build_new_user(attributes_hash)
-        if defined?(DataMapper) and User.ancestors.include?(DataMapper::Resource)
-          @user.save
-        else
-          @user.save!
-        end
+        @user.save!(:validate => true)
         @user
       end
 
       def create_new_external_user(provider, attributes_hash = nil)
         user_attributes_hash = attributes_hash || {:username => 'gizmo'}
         @user = User.new(user_attributes_hash)
-        if defined?(DataMapper) and User.ancestors.include?(DataMapper::Resource)
-          @user.save
-        else
-          @user.save!
-        end
+        @user.save!(:validate => true)
         @user.authentications.create!({:provider => provider, :uid => 123})
         @user
       end
