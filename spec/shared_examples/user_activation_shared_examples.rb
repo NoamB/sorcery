@@ -81,6 +81,12 @@ shared_examples_for "rails_3_activation_model" do
         create_new_user
         ActionMailer::Base.deliveries.size.should == old_size + 1
       end
+      
+      it "should call send_activation_needed_email! method of user" do
+        user = build_new_user
+        user.should_receive(:send_activation_needed_email!).once
+        user.save!
+      end
 
       it "subsequent saves do not send activation email" do
         old_size = ActionMailer::Base.deliveries.size
@@ -93,6 +99,11 @@ shared_examples_for "rails_3_activation_model" do
         old_size = ActionMailer::Base.deliveries.size
         @user.activate!
         ActionMailer::Base.deliveries.size.should == old_size + 1
+      end
+      
+      it "should call send_activation_success_email! method of user on activation" do
+        @user.should_receive(:send_activation_success_email!).once
+        @user.activate!
       end
 
       it "subsequent saves do not send activation success email" do
@@ -128,11 +139,22 @@ shared_examples_for "rails_3_activation_model" do
         create_new_user
         ActionMailer::Base.deliveries.size.should == old_size
       end
+      
+      it "should not call send_activation_needed_email! method of user" do
+        user = build_new_user
+        user.should_receive(:send_activation_needed_email!).never
+        user.save!
+      end
 
       it "should not send the user an activation success email on successful activation" do
         old_size = ActionMailer::Base.deliveries.size
         @user.activate!
         ActionMailer::Base.deliveries.size.should == old_size
+      end
+      
+      it "should call send_activation_success_email! method of user on activation" do
+        @user.should_receive(:send_activation_success_email!).never
+        @user.activate!
       end
     end
   end

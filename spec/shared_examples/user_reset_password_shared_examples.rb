@@ -145,6 +145,12 @@ shared_examples_for "rails_3_reset_password_model" do
         @user.deliver_reset_password_instructions!
         ActionMailer::Base.deliveries.size.should == old_size + 1
       end
+      
+      it "should call send_reset_password_email! on reset" do
+        create_new_user
+        @user.should_receive(:send_reset_password_email!).once
+        @user.deliver_reset_password_instructions!
+      end
 
       it "should not send an email if time between emails has not passed since last email" do
         create_new_user
@@ -179,6 +185,12 @@ shared_examples_for "rails_3_reset_password_model" do
         old_size = ActionMailer::Base.deliveries.size
         @user.deliver_reset_password_instructions!
         ActionMailer::Base.deliveries.size.should == old_size
+      end
+      
+      it "should not call send_reset_password_email! on reset" do
+        create_new_user
+        @user.should_receive(:send_reset_password_email!).never
+        @user.deliver_reset_password_instructions!
       end
 
       it "should not send an email if time between emails has not passed since last email" do
