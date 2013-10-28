@@ -2,6 +2,7 @@
 
 ## 0.8.3 (not released)
 * Fixed unlock_token_mailer_disabled to only disable automatic mailing (#467)
+* Make send_email_* methods easier to overwrite (#473)
 
 ## 0.8.2
 
