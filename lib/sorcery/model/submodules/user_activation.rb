@@ -143,7 +143,7 @@ module Sorcery
             self.send(:"#{config.activation_token_attribute_name}=", nil)
             self.send(:"#{config.activation_state_attribute_name}=", "active")
             send_activation_success_email! if send_activation_success_email?
-            save!(:validate => false) # don't run validations
+            sorcery_save(:validate => false, :raise_on_failure => true)
           end
 
           protected

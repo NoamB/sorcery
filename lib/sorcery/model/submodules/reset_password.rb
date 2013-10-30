@@ -126,7 +126,7 @@ module Sorcery
           def change_password!(new_password)
             clear_reset_password_token
             self.send(:"#{sorcery_config.password_attribute_name}=", new_password)
-            save
+            sorcery_save
           end
 
           protected

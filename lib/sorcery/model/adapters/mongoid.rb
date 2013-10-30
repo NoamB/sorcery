@@ -23,6 +23,11 @@ module Sorcery
           def update_single_attribute(name, value)
             update_many_attributes(name => value)
           end
+
+          def sorcery_save(options = {})
+            mthd = options.delete(:raise_on_failure) ? :save! : :save
+            self.send(mthd, options)
+          end
         end
 
         module ClassMethods
