@@ -11,7 +11,7 @@ Inspired by restful_authentication, Authlogic and Devise. Crypto code taken
 almost unchanged from Authlogic. OAuth code inspired by OmniAuth and Ryan
 Bates's railscasts about it.
 
-**Rails 4 status:** basicly it works without issues, except 
+**Rails 4 status:** basicly it works without issues, except
 [the issue with protect_from_forgery](https://github.com/NoamB/sorcery/issues/464).
 We will release new version soon, which will be updated for Rails 4.
 
@@ -53,7 +53,7 @@ explaining and the rest are commented:
 
     # core
     require_login # this is a before filter
-    login(username,password,remember_me = false)
+    login(email, password, remember_me = false)
     auto_login(user)# login without credentials
     logout
     logged_in?      # available to view
