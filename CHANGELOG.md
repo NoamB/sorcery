@@ -3,6 +3,16 @@
 ## 0.8.3 (not released)
 * Fixed unlock_token_mailer_disabled to only disable automatic mailing (#467)
 * Make send_email_* methods easier to overwrite (#473)
+* Don't add `:username` field for User. Config option `username_attribute_names` is now `:email` by default instead of `:username`.
+
+  If you're using `username` as main field for users to login, you'll need to tune your Sorcery config:
+
+    ```ruby
+    config.user_config do |user|
+      # ...
+      user.username_attribute_names = [:username]
+    end
+    ```
 
 ## 0.8.2
 

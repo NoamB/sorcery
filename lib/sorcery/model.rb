@@ -230,7 +230,7 @@ module Sorcery
       def initialize
         @defaults = {
           :@submodules                           => [],
-          :@username_attribute_names              => [:username],
+          :@username_attribute_names              => [:email],
           :@password_attribute_name              => :password,
           :@downcase_username_before_authenticating => false,
           :@email_attribute_name                 => :email,

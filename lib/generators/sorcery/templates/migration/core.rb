@@ -7,5 +7,7 @@ class SorceryCore < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :<%= model_class_name.tableize %>, :email, unique: true
   end
 end
