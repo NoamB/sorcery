@@ -98,7 +98,7 @@ module Sorcery
               # we found the user.
               # clear the session
               return_to_url = session[:return_to_url]
-              reset_session
+              reset_sorcery_session
               session[:return_to_url] = return_to_url
 
               # sign in the user
