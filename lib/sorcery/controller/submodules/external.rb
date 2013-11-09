@@ -31,6 +31,9 @@ module Sorcery
 
           # save the singleton ProviderClient instance into @provider
           def sorcery_get_provider(provider_name)
+            allowed = %w(facebook github google linkedin liveid twitter vk xing)
+            return unless allowed.include?(provider_name.to_s)
+
             Config.send(provider_name.to_sym)
           end
 
