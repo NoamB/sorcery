@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.8.3 (not released)
+## 0.8.4 (not released)
 * Fixed unlock_token_mailer_disabled to only disable automatic mailing (#467)
 * Make send_email_* methods easier to overwrite (#473)
 * Don't add `:username` field for User. Config option `username_attribute_names` is now `:email` by default instead of `:username`.
@@ -13,6 +13,10 @@
       user.username_attribute_names = [:username]
     end
     ```
+
+## 0.8.3
+
+  * Few security fixes in `external` module
 
 ## 0.8.2
 
