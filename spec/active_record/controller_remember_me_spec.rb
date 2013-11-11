@@ -26,7 +26,7 @@ describe SorceryController do
     end
 
     it "should set cookie on remember_me!" do
-      post :test_login_with_remember, :username => 'gizmo', :password => 'secret'
+      post :test_login_with_remember, :email => 'bla@bla.com', :password => 'secret'
       # @request.cookies.merge!(cookies)
       # cookies = ActionDispatch::Cookies::CookieJar.build(@request)
       cookies.signed["remember_me_token"].should == assigns[:current_user].remember_me_token
@@ -38,8 +38,8 @@ describe SorceryController do
       cookies["remember_me_token"].should be_nil
     end
 
-    it "login(username,password,remember_me) should login and remember" do
-      post :test_login_with_remember_in_login, :username => 'gizmo', :password => 'secret', :remember => "1"
+    it "login(email,password,remember_me) should login and remember" do
+      post :test_login_with_remember_in_login, :email => 'bla@bla.com', :password => 'secret', :remember => "1"
       # cookies = ActionDispatch::Cookies::CookieJar.build(@request)
       cookies.signed["remember_me_token"].should_not be_nil
       cookies.signed["remember_me_token"].should == assigns[:user].remember_me_token
@@ -63,12 +63,12 @@ describe SorceryController do
     end
 
     it "should not remember_me! when not asked to, even if third parameter is used" do
-      post :test_login_with_remember_in_login, :username => 'gizmo', :password => 'secret', :remember => "0"
+      post :test_login_with_remember_in_login, :email => 'bla@bla.com', :password => 'secret', :remember => "0"
       cookies["remember_me_token"].should be_nil
     end
 
     it "should not remember_me! when not asked to" do
-      post :test_login, :username => 'gizmo', :password => 'secret'
+      post :test_login, :email => 'bla@bla.com', :password => 'secret'
       cookies["remember_me_token"].should be_nil
     end
 

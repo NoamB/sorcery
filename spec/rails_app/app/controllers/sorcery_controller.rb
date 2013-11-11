@@ -15,12 +15,12 @@ class SorceryController < ActionController::Base
   end
 
   def some_action_making_a_non_persisted_change_to_the_user
-    current_user.username = "to_be_ignored"
+    current_user.email = "to_be_ignored"
     render :nothing => true
   end
 
   def test_login
-    @user = login(params[:username], params[:password])
+    @user = login(params[:email], params[:password])
     render :text => ""
   end
 
@@ -32,7 +32,7 @@ class SorceryController < ActionController::Base
   end
 
   def test_return_to
-    @user = login(params[:username], params[:password])
+    @user = login(params[:email], params[:password])
     redirect_back_or_to(:index, :notice => 'haha!')
   end
 
@@ -48,14 +48,14 @@ class SorceryController < ActionController::Base
   end
 
   def test_login_with_remember
-    @user = login(params[:username], params[:password])
+    @user = login(params[:email], params[:password])
     remember_me!
 
     render :text => ""
   end
 
   def test_login_with_remember_in_login
-    @user = login(params[:username], params[:password], params[:remember])
+    @user = login(params[:email], params[:password], params[:remember])
 
     render :text => ""
   end
@@ -195,8 +195,8 @@ class SorceryController < ActionController::Base
     provider = params[:provider]
     login_from(provider)
     @user = create_from(provider) do |user|
-      # check uniqueness of username
-      User.where(:username => user.username).empty?
+      # check uniqueness of email
+      User.where(:email => user.email).empty?
     end
     if @user
       redirect_to "bla", :notice => "Success!"
@@ -204,9 +204,5 @@ class SorceryController < ActionController::Base
       redirect_to "blu", :alert => "Failed!"
     end
   end
-
-  # protected
-
-
 
 end

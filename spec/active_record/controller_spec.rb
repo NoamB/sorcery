@@ -41,7 +41,7 @@ describe SorceryController do
       sorcery_reload!
       User.delete_all
       sorcery_controller_property_set(:user_class, User)
-      sorcery_model_property_set(:username_attribute_names, [:username, :email])
+      sorcery_model_property_set(:username_attribute_names, [:email])
     end
 
     specify { should respond_to(:login) }
@@ -53,52 +53,52 @@ describe SorceryController do
     specify { should respond_to(:current_user) }
 
     it "login(username,password) should return the user when success and set the session with user.id" do
-      get :test_login, :username => 'gizmo', :password => 'secret'
+      get :test_login, :email => 'bla@bla.com', :password => 'secret'
       assigns[:user].should == @user
       session[:user_id].should == @user.id
     end
 
     it "login(email,password) should return the user when success and set the session with user.id" do
-      get :test_login, :username => 'bla@bla.com', :password => 'secret'
+      get :test_login, :email => 'bla@bla.com', :password => 'secret'
       assigns[:user].should == @user
       session[:user_id].should == @user.id
     end
 
     it "login(username,password) should return nil and not set the session when failure" do
-      get :test_login, :username => 'gizmo', :password => 'opensesame!'
+      get :test_login, :email => 'bla@bla.com', :password => 'opensesame!'
       assigns[:user].should be_nil
       session[:user_id].should be_nil
     end
 
     it "login(email,password) should return the user when success and set the session with the _csrf_token" do
-      get :test_login, :username => 'gizmo', :password => 'secret'
+      get :test_login, :email => 'bla@bla.com', :password => 'secret'
       session[:_csrf_token].should_not be_nil
     end
 
     it "login(username,password) should return nil and not set the session when upper case username" do
-      get :test_login, :username => 'GIZMO', :password => 'secret'
+      get :test_login, :email => 'BLA@BLA.COM', :password => 'secret'
       assigns[:user].should be_nil
       session[:user_id].should be_nil
     end
 
     it "login(username,password) should return the user and set the session with user.id when upper case username and config is downcase before authenticating" do
       sorcery_model_property_set(:downcase_username_before_authenticating, true)
-      get :test_login, :username => 'GIZMO', :password => 'secret'
+      get :test_login, :email => 'BLA@BLA.COM', :password => 'secret'
       assigns[:user].should == @user
       session[:user_id].should == @user.id
     end
 
     it "login(username,password) should return nil and not set the session when user was created with upper case username, config is default, and log in username is lower case" do
-      create_new_user({:username => 'GIZMO1', :email => "bla1@bla.com", :password => 'secret1'})
-      get :test_login, :username => 'gizmo1', :password => 'secret1'
+      create_new_user({:username => "", :email => "BLA1@BLA.COM", :password => 'secret1'})
+      get :test_login, :email => 'bla1@bla.com', :password => 'secret1'
       assigns[:user].should be_nil
       session[:user_id].should be_nil
     end
 
     it "login(username,password) should return the user and set the session with user.id when user was created with upper case username and config is downcase before authenticating" do
       sorcery_model_property_set(:downcase_username_before_authenticating, true)
-      create_new_user({:username => 'GIZMO1', :email => "bla1@bla.com", :password => 'secret1'})
-      get :test_login, :username => 'gizmo1', :password => 'secret1'
+      create_new_user({:username => "", :email => "BLA1@BLA.COM", :password => 'secret1'})
+      get :test_login, :email => 'bla1@bla.com', :password => 'secret1'
       assigns[:user].should == @user
       session[:user_id].should == @user.id
     end
@@ -155,7 +155,7 @@ describe SorceryController do
 
     it "on successful login the user should be redirected to the url he originally wanted" do
       session[:return_to_url] = "http://test.host/some_action"
-      post :test_return_to, :username => 'gizmo', :password => 'secret'
+      post :test_return_to, :email => 'bla@bla.com', :password => 'secret'
       response.should redirect_to("http://test.host/some_action")
       flash[:notice].should == "haha!"
     end

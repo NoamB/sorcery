@@ -24,13 +24,13 @@ describe SorceryController do
       # dirty hack for rails 4
       @controller.stub(:register_last_activity_time_to_db)
 
-      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.username}:secret")
+      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.email}:secret")
       get :test_http_basic_auth, nil, :http_authentication_used => true
       response.should be_a_success
     end
 
     it "fails authentication if credentials are wrong" do
-      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.username}:wrong!")
+      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.email}:wrong!")
       get :test_http_basic_auth, nil, :http_authentication_used => true
       response.code.should redirect_to root_url
     end
@@ -51,9 +51,9 @@ describe SorceryController do
       # dirty hack for rails 4
       @controller.stub(:register_last_activity_time_to_db)
 
-      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.username}:secret")
+      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{@user.email}:secret")
       get :test_http_basic_auth, nil, :http_authentication_used => true
-      session[:user_id].should == User.find_by_username(@user.username).id
+      session[:user_id].should == User.find_by_email(@user.email).id
     end
   end
 end

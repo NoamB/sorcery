@@ -32,7 +32,7 @@ describe SorceryController do
     context "with 'session_timeout_from_last_action'" do
       it "should not logout if there was activity" do
         sorcery_controller_property_set(:session_timeout_from_last_action, true)
-        get :test_login, :username => 'gizmo', :password => 'secret'
+        get :test_login, :email => 'bla@bla.com', :password => 'secret'
         Timecop.travel(Time.now.in_time_zone+0.3)
         get :test_should_be_logged_in
         session[:user_id].should_not be_nil
@@ -44,7 +44,7 @@ describe SorceryController do
 
       it "with 'session_timeout_from_last_action' should logout if there was no activity" do
         sorcery_controller_property_set(:session_timeout_from_last_action, true)
-        get :test_login, :username => 'gizmo', :password => 'secret'
+        get :test_login, :email => 'bla@bla.com', :password => 'secret'
         Timecop.travel(Time.now.in_time_zone+0.6)
         get :test_should_be_logged_in
         session[:user_id].should be_nil

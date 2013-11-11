@@ -284,6 +284,7 @@ shared_examples_for "rails_3_core_model" do
     end
 
     it "find_by_username should work as expected" do
+      sorcery_model_property_set(:username_attribute_names, [:username])
       User.find_by_username("gizmo").should == @user
     end
 
