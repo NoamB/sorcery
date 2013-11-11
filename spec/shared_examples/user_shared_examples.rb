@@ -61,7 +61,7 @@ shared_examples_for "rails_3_core_model" do
   # ----------------- PLUGIN ACTIVATED -----------------------
   describe User, "when activated with sorcery" do
     before(:all) do
-      sorcery_reload!()
+      sorcery_reload!
     end
 
     before(:each) do
@@ -81,6 +81,20 @@ shared_examples_for "rails_3_core_model" do
     it "authenticate should return false if credentials are bad" do
       create_new_user
       User.authenticate(@user.send(User.sorcery_config.username_attribute_names.first), 'wrong!').should be_false
+    end
+
+    context "with empty credentials" do
+      before do
+        sorcery_model_property_set(:downcase_username_before_authenticating, true)
+      end
+
+      after do
+        sorcery_reload!
+      end
+
+      it "don't downcase empty credentials" do
+        expect(User.authenticate(nil, 'wrong!')).to be_false
+      end
     end
 
     specify { User.should respond_to(:encrypt) }
