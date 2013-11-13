@@ -5,7 +5,7 @@ module Sorcery
         include InstanceMethods
         Config.submodules.each do |mod|
           begin
-            include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
+            include Submodules.const_get(mod.to_s.split('_').map { |p| p.capitalize }.join)
           rescue NameError
             # don't stop on a missing submodule.
           end

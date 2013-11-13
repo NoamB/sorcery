@@ -25,24 +25,11 @@ module Sorcery
       autoload :HttpBasicAuth, 'sorcery/controller/submodules/http_basic_auth'
       autoload :ActivityLogging, 'sorcery/controller/submodules/activity_logging'
       autoload :External, 'sorcery/controller/submodules/external'
-      module External
-        module Protocols
-          autoload :Oauth1, 'sorcery/controller/submodules/external/protocols/oauth1'
-          autoload :Oauth2, 'sorcery/controller/submodules/external/protocols/oauth2'
-        end
-        module Providers
-          autoload :Base, 'sorcery/controller/submodules/external/providers/base'
-          autoload :Twitter, 'sorcery/controller/submodules/external/providers/twitter'
-          autoload :Facebook, 'sorcery/controller/submodules/external/providers/facebook'
-          autoload :Github, 'sorcery/controller/submodules/external/providers/github'
-          autoload :Google, 'sorcery/controller/submodules/external/providers/google'
-          autoload :Liveid, 'sorcery/controller/submodules/external/providers/liveid'
-          autoload :Linkedin, 'sorcery/controller/submodules/external/providers/linkedin'
-          autoload :Vk, 'sorcery/controller/submodules/external/providers/vk'
-          autoload :Xing, 'sorcery/controller/submodules/external/providers/xing'
-        end
-      end
     end
+  end
+  module Protocols
+    autoload :Oauth, 'sorcery/protocols/oauth'
+    autoload :Oauth2, 'sorcery/protocols/oauth2'
   end
   module CryptoProviders
     autoload :Common, 'sorcery/crypto_providers/common'

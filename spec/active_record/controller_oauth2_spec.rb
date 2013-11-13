@@ -414,4 +414,5 @@ describe SorceryController do
     sorcery_controller_external_property_set(:liveid, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:liveid, :callback_url, "http://blabla.com")
   end
+
 end
