@@ -13,6 +13,7 @@
       user.username_attribute_names = [:username]
     end
     ```
+* `rails generate sorcery:install` now works inside Rails engine
 
 ## 0.8.4
 
