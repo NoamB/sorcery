@@ -1,24 +1,26 @@
 require 'rails/generators/migration'
+require 'generators/sorcery/helpers'
 
 module Sorcery
   module Generators
     class InstallGenerator < Rails::Generators::Base
       include Rails::Generators::Migration
-      
+      include Sorcery::Generators::Helpers
+
       source_root File.expand_path('../templates', __FILE__)
-      
+
       argument :submodules, :optional => true, :type => :array, :banner => "submodules"
-      
+
       class_option :model, :optional => true, :type => :string, :banner => "model",
                    :desc => "Specify the model class name if you will use anything other than 'User'"
-                           
+
       class_option :migrations, :optional => true, :type => :boolean, :banner => "migrations",
                    :desc => "Specify if you want to add submodules to an existing model\n\t\t\t     # (will generate migrations files, and add submodules to config file)"
-      
-      
+
+
       # Copy the initializer file to config/initializers folder.
       def copy_initializer_file
-        template "initializer.rb", "config/initializers/sorcery.rb" unless options[:migrations]
+        template "initializer.rb", sorcery_config_path unless options[:migrations]
       end
 
       def configure_initializer_file
@@ -26,17 +28,26 @@ module Sorcery
         if submodules
           submodule_names = submodules.collect{ |submodule| ':' + submodule }
 
-          gsub_file "config/initializers/sorcery.rb", /submodules = \[.*\]/ do |str|
+          gsub_file sorcery_config_path, /submodules = \[.*\]/ do |str|
             current_submodule_names = (str =~ /\[(.*)\]/ ? $1 : '').delete(' ').split(',')
             "submodules = [#{(current_submodule_names | submodule_names).join(', ')}]"
           end
         end
+      end
 
+      def configure_model
         # Generate the model and add 'authenticates_with_sorcery!' unless you passed --migrations
         unless options[:migrations]
           generate "model #{model_class_name} --skip-migration"
-          insert_into_file "app/models/#{model_class_name.underscore}.rb", "  authenticates_with_sorcery!\n", :after => "class #{model_class_name} < ActiveRecord::Base\n"
+
+          inject_sorcery_to_model
         end
+      end
+
+      def inject_sorcery_to_model
+        indents = "  " * (namespaced? ? 2 : 1)
+
+        inject_into_class(model_path, model_class_name, "#{indents}authenticates_with_sorcery!\n")
       end
 
       # Copy the migrations files to db/migrate folder
@@ -52,10 +63,9 @@ module Sorcery
             end
           end
         end
-        
 
       end
-      
+
       # Define the next_migration_number method (necessary for the migration_template method to work)
       def self.next_migration_number(dirname)
         if ActiveRecord::Base.timestamped_migrations
@@ -65,13 +75,7 @@ module Sorcery
           "%.3d" % (current_migration_number(dirname) + 1)
         end
       end
-      
-      private
 
-      # Either return the model passed in a classified form or return the default "User".
-      def model_class_name
-        options[:model] ? options[:model].classify : "User"
-      end
     end
   end
 end
