@@ -191,6 +191,17 @@ class SorceryController < ActionController::Base
     end
   end
 
+  def test_add_second_provider
+    provider = params[:provider]
+    if logged_in?
+      if @user = add_provider_to_user(provider)
+        redirect_to "bla", :notice => "Success!"
+      else
+        redirect_to "blu", :alert => "Failed!"
+      end
+    end
+  end
+
   def test_create_from_provider_with_block
     provider = params[:provider]
     login_from(provider)
