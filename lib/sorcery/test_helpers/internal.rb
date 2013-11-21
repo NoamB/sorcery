@@ -22,7 +22,7 @@ module Sorcery
           clear
         end
       end
-      
+
       def build_new_user(attributes_hash = nil)
         user_attributes_hash = attributes_hash || {:username => 'gizmo', :email => "bla@bla.com", :password => 'secret'}
         @user = User.new(user_attributes_hash)
@@ -39,6 +39,16 @@ module Sorcery
         @user = User.new(user_attributes_hash)
         @user.save!
         @user.authentications.create!({:provider => provider, :uid => 123})
+        @user
+      end
+
+      def custom_create_new_external_user(provider, authentication_class, attributes_hash = nil)
+        authentication_association = authentication_class.name.underscore.pluralize
+
+        user_attributes_hash = attributes_hash || {:username => 'gizmo'}
+        @user = User.new(user_attributes_hash)
+        @user.save!
+        @user.send(authentication_association).create!({:provider => provider, :uid => 123})
         @user
       end
 
