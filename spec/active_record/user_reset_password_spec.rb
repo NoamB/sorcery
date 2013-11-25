@@ -1,7 +1,6 @@
 require 'spec_helper'
 require 'shared_examples/user_reset_password_shared_examples'
 
-
 describe "User with reset_password submodule" do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/reset_password")
