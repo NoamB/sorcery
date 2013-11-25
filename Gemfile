@@ -10,7 +10,7 @@ gem 'bcrypt-ruby', "~> 3.0.0"
 # Include everything needed to run rake, tests, features, etc.
 
 gem 'abstract', '>= 1.0.0'
-gem "rails", ">= 3.0.0"
+gem "rails", "~> 3.2.15"
 gem 'json', ">= 1.7.7"
 gem "rspec", "~> 2.14.0"
 gem 'rspec-rails', "~> 2.14.0"
