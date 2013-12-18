@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe ApplicationController do
+describe SorceryController do
 
   # ----------------- ACTIVITY LOGGING -----------------------
-  describe ApplicationController, "with activity logging features" do
+  describe SorceryController, "with activity logging features" do
     before(:all) do
       sorcery_reload!([:activity_logging])
     end

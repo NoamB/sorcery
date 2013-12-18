@@ -47,7 +47,7 @@ module Sorcery
 
         user_attributes_hash = attributes_hash || {:username => 'gizmo'}
         @user = User.new(user_attributes_hash)
-        @user.save!
+        @user.sorcery_save(:raise_on_failure => true)
         @user.send(authentication_association).create!({:provider => provider, :uid => 123})
         @user
       end
