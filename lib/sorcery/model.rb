@@ -41,7 +41,7 @@ module Sorcery
               @sorcery_config.submodules = ::Sorcery::Controller::Config.submodules
               @sorcery_config.submodules.each do |mod|
                 begin
-                  include Submodules.const_get(mod.to_s.split("_").map {|p| p.capitalize}.join(""))
+                  include Submodules.const_get(mod.to_s.split('_').map {|p| p.capitalize}.join)
                 rescue NameError
                   # don't stop on a missing submodule. Needed because some submodules are only defined
                   # in the controller side.

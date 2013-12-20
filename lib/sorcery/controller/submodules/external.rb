@@ -6,20 +6,37 @@ module Sorcery
       module External
         def self.included(base)
           base.send(:include, InstanceMethods)
+
+          require 'sorcery/providers/base'
+          require 'sorcery/providers/facebook'
+          require 'sorcery/providers/twitter'
+          require 'sorcery/providers/vk'
+          require 'sorcery/providers/linkedin'
+          require 'sorcery/providers/liveid'
+          require 'sorcery/providers/xing'
+          require 'sorcery/providers/github'
+          require 'sorcery/providers/google'
+
           Config.module_eval do
             class << self
-              attr_reader :external_providers                           # external providers like twitter.
-              attr_accessor :ca_file                                    # path to ca_file. By default use a internal ca-bundle.crt.
+              attr_reader :external_providers
+              attr_accessor :ca_file
+
+              def external_providers=(providers)
+                @external_providers = providers
+
+                providers.each do |name|
+                  class_eval <<-E
+                    def self.#{name}
+                      @#{name} ||= Sorcery::Providers.const_get('#{name}'.to_s.capitalize).new
+                    end
+                  E
+                end
+              end
 
               def merge_external_defaults!
                 @defaults.merge!(:@external_providers => [],
-                                 :@ca_file => File.join(File.expand_path(File.dirname(__FILE__)), 'external/protocols/certs/ca-bundle.crt'))
-              end
-
-              def external_providers=(providers)
-                providers.each do |provider|
-                  include Providers.const_get(provider.to_s.split("_").map {|p| p.capitalize}.join(""))
-                end
+                                 :@ca_file => File.join(File.expand_path(File.dirname(__FILE__)), '../../protocols/certs/ca-bundle.crt'))
               end
             end
             merge_external_defaults!
@@ -31,9 +48,7 @@ module Sorcery
 
           # save the singleton ProviderClient instance into @provider
           def sorcery_get_provider(provider_name)
-            allowed = %w(facebook github google linkedin liveid twitter vk xing)
-            return unless allowed.include?(provider_name.to_s)
-
+            return unless Config.external_providers.include?(provider_name.to_sym)
             Config.send(provider_name.to_sym)
           end
 
