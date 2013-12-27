@@ -26,7 +26,7 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
   config.include RSpec::Rails::ControllerExampleGroup, :example_group => { :file_path => /controller(.)*_spec.rb$/ }
-
+  config.filter_run_excluding :rails3 => ! (Rails.version =~ /^3\..*$/)
   config.mock_with :rspec
 
   config.use_transactional_fixtures = true
@@ -35,7 +35,7 @@ RSpec.configure do |config|
     if SORCERY_ORM.to_sym == :active_record
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
     end
-    if SORCERY_ORM.to_sym == :datamapper
+    if SORCERY_ORM.to_sym == :datamapper && Rails.version =~ /^3\..*$/
       DataMapper.auto_migrate!
       DataMapper.finalize
     end

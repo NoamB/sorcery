@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SorceryController do
+describe SorceryController, :rails3 => true do
 
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe SorceryController, "plugin configuration" do
