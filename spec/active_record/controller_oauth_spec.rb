@@ -27,10 +27,17 @@ describe SorceryController, :active_record => true do
     User.reset_column_information
 
     sorcery_reload!([:external])
-    sorcery_controller_property_set(:external_providers, [:twitter])
+    sorcery_controller_property_set(:external_providers, [:twitter, :jira])
     sorcery_controller_external_property_set(:twitter, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:twitter, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:twitter, :callback_url, "http://blabla.com")
+
+    sorcery_controller_external_property_set(:jira, :key, "7810b8e317ebdc81601c72f8daecc0f1")
+    sorcery_controller_external_property_set(:jira, :secret, "MyAppUsingJira")
+    sorcery_controller_external_property_set(:jira, :site, "http://jira.mycompany.com/plugins/servlet/oauth")
+    sorcery_controller_external_property_set(:jira, :signature_method, "RSA-SHA1")
+    sorcery_controller_external_property_set(:jira, :private_key_file, "myrsakey.pem")
+    sorcery_controller_external_property_set(:jira, :callback_url, "http://myappusingjira.com/home")
   end
 
   after(:all) do
@@ -92,6 +99,14 @@ describe SorceryController, :active_record => true do
       get :test_return_to_with_external, {}, :return_to_url => "fuu"
       expect(response).to redirect_to("fuu")
       expect(flash[:notice]).to eq "Success!"
+    end
+
+    context "when jira" do
+      it "user logins successfully" do
+        get :login_at_test_jira
+        expect(session[:request_token]).not_to be_nil
+        expect(response).to be_a_redirect
+      end
     end
 
   end
