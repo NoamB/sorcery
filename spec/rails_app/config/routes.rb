@@ -23,6 +23,7 @@ AppRoot::Application.routes.draw do
     get :test_login_from_google
     get :test_login_from_liveid
     get :test_login_from_vk
+    get :test_login_from_jira
     get :login_at_test
     get :login_at_test_instagram
     get :login_at_test_twitter
@@ -31,6 +32,7 @@ AppRoot::Application.routes.draw do
     get :login_at_test_google
     get :login_at_test_liveid
     get :login_at_test_vk
+    get :login_at_test_jira
     get :test_return_to_with_external
     get :test_return_to_with_external_instagram
     get :test_return_to_with_external_twitter
@@ -39,6 +41,7 @@ AppRoot::Application.routes.draw do
     get :test_return_to_with_external_google
     get :test_return_to_with_external_liveid
     get :test_return_to_with_external_vk
+    get :test_return_to_with_external_jira
     get :test_http_basic_auth
     get :some_action_making_a_non_persisted_change_to_the_user
     post :test_login_with_remember

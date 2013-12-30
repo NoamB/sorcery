@@ -102,6 +102,10 @@ class SorceryController < ActionController::Base
     login_at(:liveid)
   end
 
+  def login_at_test_jira
+    login_at(:jira)
+  end
+
   def login_at_test_vk
     login_at(:vk)
   end
@@ -176,8 +180,24 @@ class SorceryController < ActionController::Base
     end
   end
 
+  def test_login_from_jira
+    if @user = login_from(:jira)
+      redirect_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
   def test_return_to_with_external_twitter
     if @user = login_from(:twitter)
+      redirect_back_or_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
+  def test_return_to_with_external_jira
+    if @user = login_from(:jira)
       redirect_back_or_to 'bla', notice: 'Success!'
     else
       redirect_to 'blu', alert: 'Failed!'
