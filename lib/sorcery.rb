@@ -40,7 +40,6 @@ module Sorcery
     autoload :SHA256, 'sorcery/crypto_providers/sha256'
     autoload :SHA512, 'sorcery/crypto_providers/sha512'
   end
-  autoload :TestHelpers, 'sorcery/test_helpers'
   module TestHelpers
     autoload :Rails, 'sorcery/test_helpers/rails'
     autoload :Internal, 'sorcery/test_helpers/internal'
