@@ -25,6 +25,7 @@ module Sorcery
 
             init_mongoid_support! if defined?(Mongoid) and self.ancestors.include?(Mongoid::Document)
             init_mongo_mapper_support! if defined?(MongoMapper) and self.ancestors.include?(MongoMapper::Document)
+            init_datamapper_support! if defined?(DataMapper) and self.ancestors.include?(DataMapper::Resource)
 
             init_orm_hooks!
 
@@ -75,8 +76,26 @@ module Sorcery
             end
           end
 
+          # defines datamapper fields on the model class
+          def init_datamapper_support!
+            self.class_eval do
+              sorcery_config.username_attribute_names.each do |username|
+                property username, String, :length => 255
+              end
+              unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
+                property sorcery_config.email_attribute_name, String, :length => 255
+              end
+              property sorcery_config.crypted_password_attribute_name, String, :length => 255
+              property sorcery_config.salt_attribute_name, String, :length => 255
+            end
+          end
+
           # add virtual password accessor and ORM callbacks.
           def init_orm_hooks!
+            if defined?(DataMapper) and self.ancestors.include?(DataMapper::Resource)
+              init_datamapper_hooks!
+              return
+            end
             self.class_eval do
               attr_accessor @sorcery_config.password_attribute_name
               #attr_protected @sorcery_config.crypted_password_attribute_name, @sorcery_config.salt_attribute_name
@@ -88,6 +107,23 @@ module Sorcery
               }
             end
           end
+
+          def init_datamapper_hooks!
+            self.class_eval do
+              attr_accessor @sorcery_config.password_attribute_name
+              before :valid? do
+                if self.send(sorcery_config.password_attribute_name).present?
+                  encrypt_password
+                end
+              end
+              after :save do
+                if self.send(sorcery_config.password_attribute_name).present?
+                  clear_virtual_password
+                end
+              end
+            end
+          end
+
         end
       end
     end

@@ -10,16 +10,16 @@ module Sorcery
           base.sorcery_config.class_eval do
             attr_accessor :activation_state_attribute_name,               # the attribute name to hold activation state
                                                                           # (active/pending).
-                                                                          
+
                           :activation_token_attribute_name,               # the attribute name to hold activation code
                                                                           # (sent by email).
-                                                                          
+
                           :activation_token_expires_at_attribute_name,    # the attribute name to hold activation code
                                                                           # expiration date. 
-                                                                          
+
                           :activation_token_expiration_period,            # how many seconds before the activation code
                                                                           # expires. nil for never expires.
-                                                                          
+
                           :user_activation_mailer,                        # your mailer class. Required when
                                                                           # activation_mailer_disabled == false.
 
@@ -29,14 +29,14 @@ module Sorcery
 
                           :activation_needed_email_method_name,           # activation needed email method on your
                                                                           # mailer class.
-                                                                          
+
                           :activation_success_email_method_name,          # activation success email method on your
                                                                           # mailer class.
-                                                                          
+
                           :prevent_non_active_users_to_login              # do you want to prevent or allow users that
                                                                           # did not activate by email to login?
           end
-          
+
           base.sorcery_config.instance_eval do
             @defaults.merge!(:@activation_state_attribute_name             => :activation_state,
                              :@activation_token_attribute_name             => :activation_token,
@@ -49,27 +49,43 @@ module Sorcery
                              :@prevent_non_active_users_to_login           => true)
             reset!
           end
-          
+
           base.class_eval do
-            # don't setup activation if no password supplied - this user is created automatically
-            before_create :setup_activation, :if => Proc.new { |user| user.send(sorcery_config.password_attribute_name).present? }
-            # don't send activation needed email if no crypted password created - this user is external (OAuth etc.)
-            after_create  :send_activation_needed_email!, :if => :send_activation_needed_email?
+            if defined?(DataMapper) && self.ancestors.include?(DataMapper::Resource)
+              before :valid? do
+                if self.send(sorcery_config.password_attribute_name).present?
+                  setup_activation
+                end
+              end
+              after :create do
+                if send_activation_needed_email?
+                  send_activation_needed_email!
+                end
+              end
+            else
+              # don't setup activation if no password supplied - this user is created automatically
+              before_create :setup_activation, :if => Proc.new { |user| user.send(sorcery_config.password_attribute_name).present? }
+              # don't send activation needed email if no crypted password created - this user is external (OAuth etc.)
+              after_create  :send_activation_needed_email!, :if => :send_activation_needed_email?
+            end
           end
-          
+
           base.sorcery_config.after_config << :validate_mailer_defined
           base.sorcery_config.after_config << :define_user_activation_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
           if defined?(MongoMapper) and base.ancestors.include?(MongoMapper::Document)
             base.sorcery_config.after_config << :define_user_activation_mongo_mapper_fields
           end
+          if defined?(DataMapper) and base.ancestors.include?(DataMapper::Resource)
+            base.sorcery_config.after_config << :define_user_activation_datamapper_fields
+          end
           base.sorcery_config.before_authenticate << :prevent_non_active_login
-          
+
           base.extend(ClassMethods)
           base.send(:include, InstanceMethods)
 
 
         end
-        
+
         module ClassMethods
           # Find user by token, also checks for expiration.
           # Returns the user if token found and is valid.
@@ -78,9 +94,9 @@ module Sorcery
             token_expiration_date_attr = @sorcery_config.activation_token_expires_at_attribute_name
             load_from_token(token, token_attr_name, token_expiration_date_attr)
           end
-          
+
           protected
-          
+
           # This submodule requires the developer to define his own mailer class to be used by it
           # when activation_mailer_disabled is false
           def validate_mailer_defined
@@ -103,8 +119,23 @@ module Sorcery
               key sorcery_config.activation_token_expires_at_attribute_name, Time
             end
           end
+
+          def define_user_activation_datamapper_fields
+            self.class_eval do
+              property sorcery_config.activation_state_attribute_name,            String
+              property sorcery_config.activation_token_attribute_name,            String
+              property sorcery_config.activation_token_expires_at_attribute_name, Time
+              [sorcery_config.activation_token_expires_at_attribute_name].each do |sym|
+                alias_method "orig_#{sym}", sym
+                define_method(sym) do
+                  t = send("orig_#{sym}")
+                  t && Time.new(t.year, t.month, t.day, t.hour, t.min, t.sec, 0)
+                end
+              end
+            end
+          end
         end
-        
+
         module InstanceMethods
           # clears activation code, sets the user as 'active' and optionaly sends a success email.
           def activate!
@@ -112,9 +143,9 @@ module Sorcery
             self.send(:"#{config.activation_token_attribute_name}=", nil)
             self.send(:"#{config.activation_state_attribute_name}=", "active")
             send_activation_success_email! if send_activation_success_email?
-            save!(:validate => false) # don't run validations
+            sorcery_save(:validate => false, :raise_on_failure => true)
           end
-          
+
           protected
 
           def setup_activation
@@ -147,7 +178,7 @@ module Sorcery
                 sorcery_config.activation_mailer_disabled == true)
             )
           end
-          
+
           def prevent_non_active_login
             config = sorcery_config
             config.prevent_non_active_users_to_login ? self.send(config.activation_state_attribute_name) == "active" : true

@@ -9,14 +9,14 @@ module Sorcery
       # he will be able to reset his password via a form.
       #
       # When using this submodule, supplying a mailer is mandatory.
-      module ResetPassword       
+      module ResetPassword
         def self.included(base)
           base.sorcery_config.class_eval do
             attr_accessor :reset_password_token_attribute_name,              # reset password code attribute name.
                           :reset_password_token_expires_at_attribute_name,   # expires at attribute name.
                           :reset_password_email_sent_at_attribute_name,      # when was email sent, used for hammering
                                                                              # protection.
-                                                                             
+
                           :reset_password_mailer,                            # mailer class. Needed.
 
                           :reset_password_mailer_disabled,                   # when true sorcery will not automatically
@@ -25,15 +25,15 @@ module Sorcery
 
                           :reset_password_email_method_name,                 # reset password email method on your
                                                                              # mailer class.
-                                                                             
+
                           :reset_password_expiration_period,                 # how many seconds before the reset request
                                                                              # expires. nil for never expires.
-                                                                             
+
                           :reset_password_time_between_emails                # hammering protection, how long to wait
                                                                              # before allowing another email to be sent.
 
           end
-          
+
           base.sorcery_config.instance_eval do
             @defaults.merge!(:@reset_password_token_attribute_name            => :reset_password_token,
                              :@reset_password_token_expires_at_attribute_name => :reset_password_token_expires_at,
@@ -54,11 +54,14 @@ module Sorcery
           if defined?(MongoMapper) and base.ancestors.include?(MongoMapper::Document)
             base.sorcery_config.after_config << :define_reset_password_mongo_mapper_fields
           end
+          if defined?(DataMapper) and base.ancestors.include?(DataMapper::Resource)
+            base.sorcery_config.after_config << :define_reset_password_datamapper_fields
+          end
 
           base.send(:include, InstanceMethods)
 
         end
-        
+
         module ClassMethods
           # Find user by token, also checks for expiration.
           # Returns the user if token found and is valid.
@@ -67,9 +70,9 @@ module Sorcery
             token_expiration_date_attr = @sorcery_config.reset_password_token_expires_at_attribute_name
             load_from_token(token, token_attr_name, token_expiration_date_attr)
           end
-          
+
           protected
-          
+
           # This submodule requires the developer to define his own mailer class to be used by it
           # when reset_password_mailer_disabled is false
           def validate_mailer_defined
@@ -82,14 +85,28 @@ module Sorcery
             field sorcery_config.reset_password_token_expires_at_attribute_name,  :type => Time
             field sorcery_config.reset_password_email_sent_at_attribute_name,     :type => Time
           end
-          
+
           def define_reset_password_mongo_mapper_fields
             key sorcery_config.reset_password_token_attribute_name, String
             key sorcery_config.reset_password_token_expires_at_attribute_name, Time
             key sorcery_config.reset_password_email_sent_at_attribute_name, Time
           end
+
+          def define_reset_password_datamapper_fields
+            property sorcery_config.reset_password_token_attribute_name,            String
+            property sorcery_config.reset_password_token_expires_at_attribute_name, Time
+            property sorcery_config.reset_password_email_sent_at_attribute_name,    Time
+            [sorcery_config.reset_password_token_expires_at_attribute_name,
+             sorcery_config.reset_password_email_sent_at_attribute_name].each do |sym|
+               alias_method "orig_#{sym}", sym
+               define_method(sym) do
+                 t = send("orig_#{sym}")
+                 t && Time.new(t.year, t.month, t.day, t.hour, t.min, t.sec, 0)
+               end
+            end
+          end
         end
-        
+
         module InstanceMethods
           # generates a reset code with expiration and sends an email to the user.
           def deliver_reset_password_instructions!
@@ -104,12 +121,12 @@ module Sorcery
               send_reset_password_email! unless sorcery_config.reset_password_mailer_disabled
             end
           end
-          
+
           # Clears token and tries to update the new password for the user.
           def change_password!(new_password)
             clear_reset_password_token
             self.send(:"#{sorcery_config.password_attribute_name}=", new_password)
-            save
+            sorcery_save
           end
 
           protected
@@ -125,7 +142,7 @@ module Sorcery
             self.send(:"#{config.reset_password_token_expires_at_attribute_name}=", nil) if config.reset_password_expiration_period
           end
         end
-        
+
       end
     end
   end

@@ -3,8 +3,12 @@ shared_examples_for "rails_3_oauth_model" do
   describe User, "loaded plugin configuration" do
 
     before(:all) do
+      if defined?(DataMapper) && User.ancestors.include?(DataMapper::Resource)
+        Authentication.all.destroy
+      else
+        Authentication.delete_all
+      end
       User.delete_all
-      Authentication.delete_all
       sorcery_reload!([:external])
       sorcery_controller_property_set(:external_providers, [:twitter])
       sorcery_model_property_set(:authentications_class, Authentication)

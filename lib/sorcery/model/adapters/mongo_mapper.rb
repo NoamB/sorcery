@@ -16,6 +16,11 @@ module Sorcery
           save(options)
         end
 
+        def sorcery_save(options = {})
+          mthd = options.delete(:raise_on_failure) ? :save! : :save
+          self.send(mthd, options)
+        end
+
         def update_many_attributes(attrs)
           update_attributes(attrs)
         end
