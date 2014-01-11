@@ -17,6 +17,17 @@ module Sorcery
       autoload :External, 'sorcery/model/submodules/external'
     end
   end
+  module Providers
+    autoload :Base, 'sorcery/providers/base'
+    autoload :Facebook, 'sorcery/providers/facebook'
+    autoload :Twitter, 'sorcery/providers/twitter'
+    autoload :VK, 'sorcery/providers/vk'
+    autoload :Linkedin, 'sorcery/providers/linkedin'
+    autoload :Liveid, 'sorcery/providers/liveid'
+    autoload :Xing, 'sorcery/providers/xing'
+    autoload :Github, 'sorcery/providers/github'
+    autoload :Google, 'sorcery/providers/google'
+  end
   autoload :Controller, 'sorcery/controller'
   module Controller
     module Submodules

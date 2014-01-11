@@ -7,16 +7,6 @@ module Sorcery
         def self.included(base)
           base.send(:include, InstanceMethods)
 
-          require 'sorcery/providers/base'
-          require 'sorcery/providers/facebook'
-          require 'sorcery/providers/twitter'
-          require 'sorcery/providers/vk'
-          require 'sorcery/providers/linkedin'
-          require 'sorcery/providers/liveid'
-          require 'sorcery/providers/xing'
-          require 'sorcery/providers/github'
-          require 'sorcery/providers/google'
-
           Config.module_eval do
             class << self
               attr_reader :external_providers
