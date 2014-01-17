@@ -47,7 +47,6 @@ module Sorcery
     module Internal
       autoload :Rails, 'sorcery/test_helpers/internal/rails'
     end
-
   end
 
   if defined?(ActiveRecord)
