@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.8.5 (not released)
+## 0.8.5
 * Fixed add_provider_to_user with CamelCased authentications_class model (#382)
 * Fixed unlock_token_mailer_disabled to only disable automatic mailing (#467)
 * Make send_email_* methods easier to overwrite (#473)
