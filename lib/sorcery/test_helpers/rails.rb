@@ -11,6 +11,10 @@ module Sorcery
       def logout_user
         @controller.send(:logout)
       end
+      
+      def logged_in?
+        @controller.send(:logged_in?)
+      end
     end
   end
 end
