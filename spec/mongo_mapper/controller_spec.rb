@@ -88,6 +88,14 @@ describe SorceryController do
       session[:user_id].should == @user.id
     end
 
+    it "login(username,password) should return the user and set the session with user.id when username contains regex special characters and config is downcase before authenticating" do
+      sorcery_model_property_set(:downcase_username_before_authenticating, true)
+      create_new_user :username => 'gizmo+bla', :email => 'gizmo+bla@bla.com', :password => 'secret'
+      get :test_login, :email => 'gizmo+bla@bla.com', :password => 'secret'
+      assigns[:user].should == @user
+      session[:user_id].should == @user.id
+    end
+
     it "login(username,password) should return nil and not set the session when user was created with upper case username, config is default, and log in username is lower case" do
       create_new_user({:username => 'GIZMO1', :email => "BLA1@BLA.com", :password => 'secret1'})
       get :test_login, :email => 'bla1@bla.com', :password => 'secret1'
