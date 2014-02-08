@@ -34,13 +34,13 @@ describe SorceryController do
         create_new_user
         get :login_at_test2
         response.should be_a_redirect
-        response.should redirect_to("https://graph.facebook.com/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&scope=email%2Coffline_access&display=page&state")
+        response.should redirect_to("https://graph.facebook.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email%2Coffline_access&state=")
       end
       it "logins with state" do
         create_new_user
         get :login_at_test_with_state
         response.should be_a_redirect
-        response.should redirect_to("https://graph.facebook.com/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&scope=email%2Coffline_access&display=page&state=bla")
+        response.should redirect_to("https://graph.facebook.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email%2Coffline_access&state=bla")
       end
       after do
         sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
@@ -91,7 +91,7 @@ describe SorceryController do
       create_new_user
       get :login_at_test3
       response.should be_a_redirect
-      response.should redirect_to("https://github.com/login/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.github.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope&display&state")
+      response.should redirect_to("https://github.com/login/oauth/authorize?client_id=#{::Sorcery::Controller::Config.github.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=&state=")
     end
 
     it "'login_from' logins if user exists (github)" do
@@ -127,7 +127,7 @@ describe SorceryController do
       create_new_user
       get :login_at_test4
       response.should be_a_redirect
-      response.should redirect_to("https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=#{::Sorcery::Controller::Config.google.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&display&state")
+      response.should redirect_to("https://accounts.google.com/o/oauth2/auth?client_id=#{::Sorcery::Controller::Config.google.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=")
     end
 
     it "'login_from' logins if user exists (google)" do
@@ -163,7 +163,7 @@ describe SorceryController do
       create_new_user
       get :login_at_test5
       response.should be_a_redirect
-      response.should redirect_to("https://oauth.live.com/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.liveid.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=wl.basic+wl.emails+wl.offline_access&display&state")
+      response.should redirect_to("https://oauth.live.com/authorize?client_id=#{::Sorcery::Controller::Config.liveid.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=wl.basic+wl.emails+wl.offline_access&state=")
     end
 
     it "'login_from' logins if user exists (liveid)" do
