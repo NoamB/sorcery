@@ -191,6 +191,31 @@ shared_examples_for "rails_3_core_model" do
       User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be_false
     end
 
+    describe "when user has password_confirmation_defined" do
+      before(:all) do
+        User.class_eval { attr_accessor :password_confirmation }
+      end
+
+      after(:all) do
+        User.send(:remove_method, :password_confirmation)
+        User.send(:remove_method, :password_confirmation=)
+      end
+
+      it "should clear the virtual password field if the encryption process worked" do
+        create_new_user(username: "u", password: "secret", password_confirmation: "secret", email: "email@example.com")
+        @user.password_confirmation.should be_nil
+      end
+
+      it "should not clear the virtual password field if save failed due to validity" do
+        User.class_eval do
+          validates_format_of :email, :with => /\A(.)+@(.)+\Z/
+        end
+        build_new_user(username: "u", password: "secret", password_confirmation: "secret", email: "asd")
+        @user.save
+        @user.password_confirmation.should_not be_nil
+      end
+    end
+
   end
 
   # ----------------- PASSWORD ENCRYPTION -----------------------

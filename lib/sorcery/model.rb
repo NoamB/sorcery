@@ -219,6 +219,10 @@ module Sorcery
       def clear_virtual_password
         config = sorcery_config
         self.send(:"#{config.password_attribute_name}=", nil)
+
+        if respond_to?(:"#{config.password_attribute_name}_confirmation=")
+          self.send(:"#{config.password_attribute_name}_confirmation=", nil)
+        end
       end
 
       # calls the requested email method on the configured mailer
