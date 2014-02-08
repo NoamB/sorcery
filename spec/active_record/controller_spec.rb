@@ -128,7 +128,7 @@ describe SorceryController do
 
     it "current_user should return false if not logged in" do
       session[:user_id] = nil
-      2.times { subject.current_user.should == false } # memoized!
+      2.times { subject.current_user.should be_nil } # memoized!
     end
 
     specify { should respond_to(:require_login) }
@@ -173,7 +173,7 @@ describe SorceryController do
     it "auto_login(user) should work even if current_user was already set to false" do
       get :test_logout
       session[:user_id].should be_nil
-      subject.current_user.should be_false
+      subject.current_user.should be_nil
       get :test_auto_login
       assigns[:result].should == User.find(:first)
     end
