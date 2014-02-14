@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.6 (not released)
+
+* `current_user` returns `nil` instead of `false` if there's no user loggd in (#493)
+
+
 ## 0.8.5
 * Fixed add_provider_to_user with CamelCased authentications_class model (#382)
 * Fixed unlock_token_mailer_disabled to only disable automatic mailing (#467)
