@@ -194,6 +194,9 @@ shared_examples_for "rails_3_core_model" do
     describe "when user has password_confirmation_defined" do
       before(:all) do
         User.class_eval { attr_accessor :password_confirmation }
+        if defined?(DataMapper)
+          DataMapper.finalize
+        end
       end
 
       after(:all) do
