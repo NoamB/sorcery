@@ -4,8 +4,8 @@ src="https://codeclimate.com/github/NoamB/sorcery.png"
 />](https://codeclimate.com/github/NoamB/sorcery)
 
 # sorcery
-Magical Authentication for Rails 3 and 4. Supports ActiveRecord, Mongoid and
-MongoMapper.
+Magical Authentication for Rails 3 and 4. Supports ActiveRecord,
+DataMapper, Mongoid and MongoMapper.
 
 Inspired by restful_authentication, Authlogic and Devise. Crypto code taken
 almost unchanged from Authlogic. OAuth code inspired by OmniAuth and Ryan
@@ -210,7 +210,8 @@ Activity Logging (see lib/sorcery/model/submodules/activity_logging.rb):
 
 
 External (see lib/sorcery/controller/submodules/external.rb):
-*   OAuth1 and OAuth2 support (currently twitter & facebook)
+*   OAuth1 and OAuth2 support (currently: Twitter, Facebook, Github, Google,
+    LinkedIn, VK, LiveID and Xing)
 *   configurable db field names and authentications table.
 
 
