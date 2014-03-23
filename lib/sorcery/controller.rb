@@ -72,13 +72,12 @@ module Sorcery
       end
 
       # attempts to auto-login from the sources defined (session, basic_auth, cookie, etc.)
-      # returns the logged in user if found, false if not (using old restful-authentication trick, nil != false).
+      # returns the logged in user if found, nil if not
       def current_user
-        if @current_user == false
-          false
-        else
-          @current_user ||= login_from_session || login_from_other_sources
+        unless defined?(@current_user)
+          @current_user = login_from_session || login_from_other_sources || nil
         end
+        @current_user
       end
 
       def current_user=(user)
@@ -127,10 +126,10 @@ module Sorcery
       end
 
       def login_from_session
-        @current_user = (user_class.find(session[:user_id]) if session[:user_id]) || false
+        @current_user = (user_class.find(session[:user_id]) if session[:user_id]) || nil
       rescue => exception
-        return false if defined?(Mongoid) and exception.is_a?(Mongoid::Errors::DocumentNotFound)
-        return false if defined?(ActiveRecord) and exception.is_a?(ActiveRecord::RecordNotFound)
+        return nil if defined?(Mongoid) and exception.is_a?(Mongoid::Errors::DocumentNotFound)
+        return nil if defined?(ActiveRecord) and exception.is_a?(ActiveRecord::RecordNotFound)
         raise exception
       end
 

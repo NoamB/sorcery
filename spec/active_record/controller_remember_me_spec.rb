@@ -55,7 +55,7 @@ describe SorceryController do
       session[:user_id] = @user.id
       subject.remember_me!
       subject.instance_eval do
-        @current_user = nil
+        remove_instance_variable :@current_user
       end
       session[:user_id] = nil
       get :test_login_from_cookie

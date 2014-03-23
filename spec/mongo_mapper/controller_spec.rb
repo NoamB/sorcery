@@ -136,7 +136,7 @@ describe SorceryController do
 
     it "current_user should return false if not logged in" do
       session[:user_id] = nil
-      subject.current_user.should == false
+      subject.current_user.should be_nil
     end
 
     specify { should respond_to(:require_login) }
