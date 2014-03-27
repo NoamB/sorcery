@@ -13,8 +13,7 @@ module Sorcery
         end
 
         def sorcery_save(options = {})
-          if options.delete(:raise_on_failure)
-            options.delete :validate
+          if options.delete(:raise_on_failure) && options[:validate] != false
             save! options
           else
             save options
