@@ -12,13 +12,13 @@ module Sorcery
           self.class.increment(id, attr => 1)
         end
 
-        def save!(options = {})
-          save(options)
-        end
-
         def sorcery_save(options = {})
-          mthd = options.delete(:raise_on_failure) ? :save! : :save
-          self.send(mthd, options)
+          if options.delete(:raise_on_failure)
+            options.delete :validate
+            save! options
+          else
+            save options
+          end
         end
 
         def update_many_attributes(attrs)
