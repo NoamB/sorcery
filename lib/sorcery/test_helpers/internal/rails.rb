@@ -2,7 +2,7 @@ module Sorcery
   module TestHelpers
     module Internal
       module Rails
-        include ::Sorcery::TestHelpers::Rails
+        include ::Sorcery::TestHelpers::Rails::Controller
 
         SUBMODUELS_AUTO_ADDED_CONTROLLER_FILTERS = [
           :register_last_activity_time_to_db,

@@ -42,10 +42,14 @@ module Sorcery
     autoload :SHA512, 'sorcery/crypto_providers/sha512'
   end
   module TestHelpers
-    autoload :Rails, 'sorcery/test_helpers/rails'
     autoload :Internal, 'sorcery/test_helpers/internal'
     module Internal
       autoload :Rails, 'sorcery/test_helpers/internal/rails'
+    end
+    autoload :Rails, 'sorcery/test_helpers/rails'
+    module Rails
+      autoload :Controller, 'sorcery/test_helpers/rails/controller'
+      autoload :Integration, 'sorcery/test_helpers/rails/integration'
     end
 
   end
