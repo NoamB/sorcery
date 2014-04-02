@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 #   gem "activesupport", ">= 2.3.5"
 gem 'oauth', "~> 0.4.4"
 gem 'oauth2', "~> 0.8.0"
-gem 'bcrypt-ruby', "~> 3.0.0"
+gem 'bcrypt', "~> 3.1.0"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
