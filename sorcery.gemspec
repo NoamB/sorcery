@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency("oauth", "~> 0.4.4")
   s.add_dependency("oauth2", ">= 0.8.0", "< 1.0.0")
-  s.add_dependency("bcrypt-ruby", ">= 3.0")
+  s.add_dependency("bcrypt", ">= 3.1")
 
   s.add_development_dependency("abstract", ">= 1.0.0")
   s.add_development_dependency("rails", ">= 3.2.15")

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'oauth', "~> 0.4.4"
 gem 'oauth2', "~> 0.8.0"
-gem 'bcrypt-ruby', "~> 3.0.0"
+gem 'bcrypt', "~> 3.1.0"
 
 gem "rspec", "~> 2.14.0"
 gem 'rspec-rails', "~> 2.14.0"
