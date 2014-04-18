@@ -32,11 +32,7 @@ module Sorcery
         @current_user = nil
         user = user_class.authenticate(*credentials)
         if user
-          old_session = session.dup.to_hash
-          reset_sorcery_session
-          old_session.each_pair do |k,v|
-            session[k.to_sym] = v
-          end
+          protect_from_fixation_atacks
           form_authenticity_token
 
           auto_login(user)
@@ -46,6 +42,16 @@ module Sorcery
           after_failed_login!(credentials)
           nil
         end
+      end
+
+      # Resets the session and restores essential session elements
+      def protect_from_fixation_atacks
+        old_session = session.dup
+        reset_sorcery_session
+        old_session.each_pair do |k,v|
+          session[k.to_sym] = v
+        end
+        session['flash'] = session.delete(:flash)
       end
 
       # put this into the catch block to rescue undefined method `destroy_session'
