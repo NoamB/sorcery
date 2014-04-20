@@ -429,6 +429,11 @@ Rails.application.config.sorcery.configure do |config|
     # Default: `:uid`
     #
     # user.provider_uid_attribute_name =
+
+    # User scope.
+    # Default: `nil`
+    #
+    # user.scope =
   end
 
   # This line must come after the 'user config' block.
