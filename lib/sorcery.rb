@@ -15,6 +15,7 @@ module Sorcery
       autoload :ActivityLogging, 'sorcery/model/submodules/activity_logging'
       autoload :BruteForceProtection, 'sorcery/model/submodules/brute_force_protection'
       autoload :External, 'sorcery/model/submodules/external'
+      autoload :PasswordExpiration, 'sorcery/model/submodules/password_expiration'
     end
   end
   autoload :Controller, 'sorcery/controller'
