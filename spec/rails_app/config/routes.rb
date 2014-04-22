@@ -33,5 +33,7 @@ AppRoot::Application.routes.draw do
     get :login_at_test
     get :login_at_test5
     get :login_at_test_with_state
+    match :test_password_expiration, via: :all
+    post :test_update_password_action
   end
 end
