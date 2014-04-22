@@ -56,6 +56,11 @@ shared_examples_for "rails_3_core_model" do
       sorcery_model_property_set(:stretches, stretches)
       User.sorcery_config.stretches.should equal(stretches)
     end
+
+    it "should enable configuration option 'scope'" do
+      sorcery_model_property_set(:scope, :unlocked)
+      User.sorcery_config.scope.should equal(:unlocked)
+    end
   end
 
   # ----------------- PLUGIN ACTIVATED -----------------------
