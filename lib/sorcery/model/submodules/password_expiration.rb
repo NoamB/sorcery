@@ -65,13 +65,13 @@ module Sorcery
         end
 
         module InstanceMethods
-          def need_password_changed?
+          def password_expired?
             expired_if_before_date = self.class.sorcery_config.password_expiration_time_period.ago
             _password_changed_at = self.send(sorcery_config.password_changed_at_attribute_name)
             _password_changed_at.nil? || (_password_changed_at < expired_if_before_date)
           end
 
-          def need_password_changed!
+          def expire_password!
             expiration_date = self.class.sorcery_config.password_expiration_time_period.ago
             self.send("#{sorcery_config.password_changed_at_attribute_name}=", expiration_date)
             self.sorcery_save

@@ -85,19 +85,19 @@ shared_examples_for 'rails_3_password_expiration_model' do
 
       Timecop.travel(before_expiration)
 
-      expect(@user.need_password_changed?).to be_false
+      expect(@user.password_expired?).to be_false
 
       Timecop.travel(after_expiration)
 
-      expect(@user.need_password_changed?).to be_true
+      expect(@user.password_expired?).to be_true
     end
 
     it 'can force a user to need password changed' do
-      expect(@user.need_password_changed?).to be_false
+      expect(@user.password_expired?).to be_false
 
-      @user.need_password_changed!
+      @user.expire_password!
 
-      expect(@user.need_password_changed?).to be_true
+      expect(@user.password_expired?).to be_true
     end
 
     it "updates a user's password" do

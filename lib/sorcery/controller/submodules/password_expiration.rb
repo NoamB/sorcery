@@ -25,7 +25,7 @@ module Sorcery
           # To be used as before_filter.
           # If password is expired, the failure callback will be called.
           def require_valid_password
-            if logged_in? && current_user.need_password_changed?
+            if logged_in? && current_user.password_expired?
               session[:return_to_url] = request.url if Config.save_return_to_url && request.get?
               self.send(Config.change_password_action)
             end

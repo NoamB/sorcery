@@ -18,7 +18,7 @@ describe SorceryController do
 
     before(:each) do
       create_new_user
-      @user.need_password_changed!
+      @user.expire_password!
       login_user
     end
 
