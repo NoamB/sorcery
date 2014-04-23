@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'shared_examples/controller_scope_shared_examples'
 
 describe SorceryController do
 
@@ -210,6 +211,8 @@ describe SorceryController do
       subject.auto_login(@user)
       subject.logged_in?.should be_true
     end
+
+    it_behaves_like "scoped"
   end
 
 end
