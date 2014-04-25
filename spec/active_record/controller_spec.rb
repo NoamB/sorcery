@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'shared_examples/controller_scope_shared_examples'
 
 describe SorceryController do
 
@@ -177,6 +178,8 @@ describe SorceryController do
       get :test_auto_login
       assigns[:result].should == User.find(:first)
     end
+
+    it_behaves_like "scoped"
   end
 
 end

@@ -147,7 +147,11 @@ module Sorcery
           credentials[0].downcase!
         end
 
-        user = find_by_credentials(credentials)
+        if @sorcery_config.scope
+          user = send(@sorcery_config.scope).find_by_credentials(credentials)
+        else
+          user = find_by_credentials(credentials)
+        end
 
         set_encryption_attributes
 
@@ -265,9 +269,10 @@ module Sorcery
                     :before_authenticate,               # an array of method names to call before authentication
                                                         # completes. used internally.
 
-                    :after_config                       # an array of method names to call after configuration by user.
+                    :after_config,                      # an array of method names to call after configuration by user.
                                                         # used internally.
 
+                    :scope                              # what scope to use when finding users.
       attr_reader   :encryption_provider,               # change default encryption_provider.
                     :custom_encryption_provider,        # use an external encryption class.
                     :encryption_algorithm               # encryption algorithm name. See 'encryption_algorithm=' below
@@ -290,7 +295,8 @@ module Sorcery
           :@stretches                            => nil,
           :@subclasses_inherit_config            => false,
           :@before_authenticate                  => [],
-          :@after_config                         => []
+          :@after_config                         => [],
+          :@scope                                => nil
         }
         reset!
       end
