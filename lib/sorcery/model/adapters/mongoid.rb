@@ -2,11 +2,6 @@ module Sorcery
   module Model
     module Adapters
       module Mongoid
-        def self.included(klass)
-          klass.extend ClassMethods
-          klass.send(:include, InstanceMethods)
-        end
-
         module InstanceMethods
           def increment(attr)
             self.inc(attr, 1)
