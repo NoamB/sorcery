@@ -76,7 +76,8 @@ explaining and the rest are commented:
 
     # reset password
     User.load_from_reset_password_token(token)
-    @user.deliver_reset_password_instructions!
+    @user.generate_reset_password_token! # if you want to send the email by youself
+    @user.deliver_reset_password_instructions! # generates the token and sends the email
     @user.change_password!(new_password)
 
     # user activation
