@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SorceryController do
+describe SorceryController, :active_record => true do
 
   # ----------------- SESSION TIMEOUT -----------------------
   describe SorceryController, "with session timeout features" do
