@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'shared_examples/user_remember_me_shared_examples'
 
-describe "User with remember_me submodule" do
+describe "User with remember_me submodule", :active_record => true do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
     User.reset_column_information

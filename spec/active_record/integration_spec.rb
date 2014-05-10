@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "the login process", :type => :request do
+describe "the login process", :type => :request, :active_record => true do
   before(:all) do
     sorcery_reload!
     create_new_user

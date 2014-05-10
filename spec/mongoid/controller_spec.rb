@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SorceryController do
+describe SorceryController, :mongoid => true do
 
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe SorceryController, "plugin configuration" do

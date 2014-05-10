@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SorceryController, :rails3 => true do
+describe SorceryController, :rails3 => true, :datamapper => true do
 
   # ----------------- ACTIVITY LOGGING -----------------------
   describe SorceryController, "with activity logging features" do

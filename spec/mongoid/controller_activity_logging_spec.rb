@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SorceryController do
+describe SorceryController, :mongoid => true do
 
   # ----------------- ACTIVITY LOGGING -----------------------
   describe SorceryController, "with activity logging features" do

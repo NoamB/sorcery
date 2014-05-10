@@ -19,7 +19,7 @@ def stub_all_oauth_requests!
   @acc_token.stub(:get).and_return(response)
 end
 
-describe SorceryController do
+describe SorceryController, :active_record => true do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
     User.reset_column_information

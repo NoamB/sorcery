@@ -12,7 +12,7 @@ require 'dm-migrations'
 # 2. DM creates tables case insensitive by default.
 # -
 #DataMapper.setup(:default, "mysql://root:<password>@localhost/sorcery_test")
-DataMapper.setup(:default, "mysql://travis:@127.0.0.1/sorcery_test")
+DataMapper.setup(:default, "mysql://root@127.0.0.1/sorcery_test")
 
 # Redis
 # NOTE
