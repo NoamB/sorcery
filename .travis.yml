@@ -32,3 +32,40 @@ matrix:
     - rvm: 2.1.0
       gemfile: Gemfile.rails4
       env: "SORCERY_ORM=datamapper"
+
+  include:
+    - rvm: 1.9.3
+      gemfile: gemfiles/mongoid-rails41.gemfile
+      env: "SORCERY_ORM=mongoid"
+
+    - rvm: 2.0.0
+      gemfile: gemfiles/mongoid-rails41.gemfile
+      env: "SORCERY_ORM=mongoid"
+
+    - rvm: 2.1.0
+      gemfile: gemfiles/mongoid-rails41.gemfile
+      env: "SORCERY_ORM=mongoid"
+
+    - rvm: 1.9.3
+      gemfile: gemfiles/mongo_mapper-rails41.gemfile
+      env: "SORCERY_ORM=mongo_mapper"
+
+    - rvm: 2.0.0
+      gemfile: gemfiles/mongo_mapper-rails41.gemfile
+      env: "SORCERY_ORM=mongo_mapper"
+
+    - rvm: 2.1.0
+      gemfile: gemfiles/mongo_mapper-rails41.gemfile
+      env: "SORCERY_ORM=mongo_mapper"
+
+    - rvm: 1.9.3
+      gemfile: gemfiles/active_record-rails41.gemfile
+      env: "SORCERY_ORM=active_record"
+
+    - rvm: 2.0.0
+      gemfile: gemfiles/active_record-rails41.gemfile
+      env: "SORCERY_ORM=active_record"
+
+    - rvm: 2.1.0
+      gemfile: gemfiles/active_record-rails41.gemfile
+      env: "SORCERY_ORM=active_record"
