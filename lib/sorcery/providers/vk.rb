@@ -10,8 +10,7 @@ module Sorcery
 
       include Protocols::Oauth2
 
-      attr_accessor :auth_path, :token_path, :user_info_url
-      attr_accessor :scope
+      attr_accessor :auth_path, :token_path, :user_info_url, :scope
 
       def initialize
         super
