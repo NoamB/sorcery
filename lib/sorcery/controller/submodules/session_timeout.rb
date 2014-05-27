@@ -38,6 +38,7 @@ module Sorcery
           def validate_session
             session_to_use = Config.session_timeout_from_last_action ? session[:last_action_time] : session[:login_time]
             if session_to_use && (Time.now.in_time_zone - session_to_use > Config.session_timeout)
+            if session_to_use && (Time.now.in_time_zone - session_to_use.to_time > Config.session_timeout)
               reset_sorcery_session
               @current_user = nil
             else
