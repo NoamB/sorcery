@@ -10,11 +10,25 @@ gemfile:
   - Gemfile
   - Gemfile.rails4
 
+env:
+  - "SORCERY_ORM=active_record"
+  - "SORCERY_ORM=mongoid"
+  - "SORCERY_ORM=mongo_mapper"
+  - "SORCERY_ORM=datamapper"
+
 before_script:
   - mysql -e 'create database sorcery_test;'
 
-script:
-  - "SORCERY_ORM=active_record bundle exec rake spec SPEC=spec/active_record"
-  - "SORCERY_ORM=mongoid bundle exec rake spec SPEC=spec/mongoid"
-  - "SORCERY_ORM=mongo_mapper bundle exec rake spec SPEC=spec/mongo_mapper"
-  - "SORCERY_ORM=datamapper bundle exec rake spec SPEC=spec/datamapper"
+matrix:
+  exclude:
+    - rvm: 1.9.3
+      gemfile: Gemfile.rails4
+      env: "SORCERY_ORM=datamapper"
+
+    - rvm: 2.0.0
+      gemfile: Gemfile.rails4
+      env: "SORCERY_ORM=datamapper"
+
+    - rvm: 2.1.0
+      gemfile: Gemfile.rails4
+      env: "SORCERY_ORM=datamapper"

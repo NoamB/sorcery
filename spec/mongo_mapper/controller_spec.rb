@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SorceryController do
+describe SorceryController, :mongo_mapper => true do
 
   # ----------------- PLUGIN CONFIGURATION -----------------------
   describe SorceryController, "plugin configuration" do

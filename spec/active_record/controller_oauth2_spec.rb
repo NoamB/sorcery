@@ -2,7 +2,7 @@ require 'spec_helper'
 
 require 'shared_examples/controller_oauth2_shared_examples'
 
-describe SorceryController do
+describe SorceryController, :active_record => true do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
     User.reset_column_information

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SorceryController do
+describe SorceryController, :active_record => true do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/brute_force_protection")
     User.reset_column_information
