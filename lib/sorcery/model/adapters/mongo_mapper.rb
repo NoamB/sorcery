@@ -5,7 +5,7 @@ module Sorcery
         extend ActiveSupport::Concern
 
         included do
-          include Sorcery::Model
+          extend Sorcery::Model
         end
 
         def increment(attr)
