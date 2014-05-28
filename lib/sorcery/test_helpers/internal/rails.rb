@@ -4,7 +4,7 @@ module Sorcery
       module Rails
         include ::Sorcery::TestHelpers::Rails::Controller
 
-        SUBMODUELS_AUTO_ADDED_CONTROLLER_FILTERS = [
+        SUBMODULES_AUTO_ADDED_CONTROLLER_FILTERS = [
           :register_last_activity_time_to_db,
           :deny_banned_user,
           :validate_session
@@ -20,7 +20,13 @@ module Sorcery
           # remove all plugin before_filters so they won't fail other tests.
           # I don't like this way, but I didn't find another.
           # hopefully it won't break until Rails 4.
-          SorceryController._process_action_callbacks.delete_if {|c| SUBMODUELS_AUTO_ADDED_CONTROLLER_FILTERS.include?(c.filter) }
+          chain = if Gem::Version.new(::Rails::VERSION::STRING) >= Gem::Version.new("4.1.0")
+                    SorceryController._process_action_callbacks.send :chain
+                  else
+                    SorceryController._process_action_callbacks
+                  end
+
+          chain.delete_if {|c| SUBMODULES_AUTO_ADDED_CONTROLLER_FILTERS.include?(c.filter) }
 
           # configure
           ::Sorcery::Controller::Config.submodules = submodules
