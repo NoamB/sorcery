@@ -34,9 +34,10 @@ module Sorcery
         if user
           old_session = session.dup.to_hash
           reset_sorcery_session
-          old_session.each_pair do |k,v|
+          old_session.each do |k, v|
             session[k.to_sym] = v
           end
+          session['flash'] = session.delete(:flash)
           form_authenticity_token
 
           auto_login(user)

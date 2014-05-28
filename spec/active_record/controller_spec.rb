@@ -103,6 +103,13 @@ describe SorceryController, :active_record => true do
       session[:user_id].should == @user.id
     end
 
+    it "login(email,password) should return the user when success and keep the flash" do
+      flash[:notice] = 'test_notice'
+      session[:flash] = flash
+      get :test_login, :email => 'bla@bla.com', :password => 'secret'
+      expect(flash[:notice]).to eq('test_notice')
+    end
+
     it "logout should clear the session" do
       cookies[:remember_me_token] = nil
       session[:user_id] = @user.id
