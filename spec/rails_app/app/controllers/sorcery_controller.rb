@@ -24,7 +24,7 @@ class SorceryController < ActionController::Base
   end
 
   def test_auto_login
-    @user = User.find(:first)
+    @user = User.first
     auto_login(@user)
     @result = current_user
     render nothing: true
