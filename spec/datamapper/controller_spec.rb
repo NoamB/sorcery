@@ -72,7 +72,7 @@ describe SorceryController, :rails3 => true, :datamapper => true do
     end
 
     it "login(username,password) should return nil and not set the session when upper case username" do
-      pending('DM creates tables in mysql case insensitive by default')
+      skip('DM creates tables in mysql case insensitive by default')
       get :test_login, :email => 'BLA@BLA.com', :password => 'secret'
       assigns[:user].should be_nil
       session[:user_id].should be_nil
@@ -91,7 +91,7 @@ describe SorceryController, :rails3 => true, :datamapper => true do
     end
 
     it "login(username,password) should return nil and not set the session when user was created with upper case username, config is default, and log in username is lower case" do
-      pending('DM Adapter dependant')
+      skip('DM Adapter dependant')
       create_new_user({:username => 'GIZMO1', :email => "BLA1@BLA.com", :password => 'secret1'})
       get :test_login, :email => 'bla1@bla.com', :password => 'secret1'
       assigns[:user].should be_nil
@@ -99,7 +99,7 @@ describe SorceryController, :rails3 => true, :datamapper => true do
     end
 
     it "login(username,password) should return the user and set the session with user.id when user was created with upper case username and config is downcase before authenticating" do
-      pending('DM Adapter dependant')
+      skip('DM Adapter dependant')
       sorcery_model_property_set(:downcase_username_before_authenticating, true)
       create_new_user({:username => 'GIZMO1', :email => "bla1@bla.com", :password => 'secret1'})
       get :test_login, :email => 'bla1@bla.com', :password => 'secret1'
