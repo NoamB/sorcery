@@ -120,12 +120,12 @@ describe SorceryController, :mongoid => true do
 
     it "logged_in? should return true if logged in" do
       session[:user_id] = @user.id
-      subject.logged_in?.should be_true
+      subject.logged_in?.should be true
     end
 
     it "logged_in? should return false if not logged in" do
       session[:user_id] = nil
-      subject.logged_in?.should be_false
+      subject.logged_in?.should be false
     end
 
     it "current_user should return the user instance if logged in" do
@@ -187,7 +187,7 @@ describe SorceryController, :mongoid => true do
       create_new_user
       session[:user_id] = nil
       subject.auto_login(@user)
-      subject.logged_in?.should be_true
+      subject.logged_in?.should be true
     end
   end
 

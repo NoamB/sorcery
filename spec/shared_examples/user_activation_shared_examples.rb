@@ -170,12 +170,12 @@ shared_examples_for "rails_3_activation_model" do
     end
 
     it "should not allow a non-active user to authenticate" do
-      User.authenticate(@user.email, 'secret').should be_false
+      User.authenticate(@user.email, 'secret').should be_falsy
     end
 
     it "should allow a non-active user to authenticate if configured so" do
       sorcery_model_property_set(:prevent_non_active_users_to_login, false)
-      User.authenticate(@user.email, 'secret').should be_true
+      User.authenticate(@user.email, 'secret').should be_truthy
     end
   end
 

@@ -238,7 +238,7 @@ shared_examples_for "rails_3_reset_password_model" do
       create_new_user
       @user.deliver_reset_password_instructions!
       @user.change_password!("blagu")
-      Sorcery::CryptoProviders::BCrypt.matches?(@user.crypted_password,"blagu",@user.salt).should be_true
+      Sorcery::CryptoProviders::BCrypt.matches?(@user.crypted_password,"blagu",@user.salt).should be true
     end
 
   end

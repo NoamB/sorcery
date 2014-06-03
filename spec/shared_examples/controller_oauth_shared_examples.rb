@@ -44,8 +44,8 @@ shared_examples_for "oauth_controller" do
         get :test_add_second_provider, :provider => "twitter"
       end.should change(UserProvider, :count).by(1)
 
-      UserProvider.where(:user_id => current_user.id).should have(2).items
-      User.should have(1).item
+      UserProvider.where(:user_id => current_user.id).size.should eq 2
+      User.count.should eq 1
     end
 
     describe "with a block" do

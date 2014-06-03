@@ -75,12 +75,12 @@ shared_examples_for "rails_3_core_model" do
 
     it "authenticate should return true if credentials are good" do
       create_new_user
-      User.authenticate(@user.send(User.sorcery_config.username_attribute_names.first), 'secret').should be_true
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_names.first), 'secret').should be_truthy
     end
 
     it "authenticate should return false if credentials are bad" do
       create_new_user
-      User.authenticate(@user.send(User.sorcery_config.username_attribute_names.first), 'wrong!').should be_false
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_names.first), 'wrong!').should be nil
     end
 
     context "with empty credentials" do
@@ -93,7 +93,7 @@ shared_examples_for "rails_3_core_model" do
       end
 
       it "don't downcase empty credentials" do
-        expect(User.authenticate(nil, 'wrong!')).to be_false
+        expect(User.authenticate(nil, 'wrong!')).to be_falsy
       end
     end
 
@@ -132,7 +132,7 @@ shared_examples_for "rails_3_core_model" do
 
     it "should encrypt password when a new user is saved" do
       create_new_user
-      User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be_true
+      User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be true
     end
 
     it "should clear the virtual password field if the encryption process worked" do
@@ -177,7 +177,7 @@ shared_examples_for "rails_3_core_model" do
       else
         @user.save!
       end
-      User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be_true
+      User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be true
     end
 
     it "should replace the crypted_password in case a new password is set" do
@@ -188,7 +188,7 @@ shared_examples_for "rails_3_core_model" do
       else
         @user.save!
       end
-      User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be_false
+      User.sorcery_config.encryption_provider.matches?(@user.send(User.sorcery_config.crypted_password_attribute_name),'secret',@user.salt).should be false
     end
 
     describe "when user has password_confirmation_defined" do
@@ -239,7 +239,7 @@ shared_examples_for "rails_3_core_model" do
     it "should work with no password encryption" do
       sorcery_model_property_set(:encryption_algorithm, :none)
       create_new_user
-      User.authenticate(@user.send(User.sorcery_config.username_attribute_names.first), 'secret').should be_true
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_names.first), 'secret').should be_truthy
     end
 
     it "should work with custom password encryption" do
@@ -255,7 +255,7 @@ shared_examples_for "rails_3_core_model" do
       sorcery_model_property_set(:encryption_algorithm, :custom)
       sorcery_model_property_set(:custom_encryption_provider, MyCrypto)
       create_new_user
-      User.authenticate(@user.send(User.sorcery_config.username_attribute_names.first), 'secret').should be_true
+      User.authenticate(@user.send(User.sorcery_config.username_attribute_names.first), 'secret').should be_truthy
     end
 
     it "if encryption algo is aes256, it should set key to crypto provider" do
@@ -365,11 +365,11 @@ shared_examples_for "external_user" do
 
   it "external? should be false for regular users" do
     create_new_user
-    @user.external?.should be_false
+    @user.external?.should be false
   end
 
   it "external? should be true for external users" do
     create_new_external_user(:twitter)
-    @user.external?.should be_true
+    @user.external?.should be true
   end
 end

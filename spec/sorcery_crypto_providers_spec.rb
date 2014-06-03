@@ -18,11 +18,11 @@ describe "Crypto Providers wrappers" do
     end
 
     it "matches? returns true when matches" do
-      Sorcery::CryptoProviders::MD5.matches?(Digest::MD5.hexdigest('Noam Ben-Ari'), 'Noam Ben-Ari').should be_true
+      Sorcery::CryptoProviders::MD5.matches?(Digest::MD5.hexdigest('Noam Ben-Ari'), 'Noam Ben-Ari').should be true
     end
 
     it "matches? returns false when no match" do
-      Sorcery::CryptoProviders::MD5.matches?(Digest::MD5.hexdigest('Noam Ben-Ari'), 'Some Dude').should be_false
+      Sorcery::CryptoProviders::MD5.matches?(Digest::MD5.hexdigest('Noam Ben-Ari'), 'Some Dude').should be false
     end
 
   end
@@ -48,11 +48,11 @@ describe "Crypto Providers wrappers" do
     end
 
     it "matches? returns true when matches" do
-      Sorcery::CryptoProviders::SHA1.matches?(@digest, 'Noam Ben-Ari').should be_true
+      Sorcery::CryptoProviders::SHA1.matches?(@digest, 'Noam Ben-Ari').should be true
     end
 
     it "matches? returns false when no match" do
-      Sorcery::CryptoProviders::SHA1.matches?(@digest, 'Some Dude').should be_false
+      Sorcery::CryptoProviders::SHA1.matches?(@digest, 'Some Dude').should be false
     end
 
     it "matches password encrypted using salt and join token from upstream" do
@@ -82,11 +82,11 @@ describe "Crypto Providers wrappers" do
     end
 
     it "matches? returns true when matches" do
-      Sorcery::CryptoProviders::SHA256.matches?(@digest, 'Noam Ben-Ari').should be_true
+      Sorcery::CryptoProviders::SHA256.matches?(@digest, 'Noam Ben-Ari').should be true
     end
 
     it "matches? returns false when no match" do
-      Sorcery::CryptoProviders::SHA256.matches?(@digest, 'Some Dude').should be_false
+      Sorcery::CryptoProviders::SHA256.matches?(@digest, 'Some Dude').should be false
     end
 
   end
@@ -112,11 +112,11 @@ describe "Crypto Providers wrappers" do
     end
 
     it "matches? returns true when matches" do
-      Sorcery::CryptoProviders::SHA512.matches?(@digest, 'Noam Ben-Ari').should be_true
+      Sorcery::CryptoProviders::SHA512.matches?(@digest, 'Noam Ben-Ari').should be true
     end
 
     it "matches? returns false when no match" do
-      Sorcery::CryptoProviders::SHA512.matches?(@digest, 'Some Dude').should be_false
+      Sorcery::CryptoProviders::SHA512.matches?(@digest, 'Some Dude').should be false
     end
 
   end
@@ -138,11 +138,11 @@ describe "Crypto Providers wrappers" do
     end
 
     it "matches? returns true when matches" do
-      Sorcery::CryptoProviders::AES256.matches?(@digest, 'Noam Ben-Ari').should be_true
+      Sorcery::CryptoProviders::AES256.matches?(@digest, 'Noam Ben-Ari').should be true
     end
 
     it "matches? returns false when no match" do
-      Sorcery::CryptoProviders::AES256.matches?(@digest, 'Some Dude').should be_false
+      Sorcery::CryptoProviders::AES256.matches?(@digest, 'Some Dude').should be false
     end
 
     it "can be decrypted" do
@@ -175,15 +175,15 @@ describe "Crypto Providers wrappers" do
     end
 
     it "matches? returns true when matches" do
-      Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Noam Ben-Ari').should be_true
+      Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Noam Ben-Ari').should be true
     end
 
     it "matches? returns false when no match" do
-      Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Some Dude').should be_false
+      Sorcery::CryptoProviders::BCrypt.matches?(@digest, 'Some Dude').should be false
     end
 
     it "respond_to?(:stretches) returns true" do
-      Sorcery::CryptoProviders::BCrypt.respond_to?(:stretches).should be_true
+      Sorcery::CryptoProviders::BCrypt.respond_to?(:stretches).should be true
     end
 
     it "sets cost when stretches is set" do
