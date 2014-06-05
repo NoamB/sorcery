@@ -1,20 +1,19 @@
 shared_examples_for "rails_3_brute_force_protection_model" do
-  # ----------------- PLUGIN CONFIGURATION -----------------------
-  describe User, "loaded plugin configuration" do
+  context "loaded plugin configuration" do
 
     let(:config) { User.sorcery_config }
+    let(:user) { create_new_user }
   
     before(:all) do
       sorcery_reload!([:brute_force_protection])
-      create_new_user
     end
   
     after(:each) do
       User.sorcery_config.reset!
     end
     
-    specify { expect(@user).to respond_to(:failed_logins_count) }
-    specify { expect(@user).to respond_to(:lock_expires_at) }
+    specify { expect(user).to respond_to(:failed_logins_count) }
+    specify { expect(user).to respond_to(:lock_expires_at) }
  
     it "enables configuration option 'failed_logins_count_attribute_name'" do
       sorcery_model_property_set(:failed_logins_count_attribute_name, :my_count)

@@ -1,6 +1,9 @@
 shared_examples_for "controller_activity_logging" do
 
   specify { expect(subject).to respond_to(:current_users) }
+  let(:user) { create_new_user }
+
+  before(:each) { user }
 
   it "'current_users' is empty when no users are logged in" do
     expect(subject.current_users.size).to eq 0
@@ -10,9 +13,9 @@ shared_examples_for "controller_activity_logging" do
     now = Time.now.in_time_zone
     login_user
 
-    expect(@user.last_login_at).not_to be_nil
-    expect(@user.last_login_at.utc.to_s).to be >= now.utc.to_s
-    expect(@user.last_login_at.utc.to_s).to be <= (now.utc+2).to_s
+    expect(user.last_login_at).not_to be_nil
+    expect(user.last_login_at.utc.to_s).to be >= now.utc.to_s
+    expect(user.last_login_at.utc.to_s).to be <= (now.utc+2).to_s
   end
 
   it "logs logout time on logout" do
@@ -59,7 +62,7 @@ shared_examples_for "controller_activity_logging" do
     login_user
     get :some_action
 
-    expect(subject.current_users).to match([User.find(@user.id)])
+    expect(subject.current_users).to match([User.find(user.id)])
   end
 
   it "'current_users' shows all current_users, whether they have logged out before or not." do
@@ -86,7 +89,7 @@ shared_examples_for "controller_activity_logging" do
     now = Time.now.in_time_zone
     login_user
 
-    expect(@user.last_login_at).to be_nil
+    expect(user.last_login_at).to be_nil
   end
 
   it "does not register logout time if configured so" do
@@ -95,7 +98,7 @@ shared_examples_for "controller_activity_logging" do
     login_user
     logout_user
 
-    expect(@user.last_logout_at).to be_nil
+    expect(user.last_logout_at).to be_nil
   end
 
   it "does not register last activity time if configured so" do
@@ -104,7 +107,7 @@ shared_examples_for "controller_activity_logging" do
     login_user
     get :some_action
 
-    expect(@user.last_activity_at).to be_nil
+    expect(user.last_activity_at).to be_nil
   end
 
   it "does not register last IP address if configured so" do
@@ -113,6 +116,6 @@ shared_examples_for "controller_activity_logging" do
     login_user
     get :some_action
 
-    expect(@user.last_activity_at).to be_nil
+    expect(user.last_activity_at).to be_nil
   end
 end

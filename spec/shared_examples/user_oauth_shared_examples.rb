@@ -1,6 +1,9 @@
 shared_examples_for "rails_3_oauth_model" do
   # ----------------- PLUGIN CONFIGURATION -----------------------
-  describe User, "loaded plugin configuration" do
+
+  let(:external_user) { create_new_external_user :twitter }
+
+  describe "loaded plugin configuration" do
 
     before(:all) do
       if defined?(DataMapper) && User.ancestors.include?(DataMapper::Resource)
@@ -15,7 +18,6 @@ shared_examples_for "rails_3_oauth_model" do
       sorcery_controller_external_property_set(:twitter, :key, "eYVNBjBDi33aa9GkA3w")
       sorcery_controller_external_property_set(:twitter, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
       sorcery_controller_external_property_set(:twitter, :callback_url, "http://blabla.com")
-      create_new_external_user(:twitter)
     end
 
     it "responds to 'load_from_provider'" do
@@ -23,10 +25,12 @@ shared_examples_for "rails_3_oauth_model" do
     end
 
     it "'load_from_provider' loads user if exists" do
-      expect(User.load_from_provider :twitter, 123).to eq @user
+      external_user
+      expect(User.load_from_provider :twitter, 123).to eq external_user
     end
 
     it "'load_from_provider' returns nil if user doesn't exist" do
+      external_user
       expect(User.load_from_provider :twitter, 980342).to be_nil
     end
 
