@@ -1,5 +1,9 @@
 shared_examples_for "controller_activity_logging" do
 
+  before(:all) do
+    sorcery_reload!([:activity_logging])
+  end
+
   specify { expect(subject).to respond_to(:current_users) }
   let(:user) { create_new_user }
 

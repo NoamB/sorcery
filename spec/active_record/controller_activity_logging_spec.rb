@@ -18,11 +18,7 @@ describe SorceryController, :active_record => true do
   end
 
   # ----------------- ACTIVITY LOGGING -----------------------
-  describe SorceryController, "with activity logging features" do
-    before(:all) do
-      sorcery_reload!([:activity_logging])
-    end
-
+  context "with activity logging features" do
     after(:each) do
       User.delete_all
     end
