@@ -1,6 +1,14 @@
 require 'spec_helper'
 
 describe SorceryController, :active_record => true do
+
+  let(:db_user) { User.find_by_email 'bla@bla.com' }
+  let!(:user) { create_new_user }
+
+  def request_test_login
+    get :test_login, :email => 'bla@bla.com', :password => 'blabla'
+  end
+
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/brute_force_protection")
     User.reset_column_information
@@ -11,11 +19,12 @@ describe SorceryController, :active_record => true do
   end
 
   # ----------------- SESSION TIMEOUT -----------------------
-  describe SorceryController, "with brute force protection features" do
+  describe "brute force protection features" do
+
     before(:all) do
       sorcery_reload!([:brute_force_protection])
-      create_new_user
     end
+
 
     after(:each) do
       Sorcery::Controller::Config.reset!
@@ -23,69 +32,78 @@ describe SorceryController, :active_record => true do
       Timecop.return
     end
 
-    it "should count login retries" do
-      3.times {get :test_login, :email => 'bla@bla.com', :password => 'blabla'}
-      User.find_by_email('bla@bla.com').failed_logins_count.should == 3
+    it "counts login retries" do
+      3.times { request_test_login }
+      expect(db_user.failed_logins_count).to eq 3
     end
 
-    it "should generate unlock token before mail is sent" do
+    it "generates unlock token before mail is sent" do
       sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
       sorcery_model_property_set(:login_lock_time_period, 0)
       sorcery_model_property_set(:unlock_token_mailer, SorceryMailer)
-      3.times {get :test_login, :email => "bla@bla.com", :password => "blabla"}
-      ActionMailer::Base.deliveries.last.body.to_s.match(User.find_by_email('bla@bla.com').unlock_token).should_not be_nil
+      3.times { request_test_login }
+      expect(ActionMailer::Base.deliveries.last.body.to_s.match(db_user.unlock_token)).not_to be_nil
     end
 
-    it "should unlock after entering unlock token" do
+    it "unlocks after entering unlock token" do
       sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
       sorcery_model_property_set(:login_lock_time_period, 0)
       sorcery_model_property_set(:unlock_token_mailer, SorceryMailer)
-      3.times {get :test_login, :email => "bla@bla.com", :password => "blabla"}
-      User.find_by_email('bla@bla.com').unlock_token.should_not be_nil
-      token = User.find_by_email('bla@bla.com').unlock_token
+      3.times { request_test_login }
+
+      expect(db_user.unlock_token).not_to be_nil
+
+      token = db_user.unlock_token
       user = User.load_from_unlock_token(token)
-      user.should_not be_nil
+
+      expect(user).not_to be_nil
+
       user.unlock!
-      User.load_from_unlock_token(token).should be_nil
+      expect(User.load_from_unlock_token(db_user.unlock_token)).to be_nil
     end
 
-    it "should reset the counter on a good login" do
+    it "resets the counter on a good login" do
       # dirty hack for rails 4
-      @controller.stub(:register_last_activity_time_to_db)
+      allow(@controller).to receive(:register_last_activity_time_to_db)
 
       sorcery_model_property_set(:consecutive_login_retries_amount_limit, 5)
-      3.times {get :test_login, :email => 'bla@bla.com', :password => 'blabla'}
+      3.times { request_test_login }
       get :test_login, :email => 'bla@bla.com', :password => 'secret'
-      User.find_by_email('bla@bla.com').failed_logins_count.should == 0
+
+      expect(db_user.failed_logins_count).to eq 0
     end
 
-    it "should lock user when number of retries reached the limit" do
-      User.find_by_email('bla@bla.com').lock_expires_at.should be_nil
+    it "locks user when number of retries reached the limit" do
+      expect(db_user.lock_expires_at).to be_nil
+
       sorcery_model_property_set(:consecutive_login_retries_amount_limit, 1)
-      get :test_login, :email => 'bla@bla.com', :password => 'blabla'
-      User.find_by_email('bla@bla.com').lock_expires_at.should_not be_nil
+      request_test_login
+
+      expect(db_user.reload.lock_expires_at).not_to be_nil
     end
 
-    it "should unlock after lock time period passes" do
+    it "unlocks after lock time period passes" do
       sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
       sorcery_model_property_set(:login_lock_time_period, 0.2)
-      get :test_login, :email => 'bla@bla.com', :password => 'blabla'
-      get :test_login, :email => 'bla@bla.com', :password => 'blabla'
-      User.find_by_email('bla@bla.com').lock_expires_at.should_not be_nil
+      2.times { request_test_login }
+
+      expect(db_user.reload.lock_expires_at).not_to be_nil
+
       Timecop.travel(Time.now.in_time_zone + 0.3)
-      get :test_login, :email => 'bla@bla.com', :password => 'blabla'
-      User.find_by_email('bla@bla.com').lock_expires_at.should be_nil
+      request_test_login
+
+      expect(db_user.reload.lock_expires_at).to be_nil
     end
 
-    it "should not unlock if time period is 0 (permanent lock)" do
+    it "doest not unlock if time period is 0 (permanent lock)" do
       sorcery_model_property_set(:consecutive_login_retries_amount_limit, 2)
       sorcery_model_property_set(:login_lock_time_period, 0)
-      get :test_login, :email => 'bla@bla.com', :password => 'blabla'
-      get :test_login, :email => 'bla@bla.com', :password => 'blabla'
-      unlock_date = User.find_by_email('bla@bla.com').lock_expires_at
+      2.times { request_test_login }
+      unlock_date = db_user.lock_expires_at
       Timecop.travel(Time.now.in_time_zone + 1)
-      get :test_login, :email => 'bla@bla.com', :password => 'blabla'
-      User.find_by_email('bla@bla.com').lock_expires_at.to_s.should == unlock_date.to_s
+      request_test_login
+
+      expect(db_user.lock_expires_at.to_s).to eq unlock_date.to_s
     end
 
     context "unlock_token_mailer_disabled is true" do
@@ -97,15 +115,17 @@ describe SorceryController, :active_record => true do
         sorcery_model_property_set(:unlock_token_mailer, SorceryMailer)
       end
 
-      it "should generate unlock token after user locked" do
-        3.times {get :test_login, :email => "bla@bla.com", :password => "blabla"}
-        User.find_by_email('bla@bla.com').unlock_token.should_not be_nil
+      it "generates unlock token after user locked" do
+        3.times { request_test_login }
+
+        expect(db_user.unlock_token).not_to be_nil
       end
 
-      it "should *not* automatically send unlock mail" do
+      it "doest *not* automatically send unlock mail" do
         old_size = ActionMailer::Base.deliveries.size
-        3.times {get :test_login, :email => "bla@bla.com", :password => "blabla"}
-        ActionMailer::Base.deliveries.size.should == old_size
+        3.times { request_test_login }
+
+        expect(ActionMailer::Base.deliveries.size).to eq old_size
       end
 
     end
@@ -119,15 +139,17 @@ describe SorceryController, :active_record => true do
         sorcery_model_property_set(:unlock_token_mailer, SorceryMailer)
       end
 
-      it "should set the unlock token after user locked" do
-        3.times {get :test_login, :email => "bla@bla.com", :password => "blabla"}
-        User.find_by_email('bla@bla.com').unlock_token.should_not be_nil
+      it "sets the unlock token after user locked" do
+        3.times { request_test_login }
+
+        expect(db_user.unlock_token).not_to be_nil
       end
 
-      it "should automatically send unlock mail" do
+      it "automatically sends unlock mail" do
         old_size = ActionMailer::Base.deliveries.size
-        3.times {get :test_login, :email => "bla@bla.com", :password => "blabla"}
-        ActionMailer::Base.deliveries.size.should == old_size + 1
+        3.times { request_test_login }
+
+        expect(ActionMailer::Base.deliveries.size).to eq old_size + 1
       end
 
     end

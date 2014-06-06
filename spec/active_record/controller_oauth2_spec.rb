@@ -14,8 +14,11 @@ describe SorceryController, :active_record => true do
   after(:all) do
     ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
   end
+
+  it_behaves_like "oauth2_controller"
+
   # ----------------- OAuth -----------------------
-  describe SorceryController, "with OAuth features" do
+  context "with OAuth features" do
 
     before(:each) do
       stub_all_oauth2_requests!
@@ -60,7 +63,7 @@ describe SorceryController, :active_record => true do
 =end
     it "'login_from' logins if user exists" do
       # dirty hack for rails 4
-      allow(@controller).to receive(:register_last_activity_time_to_db)
+      allow(subject).to receive(:register_last_activity_time_to_db)
 
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:facebook)
@@ -79,7 +82,7 @@ describe SorceryController, :active_record => true do
 
     it "on successful login_from the user is redirected to the url he originally wanted" do
       # dirty hack for rails 4
-      allow(@controller).to receive(:register_last_activity_time_to_db)
+      allow(subject).to receive(:register_last_activity_time_to_db)
 
       sorcery_model_property_set(:authentications_class, Authentication)
       create_new_external_user(:facebook)
@@ -103,7 +106,7 @@ describe SorceryController, :active_record => true do
 
         it "'login_from' logins if user exists" do
           # dirty hack for rails 4
-          allow(@controller).to receive(:register_last_activity_time_to_db)
+          allow(subject).to receive(:register_last_activity_time_to_db)
 
           sorcery_model_property_set(:authentications_class, Authentication)
           create_new_external_user(provider)
@@ -122,7 +125,7 @@ describe SorceryController, :active_record => true do
 
         it "on successful login_from the user is redirected to the url he originally wanted (github)" do
           # dirty hack for rails 4
-          allow(@controller).to receive(:register_last_activity_time_to_db)
+          allow(subject).to receive(:register_last_activity_time_to_db)
 
           sorcery_model_property_set(:authentications_class, Authentication)
           create_new_external_user(provider)
@@ -136,12 +139,7 @@ describe SorceryController, :active_record => true do
 
   end
 
-
-  describe SorceryController do
-    it_behaves_like "oauth2_controller"
-  end
-
-  describe SorceryController, "OAuth with User Activation features" do
+  describe "OAuth with User Activation features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
       sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
@@ -204,7 +202,7 @@ describe SorceryController, :active_record => true do
     end
   end
 
-  describe SorceryController, "OAuth with user activation features"  do
+  describe "OAuth with user activation features"  do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activity_logging")
@@ -248,7 +246,7 @@ describe SorceryController, :active_record => true do
     end
   end
 
-  describe SorceryController, "OAuth with session timeout features" do
+  describe "OAuth with session timeout features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
       User.reset_column_information

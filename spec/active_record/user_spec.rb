@@ -8,13 +8,13 @@ describe "User with no submodules (core)", :active_record => true do
     sorcery_reload!
   end
 
-  describe User, "when app has plugin loaded" do
-    it "should respond to the plugin activation class method" do
-      ActiveRecord::Base.should respond_to(:authenticates_with_sorcery!)
+  context "when app has plugin loaded" do
+    it "responds to the plugin activation class method" do
+      expect(ActiveRecord::Base).to respond_to :authenticates_with_sorcery!
     end
 
-    it "User should respond_to .authenticates_with_sorcery!" do
-      User.should respond_to(:authenticates_with_sorcery!)
+    it "User responds to .authenticates_with_sorcery!" do
+      expect(User).to respond_to :authenticates_with_sorcery!
     end
   end
 
@@ -22,7 +22,7 @@ describe "User with no submodules (core)", :active_record => true do
 
   it_should_behave_like "rails_3_core_model"
 
-  describe User, "external users" do
+  describe "external users" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
       User.reset_column_information

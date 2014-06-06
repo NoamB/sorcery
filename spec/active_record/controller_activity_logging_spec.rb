@@ -23,10 +23,6 @@ describe SorceryController, :active_record => true do
       sorcery_reload!([:activity_logging])
     end
 
-    before(:each) do
-      create_new_user
-    end
-
     after(:each) do
       User.delete_all
     end
