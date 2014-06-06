@@ -1,9 +1,8 @@
 require 'spec_helper'
-
 require 'rails_app/app/mailers/sorcery_mailer'
 require 'shared_examples/user_shared_examples'
 
-describe "User with no submodules (core)", :active_record => true do
+describe User, "with no submodules (core)", :active_record => true do
   before(:all) do
     sorcery_reload!
   end

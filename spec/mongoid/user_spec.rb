@@ -1,16 +1,15 @@
 require 'spec_helper'
-
 require 'rails_app/app/mailers/sorcery_mailer'
 require 'shared_examples/user_shared_examples'
 
-describe "User with no submodules (core)", :mongoid => true do
+describe User, "with no submodules (core)", :mongoid => true do
   before(:all) do
     sorcery_reload!
   end
 
-  describe User, "when app has plugin loaded" do
-    it "User should respond_to .authenticates_with_sorcery!" do
-      User.should respond_to(:authenticates_with_sorcery!)
+  context "when app has plugin loaded" do
+    it "User responds to .authenticates_with_sorcery!" do
+      expect(User).to respond_to :authenticates_with_sorcery!
     end
   end
 
@@ -18,21 +17,21 @@ describe "User with no submodules (core)", :mongoid => true do
 
   it_should_behave_like "rails_3_core_model"
 
-  describe User, "external users" do
+  describe "external users" do
 
     it_should_behave_like "external_user"
 
   end
 
-  describe User, "when inherited" do
-    it "should inherit mongoid fields" do
+  context "when inherited" do
+    it "inherits mongoid fields" do
       User.class_eval do
         field :blabla
       end
       class SubUser < User
       end
 
-      SubUser.fields.should include("blabla")
+      expect(SubUser.fields).to include("blabla")
     end
   end
 
