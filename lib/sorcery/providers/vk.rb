@@ -10,7 +10,7 @@ module Sorcery
 
       include Protocols::Oauth2
 
-      attr_accessor :auth_path, :token_path
+      attr_accessor :auth_path, :token_path, :user_info_url, :scope
 
       def initialize
         super
@@ -19,6 +19,7 @@ module Sorcery
         @user_info_url  = 'https://api.vk.com/method/getProfiles'
         @auth_path      = '/authorize'
         @token_path     = '/access_token'
+        @scope          = ''
       end
 
       def get_user_hash(access_token)
@@ -27,7 +28,8 @@ module Sorcery
         params = {
           access_token: access_token.token,
           uids:         access_token.params['user_id'],
-          fields:       user_info_mapping.values.join(',')
+          fields:       user_info_mapping.values.join(','),
+          scope:        scope,
         }
 
         response = access_token.get(user_info_url, params: params)
