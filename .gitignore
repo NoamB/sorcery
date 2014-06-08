@@ -51,4 +51,5 @@ spec/rails_app/log/*
 *.log
 *.sqlite3
 Gemfile*.lock
+gemfiles/*.lock
 .ruby-version

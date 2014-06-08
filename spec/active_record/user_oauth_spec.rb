@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'shared_examples/user_oauth_shared_examples'
 
-describe "User with oauth submodule", :active_record => true do
+describe User, "with oauth submodule", :active_record => true do
   before(:all) do
     ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
     User.reset_column_information

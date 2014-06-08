@@ -12,8 +12,8 @@ gem 'bcrypt', "~> 3.1.0"
 gem 'abstract', '>= 1.0.0'
 gem "rails", "~> 3.2.15"
 gem 'json', ">= 1.7.7"
-gem "rspec", "~> 2.14.0"
-gem 'rspec-rails', "~> 2.14.0"
+gem "rspec", "~> 3.0.0"
+gem 'rspec-rails', "~> 3.0.0"
 gem 'sqlite3'
 gem "yard", "~> 0.6.0"
 gem "bundler", ">= 1.1.0"
