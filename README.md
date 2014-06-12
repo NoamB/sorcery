@@ -11,6 +11,8 @@ Bates's railscasts about it.
 
 **Rails 4 status:** [Sorcery 0.8.5](http://rubygems.org/gems/sorcery/versions/0.8.5) is fully tested and ready for Rails 4.0.
 
+**Rails 4.1 status:** Sorcery 0.8.6 (to be released, currently in master branch) works with Rails 4.1
+
 https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication
 
 ## Philosophy
@@ -257,13 +259,21 @@ attributes such as password and password_confirmation)
 
 Important notes while upgrading:
 
+*   If you are upgrading from <= **0.8.5** and you're using Sorcery test helpers,
+    you need to change the way you include them to following code:
+
+        RSpec.configure do |config|
+          config.include Sorcery::TestHelpers::Rails::Controler, type: [:controller]
+          config.include Sorcery::TestHelpers::Rails::Integration, type: [:feature]
+        end
+
 *   If are upgrading to **0.8.2** and use activity_logging feature with
     ActiveRecord, you will have to add a new column
     `last_login_from_ip_address`
     [#465](https://github.com/NoamB/sorcery/issues/465)
 *   Sinatra support existed until **v0.7.0** (including), but was dropped
     later due to being a maintenance nightmare.
-*   If upgrading from <= **0.6.1 to >= <b>0.7.0** you need to change
+*   If upgrading from <= **0.6.1 to >= **0.7.0** you need to change
     'username_attribute_name' to 'username_attribute_names' in initializer.
 *   If upgrading from <= **v0.5.1** to >= **v0.5.2** you need to explicitly
     set your user_class model in the initializer file.

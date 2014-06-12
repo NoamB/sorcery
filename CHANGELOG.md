@@ -3,12 +3,16 @@
 ## 0.8.6 (not released)
 
 * `current_user` returns `nil` instead of `false` if there's no user loggd in (#493)
-*  MongoMapper adapter does not override `save!` method anymore. However due to ORM's lack of support for `validate: false` in `save!`, the combination of `validate: false` and `raise_on_failure: true` is not possible in MongoMapper. The errors will not be raised in this situation. (#151)
+* MongoMapper adapter does not override `save!` method anymore. However due to ORM's lack of support for `validate: false` in `save!`, the combination of `validate: false` and `raise_on_failure: true` is not possible in MongoMapper. The errors will not be raised in this situation. (#151)
 * Fixed rename warnings for bcrypt-ruby
 * The way Sorcery adapters are included has been changed due to problem with multiple `included` blocks error in `ActiveSupport::Concern` class (#527)
 * Session timeout works with new cookie serializer introduced in Rails 4.1
 * Rails 4.1 compatibility bugs were fixed, this version is fully supported (#538)
 * VK providers now supports `scope` option
+* Support for DataMapper added
+* Helpers for integration tests were added
+* Fixed problems with special characters in user login attributes (MongoMapper & Mongoid)
+* Fixed remaining `password_confirmation` value - it is now cleared just like `password`
 
 ## 0.8.5
 * Fixed add_provider_to_user with CamelCased authentications_class model (#382)
