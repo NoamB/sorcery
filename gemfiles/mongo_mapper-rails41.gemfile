@@ -3,5 +3,6 @@ source 'https://rubygems.org'
 gemspec path: '..'
 
 gem 'mongo_mapper', github: 'mongomapper/mongomapper'
+gem 'sqlite3'
 
 gem 'rails', '~> 4.1.0'
