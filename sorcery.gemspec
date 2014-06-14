@@ -14,21 +14,17 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 1.9.3'
 
-  s.add_dependency("oauth", "~> 0.4.4")
-  s.add_dependency("oauth2", ">= 0.8.0", "< 1.0.0")
-  s.add_dependency("bcrypt", ">= 3.1")
+  s.add_dependency "oauth", "~> 0.4", ">= 0.4.4"
+  s.add_dependency "oauth2", ">= 0.8.0", "< 1.0.0"
+  s.add_dependency "bcrypt", "~> 3.1"
 
-  s.add_development_dependency("abstract", ">= 1.0.0")
-  s.add_development_dependency("rails", ">= 3.2.15")
-  s.add_development_dependency("json", ">= 1.7.7")
-  s.add_development_dependency("rspec", "~> 2.5.0")
-  s.add_development_dependency("rspec-rails", "~> 2.5.0")
-  s.add_development_dependency("sqlite3", ">= 0")
-  s.add_development_dependency("yard", "~> 0.6.0")
-  s.add_development_dependency("bundler", ">= 1.1.0")
-  s.add_development_dependency("simplecov", ">= 0.3.8")
-  s.add_development_dependency("timecop", ">= 0")
-  s.add_development_dependency("mongo_mapper", ">= 0")
-  s.add_development_dependency("mongoid", "~> 2.4.4")
+  s.add_development_dependency "abstract", ">= 1.0.0"
+  s.add_development_dependency "json", ">= 1.7.7"
+  s.add_development_dependency "yard", "~> 0.6.0"
+
+  s.add_development_dependency "timecop"
+  s.add_development_dependency "simplecov", ">= 0.3.8"
+  s.add_development_dependency "rspec", "~> 3.0.0"
+  s.add_development_dependency "rspec-rails", "~> 3.0.0"
 end
 
