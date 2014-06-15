@@ -1,5 +1,6 @@
 require 'data_mapper'
 require 'dm-migrations'
+require 'sorcery'
 
 #DataMapper.setup(:default, 'sqlite::memory:')
 # NOTE
