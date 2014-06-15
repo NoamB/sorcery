@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "sorcery"
   s.version = "0.8.5"
-  s.authors = ["Noam Ben Ari", "Kir Shatrov"]
+  s.authors = ["Noam Ben Ari", "Kir Shatrov", "Grzegorz Witek"]
   s.email = "nbenari@gmail.com"
   s.description = "Provides common authentication needs such as signing in/out, activating by email and resetting password."
   s.summary = "Magical authentication for Rails 3 applications"
