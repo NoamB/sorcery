@@ -15,10 +15,9 @@ require 'rails/all'
 require 'rspec/rails'
 require 'timecop'
 
-require "rails_app/config/environment"
-
 require "orm/#{SORCERY_ORM}"
 
+require "rails_app/config/environment"
 
 class TestMailer < ActionMailer::Base;end
 
