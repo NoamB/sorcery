@@ -15,10 +15,9 @@ require 'rails/all'
 require 'rspec/rails'
 require 'timecop'
 
-require "rails_app/config/environment"
-
 require "orm/#{SORCERY_ORM}"
 
+require "rails_app/config/environment"
 
 class TestMailer < ActionMailer::Base;end
 
@@ -34,9 +33,11 @@ RSpec.configure do |config|
 
   config.use_transactional_fixtures = true
 
+  migrations_path = Rails.root.join("db", "migrate", "core")
+
   config.before(:suite) do
     if SORCERY_ORM.to_sym == :active_record
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/core")
+      ActiveRecord::Migrator.migrate(migrations_path)
     end
     if SORCERY_ORM.to_sym == :datamapper
       DataMapper.auto_migrate!
@@ -50,7 +51,7 @@ RSpec.configure do |config|
 
   config.after(:suite) do
     if SORCERY_ORM.to_sym == :active_record
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/core")
+      ActiveRecord::Migrator.rollback(migrations_path)
     end
   end
 

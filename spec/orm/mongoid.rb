@@ -1,4 +1,5 @@
 require 'mongoid'
+require 'sorcery'
 
 Mongoid.configure do |config|
   database = "sorcery_mongoid_test"
