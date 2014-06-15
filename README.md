@@ -9,9 +9,7 @@ Inspired by restful_authentication, Authlogic and Devise. Crypto code taken
 almost unchanged from Authlogic. OAuth code inspired by OmniAuth and Ryan
 Bates's railscasts about it.
 
-**Rails 4 status:** [Sorcery 0.8.5](http://rubygems.org/gems/sorcery/versions/0.8.5) is fully tested and ready for Rails 4.0.
-
-**Rails 4.1 status:** Sorcery 0.8.6 (to be released, currently in master branch) works with Rails 4.1
+**Rails 4 status:** [Sorcery 0.8.6](http://rubygems.org/gems/sorcery/versions/0.8.6) is fully tested and ready for Rails 4.0 and 4.1.
 
 https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication
 
@@ -252,7 +250,7 @@ Important notes:
 *   Usage: include DataMapper::Resource in user model, follow sorcery
     instructions (remember to add property id, validators and accessor
 attributes such as password and password_confirmation)
-*   Option downcase__username_before_authenticating and dm-mysql, 
+*   Option downcase__username_before_authenticating and dm-mysql,
     http://datamapper.lighthouseapp.com/projects/20609/tickets/1105-add-support-for-definingchanging-default-collation
 
 ## Upgrading
