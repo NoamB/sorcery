@@ -14,6 +14,7 @@ require 'rspec'
 require 'rails/all'
 require 'rspec/rails'
 require 'timecop'
+require "sorcery"
 
 require "rails_app/config/environment"
 
