@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-gemspec
-
 gem 'sqlite3'
 
 group :mongomapper do
@@ -20,3 +18,5 @@ group :datamapper do
 end
 
 gem 'rails', '~> 4.0.1'
+
+gemspec
