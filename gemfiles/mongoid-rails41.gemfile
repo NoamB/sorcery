@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gemspec path: '..'
+gem 'rails', '~> 4.1.0'
 
 gem 'pry'
 
@@ -8,4 +8,4 @@ gem 'mongoid', github: 'mongoid/mongoid'
 gem 'bson_ext'
 gem 'sqlite3'
 
-gem 'rails', '~> 4.1.0'
+gemspec path: '..'

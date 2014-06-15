@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-gemspec
-
 gem 'rails', '~> 3.2'
 gem 'sqlite3'
 
@@ -19,3 +17,5 @@ group :datamapper do
   gem 'data_mapper'
   gem 'dm-mysql-adapter'
 end
+
+gemspec

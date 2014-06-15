@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gemspec path: '..'
-
-gem 'rails', '~> 4.1'
 gem 'sqlite3'
+gem 'rails', '~> 4.1'
+
+gemspec path: '..'
