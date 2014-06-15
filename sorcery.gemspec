@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.authors = ["Noam Ben Ari", "Kir Shatrov", "Grzegorz Witek"]
   s.email = "nbenari@gmail.com"
   s.description = "Provides common authentication needs such as signing in/out, activating by email and resetting password."
-  s.summary = "Magical authentication for Rails 3 applications"
+  s.summary = "Magical authentication for Rails 3 & 4 applications"
   s.homepage = "http://github.com/NoamB/sorcery"
 
   s.files         = `git ls-files`.split($/)
