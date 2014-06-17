@@ -261,7 +261,7 @@ Important notes while upgrading:
     you need to change the way you include them to following code:
 
         RSpec.configure do |config|
-          config.include Sorcery::TestHelpers::Rails::Controler, type: [:controller]
+          config.include Sorcery::TestHelpers::Rails::Controller, type: [:controller]
           config.include Sorcery::TestHelpers::Rails::Integration, type: [:feature]
         end
 
