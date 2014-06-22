@@ -32,9 +32,14 @@ module Sorcery
             attribute.to_s
           end
 
+          def	find_by_oauth_credentials(provider, uid)
+            @user_config ||= ::Sorcery::Controller::Config.user_class.to_s.constantize.sorcery_config
+            where(@user_config.provider_attribute_name => provider, @user_config.provider_uid_attribute_name => uid).first
+          end
+
           def find_by_credentials(credentials)
-             sql = @sorcery_config.username_attribute_names.map{|attribute| column_name(attribute) + " = :login"}
-             where(sql.join(' OR '), :login => credentials[0]).first
+            sql = @sorcery_config.username_attribute_names.map{|attribute| column_name(attribute) + " = :login"}
+            where(sql.join(' OR '), :login => credentials[0]).first
           end
 
           def find_by_sorcery_token(token_attr_name, token)
