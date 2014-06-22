@@ -59,7 +59,7 @@ module Sorcery
           end
 
           def find_by_oauth_credentials(provider, uid)
-            @user_config = ::Sorcery::Controller::Config.user_class.to_s.constantize
+            @user_config = ::Sorcery::Controller::Config.user_class.to_s.constantize.sorcery_config
             user = first(@user_config.provider_attribute_name => provider, @user_config.provider_uid_attribute_name => uid)
             !!user ? get(user.id) : nil
           end
