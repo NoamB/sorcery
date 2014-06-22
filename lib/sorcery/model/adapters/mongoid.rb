@@ -39,9 +39,9 @@ module Sorcery
             @user
           end
 
-          def find_by_provider_and_uid(provider, uid)
-            @user_klass ||= ::Sorcery::Controller::Config.user_class.to_s.constantize
-            where(@user_klass.sorcery_config.provider_attribute_name => provider, @user_klass.sorcery_config.provider_uid_attribute_name => uid).first
+          def find_by_oauth_credentials(provider, uid)
+            @user_config ||= ::Sorcery::Controller::Config.user_class.to_s.constantize.sorcery_config
+            where(@user_config.provider_attribute_name => provider, @user_config.provider_uid_attribute_name => uid).first
           end
 
           def find_by_id(id)

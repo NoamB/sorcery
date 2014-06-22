@@ -38,6 +38,11 @@ module Sorcery
             @user
           end
 
+          def find_by_oauth_credentials(provider, uid)
+            @user_config ||= ::Sorcery::Controller::Config.user_class.to_s.constantize.sorcery_config
+            where(@user_config.provider_attribute_name => provider, @user_config.provider_uid_attribute_name => uid).first
+          end
+
           def find_by_id(id)
             find(id)
           end
