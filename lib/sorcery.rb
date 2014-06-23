@@ -1,3 +1,5 @@
+require 'sorcery/version'
+
 module Sorcery
   autoload :Model, 'sorcery/model'
   module Model
