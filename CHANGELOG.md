@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.7 (not released yet)
+
+* `find_by_provider_and_uid` method was replaced with `find_by_oauth_credentials`
+* Sorcery::VERSION constant was added to allow easy version check
+
 ## 0.8.6
 
 * `current_user` returns `nil` instead of `false` if there's no user loggd in (#493)
