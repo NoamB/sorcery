@@ -25,7 +25,7 @@ module Sorcery
             self.send(mthd, options)
           end
         end
-        
+
         module ClassMethods
           def define_sorcery_field(name, type, options={})
             # AR fields are defined through migrations, only validator here
@@ -35,23 +35,40 @@ module Sorcery
             send "#{time}_#{event}", method_name, options.slice(:if)
           end
 
-          def column_name(attribute)
-            return "LOWER(#{attribute})" if (@sorcery_config.downcase_username_before_authenticating)
-            attribute.to_s
-          end
-
           def find_by_oauth_credentials(provider, uid)
             @user_config ||= ::Sorcery::Controller::Config.user_class.to_s.constantize.sorcery_config
-            where(@user_config.provider_attribute_name => provider, @user_config.provider_uid_attribute_name => uid).first
+            conditions = {
+              @user_config.provider_uid_attribute_name => uid,
+              @user_config.provider_attribute_name     => provider
+            }
+
+            where(conditions).first
           end
 
           def find_by_credentials(credentials)
-            sql = @sorcery_config.username_attribute_names.map{|attribute| column_name(attribute) + " = :login"}
-            where(sql.join(' OR '), :login => credentials[0]).first
+            relation = nil
+
+            @sorcery_config.username_attribute_names.each do |attribute|
+              if @sorcery_config.downcase_username_before_authenticating
+                condition = arel_table[attribute].lower.eq(arel_table.lower(credentials[0]))
+              else
+                condition = arel_table[attribute].eq(credentials[0])
+              end
+
+              if relation.nil?
+                relation = condition
+              else
+                relation = relation.or(condition)
+              end
+            end
+
+            where(relation).first
           end
 
           def find_by_sorcery_token(token_attr_name, token)
-            where("#{token_attr_name} = ?", token).first
+            condition = arel_table[token_attr_name].eq(token)
+
+            where(condition).first
           end
 
           def get_current_users
