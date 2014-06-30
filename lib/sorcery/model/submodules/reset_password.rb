@@ -113,11 +113,8 @@ module Sorcery
             config = sorcery_config
             # hammering protection
             return false if config.reset_password_time_between_emails && self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.ago.utc
-            attributes = {config.reset_password_token_attribute_name => TemporaryToken.generate_random_token,
-                          config.reset_password_email_sent_at_attribute_name => Time.now.in_time_zone}
-            attributes[config.reset_password_token_expires_at_attribute_name] = Time.now.in_time_zone + config.reset_password_expiration_period if config.reset_password_expiration_period
             self.class.transaction do
-              self.update_many_attributes(attributes)
+              generate_reset!
               send_reset_password_email! unless sorcery_config.reset_password_mailer_disabled
             end
           end
@@ -129,8 +126,18 @@ module Sorcery
             sorcery_save
           end
 
+          # Generates a reset code with expiration.
+          def generate_reset!
+            config = sorcery_config
+
+            attributes = {config.reset_password_token_attribute_name => TemporaryToken.generate_random_token,
+                          config.reset_password_email_sent_at_attribute_name => Time.now.in_time_zone}
+            attributes[config.reset_password_token_expires_at_attribute_name] = Time.now.in_time_zone + config.reset_password_expiration_period if config.reset_password_expiration_period
+            self.update_many_attributes(attributes)
+          end
+
           protected
-          
+
           def send_reset_password_email!
             generic_send_email(:reset_password_email_method_name, :reset_password_mailer)
           end
