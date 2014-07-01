@@ -27,6 +27,10 @@ module Sorcery
         end
         
         module ClassMethods
+          def define_field(name, type, options={})
+            # AR fields are defined through migrations, only validator here
+          end
+
           def column_name(attribute)
             return "LOWER(#{attribute})" if (@sorcery_config.downcase_username_before_authenticating)
             attribute.to_s

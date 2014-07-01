@@ -71,13 +71,7 @@ module Sorcery
           end
 
           base.sorcery_config.after_config << :validate_mailer_defined
-          base.sorcery_config.after_config << :define_user_activation_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
-          if defined?(MongoMapper) and base.ancestors.include?(MongoMapper::Document)
-            base.sorcery_config.after_config << :define_user_activation_mongo_mapper_fields
-          end
-          if defined?(DataMapper) and base.ancestors.include?(DataMapper::Resource)
-            base.sorcery_config.after_config << :define_user_activation_datamapper_fields
-          end
+          base.sorcery_config.after_config << :define_user_activation_fields
           base.sorcery_config.before_authenticate << :prevent_non_active_login
 
           base.extend(ClassMethods)
@@ -104,34 +98,11 @@ module Sorcery
             raise ArgumentError, msg if @sorcery_config.user_activation_mailer == nil and @sorcery_config.activation_mailer_disabled == false
           end
 
-          def define_user_activation_mongoid_fields
+          def define_user_activation_fields
             self.class_eval do
-              field sorcery_config.activation_state_attribute_name,            :type => String
-              field sorcery_config.activation_token_attribute_name,            :type => String
-              field sorcery_config.activation_token_expires_at_attribute_name, :type => Time
-            end
-          end
-
-          def define_user_activation_mongo_mapper_fields
-            self.class_eval do
-              key sorcery_config.activation_state_attribute_name, String
-              key sorcery_config.activation_token_attribute_name, String
-              key sorcery_config.activation_token_expires_at_attribute_name, Time
-            end
-          end
-
-          def define_user_activation_datamapper_fields
-            self.class_eval do
-              property sorcery_config.activation_state_attribute_name,            String
-              property sorcery_config.activation_token_attribute_name,            String
-              property sorcery_config.activation_token_expires_at_attribute_name, Time
-              [sorcery_config.activation_token_expires_at_attribute_name].each do |sym|
-                alias_method "orig_#{sym}", sym
-                define_method(sym) do
-                  t = send("orig_#{sym}")
-                  t && Time.new(t.year, t.month, t.day, t.hour, t.min, t.sec, 0)
-                end
-              end
+              define_field sorcery_config.activation_state_attribute_name, String
+              define_field sorcery_config.activation_token_attribute_name, String
+              define_field sorcery_config.activation_token_expires_at_attribute_name, Time
             end
           end
         end

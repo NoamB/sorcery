@@ -22,14 +22,7 @@ module Sorcery
           end
 
           base.send(:include, InstanceMethods)
-
-          base.sorcery_config.after_config << :define_remember_me_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
-          if defined?(MongoMapper) and base.ancestors.include?(MongoMapper::Document)
-            base.sorcery_config.after_config << :define_remember_me_mongo_mapper_fields
-          end
-          if defined?(DataMapper) and base.ancestors.include?(DataMapper::Resource)
-            base.sorcery_config.after_config << :define_remember_me_datamapper_fields
-          end
+          base.sorcery_config.after_config << :define_remember_me_fields
 
           base.extend(ClassMethods)
         end
@@ -37,27 +30,11 @@ module Sorcery
         module ClassMethods
           protected
 
-          def define_remember_me_mongoid_fields
-            field sorcery_config.remember_me_token_attribute_name,            :type => String
-            field sorcery_config.remember_me_token_expires_at_attribute_name, :type => Time
+          def define_remember_me_fields
+            define_field sorcery_config.remember_me_token_attribute_name, String
+            define_field sorcery_config.remember_me_token_expires_at_attribute_name, Time
           end
 
-          def define_remember_me_mongo_mapper_fields
-            key sorcery_config.remember_me_token_attribute_name, String
-            key sorcery_config.remember_me_token_expires_at_attribute_name, Time
-          end
-
-          def define_remember_me_datamapper_fields
-            property sorcery_config.remember_me_token_attribute_name,            String
-            property sorcery_config.remember_me_token_expires_at_attribute_name, Time
-            [sorcery_config.remember_me_token_expires_at_attribute_name].each do |sym|
-              alias_method "orig_#{sym}", sym
-              define_method(sym) do
-                t = send("orig_#{sym}")
-                t && Time.new(t.year, t.month, t.day, t.hour, t.min, t.sec, 0)
-              end
-            end
-          end
         end
 
         module InstanceMethods

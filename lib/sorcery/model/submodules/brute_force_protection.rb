@@ -35,13 +35,7 @@ module Sorcery
           end
 
           base.sorcery_config.before_authenticate << :prevent_locked_user_login
-          base.sorcery_config.after_config << :define_brute_force_protection_mongoid_fields if defined?(Mongoid) and base.ancestors.include?(Mongoid::Document)
-          if defined?(MongoMapper) and base.ancestors.include?(MongoMapper::Document)
-            base.sorcery_config.after_config << :define_brute_force_protection_mongo_mapper_fields
-          end
-          if defined?(DataMapper) and base.ancestors.include?(DataMapper::Resource)
-            base.sorcery_config.after_config << :define_brute_force_protection_datamapper_fields
-          end
+          base.sorcery_config.after_config << :define_brute_force_protection_fields
           base.extend(ClassMethods)
           base.send(:include, InstanceMethods)
         end
@@ -55,29 +49,10 @@ module Sorcery
 
           protected
 
-          def define_brute_force_protection_mongoid_fields
-            field sorcery_config.failed_logins_count_attribute_name,  :type => Integer, :default => 0
-            field sorcery_config.lock_expires_at_attribute_name,      :type => Time
-            field sorcery_config.unlock_token_attribute_name,         :type => String
-          end
-
-          def define_brute_force_protection_mongo_mapper_fields
-            key sorcery_config.failed_logins_count_attribute_name, Integer, :default => 0
-            key sorcery_config.lock_expires_at_attribute_name, Time
-            key sorcery_config.unlock_token_attribute_name, String
-          end
-
-          def define_brute_force_protection_datamapper_fields
-            property sorcery_config.failed_logins_count_attribute_name, Integer, :default => 0
-            property sorcery_config.lock_expires_at_attribute_name,     Time
-            property sorcery_config.unlock_token_attribute_name,        String
-            [sorcery_config.lock_expires_at_attribute_name].each do |sym|
-              alias_method "orig_#{sym}", sym
-              define_method(sym) do
-                t = send("orig_#{sym}")
-                t && Time.new(t.year, t.month, t.day, t.hour, t.min, t.sec, 0)
-              end
-            end
+          def define_brute_force_protection_fields
+            define_field sorcery_config.failed_logins_count_attribute_name, Integer, :default => 0
+            define_field sorcery_config.lock_expires_at_attribute_name, Time
+            define_field sorcery_config.unlock_token_attribute_name, String
           end
         end
 

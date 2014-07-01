@@ -36,6 +36,19 @@ module Sorcery
         end
 
         module ClassMethods
+          def define_field(name, type, options={})
+            property name, type, options.slice(:length, :default)
+
+            # Workaround local timezone retrieval problem NOTE dm-core issue #193
+            if type == Time
+              alias_method "orig_#{name}", name
+              define_method(name) do
+                t = send("orig_#{name}")
+                t && Time.new(t.year, t.month, t.day, t.hour, t.min, t.sec, 0)
+              end
+            end
+          end
+
           def find(id)
             get(id)
           end

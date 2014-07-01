@@ -26,6 +26,10 @@ module Sorcery
         end
 
         module ClassMethods
+          def define_field(name, type, options={})
+            field name, options.slice(:default).merge(type: type)
+          end
+
           def credential_regex(credential)
             return { :$regex =>  /^#{Regexp.escape(credential)}$/i  } if (@sorcery_config.downcase_username_before_authenticating)
             credential
