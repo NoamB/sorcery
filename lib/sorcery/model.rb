@@ -60,36 +60,17 @@ module Sorcery
 
     # add virtual password accessor and ORM callbacks.
     def init_orm_hooks!
-      if defined?(DataMapper) and self.ancestors.include?(DataMapper::Resource)
-        init_datamapper_hooks!
-        return
-      end
-      self.class_eval do
-        attr_accessor @sorcery_config.password_attribute_name
-        #attr_protected @sorcery_config.crypted_password_attribute_name, @sorcery_config.salt_attribute_name
-        before_save :encrypt_password, :if => Proc.new { |record|
-          record.send(sorcery_config.password_attribute_name).present?
-        }
-        after_save :clear_virtual_password, :if => Proc.new { |record|
-          record.send(sorcery_config.password_attribute_name).present?
-        }
-      end
-    end
 
-    def init_datamapper_hooks!
-      self.class_eval do
-        attr_accessor @sorcery_config.password_attribute_name
-        before :valid? do
-          if self.send(sorcery_config.password_attribute_name).present?
-            encrypt_password
-          end
-        end
-        after :save do
-          if self.send(sorcery_config.password_attribute_name).present?
-            clear_virtual_password
-          end
-        end
-      end
+      define_callback :before, :save, :encrypt_password, if: Proc.new {|record|
+        record.send(sorcery_config.password_attribute_name).present?
+      }
+
+      define_callback :after, :save, :clear_virtual_password, if: Proc.new {|record|
+        record.send(sorcery_config.password_attribute_name).present?
+      }
+
+      attr_accessor @sorcery_config.password_attribute_name
+
     end
 
     module ClassMethods

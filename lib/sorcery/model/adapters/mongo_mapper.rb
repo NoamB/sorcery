@@ -29,6 +29,10 @@ module Sorcery
             key name, type, options.slice(:default)
           end
 
+          def define_callback(time, event, method_name, options={})
+            send "#{time}_#{event}", method_name, options.slice(:if)
+          end
+
           def credential_regex(credential)
             return { :$regex =>  /^#{Regexp.escape(credential)}$/i  }  if (@sorcery_config.downcase_username_before_authenticating)
             return credential

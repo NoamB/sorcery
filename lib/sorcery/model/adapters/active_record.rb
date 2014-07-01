@@ -31,6 +31,10 @@ module Sorcery
             # AR fields are defined through migrations, only validator here
           end
 
+          def define_callback(time, event, method_name, options={})
+            send "#{time}_#{event}", method_name, options.slice(:if)
+          end
+
           def column_name(attribute)
             return "LOWER(#{attribute})" if (@sorcery_config.downcase_username_before_authenticating)
             attribute.to_s

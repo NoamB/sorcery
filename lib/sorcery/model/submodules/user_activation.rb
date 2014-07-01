@@ -51,23 +51,10 @@ module Sorcery
           end
 
           base.class_eval do
-            if defined?(DataMapper) && self.ancestors.include?(DataMapper::Resource)
-              before :valid? do
-                if self.send(sorcery_config.password_attribute_name).present?
-                  setup_activation
-                end
-              end
-              after :create do
-                if send_activation_needed_email?
-                  send_activation_needed_email!
-                end
-              end
-            else
-              # don't setup activation if no password supplied - this user is created automatically
-              before_create :setup_activation, :if => Proc.new { |user| user.send(sorcery_config.password_attribute_name).present? }
-              # don't send activation needed email if no crypted password created - this user is external (OAuth etc.)
-              after_create  :send_activation_needed_email!, :if => :send_activation_needed_email?
-            end
+            # don't setup activation if no password supplied - this user is created automatically
+            define_callback :before, :create, :setup_activation, :if => Proc.new { |user| user.send(sorcery_config.password_attribute_name).present? }
+            # don't send activation needed email if no crypted password created - this user is external (OAuth etc.)
+            define_callback :after, :create, :send_activation_needed_email!, :if => :send_activation_needed_email?
           end
 
           base.sorcery_config.after_config << :validate_mailer_defined
