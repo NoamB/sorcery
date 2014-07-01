@@ -4,6 +4,7 @@ module Sorcery
   autoload :Model, 'sorcery/model'
   module Model
     autoload :TemporaryToken, 'sorcery/model/temporary_token'
+    autoload :Config, 'sorcery/model/config'
     module Adapters
       autoload :ActiveRecord, 'sorcery/model/adapters/active_record'
       autoload :Mongoid, 'sorcery/model/adapters/mongoid'
@@ -21,6 +22,7 @@ module Sorcery
   end
   autoload :Controller, 'sorcery/controller'
   module Controller
+    autoload :Config, 'sorcery/controller/config'
     module Submodules
       autoload :RememberMe, 'sorcery/controller/submodules/remember_me'
       autoload :SessionTimeout, 'sorcery/controller/submodules/session_timeout'
