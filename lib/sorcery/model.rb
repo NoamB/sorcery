@@ -19,10 +19,7 @@ module Sorcery
       # This runs the options block set in the initializer on the model class.
       ::Sorcery::Controller::Config.user_config.tap{|blk| blk.call(@sorcery_config) if blk}
 
-      init_mongoid_support! if defined?(Mongoid) and self.ancestors.include?(Mongoid::Document)
-      init_mongo_mapper_support! if defined?(MongoMapper) and self.ancestors.include?(MongoMapper::Document)
-      init_datamapper_support! if defined?(DataMapper) and self.ancestors.include?(DataMapper::Resource)
-
+      define_base_fields
       init_orm_hooks!
 
       @sorcery_config.after_config << :add_config_inheritance if @sorcery_config.subclasses_inherit_config
@@ -30,6 +27,20 @@ module Sorcery
     end
 
     protected
+
+    def define_base_fields
+      self.class_eval do
+        sorcery_config.username_attribute_names.each do |username|
+          define_sorcery_field username, String, length: 255
+        end
+        unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
+          define_sorcery_field sorcery_config.email_attribute_name, String, length: 255
+        end
+        define_sorcery_field sorcery_config.crypted_password_attribute_name, String, length: 255
+        define_sorcery_field sorcery_config.salt_attribute_name, String, length: 255
+      end
+
+    end
 
     # includes required submodules into the model class,
     # which usually is called User.
@@ -47,77 +58,17 @@ module Sorcery
       end
     end
 
-    # defines mongoid fields on the model class,
-    # using 1.8.x hash syntax to perserve compatibility.
-    def init_mongoid_support!
-      self.class_eval do
-        sorcery_config.username_attribute_names.each do |username|
-          field username,         :type => String
-        end
-        field sorcery_config.email_attribute_name,            :type => String unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
-        field sorcery_config.crypted_password_attribute_name, :type => String
-        field sorcery_config.salt_attribute_name,             :type => String
-      end
-    end
-
-    # defines mongo_mapper fields on the model class,
-    def init_mongo_mapper_support!
-      self.class_eval do
-        sorcery_config.username_attribute_names.each do |username|
-          key username, String
-        end
-        key sorcery_config.email_attribute_name, String unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
-        key sorcery_config.crypted_password_attribute_name, String
-        key sorcery_config.salt_attribute_name, String
-      end
-    end
-
-    # defines datamapper fields on the model class
-    def init_datamapper_support!
-      self.class_eval do
-        sorcery_config.username_attribute_names.each do |username|
-          property username, String, :length => 255
-        end
-        unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
-          property sorcery_config.email_attribute_name, String, :length => 255
-        end
-        property sorcery_config.crypted_password_attribute_name, String, :length => 255
-        property sorcery_config.salt_attribute_name, String, :length => 255
-      end
-    end
-
     # add virtual password accessor and ORM callbacks.
     def init_orm_hooks!
-      if defined?(DataMapper) and self.ancestors.include?(DataMapper::Resource)
-        init_datamapper_hooks!
-        return
-      end
-      self.class_eval do
-        attr_accessor @sorcery_config.password_attribute_name
-        #attr_protected @sorcery_config.crypted_password_attribute_name, @sorcery_config.salt_attribute_name
-        before_save :encrypt_password, :if => Proc.new { |record|
-          record.send(sorcery_config.password_attribute_name).present?
-        }
-        after_save :clear_virtual_password, :if => Proc.new { |record|
-          record.send(sorcery_config.password_attribute_name).present?
-        }
-      end
-    end
+      define_sorcery_callback :before, :validation, :encrypt_password, if: Proc.new {|record|
+        record.send(sorcery_config.password_attribute_name).present?
+      }
 
-    def init_datamapper_hooks!
-      self.class_eval do
-        attr_accessor @sorcery_config.password_attribute_name
-        before :valid? do
-          if self.send(sorcery_config.password_attribute_name).present?
-            encrypt_password
-          end
-        end
-        after :save do
-          if self.send(sorcery_config.password_attribute_name).present?
-            clear_virtual_password
-          end
-        end
-      end
+      define_sorcery_callback :after, :save, :clear_virtual_password, if: Proc.new {|record|
+        record.send(sorcery_config.password_attribute_name).present?
+      }
+
+      attr_accessor sorcery_config.password_attribute_name
     end
 
     module ClassMethods

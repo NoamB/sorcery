@@ -36,6 +36,36 @@ module Sorcery
         end
 
         module ClassMethods
+          def define_sorcery_field(name, type, options={})
+            property name, type, options.slice(:length, :default)
+
+            # Workaround local timezone retrieval problem NOTE dm-core issue #193
+            if type == Time
+              alias_method "orig_#{name}", name
+              define_method(name) do
+                t = send("orig_#{name}")
+                t && Time.new(t.year, t.month, t.day, t.hour, t.min, t.sec, 0)
+              end
+            end
+          end
+
+          def define_sorcery_callback(time, event, method_name, options={})
+            event = :valid? if event == :validation
+            condition = options[:if]
+
+            block = Proc.new do |record|
+              if condition.nil?
+                send(method_name)
+              elsif condition.respond_to?(:call)
+                send(method_name) if condition.call(self)
+              elsif condition.is_a? Symbol
+                send(method_name) if send(condition)
+              end
+            end
+
+            send(time, event, &block)
+          end
+
           def find(id)
             get(id)
           end
