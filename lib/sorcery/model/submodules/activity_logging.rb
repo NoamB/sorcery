@@ -46,10 +46,10 @@ module Sorcery
 
           protected
           def define_activity_logging_fields
-            define_field sorcery_config.last_login_at_attribute_name,    Time
-            define_field sorcery_config.last_logout_at_attribute_name,   Time
-            define_field sorcery_config.last_activity_at_attribute_name, Time
-            define_field sorcery_config.last_login_from_ip_address_name, String
+            define_sorcery_field sorcery_config.last_login_at_attribute_name,    Time
+            define_sorcery_field sorcery_config.last_logout_at_attribute_name,   Time
+            define_sorcery_field sorcery_config.last_activity_at_attribute_name, Time
+            define_sorcery_field sorcery_config.last_login_from_ip_address_name, String
           end
         end
       end

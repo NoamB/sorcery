@@ -36,7 +36,7 @@ module Sorcery
         end
 
         module ClassMethods
-          def define_field(name, type, options={})
+          def define_sorcery_field(name, type, options={})
             property name, type, options.slice(:length, :default)
 
             # Workaround local timezone retrieval problem NOTE dm-core issue #193
@@ -49,7 +49,7 @@ module Sorcery
             end
           end
 
-          def define_callback(time, event, method_name, options={})
+          def define_sorcery_callback(time, event, method_name, options={})
             event = :valid? if event == :validation
             condition = options[:if]
 

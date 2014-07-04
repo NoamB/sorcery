@@ -27,11 +27,11 @@ module Sorcery
         end
         
         module ClassMethods
-          def define_field(name, type, options={})
+          def define_sorcery_field(name, type, options={})
             # AR fields are defined through migrations, only validator here
           end
 
-          def define_callback(time, event, method_name, options={})
+          def define_sorcery_callback(time, event, method_name, options={})
             send "#{time}_#{event}", method_name, options.slice(:if)
           end
 

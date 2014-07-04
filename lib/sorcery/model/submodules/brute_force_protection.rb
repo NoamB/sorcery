@@ -50,9 +50,9 @@ module Sorcery
           protected
 
           def define_brute_force_protection_fields
-            define_field sorcery_config.failed_logins_count_attribute_name, Integer, :default => 0
-            define_field sorcery_config.lock_expires_at_attribute_name, Time
-            define_field sorcery_config.unlock_token_attribute_name, String
+            define_sorcery_field sorcery_config.failed_logins_count_attribute_name, Integer, :default => 0
+            define_sorcery_field sorcery_config.lock_expires_at_attribute_name, Time
+            define_sorcery_field sorcery_config.unlock_token_attribute_name, String
           end
         end
 

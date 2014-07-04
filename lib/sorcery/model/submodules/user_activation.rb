@@ -52,9 +52,9 @@ module Sorcery
 
           base.class_eval do
             # don't setup activation if no password supplied - this user is created automatically
-            define_callback :before, :create, :setup_activation, :if => Proc.new { |user| user.send(sorcery_config.password_attribute_name).present? }
+            define_sorcery_callback :before, :create, :setup_activation, :if => Proc.new { |user| user.send(sorcery_config.password_attribute_name).present? }
             # don't send activation needed email if no crypted password created - this user is external (OAuth etc.)
-            define_callback :after, :create, :send_activation_needed_email!, :if => :send_activation_needed_email?
+            define_sorcery_callback :after, :create, :send_activation_needed_email!, :if => :send_activation_needed_email?
           end
 
           base.sorcery_config.after_config << :validate_mailer_defined
@@ -87,9 +87,9 @@ module Sorcery
 
           def define_user_activation_fields
             self.class_eval do
-              define_field sorcery_config.activation_state_attribute_name, String
-              define_field sorcery_config.activation_token_attribute_name, String
-              define_field sorcery_config.activation_token_expires_at_attribute_name, Time
+              define_sorcery_field sorcery_config.activation_state_attribute_name, String
+              define_sorcery_field sorcery_config.activation_token_attribute_name, String
+              define_sorcery_field sorcery_config.activation_token_expires_at_attribute_name, Time
             end
           end
         end

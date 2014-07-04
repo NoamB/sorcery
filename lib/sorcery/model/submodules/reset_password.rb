@@ -75,9 +75,9 @@ module Sorcery
           end
 
           def define_reset_password_fields
-            define_field sorcery_config.reset_password_token_attribute_name, String
-            define_field sorcery_config.reset_password_token_expires_at_attribute_name, Time
-            define_field sorcery_config.reset_password_email_sent_at_attribute_name, Time
+            define_sorcery_field sorcery_config.reset_password_token_attribute_name, String
+            define_sorcery_field sorcery_config.reset_password_token_expires_at_attribute_name, Time
+            define_sorcery_field sorcery_config.reset_password_email_sent_at_attribute_name, Time
           end
 
         end

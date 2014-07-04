@@ -31,8 +31,8 @@ module Sorcery
           protected
 
           def define_remember_me_fields
-            define_field sorcery_config.remember_me_token_attribute_name, String
-            define_field sorcery_config.remember_me_token_expires_at_attribute_name, Time
+            define_sorcery_field sorcery_config.remember_me_token_attribute_name, String
+            define_sorcery_field sorcery_config.remember_me_token_expires_at_attribute_name, Time
           end
 
         end

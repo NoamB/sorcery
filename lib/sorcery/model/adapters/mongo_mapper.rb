@@ -25,11 +25,11 @@ module Sorcery
         end
 
         module ClassMethods
-          def define_field(name, type, options={})
+          def define_sorcery_field(name, type, options={})
             key name, type, options.slice(:default)
           end
 
-          def define_callback(time, event, method_name, options={})
+          def define_sorcery_callback(time, event, method_name, options={})
             send "#{time}_#{event}", method_name, options.slice(:if)
           end
 

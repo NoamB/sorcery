@@ -31,13 +31,13 @@ module Sorcery
     def define_base_fields
       self.class_eval do
         sorcery_config.username_attribute_names.each do |username|
-          define_field username, String, length: 255
+          define_sorcery_field username, String, length: 255
         end
         unless sorcery_config.username_attribute_names.include?(sorcery_config.email_attribute_name)
-          define_field sorcery_config.email_attribute_name, String, length: 255
+          define_sorcery_field sorcery_config.email_attribute_name, String, length: 255
         end
-        define_field sorcery_config.crypted_password_attribute_name, String, length: 255
-        define_field sorcery_config.salt_attribute_name, String, length: 255
+        define_sorcery_field sorcery_config.crypted_password_attribute_name, String, length: 255
+        define_sorcery_field sorcery_config.salt_attribute_name, String, length: 255
       end
 
     end
@@ -60,11 +60,11 @@ module Sorcery
 
     # add virtual password accessor and ORM callbacks.
     def init_orm_hooks!
-      define_callback :before, :validation, :encrypt_password, if: Proc.new {|record|
+      define_sorcery_callback :before, :validation, :encrypt_password, if: Proc.new {|record|
         record.send(sorcery_config.password_attribute_name).present?
       }
 
-      define_callback :after, :save, :clear_virtual_password, if: Proc.new {|record|
+      define_sorcery_callback :after, :save, :clear_virtual_password, if: Proc.new {|record|
         record.send(sorcery_config.password_attribute_name).present?
       }
 
