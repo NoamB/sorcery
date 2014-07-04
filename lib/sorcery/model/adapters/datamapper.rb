@@ -51,9 +51,17 @@ module Sorcery
 
           def define_callback(time, event, method_name, options={})
             event = :valid? if event == :validation
-            condition = options[:if] || lambda { |record| true }
+            condition = options[:if]
 
-            block = lambda { send(method_name) if condition.call(self) }
+            block = Proc.new do |record|
+              if condition.nil?
+                send(method_name)
+              elsif condition.respond_to?(:call)
+                send(method_name) if condition.call(self)
+              elsif condition.is_a? Symbol
+                send(method_name) if send(condition)
+              end
+            end
 
             send(time, event, &block)
           end

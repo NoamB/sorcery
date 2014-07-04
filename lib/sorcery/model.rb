@@ -60,8 +60,7 @@ module Sorcery
 
     # add virtual password accessor and ORM callbacks.
     def init_orm_hooks!
-
-      define_callback :before, :save, :encrypt_password, if: Proc.new {|record|
+      define_callback :before, :validation, :encrypt_password, if: Proc.new {|record|
         record.send(sorcery_config.password_attribute_name).present?
       }
 
@@ -69,8 +68,7 @@ module Sorcery
         record.send(sorcery_config.password_attribute_name).present?
       }
 
-      attr_accessor @sorcery_config.password_attribute_name
-
+      attr_accessor sorcery_config.password_attribute_name
     end
 
     module ClassMethods
