@@ -15,6 +15,10 @@ require 'rails/all'
 require 'rspec/rails'
 require 'timecop'
 
+def setup_orm; end
+def teardown_orm; end
+
+require "orm/#{SORCERY_ORM}"
 
 require "rails_app/config/environment"
 
@@ -29,11 +33,6 @@ RSpec.configure do |config|
   config.filter_run_excluding :datamapper => SORCERY_ORM.to_sym != :datamapper
   config.filter_run_excluding :mongoid => SORCERY_ORM.to_sym != :mongoid
   config.mock_with :rspec
-
-  def setup_orm; end
-  def teardown_orm; end
-
-  require "orm/#{SORCERY_ORM}"
 
   config.use_transactional_fixtures = true
 
