@@ -27,7 +27,7 @@ module Sorcery
           end
 
           def sorcery_save(options = {})
-            if options.key?(:validate) && ! options[:validate]
+            if options.key?(:validate) && !options[:validate]
               save!
             else
               save
