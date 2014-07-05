@@ -35,3 +35,14 @@ def setup_orm
   TestUser.finalize
   DataMapper.auto_migrate!
 end
+
+module Sorcery
+  module TestHelpers
+    module Internal
+      def update_model(&block)
+        User.class_exec(&block)
+        User.finalize
+      end
+    end
+  end
+end

@@ -161,13 +161,10 @@ shared_examples_for "rails_3_core_model" do
       user.password = '4blupush'
       user.username = nil
 
-      User.class_eval { validates_presence_of :username }
+      expect(user).to receive(:save) { raise RuntimeError }
+
       begin
-        if defined?(DataMapper) && user.class.ancestors.include?(DataMapper::Resource)
-          user.save
-        else
-          user.save! # triggers validation exception since username field is required.
-        end
+        user.save
       rescue
       end
 
@@ -176,32 +173,21 @@ shared_examples_for "rails_3_core_model" do
 
     it "does not encrypt the password twice when a user is updated" do
       user.email = "blup@bla.com"
-      if defined?(DataMapper) && user.class.ancestors.include?(DataMapper::Resource)
-        user.save
-      else
-        user.save!
-      end
+      user.save
 
       expect(User.sorcery_config.encryption_provider.matches? crypted_password, 'secret', user.salt).to be true
     end
 
     it "replaces the crypted_password in case a new password is set" do
       user.password = 'new_secret'
-      if defined?(DataMapper) && user.class.ancestors.include?(DataMapper::Resource)
-        user.save
-      else
-        user.save!
-      end
+      user.save
 
       expect(User.sorcery_config.encryption_provider.matches? crypted_password, 'secret', user.salt).to be false
     end
 
     describe "when user has password_confirmation_defined" do
       before(:all) do
-        User.class_eval { attr_accessor :password_confirmation }
-        if defined?(DataMapper)
-          DataMapper.finalize
-        end
+        update_model { attr_accessor :password_confirmation }
       end
 
       after(:all) do
