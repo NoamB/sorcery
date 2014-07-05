@@ -16,3 +16,7 @@ end
 class TestUser
   include Mongoid::Document
 end
+
+def setup_orm
+  Mongoid.purge!
+end

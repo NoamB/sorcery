@@ -7,3 +7,15 @@ ActiveRecord::Migration.verbose = false
 class TestUser < ActiveRecord::Base
   authenticates_with_sorcery!
 end
+
+def setup_orm
+  ActiveRecord::Migrator.migrate(migrations_path)
+end
+
+def teardown_orm
+  ActiveRecord::Migrator.rollback(migrations_path)
+end
+
+def migrations_path
+  Rails.root.join("db", "migrate", "core")
+end
