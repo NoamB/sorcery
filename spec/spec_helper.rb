@@ -15,6 +15,9 @@ require 'rails/all'
 require 'rspec/rails'
 require 'timecop'
 
+def setup_orm; end
+def teardown_orm; end
+
 require "orm/#{SORCERY_ORM}"
 
 require "rails_app/config/environment"
@@ -33,28 +36,10 @@ RSpec.configure do |config|
 
   config.use_transactional_fixtures = true
 
-  migrations_path = Rails.root.join("db", "migrate", "core")
-
-  config.before(:suite) do
-    if SORCERY_ORM.to_sym == :active_record
-      ActiveRecord::Migrator.migrate(migrations_path)
-    end
-    if SORCERY_ORM.to_sym == :datamapper
-      DataMapper.auto_migrate!
-      DataMapper.finalize
-    end
-
-    if defined?(Mongoid)
-      Mongoid.purge!
-    end
-  end
-
-  config.after(:suite) do
-    if SORCERY_ORM.to_sym == :active_record
-      ActiveRecord::Migrator.rollback(migrations_path)
-    end
-  end
+  config.before(:suite) { setup_orm }
+  config.after(:suite) { teardown_orm }
 
   config.include ::Sorcery::TestHelpers::Internal
   config.include ::Sorcery::TestHelpers::Internal::Rails
+
 end

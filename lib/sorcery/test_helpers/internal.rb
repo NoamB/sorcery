@@ -58,6 +58,10 @@ module Sorcery
         end
       end
 
+      def update_model(&block)
+        User.class_exec(&block)
+      end
+
       private
 
       # reload user class between specs
