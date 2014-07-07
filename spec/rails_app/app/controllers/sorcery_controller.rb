@@ -4,7 +4,8 @@ class SorceryController < ActionController::Base
   protect_from_forgery
 
   before_filter :require_login_from_http_basic, only: [:test_http_basic_auth]
-  before_filter :require_login, only: [:test_logout, :test_should_be_logged_in, :some_action]
+  before_filter :require_login, only: [:test_logout, :test_should_be_logged_in, :some_action, :test_password_expiration]
+  before_filter :require_valid_password, only: [:test_password_expiration]
 
   def index
   end
@@ -218,6 +219,18 @@ class SorceryController < ActionController::Base
       redirect_to 'bla', notice: 'Success!'
     else
       redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
+  def test_password_expiration
+    render nothing: true
+  end
+
+  def test_update_password_action
+    if request.post? && current_user.update_password!(params[:user])
+      redirect_back_or_to(:index, notice: 'password updated!')
+    else
+      render text: 'test_update_password_action'
     end
   end
 
