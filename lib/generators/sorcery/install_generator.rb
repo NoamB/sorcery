@@ -15,12 +15,21 @@ module Sorcery
                    :desc => "Specify the model class name if you will use anything other than 'User'"
 
       class_option :migrations, :optional => true, :type => :boolean, :banner => "migrations",
+                   :desc => "[DEPRECATED] Please use --only-submodules option instead"
+
+      class_option :only_submodules, :optional => true, :type => :boolean, :banner => "only-submodules",
                    :desc => "Specify if you want to add submodules to an existing model\n\t\t\t     # (will generate migrations files, and add submodules to config file)"
 
 
+      def check_deprecated_options
+        if options[:migrations]
+          warn("[DEPRECATED] `--migrations` option is deprecated, please use `--only-submodules` instead")
+        end
+      end
+
       # Copy the initializer file to config/initializers folder.
       def copy_initializer_file
-        template "initializer.rb", sorcery_config_path unless options[:migrations]
+        template "initializer.rb", sorcery_config_path unless only_submodules?
       end
 
       def configure_initializer_file
@@ -36,8 +45,8 @@ module Sorcery
       end
 
       def configure_model
-        # Generate the model and add 'authenticates_with_sorcery!' unless you passed --migrations
-        unless options[:migrations]
+        # Generate the model and add 'authenticates_with_sorcery!' unless you passed --only-submodules
+        unless only_submodules?
           generate "model #{model_class_name} --skip-migration"
 
           inject_sorcery_to_model
@@ -52,9 +61,9 @@ module Sorcery
 
       # Copy the migrations files to db/migrate folder
       def copy_migration_files
-        # Copy core migration file in all cases except when you pass --migrations.
+        # Copy core migration file in all cases except when you pass --only-submodules.
         return unless defined?(Sorcery::Generators::InstallGenerator::ActiveRecord)
-        migration_template "migration/core.rb", "db/migrate/sorcery_core.rb" unless options[:migrations]
+        migration_template "migration/core.rb", "db/migrate/sorcery_core.rb" unless only_submodules?
 
         if submodules
           submodules.each do |submodule|
@@ -74,6 +83,11 @@ module Sorcery
         else
           "%.3d" % (current_migration_number(dirname) + 1)
         end
+      end
+
+      private
+      def only_submodules?
+        options[:migrations] || options[:only_submodules]
       end
 
     end

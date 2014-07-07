@@ -118,7 +118,7 @@ This will generate the core migration file, the initializer and change the
 model class (in the initializer and migration files) to the class 'Person'
 (and its pluralized version, 'people')
 
-    rails generate sorcery:install http_basic_auth external remember_me --migrations
+    rails generate sorcery:install http_basic_auth external remember_me --only-submodules
 
 This will generate only the migration files for the specified submodules and
 will add them to the initializer file.
