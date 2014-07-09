@@ -4,7 +4,7 @@ module Sorcery
       module Mongoid
         module InstanceMethods
           def increment(attr)
-            self.inc(attr, 1)
+            mongoid_4? ? inc(attr => 1) : inc(attr, 1)
           end
 
           def update_many_attributes(attrs)
@@ -22,6 +22,10 @@ module Sorcery
           def sorcery_save(options = {})
             mthd = options.delete(:raise_on_failure) ? :save! : :save
             self.send(mthd, options)
+          end
+
+          def mongoid_4?
+            Gem::Version.new(::Mongoid::VERSION) >= Gem::Version.new("4.0.0.alpha")
           end
         end
 
