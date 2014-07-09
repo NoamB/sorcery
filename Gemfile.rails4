@@ -7,7 +7,7 @@ group :mongomapper do
 end
 
 group :mongoid do
-  gem 'mongoid', github: 'mongoid/mongoid', ref: 'f91feef0a0c6b83a1b878e154f1014536aa1c298'
+  gem 'mongoid', '~> 3.0'
   gem 'bson_ext'
 end
 
