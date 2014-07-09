@@ -8,7 +8,6 @@ services: mongodb
 
 gemfile:
   - Gemfile
-  - Gemfile.rails4
 
 env:
   - "SORCERY_ORM=active_record"
@@ -20,19 +19,6 @@ before_script:
   - mysql -e 'create database sorcery_test;'
 
 matrix:
-  exclude:
-    - rvm: 1.9.3
-      gemfile: Gemfile.rails4
-      env: "SORCERY_ORM=data_mapper"
-
-    - rvm: 2.0.0
-      gemfile: Gemfile.rails4
-      env: "SORCERY_ORM=data_mapper"
-
-    - rvm: 2.1
-      gemfile: Gemfile.rails4
-      env: "SORCERY_ORM=data_mapper"
-
   include:
     - rvm: 1.9.3
       gemfile: gemfiles/mongoid-rails41.gemfile
@@ -68,4 +54,40 @@ matrix:
 
     - rvm: 2.1
       gemfile: gemfiles/active_record-rails41.gemfile
+      env: "SORCERY_ORM=active_record"
+
+    - rvm: 1.9.3
+      gemfile: gemfiles/mongoid-rails40.gemfile
+      env: "SORCERY_ORM=mongoid"
+
+    - rvm: 2.0.0
+      gemfile: gemfiles/mongoid-rails40.gemfile
+      env: "SORCERY_ORM=mongoid"
+
+    - rvm: 2.1
+      gemfile: gemfiles/mongoid-rails40.gemfile
+      env: "SORCERY_ORM=mongoid"
+
+    - rvm: 1.9.3
+      gemfile: gemfiles/mongo_mapper-rails40.gemfile
+      env: "SORCERY_ORM=mongo_mapper"
+
+    - rvm: 2.0.0
+      gemfile: gemfiles/mongo_mapper-rails40.gemfile
+      env: "SORCERY_ORM=mongo_mapper"
+
+    - rvm: 2.1
+      gemfile: gemfiles/mongo_mapper-rails40.gemfile
+      env: "SORCERY_ORM=mongo_mapper"
+
+    - rvm: 1.9.3
+      gemfile: gemfiles/active_record-rails40.gemfile
+      env: "SORCERY_ORM=active_record"
+
+    - rvm: 2.0.0
+      gemfile: gemfiles/active_record-rails40.gemfile
+      env: "SORCERY_ORM=active_record"
+
+    - rvm: 2.1
+      gemfile: gemfiles/active_record-rails40.gemfile
       env: "SORCERY_ORM=active_record"
