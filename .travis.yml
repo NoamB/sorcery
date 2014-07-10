@@ -91,3 +91,15 @@ matrix:
     - rvm: 2.1
       gemfile: gemfiles/active_record-rails40.gemfile
       env: "SORCERY_ORM=active_record"
+
+    - rvm: 1.9.3
+      gemfile: gemfiles/mongoid3-rails32.gemfile
+      env: "SORCERY_ORM=mongoid"
+
+    - rvm: 2.0.0
+      gemfile: gemfiles/mongoid3-rails32.gemfile
+      env: "SORCERY_ORM=mongoid"
+
+    - rvm: 2.1
+      gemfile: gemfiles/mongoid3-rails32.gemfile
+      env: "SORCERY_ORM=mongoid"

@@ -1,0 +1,9 @@
+source 'https://rubygems.org'
+
+gem 'rails', '~> 3.2.0'
+
+gem 'mongoid', '~> 3.0'
+gem 'bson_ext'
+gem 'sqlite3'
+
+gemspec path: '..'
