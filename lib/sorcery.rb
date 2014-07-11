@@ -1,79 +1,89 @@
 require 'sorcery/version'
 
 module Sorcery
-  autoload :Model, 'sorcery/model'
+
+  require 'sorcery/model'
+
   module Model
-    autoload :TemporaryToken, 'sorcery/model/temporary_token'
-    autoload :Config, 'sorcery/model/config'
+    require 'sorcery/model/temporary_token'
+    require 'sorcery/model/config'
+
     module Adapters
-      autoload :ActiveRecord, 'sorcery/model/adapters/active_record'
-      autoload :Mongoid, 'sorcery/model/adapters/mongoid'
-      autoload :MongoMapper, 'sorcery/model/adapters/mongo_mapper'
-      autoload :DataMapper, 'sorcery/model/adapters/datamapper'
     end
+
     module Submodules
-      autoload :UserActivation, 'sorcery/model/submodules/user_activation'
-      autoload :ResetPassword, 'sorcery/model/submodules/reset_password'
-      autoload :RememberMe, 'sorcery/model/submodules/remember_me'
-      autoload :ActivityLogging, 'sorcery/model/submodules/activity_logging'
-      autoload :BruteForceProtection, 'sorcery/model/submodules/brute_force_protection'
-      autoload :External, 'sorcery/model/submodules/external'
+      require 'sorcery/model/submodules/user_activation'
+      require 'sorcery/model/submodules/reset_password'
+      require 'sorcery/model/submodules/remember_me'
+      require 'sorcery/model/submodules/activity_logging'
+      require 'sorcery/model/submodules/brute_force_protection'
+      require 'sorcery/model/submodules/external'
     end
   end
-  autoload :Controller, 'sorcery/controller'
+
+  require 'sorcery/controller'
+
   module Controller
     autoload :Config, 'sorcery/controller/config'
     module Submodules
-      autoload :RememberMe, 'sorcery/controller/submodules/remember_me'
-      autoload :SessionTimeout, 'sorcery/controller/submodules/session_timeout'
-      autoload :BruteForceProtection, 'sorcery/controller/submodules/brute_force_protection'
-      autoload :HttpBasicAuth, 'sorcery/controller/submodules/http_basic_auth'
-      autoload :ActivityLogging, 'sorcery/controller/submodules/activity_logging'
-      autoload :External, 'sorcery/controller/submodules/external'
+      require 'sorcery/controller/submodules/remember_me'
+      require 'sorcery/controller/submodules/session_timeout'
+      require 'sorcery/controller/submodules/brute_force_protection'
+      require 'sorcery/controller/submodules/http_basic_auth'
+      require 'sorcery/controller/submodules/activity_logging'
+      require 'sorcery/controller/submodules/external'
     end
   end
+
   module Protocols
-    autoload :Oauth, 'sorcery/protocols/oauth'
-    autoload :Oauth2, 'sorcery/protocols/oauth2'
+    require 'sorcery/protocols/oauth'
+    require 'sorcery/protocols/oauth2'
   end
+
   module CryptoProviders
-    autoload :Common, 'sorcery/crypto_providers/common'
-    autoload :AES256, 'sorcery/crypto_providers/aes256'
-    autoload :BCrypt, 'sorcery/crypto_providers/bcrypt'
-    autoload :MD5,    'sorcery/crypto_providers/md5'
-    autoload :SHA1,   'sorcery/crypto_providers/sha1'
-    autoload :SHA256, 'sorcery/crypto_providers/sha256'
-    autoload :SHA512, 'sorcery/crypto_providers/sha512'
+    require 'sorcery/crypto_providers/common'
+    require 'sorcery/crypto_providers/aes256'
+    require 'sorcery/crypto_providers/bcrypt'
+    require 'sorcery/crypto_providers/md5'
+    require 'sorcery/crypto_providers/sha1'
+    require 'sorcery/crypto_providers/sha256'
+    require 'sorcery/crypto_providers/sha512'
   end
+
   module TestHelpers
-    autoload :Internal, 'sorcery/test_helpers/internal'
-    module Internal
-      autoload :Rails, 'sorcery/test_helpers/internal/rails'
-    end
-    autoload :Rails, 'sorcery/test_helpers/rails'
+    require 'sorcery/test_helpers/internal'
+
     module Rails
-      autoload :Controller, 'sorcery/test_helpers/rails/controller'
-      autoload :Integration, 'sorcery/test_helpers/rails/integration'
+      require 'sorcery/test_helpers/rails/controller'
+      require 'sorcery/test_helpers/rails/integration'
+    end
+
+    module Internal
+      require 'sorcery/test_helpers/internal/rails'
     end
 
   end
 
   if defined?(ActiveRecord)
+    require 'sorcery/model/adapters/active_record'
     ActiveRecord::Base.extend Sorcery::Model
     ActiveRecord::Base.send :include, Sorcery::Model::Adapters::ActiveRecord
   end
 
   if defined?(Mongoid)
+    require 'sorcery/model/adapters/mongoid'
     Mongoid::Document::ClassMethods.send :include, Sorcery::Model
     Mongoid::Document::ClassMethods.send :include, Sorcery::Model::Adapters::Mongoid::ClassMethods
     Mongoid::Document.send :include, Sorcery::Model::Adapters::Mongoid::InstanceMethods
   end
 
   if defined?(MongoMapper)
+    require 'sorcery/model/adapters/mongo_mapper'
     MongoMapper::Document.send(:plugin, Sorcery::Model::Adapters::MongoMapper)
   end
 
   if defined?(DataMapper)
+    require 'sorcery/model/adapters/datamapper'
     DataMapper::Model.append_extensions(Sorcery::Model)
     DataMapper::Model.append_inclusions(Sorcery::Model::Adapters::DataMapper)
   end
