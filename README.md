@@ -81,6 +81,7 @@ explaining and the rest are commented:
 
     # user activation
     User.load_from_activation_token(token)
+    @user.setup_activation
     @user.activate!
 
 Please see the tutorials in the github wiki for detailed usage information.
