@@ -56,6 +56,11 @@ module Sorcery
         end
 
         module InstanceMethods
+          def setup_approval
+            config = sorcery_config
+            self.send(:"#{config.approval_state_attribute_name}=", "waiting")
+          end
+
           # sets the use as 'approved' and optionaly sends a success email.
           def approve!
             config = sorcery_config
@@ -65,11 +70,6 @@ module Sorcery
           end
 
           protected
-
-          def setup_approval
-            config = sorcery_config
-            self.send(:"#{config.approval_state_attribute_name}=", "waiting")
-          end
 
           # called automatically after user initial creation.
           def send_waiting_approval_email!
