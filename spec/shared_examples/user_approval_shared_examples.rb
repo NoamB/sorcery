@@ -63,6 +63,13 @@ shared_examples_for "rails_3_approval_model" do
 
     specify { expect(user).to respond_to :approve! }
 
+    it "change state to 'approved' on approval" do
+      user.approve!
+      user2 = User.find(user.id) # go to db to make sure it was saved and not just in memory
+
+      expect(user2.approval_state).to eq "approved"
+    end
+
     context "mailer is enabled" do
       it "sends the user a waiting approval email" do
         old_size = ActionMailer::Base.deliveries.size
