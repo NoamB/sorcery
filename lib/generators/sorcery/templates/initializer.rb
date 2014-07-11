@@ -285,6 +285,45 @@ Rails.application.config.sorcery.configure do |config|
     # user.prevent_non_active_users_to_login =
 
 
+    # -- user_approval --
+    # the attribute name to hold approval state (approved/waiting).
+    # Defaulg: `:approval_state`
+    #
+    # user.approval_state_attribute_name =
+
+
+    # your mailer class. Required.
+    # Default: `nil`
+    #
+    # user.user_approval_mailer =
+
+
+    # when true sorcery will not automatically
+    # email approval details and allow you to
+    # manually handle how and when email is sent.
+    # Default: `false`
+    #
+    # user.approval_mailer_disabled =
+
+
+    # waiting approval email method on your mailer class.
+    # Default: `:waiting_approval_email`
+    #
+    # user.waiting_approval_email_method_name =
+
+
+    # approval success email method on your mailer class.
+    # Default: `:approval_success_email`
+    #
+    # user.approval_success_email_method_name =
+
+
+    # do you want to prevent or allow users that were not approved by existing users to login?
+    # Default: `true`
+    #
+    # user.prevent_not_approved_users_to_login =
+
+
     # -- reset_password --
     # reset password code attribute name.
     # Default: `:reset_password_token`
