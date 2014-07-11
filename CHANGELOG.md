@@ -6,6 +6,14 @@
 * Sorcery::VERSION constant was added to allow easy version check
 * `@user.setup_activation` method was made to be public
 
+Added User Approval submodule.
+
+### User Approval:
+* User approval process notified by optional email.
+* configurable attribute names.
+* configurable mailer, method name, and attribute name.
+* Optionally prevent not-approved users to login.
+
 ## 0.8.6
 
 * `current_user` returns `nil` instead of `false` if there's no user loggd in (#493)

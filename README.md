@@ -84,6 +84,10 @@ explaining and the rest are commented:
     @user.setup_activation
     @user.activate!
 
+    # user approval
+    @user.setup_approval
+    @user.approve!
+
 Please see the tutorials in the github wiki for detailed usage information.
 
 ## Installation:
@@ -169,6 +173,13 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 *   configurable mailer, method name, and attribute name.
 *   configurable temporary token expiration.
 *   Optionally prevent non-active users to login.
+
+
+**User Approval** (see[lib/sorcery/model/submodules/user_approval.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/user_approval.rb):
+*   User approval process notified by optional email.
+*   configurable attribute names.
+*   configurable mailer, method name, and attribute name.
+*   Optionally prevent not-approved users to login.
 
 
 **Reset Password** (see [lib/sorcery/model/submodules/reset_password.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/reset_password.rb)):
