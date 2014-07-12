@@ -30,7 +30,7 @@ RSpec.configure do |config|
   config.include RSpec::Rails::ControllerExampleGroup, :file_path => /controller(.)*_spec.rb$/
   config.filter_run_excluding :active_record => SORCERY_ORM.to_sym != :active_record
   config.filter_run_excluding :mongo_mapper => SORCERY_ORM.to_sym != :mongo_mapper
-  config.filter_run_excluding :datamapper => SORCERY_ORM.to_sym != :datamapper
+  config.filter_run_excluding :data_mapper => SORCERY_ORM.to_sym != :data_mapper
   config.filter_run_excluding :mongoid => SORCERY_ORM.to_sym != :mongoid
   config.mock_with :rspec
 

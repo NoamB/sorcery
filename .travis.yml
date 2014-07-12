@@ -14,7 +14,7 @@ env:
   - "SORCERY_ORM=active_record"
   - "SORCERY_ORM=mongoid"
   - "SORCERY_ORM=mongo_mapper"
-  - "SORCERY_ORM=datamapper"
+  - "SORCERY_ORM=data_mapper"
 
 before_script:
   - mysql -e 'create database sorcery_test;'
@@ -23,15 +23,15 @@ matrix:
   exclude:
     - rvm: 1.9.3
       gemfile: Gemfile.rails4
-      env: "SORCERY_ORM=datamapper"
+      env: "SORCERY_ORM=data_mapper"
 
     - rvm: 2.0.0
       gemfile: Gemfile.rails4
-      env: "SORCERY_ORM=datamapper"
+      env: "SORCERY_ORM=data_mapper"
 
     - rvm: 2.1
       gemfile: Gemfile.rails4
-      env: "SORCERY_ORM=datamapper"
+      env: "SORCERY_ORM=data_mapper"
 
   include:
     - rvm: 1.9.3
