@@ -1,0 +1,8 @@
+source 'https://rubygems.org'
+
+gem 'rails', '~> 4.0.0'
+
+gem 'mongo_mapper', github: 'mongomapper/mongomapper'
+gem 'sqlite3'
+
+gemspec path: '..'

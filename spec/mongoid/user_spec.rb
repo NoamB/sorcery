@@ -35,4 +35,17 @@ describe User, "with no submodules (core)", :mongoid => true do
     end
   end
 
+  describe "increment" do
+    it "increments attribute" do
+      User.class_eval do
+        field :some_number, type: Integer
+      end
+
+      user = User.new(some_number: 3)
+      user.increment(:some_number)
+
+      expect(user.some_number).to eql 4
+    end
+  end
+
 end
