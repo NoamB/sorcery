@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'rails_app/app/mailers/sorcery_mailer'
 require 'shared_examples/user_shared_examples'
 
-describe User, "with no submodules (core)", :datamapper => true do
+describe User, "with no submodules (core)", :data_mapper => true do
   before(:all) do
     sorcery_reload!
   end

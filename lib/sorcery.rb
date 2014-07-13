@@ -83,7 +83,7 @@ module Sorcery
   end
 
   if defined?(DataMapper)
-    require 'sorcery/model/adapters/datamapper'
+    require 'sorcery/model/adapters/data_mapper'
     DataMapper::Model.append_extensions(Sorcery::Model)
     DataMapper::Model.append_inclusions(Sorcery::Model::Adapters::DataMapper)
   end

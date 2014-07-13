@@ -77,7 +77,7 @@ shared_examples_for "sorcery_controller" do
     end
 
     it "login(username,password) returns nil and not set the session when upper case username" do
-      skip('DM Adapter dependant') if SORCERY_ORM == :datamapper
+      skip('DM Adapter dependant') if SORCERY_ORM == :data_mapper
       get :test_login, :email => 'BLA@BLA.COM', :password => 'secret'
 
       expect(assigns[:user]).to be_nil
@@ -93,7 +93,7 @@ shared_examples_for "sorcery_controller" do
     end
 
     it "login(username,password) returns nil and not set the session when user was created with upper case username, config is default, and log in username is lower case" do
-      skip('DM Adapter dependant') if SORCERY_ORM == :datamapper
+      skip('DM Adapter dependant') if SORCERY_ORM == :data_mapper
       create_new_user({:username => "", :email => "BLA1@BLA.COM", :password => 'secret1'})
       get :test_login, :email => 'bla1@bla.com', :password => 'secret1'
 
@@ -102,7 +102,7 @@ shared_examples_for "sorcery_controller" do
     end
 
     it "login(username,password) returns the user and set the session with user.id when user was created with upper case username and config is downcase before authenticating" do
-      skip('DM Adapter dependant') if SORCERY_ORM == :datamapper
+      skip('DM Adapter dependant') if SORCERY_ORM == :data_mapper
       sorcery_model_property_set(:downcase_username_before_authenticating, true)
       new_user = create_new_user({:username => "", :email => "BLA1@BLA.COM", :password => 'secret1'})
       get :test_login, :email => 'bla1@bla.com', :password => 'secret1'

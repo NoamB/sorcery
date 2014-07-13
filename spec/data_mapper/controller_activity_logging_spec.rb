@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'shared_examples/controller_activity_logging_shared_examples'
 
-describe SorceryController, :datamapper => true do
+describe SorceryController, :data_mapper => true do
 
   # ----------------- ACTIVITY LOGGING -----------------------
   context "with activity logging features" do
