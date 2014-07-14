@@ -88,5 +88,5 @@ module Sorcery
     DataMapper::Model.append_inclusions(Sorcery::Model::Adapters::DataMapper)
   end
 
-  require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR >= 3
+  require 'sorcery/engine' if defined?(Rails)
 end
