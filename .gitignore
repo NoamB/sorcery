@@ -53,3 +53,4 @@ spec/rails_app/log/*
 Gemfile*.lock
 gemfiles/*.lock
 .ruby-version
+tags
