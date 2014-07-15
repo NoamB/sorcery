@@ -3,8 +3,17 @@ module Sorcery
     module Adapters
       module DataMapper
         def self.included(klass)
+          verify_sorcery_submodules_compatibility
           klass.extend ClassMethods
           klass.send(:include, InstanceMethods)
+        end
+
+        def self.verify_sorcery_submodules_compatibility
+          active_submodules = [::Sorcery::Controller::Config.submodules].flatten
+
+          if active_submodules.include?(:activity_logging) && !repository.adapter.is_a?(::DataMapper::Adapters::MysqlAdapter)
+            raise "DataMapper adapter compatibility error, please check documentation"
+          end
         end
 
         module InstanceMethods
