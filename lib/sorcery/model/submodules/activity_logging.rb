@@ -28,12 +28,6 @@ module Sorcery
             reset!
           end
 
-          if defined?(DataMapper) and base.ancestors.include?(DataMapper::Resource)
-            # NOTE raise exception if data-store is not supported
-            unless base.repository.adapter.is_a?(DataMapper::Adapters::MysqlAdapter)
-              raise 'Unsupported DataMapper Adapter'
-            end
-          end
           base.sorcery_config.after_config << :define_activity_logging_fields
         end
         
