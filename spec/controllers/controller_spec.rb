@@ -54,7 +54,7 @@ describe SorceryController do
       get :test_login, :email => 'bla@bla.com', :password => 'secret'
 
       expect(assigns[:user]).to eq user
-      expect(session[:user_id]).to eq 42
+      expect(session[:user_id]).to eq "42"
     end
 
     it "login(email,password) returns the user when success and set the session with user.id" do
@@ -63,7 +63,7 @@ describe SorceryController do
       get :test_login, :email => 'bla@bla.com', :password => 'secret'
 
       expect(assigns[:user]).to eq user
-      expect(session[:user_id]).to eq user.id
+      expect(session[:user_id]).to eq user.id.to_s
     end
 
     it "login(username,password) returns nil and not set the session when failure" do
@@ -97,7 +97,7 @@ describe SorceryController do
       get :test_login, :email => 'BLA@BLA.COM', :password => 'secret'
 
       expect(assigns[:user]).to eq user
-      expect(session[:user_id]).to eq user.id
+      expect(session[:user_id]).to eq user.id.to_s
     end
 
     # TODO: move test to model
@@ -118,21 +118,21 @@ describe SorceryController do
       get :test_login, :email => 'bla1@bla.com', :password => 'secret1'
 
       expect(assigns[:user]).to eq user
-      expect(session[:user_id]).to eq user.id
+      expect(session[:user_id]).to eq user.id.to_s
     end
 
     it "logout clears the session" do
       cookies[:remember_me_token] = nil
-      session[:user_id] = user.id
-      expect(User.sorcery_adapter).to receive(:find_by_id).with(42) { user }
+      session[:user_id] = user.id.to_s
+      expect(User.sorcery_adapter).to receive(:find_by_id).with("42") { user }
       get :test_logout
 
       expect(session[:user_id]).to be_nil
     end
 
     it "logged_in? returns true if logged in" do
-      session[:user_id] = user.id
-      expect(User.sorcery_adapter).to receive(:find_by_id).with(42) { user }
+      session[:user_id] = user.id.to_s
+      expect(User.sorcery_adapter).to receive(:find_by_id).with("42") { user }
 
       expect(subject.logged_in?).to be true
     end
@@ -144,8 +144,8 @@ describe SorceryController do
     end
 
     it "current_user returns the user instance if logged in" do
-      session[:user_id] = user.id
-      expect(User.sorcery_adapter).to receive(:find_by_id).with(42) { user }
+      session[:user_id] = user.id.to_s
+      expect(User.sorcery_adapter).to receive(:find_by_id).with("42") { user }
 
       2.times { expect(subject.current_user).to eq user } # memoized!
     end
