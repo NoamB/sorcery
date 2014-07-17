@@ -19,6 +19,9 @@ before_script:
   - mysql -e 'create database sorcery_test;'
 
 matrix:
+  allow_failures:
+    - rvm: :jruby
+
   include:
     - rvm: 1.9.3
       gemfile: gemfiles/mongoid-rails41.gemfile
@@ -56,6 +59,10 @@ matrix:
       gemfile: gemfiles/active_record-rails41.gemfile
       env: "SORCERY_ORM=active_record"
 
+    - rvm: jruby
+      gemfile: gemfiles/active_record-rails41.gemfile
+      env: "SORCERY_ORM=active_record"
+
     - rvm: 1.9.3
       gemfile: gemfiles/mongoid-rails40.gemfile
       env: "SORCERY_ORM=mongoid"
@@ -92,6 +99,10 @@ matrix:
       gemfile: gemfiles/active_record-rails40.gemfile
       env: "SORCERY_ORM=active_record"
 
+    - rvm: jruby
+      gemfile: gemfiles/active_record-rails40.gemfile
+      env: "SORCERY_ORM=active_record"
+
     - rvm: 1.9.3
       gemfile: gemfiles/mongoid3-rails32.gemfile
       env: "SORCERY_ORM=mongoid"
@@ -103,3 +114,7 @@ matrix:
     - rvm: 2.1
       gemfile: gemfiles/mongoid3-rails32.gemfile
       env: "SORCERY_ORM=mongoid"
+
+    - rvm: jruby
+      gemfile: Gemfile
+      env: "SORCERY_ORM=active_record"
