@@ -13,6 +13,7 @@ AppRoot::Application.routes.draw do
     get :test_logout_with_remember
     get :test_should_be_logged_in
     get :test_create_from_provider
+    get :test_build_from_provider
     get :test_add_second_provider
     get :test_return_to_with_external
     get :test_login_from

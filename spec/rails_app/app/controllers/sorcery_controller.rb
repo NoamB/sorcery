@@ -195,6 +195,17 @@ class SorceryController < ActionController::Base
       redirect_to 'blu', alert: 'Failed!'
     end
   end
+  
+  def test_build_from_provider
+    provider = params[:provider]
+    login_from(provider)
+    @user = build_from(provider)
+    if @user.save
+      redirect_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
 
   def test_add_second_provider
     provider = params[:provider]

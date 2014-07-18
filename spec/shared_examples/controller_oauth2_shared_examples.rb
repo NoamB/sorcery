@@ -49,4 +49,20 @@ shared_examples_for 'oauth2_controller' do
 
     end
   end
+
+  describe 'using build_from' do
+    before(:each) do
+      stub_all_oauth2_requests!
+      User.delete_all
+      Authentication.delete_all
+    end
+
+    it 'builds and saves a new user' do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      sorcery_controller_external_property_set(:facebook, :user_info_mapping, { username: 'name' })
+
+      expect { get :test_build_from_provider, provider: 'facebook' }.to change { User.count }.by 1
+      expect(User.first.username).to eq 'Noam Ben Ari'
+    end
+  end
 end
