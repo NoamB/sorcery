@@ -114,7 +114,3 @@ matrix:
     - rvm: 2.1
       gemfile: gemfiles/mongoid3-rails32.gemfile
       env: "SORCERY_ORM=mongoid"
-
-    - rvm: jruby
-      gemfile: Gemfile
-      env: "SORCERY_ORM=active_record"

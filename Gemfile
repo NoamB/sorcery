@@ -1,8 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 3.2'
-gem 'sqlite3', platform: :mri
-gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
+gem 'sqlite3'
 
 group :mongomapper do
   gem 'mongo_mapper'
