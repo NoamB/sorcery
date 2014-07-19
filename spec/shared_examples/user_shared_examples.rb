@@ -113,6 +113,19 @@ shared_examples_for "rails_3_core_model" do
       end
     end
 
+    context "and model respond to active_for_authentication?" do
+      it "authenticate returns user if active_for_authentication? returns true" do
+        class User; def active_for_authentication?; return true; end; end
+        username = user.send(User.sorcery_config.username_attribute_names.first)
+        expect(User.authenticate username, 'secret').to be_truthy
+      end
+      it "authenticate returns nil if active_for_authentication? returns false" do
+        class User; def active_for_authentication?; return false; end; end
+        username = user.send(User.sorcery_config.username_attribute_names.first)
+        expect(User.authenticate username, 'secret').to be_nil
+      end
+    end
+
     specify { expect(User).to respond_to(:encrypt) }
 
     it "subclass inherits config if defined so" do
