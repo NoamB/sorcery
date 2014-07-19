@@ -35,6 +35,10 @@ matrix:
       gemfile: gemfiles/mongoid-rails41.gemfile
       env: "SORCERY_ORM=mongoid"
 
+    - rvm: jruby
+      gemfile: gemfiles/mongoid-rails41.gemfile
+      env: "SORCERY_ORM=mongoid"
+
     - rvm: 1.9.3
       gemfile: gemfiles/mongo_mapper-rails41.gemfile
       env: "SORCERY_ORM=mongo_mapper"
@@ -44,6 +48,10 @@ matrix:
       env: "SORCERY_ORM=mongo_mapper"
 
     - rvm: 2.1
+      gemfile: gemfiles/mongo_mapper-rails41.gemfile
+      env: "SORCERY_ORM=mongo_mapper"
+
+    - rvm: jruby
       gemfile: gemfiles/mongo_mapper-rails41.gemfile
       env: "SORCERY_ORM=mongo_mapper"
 
@@ -75,6 +83,10 @@ matrix:
       gemfile: gemfiles/mongoid-rails40.gemfile
       env: "SORCERY_ORM=mongoid"
 
+    - rvm: jruby
+      gemfile: gemfiles/mongoid-rails40.gemfile
+      env: "SORCERY_ORM=mongoid"
+
     - rvm: 1.9.3
       gemfile: gemfiles/mongo_mapper-rails40.gemfile
       env: "SORCERY_ORM=mongo_mapper"
@@ -84,6 +96,10 @@ matrix:
       env: "SORCERY_ORM=mongo_mapper"
 
     - rvm: 2.1
+      gemfile: gemfiles/mongo_mapper-rails40.gemfile
+      env: "SORCERY_ORM=mongo_mapper"
+
+    - rvm: jruby
       gemfile: gemfiles/mongo_mapper-rails40.gemfile
       env: "SORCERY_ORM=mongo_mapper"
 
