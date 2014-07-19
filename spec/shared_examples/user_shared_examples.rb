@@ -73,8 +73,8 @@ shared_examples_for "rails_3_core_model" do
 
   describe "when activated with sorcery" do
     before(:all) { sorcery_reload! }
-    before(:each) { User.delete_all }
-    
+    before(:each) { User.sorcery_adapter.delete_all }
+
     it "does not add authenticate method to base class", active_record: true do
       expect(ActiveRecord::Base).not_to respond_to(:authenticate) if defined?(ActiveRecord)
     end
@@ -131,7 +131,7 @@ shared_examples_for "rails_3_core_model" do
   describe "registration" do
 
     before(:all) { sorcery_reload! }
-    before(:each) { User.delete_all }
+    before(:each) { User.sorcery_adapter.delete_all }
 
     it "by default, encryption_provider is not nil" do
       expect(User.sorcery_config.encryption_provider).not_to be_nil
@@ -220,7 +220,7 @@ shared_examples_for "rails_3_core_model" do
     end
 
     before(:each) do
-      User.delete_all
+      User.sorcery_adapter.delete_all
     end
 
     after(:each) do
@@ -330,13 +330,13 @@ shared_examples_for "rails_3_core_model" do
   describe "ORM adapter" do
     before(:all) do
       sorcery_reload!()
-      User.delete_all
+      User.sorcery_adapter.delete_all
     end
 
     before(:each) { user }
 
     after(:each) do
-      User.delete_all
+      User.sorcery_adapter.delete_all
       User.sorcery_config.reset!
     end
 
@@ -344,17 +344,17 @@ shared_examples_for "rails_3_core_model" do
     it "find_by_username works as expected" do
       sorcery_model_property_set(:username_attribute_names, [:username])
 
-      expect(User.find_by_username "gizmo").to eq user
+      expect(User.sorcery_adapter.find_by_username "gizmo").to eq user
     end
 
     it "find_by_username works as expected with multiple username attributes" do
       sorcery_model_property_set(:username_attribute_names, [:username, :email])
 
-      expect(User.find_by_username "gizmo").to eq user
+      expect(User.sorcery_adapter.find_by_username "gizmo").to eq user
     end
 
     it "find_by_email works as expected" do
-      expect(User.find_by_email "bla@bla.com").to eq user
+      expect(User.sorcery_adapter.find_by_email "bla@bla.com").to eq user
     end
   end
 end
@@ -364,7 +364,7 @@ shared_examples_for "external_user" do
   let(:external_user) { create_new_external_user :twitter }
 
   before(:each) do
-    User.delete_all
+    User.sorcery_adapter.delete_all
   end
 
   it "responds to 'external?'" do

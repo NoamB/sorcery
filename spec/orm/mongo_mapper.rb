@@ -8,4 +8,3 @@ class TestUser
   include MongoMapper::Document
   authenticates_with_sorcery!
 end
-

@@ -44,8 +44,8 @@ describe SorceryController, :active_record => true do
     end
 
     after(:each) do
-      User.delete_all
-      Authentication.delete_all
+      User.sorcery_adapter.delete_all
+      Authentication.sorcery_adapter.delete_all
     end
 
     context "when callback_url begin with /" do
@@ -111,8 +111,8 @@ describe SorceryController, :active_record => true do
     end
 
     after(:each) do
-      User.delete_all
-      Authentication.delete_all
+      User.sorcery_adapter.delete_all
+      Authentication.sorcery_adapter.delete_all
     end
 
     it "does not send activation email to external users" do
@@ -146,8 +146,8 @@ describe SorceryController, :active_record => true do
 
     context "when twitter" do
       before(:each) do
-        User.delete_all
-        Authentication.delete_all
+        User.sorcery_adapter.delete_all
+        Authentication.sorcery_adapter.delete_all
         sorcery_controller_property_set(:register_login_time, true)
         stub_all_oauth_requests!
         sorcery_model_property_set(:authentications_class, Authentication)
@@ -184,8 +184,8 @@ describe SorceryController, :active_record => true do
 
     context "when twitter" do
       before(:each) do
-        User.delete_all
-        Authentication.delete_all
+        User.sorcery_adapter.delete_all
+        Authentication.sorcery_adapter.delete_all
         sorcery_model_property_set(:authentications_class, Authentication)
         sorcery_controller_property_set(:session_timeout,0.5)
         stub_all_oauth_requests!

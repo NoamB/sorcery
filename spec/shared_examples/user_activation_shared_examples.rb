@@ -76,7 +76,7 @@ shared_examples_for "rails_3_activation_model" do
 
       expect(user2.activation_token).to be_nil
       expect(user2.activation_state).to eq "active"
-      expect(User.find_by_activation_token activation_token).to be_nil
+      expect(User.sorcery_adapter.find_by_activation_token activation_token).to be_nil
     end
 
 
@@ -91,14 +91,14 @@ shared_examples_for "rails_3_activation_model" do
       it "calls send_activation_needed_email! method of user" do
         expect(new_user).to receive(:send_activation_needed_email!).once
 
-        new_user.sorcery_save(:raise_on_failure => true)
+        new_user.sorcery_adapter.save(:raise_on_failure => true)
       end
 
       it "subsequent saves do not send activation email" do
         user
         old_size = ActionMailer::Base.deliveries.size
         user.email = "Shauli"
-        user.sorcery_save(:raise_on_failure => true)
+        user.sorcery_adapter.save(:raise_on_failure => true)
 
         expect(ActionMailer::Base.deliveries.size).to eq old_size
       end
@@ -121,7 +121,7 @@ shared_examples_for "rails_3_activation_model" do
         user.activate!
         old_size = ActionMailer::Base.deliveries.size
         user.email = "Shauli"
-        user.sorcery_save(:raise_on_failure => true)
+        user.sorcery_adapter.save(:raise_on_failure => true)
 
         expect(ActionMailer::Base.deliveries.size).to eq old_size
       end
@@ -158,7 +158,7 @@ shared_examples_for "rails_3_activation_model" do
 
         expect(user).to receive(:send_activation_needed_email!).never
 
-        user.sorcery_save(:raise_on_failure => true)
+        user.sorcery_adapter.save(:raise_on_failure => true)
       end
 
       it "does not send the user an activation success email on successful activation" do
@@ -182,7 +182,7 @@ shared_examples_for "rails_3_activation_model" do
     end
 
     before(:each) do
-      User.delete_all
+      User.sorcery_adapter.delete_all
     end
 
     it "does not allow a non-active user to authenticate" do

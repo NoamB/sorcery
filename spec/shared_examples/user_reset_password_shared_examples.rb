@@ -82,7 +82,7 @@ shared_examples_for "rails_3_reset_password_model" do
     end
 
     before(:each) do
-      User.delete_all
+      User.sorcery_adapter.delete_all
       user
     end
 
@@ -156,7 +156,7 @@ shared_examples_for "rails_3_reset_password_model" do
 
         expect(ActionMailer::Base.deliveries.size).to eq old_size + 1
       end
-      
+
       it "calls send_reset_password_email! on reset" do
         expect(user).to receive(:send_reset_password_email!).once
 

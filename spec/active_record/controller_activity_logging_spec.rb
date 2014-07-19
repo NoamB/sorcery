@@ -20,7 +20,7 @@ describe SorceryController, :active_record => true do
   # ----------------- ACTIVITY LOGGING -----------------------
   context "with activity logging features" do
     after(:each) do
-      User.delete_all
+      User.sorcery_adapter.delete_all
     end
 
     it_behaves_like "controller_activity_logging"

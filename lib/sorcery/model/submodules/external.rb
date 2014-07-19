@@ -8,7 +8,7 @@ module Sorcery
       # Socery assumes (read: requires) you will create external users in the same table where
       # you keep your regular users,
       # but that you will have a separate table for keeping their external authentication data,
-      # and that that separate table has a few rows for each user, facebook and twitter 
+      # and that that separate table has a few rows for each user, facebook and twitter
       # for example (a one-to-many relationship).
       #
       # External users will have a null crypted_password field, since we do not hold their password.
@@ -22,7 +22,7 @@ module Sorcery
                           :provider_uid_attribute_name
 
           end
-          
+
           base.sorcery_config.instance_eval do
             @defaults.merge!(:@authentications_class                  => nil,
                              :@authentications_user_id_attribute_name => :user_id,
@@ -31,25 +31,25 @@ module Sorcery
 
             reset!
           end
-          
+
           base.send(:include, InstanceMethods)
           base.extend(ClassMethods)
 
         end
-        
+
         module ClassMethods
           # takes a provider and uid and finds a user by them.
           def load_from_provider(provider,uid)
             config = sorcery_config
-            authentication = config.authentications_class.find_by_oauth_credentials(provider, uid)
+            authentication = config.authentications_class.sorcery_adapter.find_by_oauth_credentials(provider, uid)
             user = find(authentication.send(config.authentications_user_id_attribute_name)) if authentication
           end
         end
-        
+
         module InstanceMethods
 
         end
-      
+
       end
     end
   end

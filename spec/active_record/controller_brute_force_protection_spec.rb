@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SorceryController, :active_record => true do
 
-  let(:db_user) { User.find_by_email 'bla@bla.com' }
+  let(:db_user) { User.sorcery_adapter.find_by_email 'bla@bla.com' }
   let!(:user) { create_new_user }
 
   def request_test_login

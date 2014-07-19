@@ -42,7 +42,7 @@ describe User, "with no submodules (core)", :mongoid => true do
       end
 
       user = User.new(some_number: 3)
-      user.increment(:some_number)
+      user.sorcery_adapter.increment(:some_number)
 
       expect(user.some_number).to eql 4
     end

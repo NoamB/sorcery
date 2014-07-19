@@ -8,7 +8,7 @@ describe SorceryController, :data_mapper => true do
     after(:each) do
       # NOTE dm-constraints supports only pg and mysql
       Authentication.all.destroy
-      User.delete_all
+      User.sorcery_adapter.delete_all
     end
 
     it_behaves_like "controller_activity_logging"

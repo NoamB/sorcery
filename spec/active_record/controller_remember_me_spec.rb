@@ -20,7 +20,7 @@ describe SorceryController, :active_record => true do
     after(:each) do
       session = nil
       cookies = nil
-      User.delete_all
+      User.sorcery_adapter.delete_all
     end
 
     it "sets cookie on remember_me!" do
