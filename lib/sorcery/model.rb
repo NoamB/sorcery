@@ -92,6 +92,10 @@ module Sorcery
 
         user = find_by_credentials(credentials)
 
+        if user.respond_to?(:active_for_authentication?)
+          return nil if !user.active_for_authentication?
+        end
+
         set_encryption_attributes
 
         _salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil? && !@sorcery_config.encryption_provider.nil?
