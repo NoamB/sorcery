@@ -134,9 +134,9 @@ module Sorcery
             config = user_class.sorcery_config
 
             # first check to see if user has a particular authentication already
-            unless (current_user.send(config.authentications_class.name.underscore.pluralize).find_by_oauth_credentials(provider_name, @user_hash[:uid].to_s))
+            if current_user.sorcery_adapter.find_authentication_by_oauth_credentials(config.authentications_class.name.underscore.pluralize, provider_name, @user_hash[:uid].to_s).nil?
               user = current_user.send(config.authentications_class.name.underscore.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name.to_s)
-              user.sorcery_save(:validate => false)
+              user.sorcery_adapter.save(:validate => false)
             else
               user = false
             end
@@ -159,7 +159,7 @@ module Sorcery
             session[:incomplete_user] = {
               :provider => {config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name},
               :user_hash => attrs
-            } unless user.sorcery_save
+            } unless user.sorcery_adapter.save
 
             return user
           end
@@ -186,7 +186,7 @@ module Sorcery
 
             attrs = user_attrs(@provider.user_info_mapping, @user_hash)
 
-            user_class.transaction do
+            user_class.sorcery_adapter.transaction do
               @user = user_class.new()
               attrs.each do |k,v|
                 @user.send(:"#{k}=", v)
@@ -196,7 +196,7 @@ module Sorcery
                 return false unless yield @user
               end
 
-              @user.sorcery_save(:validate => false)
+              @user.sorcery_adapter.save(:validate => false)
               user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider_name, config.provider_uid_attribute_name => @user_hash[:uid]})
             end
             @user

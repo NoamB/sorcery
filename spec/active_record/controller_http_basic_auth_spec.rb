@@ -59,7 +59,7 @@ describe SorceryController, :active_record => true do
       @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{user.email}:secret")
       get :test_http_basic_auth, nil, :http_authentication_used => true
 
-      expect(session[:user_id]).to be User.find_by_email(user.email).id
+      expect(session[:user_id]).to be User.sorcery_adapter.find_by_email(user.email).id
     end
   end
 end

@@ -30,13 +30,13 @@ shared_examples_for "sorcery_controller" do
 
     before(:all) do
       sorcery_reload!
-      User.delete_all
+      User.sorcery_adapter.delete_all
     end
 
     after(:each) do
       Sorcery::Controller::Config.reset!
       sorcery_reload!
-      User.delete_all
+      User.sorcery_adapter.delete_all
       sorcery_controller_property_set(:user_class, User)
       sorcery_model_property_set(:username_attribute_names, [:email])
     end

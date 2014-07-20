@@ -64,28 +64,44 @@ module Sorcery
 
   end
 
+  require 'sorcery/adapters/base_adapter'
+
   if defined?(ActiveRecord)
-    require 'sorcery/model/adapters/active_record'
+    require 'sorcery/adapters/active_record_adapter'
     ActiveRecord::Base.extend Sorcery::Model
-    ActiveRecord::Base.send :include, Sorcery::Model::Adapters::ActiveRecord
+
+    ActiveRecord::Base.send :define_method, :sorcery_adapter do
+      @sorcery_adapter ||= Sorcery::Adapters::ActiveRecordAdapter.new(self)
+    end
+
+    ActiveRecord::Base.send :define_singleton_method, :sorcery_adapter do
+      Sorcery::Adapters::ActiveRecordAdapter.from(self)
+    end
   end
 
   if defined?(Mongoid)
-    require 'sorcery/model/adapters/mongoid'
+    require 'sorcery/adapters/mongoid_adapter'
     Mongoid::Document::ClassMethods.send :include, Sorcery::Model
-    Mongoid::Document::ClassMethods.send :include, Sorcery::Model::Adapters::Mongoid::ClassMethods
-    Mongoid::Document.send :include, Sorcery::Model::Adapters::Mongoid::InstanceMethods
+
+    Mongoid::Document.send :define_method, :sorcery_adapter do
+      @sorcery_adapter ||= Sorcery::Adapters::MongoidAdapter.new(self)
+    end
+
+    Mongoid::Document::ClassMethods.send :define_method, :sorcery_adapter do
+      Sorcery::Adapters::MongoidAdapter.from(self)
+    end
   end
 
   if defined?(MongoMapper)
-    require 'sorcery/model/adapters/mongo_mapper'
-    MongoMapper::Document.send(:plugin, Sorcery::Model::Adapters::MongoMapper)
+    require 'sorcery/adapters/mongo_mapper_adapter'
+    MongoMapper::Document.send(:plugin, Sorcery::Adapters::MongoMapperAdapter::Wrapper)
   end
 
   if defined?(DataMapper)
-    require 'sorcery/model/adapters/data_mapper'
+    require 'sorcery/adapters/data_mapper_adapter'
     DataMapper::Model.append_extensions(Sorcery::Model)
-    DataMapper::Model.append_inclusions(Sorcery::Model::Adapters::DataMapper)
+
+    DataMapper::Model.append_inclusions(Sorcery::Adapters::DataMapperAdapter::Wrapper)
   end
 
   require 'sorcery/engine' if defined?(Rails)

@@ -66,7 +66,7 @@ shared_examples_for "controller_activity_logging" do
     login_user
     get :some_action
 
-    expect(subject.current_users).to match([User.find(user.id)])
+    expect(subject.current_users).to match([User.sorcery_adapter.find(user.id)])
   end
 
   it "'current_users' shows all current_users, whether they have logged out before or not." do
@@ -83,9 +83,9 @@ shared_examples_for "controller_activity_logging" do
     get :some_action
 
     expect(subject.current_users.size).to eq 3
-    expect(subject.current_users[0]).to eq User.find(user1.id)
-    expect(subject.current_users[1]).to eq User.find(user2.id)
-    expect(subject.current_users[2]).to eq User.find(user3.id)
+    expect(subject.current_users[0]).to eq User.sorcery_adapter.find(user1.id)
+    expect(subject.current_users[1]).to eq User.sorcery_adapter.find(user2.id)
+    expect(subject.current_users[2]).to eq User.sorcery_adapter.find(user3.id)
   end
 
   it "does not register login time if configured so" do

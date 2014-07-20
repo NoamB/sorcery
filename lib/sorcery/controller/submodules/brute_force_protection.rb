@@ -14,22 +14,22 @@ module Sorcery
           Config.after_login << :reset_failed_logins_count!
           Config.after_failed_login << :update_failed_logins_count!
         end
-        
+
         module InstanceMethods
-          
+
           protected
-          
+
           # Increments the failed logins counter on every failed login.
           # Runs as a hook after a failed login.
           def update_failed_logins_count!(credentials)
-            user = user_class.find_by_credentials(credentials)
+            user = user_class.sorcery_adapter.find_by_credentials(credentials)
             user.register_failed_login! if user
           end
-          
+
           # Resets the failed logins counter.
           # Runs as a hook after a successful login.
           def reset_failed_logins_count!(user, credentials)
-            user.update_many_attributes(user_class.sorcery_config.failed_logins_count_attribute_name => 0)
+            user.sorcery_adapter.update_attributes(user_class.sorcery_config.failed_logins_count_attribute_name => 0)
           end
         end
       end

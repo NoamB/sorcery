@@ -75,9 +75,9 @@ module Sorcery
           end
 
           def define_reset_password_fields
-            define_sorcery_field sorcery_config.reset_password_token_attribute_name, String
-            define_sorcery_field sorcery_config.reset_password_token_expires_at_attribute_name, Time
-            define_sorcery_field sorcery_config.reset_password_email_sent_at_attribute_name, Time
+            sorcery_adapter.define_field sorcery_config.reset_password_token_attribute_name, String
+            sorcery_adapter.define_field sorcery_config.reset_password_token_expires_at_attribute_name, Time
+            sorcery_adapter.define_field sorcery_config.reset_password_email_sent_at_attribute_name, Time
           end
 
         end
@@ -91,8 +91,8 @@ module Sorcery
             attributes = {config.reset_password_token_attribute_name => TemporaryToken.generate_random_token,
                           config.reset_password_email_sent_at_attribute_name => Time.now.in_time_zone}
             attributes[config.reset_password_token_expires_at_attribute_name] = Time.now.in_time_zone + config.reset_password_expiration_period if config.reset_password_expiration_period
-            self.class.transaction do
-              self.update_many_attributes(attributes)
+            self.class.sorcery_adapter.transaction do
+              self.sorcery_adapter.update_attributes(attributes)
               send_reset_password_email! unless sorcery_config.reset_password_mailer_disabled
             end
           end
@@ -101,7 +101,7 @@ module Sorcery
           def change_password!(new_password)
             clear_reset_password_token
             self.send(:"#{sorcery_config.password_attribute_name}=", new_password)
-            sorcery_save
+            sorcery_adapter.save
           end
 
           protected

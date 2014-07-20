@@ -6,7 +6,7 @@ describe SorceryController, :mongoid => true do
   # ----------------- ACTIVITY LOGGING -----------------------
   context "with activity logging features" do
     after(:each) do
-      User.delete_all
+      User.sorcery_adapter.delete_all
     end
 
 

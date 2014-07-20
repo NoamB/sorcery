@@ -43,16 +43,16 @@ module Sorcery
         module ClassMethods
           def load_from_unlock_token(token)
             return nil if token.blank?
-            user = find_by_sorcery_token(sorcery_config.unlock_token_attribute_name,token)
+            user = sorcery_adapter.find_by_token(sorcery_config.unlock_token_attribute_name,token)
             user
           end
 
           protected
 
           def define_brute_force_protection_fields
-            define_sorcery_field sorcery_config.failed_logins_count_attribute_name, Integer, :default => 0
-            define_sorcery_field sorcery_config.lock_expires_at_attribute_name, Time
-            define_sorcery_field sorcery_config.unlock_token_attribute_name, String
+            sorcery_adapter.define_field sorcery_config.failed_logins_count_attribute_name, Integer, :default => 0
+            sorcery_adapter.define_field sorcery_config.lock_expires_at_attribute_name, Time
+            sorcery_adapter.define_field sorcery_config.unlock_token_attribute_name, String
           end
         end
 
@@ -63,7 +63,7 @@ module Sorcery
             config = sorcery_config
             return if !unlocked?
             self.increment(config.failed_logins_count_attribute_name)
-            self.update_many_attributes(config.failed_logins_count_attribute_name => self.send(config.failed_logins_count_attribute_name))
+            self.sorcery_adapter.update_attributes(config.failed_logins_count_attribute_name => self.send(config.failed_logins_count_attribute_name))
             self.lock! if self.send(config.failed_logins_count_attribute_name) >= config.consecutive_login_retries_amount_limit
           end
 
@@ -75,7 +75,7 @@ module Sorcery
             attributes = {config.lock_expires_at_attribute_name => nil,
                           config.failed_logins_count_attribute_name => 0,
                           config.unlock_token_attribute_name => nil}
-            self.update_many_attributes(attributes)
+            self.sorcery_adapter.update_attributes(attributes)
           end
 
           protected
@@ -84,7 +84,7 @@ module Sorcery
             config = sorcery_config
             attributes = {config.lock_expires_at_attribute_name => Time.now.in_time_zone + config.login_lock_time_period,
                           config.unlock_token_attribute_name => TemporaryToken.generate_random_token}
-            self.update_many_attributes(attributes)
+            self.sorcery_adapter.update_attributes(attributes)
 
             unless config.unlock_token_mailer_disabled || config.unlock_token_mailer.nil?
               send_unlock_token_email!

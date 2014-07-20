@@ -2,8 +2,8 @@ shared_examples_for 'oauth2_controller' do
   describe 'using create_from' do
     before(:each) do
       stub_all_oauth2_requests!
-      User.delete_all
-      Authentication.delete_all
+      User.sorcery_adapter.delete_all
+      Authentication.sorcery_adapter.delete_all
     end
 
     it 'creates a new user' do

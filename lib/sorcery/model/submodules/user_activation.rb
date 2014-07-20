@@ -15,7 +15,7 @@ module Sorcery
                                                                           # (sent by email).
 
                           :activation_token_expires_at_attribute_name,    # the attribute name to hold activation code
-                                                                          # expiration date. 
+                                                                          # expiration date.
 
                           :activation_token_expiration_period,            # how many seconds before the activation code
                                                                           # expires. nil for never expires.
@@ -52,9 +52,9 @@ module Sorcery
 
           base.class_eval do
             # don't setup activation if no password supplied - this user is created automatically
-            define_sorcery_callback :before, :create, :setup_activation, :if => Proc.new { |user| user.send(sorcery_config.password_attribute_name).present? }
+            sorcery_adapter.define_callback :before, :create, :setup_activation, :if => Proc.new { |user| user.send(sorcery_config.password_attribute_name).present? }
             # don't send activation needed email if no crypted password created - this user is external (OAuth etc.)
-            define_sorcery_callback :after, :create, :send_activation_needed_email!, :if => :send_activation_needed_email?
+            sorcery_adapter.define_callback :after, :create, :send_activation_needed_email!, :if => :send_activation_needed_email?
           end
 
           base.sorcery_config.after_config << :validate_mailer_defined
@@ -87,9 +87,9 @@ module Sorcery
 
           def define_user_activation_fields
             self.class_eval do
-              define_sorcery_field sorcery_config.activation_state_attribute_name, String
-              define_sorcery_field sorcery_config.activation_token_attribute_name, String
-              define_sorcery_field sorcery_config.activation_token_expires_at_attribute_name, Time
+              sorcery_adapter.define_field sorcery_config.activation_state_attribute_name, String
+              sorcery_adapter.define_field sorcery_config.activation_token_attribute_name, String
+              sorcery_adapter.define_field sorcery_config.activation_token_expires_at_attribute_name, Time
             end
           end
         end
@@ -109,7 +109,7 @@ module Sorcery
             self.send(:"#{config.activation_token_attribute_name}=", nil)
             self.send(:"#{config.activation_state_attribute_name}=", "active")
             send_activation_success_email! if send_activation_success_email?
-            sorcery_save(:validate => false, :raise_on_failure => true)
+            sorcery_adapter.save(:validate => false, :raise_on_failure => true)
           end
 
           protected
@@ -122,14 +122,14 @@ module Sorcery
           def send_activation_success_email!
             generic_send_email(:activation_success_email_method_name, :user_activation_mailer)
           end
-          
+
           def send_activation_success_email?
             !external? && (
               !(sorcery_config.activation_success_email_method_name.nil? ||
                 sorcery_config.activation_mailer_disabled == true)
             )
           end
-          
+
           def send_activation_needed_email?
             !external? && (
               !(sorcery_config.activation_needed_email_method_name.nil? ||
