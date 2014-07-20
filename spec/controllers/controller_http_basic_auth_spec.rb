@@ -1,10 +1,9 @@
 require 'spec_helper'
 
-describe SorceryController, :active_record => true do
+describe SorceryController do
 
-  let!(:user) { create_new_user }
+  let(:user) { create_new_user }
 
-  # ----------------- HTTP BASIC AUTH -----------------------
   describe  "with http basic auth features" do
     before(:all) do
       sorcery_reload!([:http_basic_auth])
@@ -19,22 +18,22 @@ describe SorceryController, :active_record => true do
     it "requests basic authentication when before_filter is used" do
       get :test_http_basic_auth
 
-      expect(response.code).to eq "401"
+      expect(response.status).to eq 401
     end
 
     it "authenticates from http basic if credentials are sent" do
       # dirty hack for rails 4
       allow(subject).to receive(:register_last_activity_time_to_db)
 
-      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{user.email}:secret")
-      get :test_http_basic_auth, nil, :http_authentication_used => true
+      @request.env["HTTP_AUTHORIZATION"] = "Basic #{Base64::encode64("#{user.email}:secret")}"
+      get :test_http_basic_auth, nil, http_authentication_used: true
 
       expect(response).to be_a_success
     end
 
     it "fails authentication if credentials are wrong" do
-      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{user.email}:wrong!")
-      get :test_http_basic_auth, nil, :http_authentication_used => true
+      @request.env["HTTP_AUTHORIZATION"] = "Basic #{Base64::encode64("#{user.email}:wrong!")}"
+      get :test_http_basic_auth, nil, http_authentication_used: true
 
       expect(response).to redirect_to root_url
     end
@@ -56,8 +55,8 @@ describe SorceryController, :active_record => true do
       # dirty hack for rails 4
       allow(controller).to receive(:register_last_activity_time_to_db)
 
-      @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("#{user.email}:secret")
-      get :test_http_basic_auth, nil, :http_authentication_used => true
+      @request.env["HTTP_AUTHORIZATION"] = "Basic #{Base64::encode64("#{user.email}:secret")}"
+      get :test_http_basic_auth, nil, http_authentication_used: true
 
       expect(session[:user_id]).to be User.sorcery_adapter.find_by_email(user.email).id
     end

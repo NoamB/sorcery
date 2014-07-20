@@ -1,21 +1,74 @@
 require 'spec_helper'
 
-require 'shared_examples/controller_oauth2_shared_examples'
+# require 'shared_examples/controller_oauth2_shared_examples'
 
 describe SorceryController, :active_record => true do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
-    User.reset_column_information
+    if SORCERY_ORM == :active_record
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+      User.reset_column_information
+    end
 
     sorcery_reload!([:external])
     set_external_property
   end
 
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+    if SORCERY_ORM == :active_record
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+    end
   end
 
-  it_behaves_like "oauth2_controller"
+  describe 'using create_from' do
+    before(:each) do
+      stub_all_oauth2_requests!
+      User.sorcery_adapter.delete_all
+      Authentication.sorcery_adapter.delete_all
+    end
+
+    it 'creates a new user' do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      sorcery_controller_external_property_set(:facebook, :user_info_mapping, { username: 'name' })
+
+      expect { get :test_create_from_provider, provider: 'facebook' }.to change { User.count }.by 1
+      expect(User.first.username).to eq 'Noam Ben Ari'
+    end
+
+    it 'supports nested attributes' do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      sorcery_controller_external_property_set(:facebook, :user_info_mapping, { username: 'hometown/name' })
+
+      expect { get :test_create_from_provider, provider: 'facebook' }.to change { User.count }.by(1)
+      expect(User.first.username).to eq 'Haifa, Israel'
+    end
+
+    it 'does not crash on missing nested attributes' do
+      sorcery_model_property_set(:authentications_class, Authentication)
+      sorcery_controller_external_property_set(:facebook, :user_info_mapping, { username: 'name', created_at: 'does/not/exist' })
+
+      expect { get :test_create_from_provider, provider: 'facebook' }.to change { User.count }.by 1
+      expect(User.first.username).to eq 'Noam Ben Ari'
+      expect(User.first.created_at).not_to be_nil
+    end
+
+    describe 'with a block' do
+
+      before(:each) do
+        user = User.new(username: 'Noam Ben Ari')
+        user.save!(validate: false)
+        user.authentications.create(provider: 'twitter', uid: '456')
+      end
+
+      it 'does not create user' do
+        sorcery_model_property_set(:authentications_class, Authentication)
+        sorcery_controller_external_property_set(:facebook, :user_info_mapping, { username: 'name' })
+
+        # test_create_from_provider_with_block in controller will check for uniqueness of username
+        expect { get :test_create_from_provider_with_block, provider: 'facebook' }.not_to change { User.count }
+      end
+
+    end
+  end
 
   # ----------------- OAuth -----------------------
   context "with OAuth features" do
@@ -141,9 +194,13 @@ describe SorceryController, :active_record => true do
 
   describe "OAuth with User Activation features" do
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
-      sorcery_reload!([:user_activation, :external], :user_activation_mailer => ::SorceryMailer)
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+      end
+
+      sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
       sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid, :vk])
+
       sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
       sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
       sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
@@ -162,7 +219,9 @@ describe SorceryController, :active_record => true do
     end
 
     after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+      end
     end
 
     after(:each) do
@@ -205,15 +264,20 @@ describe SorceryController, :active_record => true do
 
   describe "OAuth with user activation features"  do
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activity_logging")
-      User.reset_column_information
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activity_logging")
+        User.reset_column_information
+      end
+
       sorcery_reload!([:activity_logging, :external])
     end
 
     after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activity_logging")
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activity_logging")
+      end
     end
 
     %w(facebook github google liveid vk).each do |provider|
@@ -249,8 +313,11 @@ describe SorceryController, :active_record => true do
 
   describe "OAuth with session timeout features" do
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
-      User.reset_column_information
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+        User.reset_column_information
+      end
+
       sorcery_reload!([:session_timeout, :external])
     end
 
