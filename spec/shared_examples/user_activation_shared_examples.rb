@@ -72,7 +72,7 @@ shared_examples_for "rails_3_activation_model" do
     it "clears activation code and change state to 'active' on activation" do
       activation_token = user.activation_token
       user.activate!
-      user2 = User.find(user.id) # go to db to make sure it was saved and not just in memory
+      user2 = User.sorcery_adapter.find(user.id) # go to db to make sure it was saved and not just in memory
 
       expect(user2.activation_token).to be_nil
       expect(user2.activation_state).to eq "active"

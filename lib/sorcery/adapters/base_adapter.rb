@@ -13,6 +13,10 @@ module Sorcery
       def self.delete_all
         @klass.delete_all
       end
+
+      def self.find(id)
+        find_by_id(id)
+      end
     end
   end
 end
