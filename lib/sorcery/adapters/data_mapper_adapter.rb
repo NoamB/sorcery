@@ -9,7 +9,7 @@ module Sorcery
         end
 
         def sorcery_adapter
-          Sorcery::Adapters::DataMapperAdapter.new(self)
+          @sorcery_adapter ||= Sorcery::Adapters::DataMapperAdapter.new(self)
         end
 
         module ClassMethods

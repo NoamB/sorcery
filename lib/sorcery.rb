@@ -71,7 +71,7 @@ module Sorcery
     ActiveRecord::Base.extend Sorcery::Model
 
     ActiveRecord::Base.send :define_method, :sorcery_adapter do
-      Sorcery::Adapters::ActiveRecordAdapter.new(self)
+      @sorcery_adapter ||= Sorcery::Adapters::ActiveRecordAdapter.new(self)
     end
 
     ActiveRecord::Base.class.send :define_method, :sorcery_adapter do
@@ -84,7 +84,7 @@ module Sorcery
     Mongoid::Document::ClassMethods.send :include, Sorcery::Model
 
     Mongoid::Document.send :define_method, :sorcery_adapter do
-      Sorcery::Adapters::MongoidAdapter.new(self)
+      @sorcery_adapter ||= Sorcery::Adapters::MongoidAdapter.new(self)
     end
 
     Mongoid::Document::ClassMethods.send :define_method, :sorcery_adapter do
