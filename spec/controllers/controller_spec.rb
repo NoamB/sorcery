@@ -1,5 +1,6 @@
-shared_examples_for "sorcery_controller" do
+require 'spec_helper'
 
+describe SorceryController do
   describe "plugin configuration" do
     before(:all) do
       sorcery_reload!

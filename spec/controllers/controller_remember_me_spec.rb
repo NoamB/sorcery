@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SorceryController, :active_record => true do
+describe SorceryController do
 
   let!(:user) { create_new_user }
 
@@ -8,13 +8,18 @@ describe SorceryController, :active_record => true do
   context "with remember me features" do
 
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
-      User.reset_column_information
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
+        User.reset_column_information
+      end
+
       sorcery_reload!([:remember_me])
     end
 
     after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/remember_me")
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/remember_me")
+      end
     end
 
     after(:each) do

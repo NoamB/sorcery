@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-require 'shared_examples/controller_oauth_shared_examples'
+# require 'shared_examples/controller_oauth_shared_examples'
 require 'ostruct'
 
 def stub_all_oauth_requests!
@@ -21,10 +21,12 @@ def stub_all_oauth_requests!
   allow(acc_token).to receive(:get) { response }
 end
 
-describe SorceryController, :active_record => true do
+describe SorceryController do
   before(:all) do
-    ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
-    User.reset_column_information
+    if SORCERY_ORM == :active_record
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+      User.reset_column_information
+    end
 
     sorcery_reload!([:external])
     sorcery_controller_property_set(:external_providers, [:twitter])
@@ -34,7 +36,9 @@ describe SorceryController, :active_record => true do
   end
 
   after(:all) do
-    ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+    if SORCERY_ORM == :active_record
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+    end
   end
   # ----------------- OAuth -----------------------
   describe SorceryController, "'using external API to login'" do
@@ -97,17 +101,85 @@ describe SorceryController, :active_record => true do
   end
 
   describe SorceryController do
-    it_behaves_like "oauth_controller"
+    describe "using 'create_from'" do
+      before(:each) do
+        stub_all_oauth_requests!
+        User.sorcery_adapter.delete_all
+        Authentication.sorcery_adapter.delete_all
+      end
+
+      it "creates a new user" do
+        sorcery_model_property_set(:authentications_class, Authentication)
+        sorcery_controller_external_property_set(:twitter, :user_info_mapping, {:username => "screen_name"})
+
+        expect { get :test_create_from_provider, :provider => "twitter" }.to change { User.count }.by 1
+        expect(User.first.username).to eq "nbenari"
+      end
+
+      it "supports nested attributes" do
+        sorcery_model_property_set(:authentications_class, Authentication)
+        sorcery_controller_external_property_set(:twitter, :user_info_mapping, {:username => "status/text"})
+
+        expect { get :test_create_from_provider, :provider => "twitter" }.to change { User.count }.by 1
+        expect(User.first.username).to eq "coming soon to sorcery gem: twitter and facebook authentication support."
+      end
+
+      it "does not crash on missing nested attributes" do
+        sorcery_model_property_set(:authentications_class, Authentication)
+        sorcery_controller_external_property_set(:twitter, :user_info_mapping, {:username => "status/text", :created_at => "does/not/exist"})
+
+        expect { get :test_create_from_provider, :provider => "twitter" }.to change { User.count }.by 1
+
+        user = User.last
+        expect(user.username).to eq "coming soon to sorcery gem: twitter and facebook authentication support."
+        if user.respond_to?(:created_at)
+          expect(user.created_at).to be_present
+        end
+      end
+
+      it "binds new provider" do
+        sorcery_model_property_set(:authentications_class, UserProvider)
+
+        current_user = custom_create_new_external_user(:facebook, UserProvider)
+        login_user(current_user)
+
+        expect { get :test_add_second_provider, :provider => "twitter" }.to change { UserProvider.count }.by 1
+        expect(UserProvider.where(:user_id => current_user.id).size).to eq 2
+        expect(User.count).to eq 1
+      end
+
+      describe "with a block" do
+
+        before(:each) do
+          user = User.new(:username => 'nbenari')
+          user.save!(:validate => false)
+          user.authentications.create(:provider => 'github', :uid => '456')
+        end
+
+        it "does not create user" do
+          sorcery_model_property_set(:authentications_class, Authentication)
+          sorcery_controller_external_property_set(:twitter, :user_info_mapping, {:username => "screen_name"})
+
+          expect { get :test_create_from_provider_with_block, :provider => "twitter" }.not_to change { User.count }
+        end
+
+      end
+    end
   end
 
   describe SorceryController, "using OAuth with User Activation features" do
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+      end
+
       sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
     end
 
     after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+      end
     end
 
     after(:each) do
@@ -132,16 +204,21 @@ describe SorceryController, :active_record => true do
 
   describe SorceryController, "OAuth with user activation features"  do
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activity_logging")
-      User.reset_column_information
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activity_logging")
+        User.reset_column_information
+      end
+
       sorcery_reload!([:activity_logging, :external])
     end
 
     after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activity_logging")
-      User.reset_column_information
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activity_logging")
+        User.reset_column_information
+      end
     end
 
     context "when twitter" do
@@ -173,13 +250,18 @@ describe SorceryController, :active_record => true do
 
   describe SorceryController, "OAuth with session timeout features" do
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
-      User.reset_column_information
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+        User.reset_column_information
+      end
+
       sorcery_reload!([:session_timeout, :external])
     end
 
     after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+      end
     end
 
     context "when twitter" do

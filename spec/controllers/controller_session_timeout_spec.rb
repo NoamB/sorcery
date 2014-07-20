@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SorceryController, :active_record => true do
+describe SorceryController do
 
   let!(:user) { create_new_user }
 
