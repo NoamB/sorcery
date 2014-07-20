@@ -74,7 +74,7 @@ module Sorcery
       @sorcery_adapter ||= Sorcery::Adapters::ActiveRecordAdapter.new(self)
     end
 
-    ActiveRecord::Base.class.send :define_method, :sorcery_adapter do
+    ActiveRecord::Base.send :define_singleton_method, :sorcery_adapter do
       Sorcery::Adapters::ActiveRecordAdapter.from(self)
     end
   end
