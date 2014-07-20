@@ -152,12 +152,12 @@ module Sorcery
         # NOTE
         # DM Adapter dependent
         def get_current_users
-          unless self.repository.adapter.is_a?(::DataMapper::Adapters::MysqlAdapter)
+          unless @klass.repository.adapter.is_a?(::DataMapper::Adapters::MysqlAdapter)
             raise 'Unsupported DataMapper Adapter'
           end
           config = @klass.sorcery_config
-          ret = all(config.last_logout_at_attribute_name => nil) |
-                all(config.last_activity_at_attribute_name.gt => config.last_logout_at_attribute_name)
+          ret = @klass.all(config.last_logout_at_attribute_name => nil) |
+                @klass.all(config.last_activity_at_attribute_name.gt => config.last_logout_at_attribute_name)
           ret = ret.all(config.last_activity_at_attribute_name.not => nil)
           ret = ret.all(config.last_activity_at_attribute_name.gt => config.activity_timeout.seconds.ago.utc)
           ret
