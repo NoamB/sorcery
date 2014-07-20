@@ -9,10 +9,6 @@ module Sorcery
         @model.class.where(:"#{primary_key}" => @model.send(:"#{primary_key}")).update_all(attrs)
       end
 
-      def update_attribute(name, value)
-        update_attributes(name => value)
-      end
-
       def save(options = {})
         mthd = options.delete(:raise_on_failure) ? :save! : :save
         @model.send(mthd, options)
@@ -45,6 +41,10 @@ module Sorcery
           }
 
           @klass.where(conditions).first
+        end
+
+        def find_by_remember_me_token(token)
+          @klass.where(@klass.sorcery_config.remember_me_token_attribute_name => token).first
         end
 
         def find_by_credentials(credentials)

@@ -17,6 +17,14 @@ module Sorcery
       def self.find(id)
         find_by_id(id)
       end
+
+      def increment(field)
+        @model.increment(field)
+      end
+
+      def update_attribute(name, value)
+        update_attributes(name => value)
+      end
     end
   end
 end
