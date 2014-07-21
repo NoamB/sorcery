@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '~> 4.0.0'
 
 gem 'mongoid', '~> 4.0.0'
-gem 'bson_ext'
-gem 'sqlite3'
+gem 'sqlite3', platform: :mri
+gem 'activerecord-jdbcsqlite3-adapter', platform: :jruby
 
 gemspec path: '..'
