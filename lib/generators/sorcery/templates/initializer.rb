@@ -140,6 +140,12 @@ Rails.application.config.sorcery.configure do |config|
   # config.liveid.user_info_mapping = {:username => "name"}
 
 
+  # Set remember_me_token cookie key; Useful for remember_me submodule.
+  # Default: `:remember_me_token`
+  #
+  # config.remember_me_token_key =
+
+
   # --- user config ---
   config.user_config do |user|
     # -- core --
