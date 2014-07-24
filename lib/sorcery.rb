@@ -13,7 +13,6 @@ module Sorcery
 
     module Submodules
       require 'sorcery/model/submodules/user_activation'
-      require 'sorcery/model/submodules/password_validation'
       require 'sorcery/model/submodules/reset_password'
       require 'sorcery/model/submodules/remember_me'
       require 'sorcery/model/submodules/activity_logging'
