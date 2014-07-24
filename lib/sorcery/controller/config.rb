@@ -16,7 +16,8 @@ module Sorcery
                       :after_login,
                       :after_failed_login,
                       :before_logout,
-                      :after_logout
+                      :after_logout,
+                      :remember_me_token_key
 
         def init!
           @defaults = {
@@ -29,7 +30,8 @@ module Sorcery
             :@before_logout                        => [],
             :@after_logout                         => [],
             :@save_return_to_url                   => true,
-            :@cookie_domain                        => nil
+            :@cookie_domain                        => nil,
+            :@remember_me_token_key                => :remember_me_token
           }
         end
 
