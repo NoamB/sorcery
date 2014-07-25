@@ -35,12 +35,15 @@ shared_examples_for "rails_3_remember_me_model" do
       expect(user.remember_me_token).not_to be_nil
     end
     
-    # FIXME: assert on line 37 sometimes fails by a second
     it "sets an expiration based on 'remember_me_for' attribute" do
       sorcery_model_property_set(:remember_me_for, 2 * 60 * 60 * 24)
-      user.remember_me!
 
-      expect(user.remember_me_token_expires_at.utc.to_s).to eq (Time.now.in_time_zone + 2 * 60 * 60 * 24).utc.to_s
+      ts = Time.now.in_time_zone
+      Timecop.freeze(ts) do
+        user.remember_me!
+      end
+
+      expect(user.remember_me_token_expires_at.utc.to_s).to eq (ts + 2 * 60 * 60 * 24).utc.to_s
     end
     
     it "deletes the token and expiration on 'forget_me!'" do
