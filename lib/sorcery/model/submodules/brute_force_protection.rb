@@ -62,9 +62,12 @@ module Sorcery
           def register_failed_login!
             config = sorcery_config
             return if !unlocked?
-            self.increment(config.failed_logins_count_attribute_name)
-            self.sorcery_adapter.update_attributes(config.failed_logins_count_attribute_name => self.send(config.failed_logins_count_attribute_name))
-            self.lock! if self.send(config.failed_logins_count_attribute_name) >= config.consecutive_login_retries_amount_limit
+
+            sorcery_adapter.increment(config.failed_logins_count_attribute_name)
+
+            if self.send(config.failed_logins_count_attribute_name) >= config.consecutive_login_retries_amount_limit
+              lock!
+            end
           end
 
           # /!\
@@ -75,7 +78,7 @@ module Sorcery
             attributes = {config.lock_expires_at_attribute_name => nil,
                           config.failed_logins_count_attribute_name => 0,
                           config.unlock_token_attribute_name => nil}
-            self.sorcery_adapter.update_attributes(attributes)
+            sorcery_adapter.update_attributes(attributes)
           end
 
           protected
@@ -84,7 +87,7 @@ module Sorcery
             config = sorcery_config
             attributes = {config.lock_expires_at_attribute_name => Time.now.in_time_zone + config.login_lock_time_period,
                           config.unlock_token_attribute_name => TemporaryToken.generate_random_token}
-            self.sorcery_adapter.update_attributes(attributes)
+            sorcery_adapter.update_attributes(attributes)
 
             unless config.unlock_token_mailer_disabled || config.unlock_token_mailer.nil?
               send_unlock_token_email!
@@ -97,7 +100,9 @@ module Sorcery
           end
 
           def send_unlock_token_email!
-            generic_send_email(:unlock_token_email_method_name, :unlock_token_mailer) unless sorcery_config.unlock_token_email_method_name.nil?
+            return if sorcery_config.unlock_token_email_method_name.nil?
+
+            generic_send_email(:unlock_token_email_method_name, :unlock_token_mailer)
           end
 
           # Prevents a locked user from logging in, and unlocks users that expired their lock time.

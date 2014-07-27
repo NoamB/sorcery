@@ -55,7 +55,7 @@ module Sorcery
           # and logs the user in if found.
           # Runs as a login source. See 'current_user' method for how it is used.
           def login_from_cookie
-            user = cookies.signed[:remember_me_token] && user_class.find_by_remember_me_token(cookies.signed[:remember_me_token])
+            user = cookies.signed[:remember_me_token] && user_class.sorcery_adapter.find_by_remember_me_token(cookies.signed[:remember_me_token])
             if user && user.remember_me_token?
               set_remember_me_cookie!(user)
               session[:user_id] = user.id
