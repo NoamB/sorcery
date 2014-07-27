@@ -14,6 +14,10 @@ module Sorcery
         @model.send(mthd, options)
       end
 
+      def increment(field)
+        @model.increment!(field)
+      end
+
       def find_authentication_by_oauth_credentials(relation_name, provider, uid)
         @user_config ||= ::Sorcery::Controller::Config.user_class.to_s.constantize.sorcery_config
         conditions = {
