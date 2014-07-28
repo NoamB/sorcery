@@ -155,6 +155,7 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 
 **Core** (see [lib/sorcery/model.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model.rb) and
 [lib/sorcery/controller.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller.rb)):
+
 *   login/logout, optional return user to requested url on login, configurable
     redirect for non-logged-in users.
 *   password encryption, algorithms: bcrypt(default), md5, sha1, sha256,
@@ -164,6 +165,7 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 
 
 **User Activation** (see [lib/sorcery/model/submodules/user_activation.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/user_activation.rb)):
+
 *   User activation by email with optional success email.
 *   configurable attribute names.
 *   configurable mailer, method name, and attribute name.
@@ -172,6 +174,7 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 
 
 **Reset Password** (see [lib/sorcery/model/submodules/reset_password.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/reset_password.rb)):
+
 *   Reset password with email verification.
 *   configurable mailer, method name, and attribute name.
 *   configurable temporary token expiration.
@@ -179,27 +182,32 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 
 
 **Remember Me** (see [lib/sorcery/model/submodules/remember_me.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/remember_me.rb)):
+
 *   Remember me with configurable expiration.
 *   configurable attribute names.
 
 
 **Session Timeout** (see [lib/sorcery/controller/submodules/session_timeout.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/session_timeout.rb)):
+
 *   Configurable session timeout.
 *   Optionally session timeout will be calculated from last user action.
 
 
 **Brute Force Protection** (see [lib/sorcery/model/submodules/brute_force_protection.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/brute_force_protection.rb)):
+
 *   Brute force login hammering protection.
 *   configurable logins before lock and lock duration.
 
 
 **Basic HTTP Authentication** (see [lib/sorcery/controller/submodules/http_basic_auth.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/http_basic_auth.rb)):
+
 *   A before filter for requesting authentication with HTTP Basic.
 *   automatic login from HTTP Basic.
 *   automatic login is disabled if session key changed.
 
 
 **Activity Logging** (see [lib/sorcery/model/submodules/activity_logging.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/activity_logging.rb)):
+
 *   automatic logging of last login, last logout, last activity time and IP
     address for last login.
 *   an easy method of collecting the list of currently logged in users.
@@ -208,6 +216,7 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 
 
 **External** (see [lib/sorcery/controller/submodules/external.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/external.rb)):
+
 *   OAuth1 and OAuth2 support (currently: Twitter, Facebook, Github, Google,
     LinkedIn, VK, LiveID and Xing)
 *   configurable db field names and authentications table.
@@ -216,6 +225,7 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 ## Next Planned Features:
 
 I've got some thoughts which include (unordered):
+
 *   Passing a block to encrypt, allowing the developer to define his own mix
     of salting and encrypting
 *   Forgot username, maybe as part of the reset_password module
