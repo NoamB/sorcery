@@ -1,7 +1,7 @@
 module Sorcery
   module TestHelpers
     module Rails
-      module Controller 
+      module Controller
         def login_user(user = nil, test_context = {})
           user ||= @user
           @controller.send(:auto_login, user)
@@ -10,6 +10,10 @@ module Sorcery
 
         def logout_user
           @controller.send(:logout)
+        end
+
+        def logged_in?
+          @controller.send(:logged_in?)
         end
       end
     end
