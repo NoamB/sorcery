@@ -148,6 +148,8 @@ describe SorceryController do
       end
 
       it "automatically sends unlock mail" do
+        3.times { request_test_login }
+
         expect(ActionMailer::Base.deliveries.size).to eq 1
       end
 
