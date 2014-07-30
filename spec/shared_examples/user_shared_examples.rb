@@ -69,6 +69,10 @@ shared_examples_for "rails_3_core_model" do
 
       expect(User.sorcery_config.stretches).to eq stretches
     end
+
+    it 'respond to username=' do
+      expect(User.new).to respond_to(:username=)
+    end
   end
 
   describe "when activated with sorcery" do
@@ -392,5 +396,87 @@ shared_examples_for "external_user" do
 
   it "external? is true for external users" do
     expect(external_user.external?).to be true
+  end
+
+  describe ".create_from_provider" do
+
+    before(:all) do
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+        User.reset_column_information
+      end
+
+      sorcery_reload!([:external])
+    end
+
+    after(:all) do
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+      end
+    end
+
+    it 'supports nested attributes' do
+      sorcery_model_property_set(:authentications_class, Authentication)
+
+      expect { User.create_from_provider('facebook', '123', {username: 'Noam Ben Ari'}) }.to change { User.count }.by(1)
+      expect(User.first.username).to eq 'Noam Ben Ari'
+    end
+
+    context 'with block' do
+      it 'create user when block return true' do
+        expect {
+          User.create_from_provider('facebook', '123', {username: 'Noam Ben Ari'}) { true }
+        }.to change { User.count }.by(1)
+      end
+
+      it 'does not create user when block return false' do
+        expect {
+          User.create_from_provider('facebook', '123', {username: 'Noam Ben Ari'}) { false }
+        }.not_to change { User.count }
+      end
+    end
+
+  end
+
+  describe 'activation' do
+    before(:all) do
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+      end
+
+      sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
+    end
+
+    after(:all) do
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+      end
+    end
+
+    after(:each) do
+      User.sorcery_adapter.delete_all
+    end
+
+    [:facebook, :github, :google, :liveid].each do |provider|
+
+      it "does not send activation email to external users" do
+        old_size = ActionMailer::Base.deliveries.size
+        create_new_external_user(provider)
+
+        expect(ActionMailer::Base.deliveries.size).to eq old_size
+      end
+
+      it "does not send external users an activation success email" do
+        sorcery_model_property_set(:activation_success_email_method_name, nil)
+        create_new_external_user(provider)
+        old_size = ActionMailer::Base.deliveries.size
+        @user.activate!
+
+        expect(ActionMailer::Base.deliveries.size).to eq old_size
+      end
+    end
+
   end
 end

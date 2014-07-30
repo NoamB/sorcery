@@ -51,14 +51,14 @@ module Sorcery
           # This runs as a hook just after a successful login.
           def register_login_time_to_db(user, credentials)
             return unless Config.register_login_time
-            user.sorcery_adapter.update_attribute(user.sorcery_config.last_login_at_attribute_name, Time.now.in_time_zone)
+            user.set_last_login_at(Time.now.in_time_zone)
           end
 
           # registers last logout time on every logout.
           # This runs as a hook just before a logout.
           def register_logout_time_to_db(user)
             return unless Config.register_logout_time
-            user.sorcery_adapter.update_attribute(user.sorcery_config.last_logout_at_attribute_name, Time.now.in_time_zone)
+            user.set_last_logout_at(Time.now.in_time_zone)
           end
 
           # Updates last activity time on every request.
@@ -66,14 +66,14 @@ module Sorcery
           def register_last_activity_time_to_db
             return unless Config.register_last_activity_time
             return unless logged_in?
-            current_user.sorcery_adapter.update_attribute(current_user.sorcery_config.last_activity_at_attribute_name, Time.now.in_time_zone)
+            current_user.set_last_activity_at(Time.now.in_time_zone)
           end
 
           # Updates IP address on every login.
           # This runs as a hook just after a successful login.
           def register_last_ip_address(user, credentials)
             return unless Config.register_last_ip_address
-            current_user.sorcery_adapter.update_attribute(current_user.sorcery_config.last_login_from_ip_address_name, request.remote_ip)
+            current_user.set_last_ip_addess(request.remote_ip)
           end
         end
       end
