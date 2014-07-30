@@ -22,56 +22,50 @@ describe SorceryController, :active_record => true do
   describe 'using create_from' do
     before(:each) do
       stub_all_oauth2_requests!
-      User.sorcery_adapter.delete_all
-      Authentication.sorcery_adapter.delete_all
     end
 
     it 'creates a new user' do
       sorcery_model_property_set(:authentications_class, Authentication)
       sorcery_controller_external_property_set(:facebook, :user_info_mapping, { username: 'name' })
 
-      expect { get :test_create_from_provider, provider: 'facebook' }.to change { User.count }.by 1
-      expect(User.first.username).to eq 'Noam Ben Ari'
+      expect(User).to receive(:create_from_provider).with('facebook', '123', {username: 'Noam Ben Ari'})
+      get :test_create_from_provider, provider: 'facebook'
     end
 
     it 'supports nested attributes' do
       sorcery_model_property_set(:authentications_class, Authentication)
       sorcery_controller_external_property_set(:facebook, :user_info_mapping, { username: 'hometown/name' })
+      expect(User).to receive(:create_from_provider).with('facebook', '123', {username: 'Haifa, Israel'})
 
-      expect { get :test_create_from_provider, provider: 'facebook' }.to change { User.count }.by(1)
-      expect(User.first.username).to eq 'Haifa, Israel'
+      get :test_create_from_provider, provider: 'facebook'
     end
 
     it 'does not crash on missing nested attributes' do
       sorcery_model_property_set(:authentications_class, Authentication)
       sorcery_controller_external_property_set(:facebook, :user_info_mapping, { username: 'name', created_at: 'does/not/exist' })
 
-      expect { get :test_create_from_provider, provider: 'facebook' }.to change { User.count }.by 1
-      expect(User.first.username).to eq 'Noam Ben Ari'
-      expect(User.first.created_at).not_to be_nil
+      expect(User).to receive(:create_from_provider).with('facebook', '123', {username: 'Noam Ben Ari'})
+
+      get :test_create_from_provider, provider: 'facebook'
     end
 
     describe 'with a block' do
-
-      before(:each) do
-        user = User.new(username: 'Noam Ben Ari')
-        user.save!(validate: false)
-        user.authentications.create(provider: 'twitter', uid: '456')
-      end
-
       it 'does not create user' do
         sorcery_model_property_set(:authentications_class, Authentication)
         sorcery_controller_external_property_set(:facebook, :user_info_mapping, { username: 'name' })
 
+        u = double('user')
+        expect(User).to receive(:create_from_provider).with('facebook', '123', {username: 'Noam Ben Ari'}).and_return(u).and_yield(u)
         # test_create_from_provider_with_block in controller will check for uniqueness of username
-        expect { get :test_create_from_provider_with_block, provider: 'facebook' }.not_to change { User.count }
+        get :test_create_from_provider_with_block, provider: 'facebook'
       end
-
     end
   end
 
   # ----------------- OAuth -----------------------
   context "with OAuth features" do
+
+    let(:user) { double('user', id: 42) }
 
     before(:each) do
       stub_all_oauth2_requests!
@@ -87,13 +81,11 @@ describe SorceryController, :active_record => true do
         sorcery_controller_external_property_set(:facebook, :callback_url, "/oauth/twitter/callback")
       end
       it "login_at redirects correctly" do
-        create_new_user
         get :login_at_test_facebook
         expect(response).to be_a_redirect
         expect(response).to redirect_to("https://graph.facebook.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email%2Coffline_access&state=")
       end
       it "logins with state" do
-        create_new_user
         get :login_at_test_with_state
         expect(response).to be_a_redirect
         expect(response).to redirect_to("https://graph.facebook.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email%2Coffline_access&state=bla")
@@ -119,7 +111,7 @@ describe SorceryController, :active_record => true do
       allow(subject).to receive(:register_last_activity_time_to_db)
 
       sorcery_model_property_set(:authentications_class, Authentication)
-      create_new_external_user(:facebook)
+      expect(User).to receive(:load_from_provider).with(:facebook, '123').and_return(user)
       get :test_login_from_facebook
 
       expect(flash[:notice]).to eq "Success!"
@@ -127,7 +119,7 @@ describe SorceryController, :active_record => true do
 
     it "'login_from' fails if user doesn't exist" do
       sorcery_model_property_set(:authentications_class, Authentication)
-      create_new_user
+      expect(User).to receive(:load_from_provider).with(:facebook, '123').and_return(nil)
       get :test_login_from_facebook
 
       expect(flash[:alert]).to eq "Failed!"
@@ -138,7 +130,7 @@ describe SorceryController, :active_record => true do
       allow(subject).to receive(:register_last_activity_time_to_db)
 
       sorcery_model_property_set(:authentications_class, Authentication)
-      create_new_external_user(:facebook)
+      expect(User).to receive(:load_from_provider).with(:facebook, '123').and_return(user)
       get :test_return_to_with_external_facebook, {}, :return_to_url => "fuu"
 
       expect(response).to redirect_to("fuu")
@@ -150,7 +142,6 @@ describe SorceryController, :active_record => true do
       describe "with #{provider}" do
 
         it "login_at redirects correctly" do
-          create_new_user
           get :"login_at_test_#{provider}"
 
           expect(response).to be_a_redirect
@@ -162,7 +153,7 @@ describe SorceryController, :active_record => true do
           allow(subject).to receive(:register_last_activity_time_to_db)
 
           sorcery_model_property_set(:authentications_class, Authentication)
-          create_new_external_user(provider)
+          expect(User).to receive(:load_from_provider).with(provider, '123').and_return(user)
           get :"test_login_from_#{provider}"
 
           expect(flash[:notice]).to eq "Success!"
@@ -170,7 +161,7 @@ describe SorceryController, :active_record => true do
 
         it "'login_from' fails if user doesn't exist" do
           sorcery_model_property_set(:authentications_class, Authentication)
-          create_new_user
+          expect(User).to receive(:load_from_provider).with(provider, '123').and_return(nil)
           get :"test_login_from_#{provider}"
 
           expect(flash[:alert]).to eq "Failed!"
@@ -181,7 +172,7 @@ describe SorceryController, :active_record => true do
           allow(subject).to receive(:register_last_activity_time_to_db)
 
           sorcery_model_property_set(:authentications_class, Authentication)
-          create_new_external_user(provider)
+          expect(User).to receive(:load_from_provider).with(provider, '123').and_return(user)
           get :"test_return_to_with_external_#{provider}", {}, :return_to_url => "fuu"
 
           expect(response).to redirect_to "fuu"
@@ -256,20 +247,15 @@ describe SorceryController, :active_record => true do
         create_new_external_user provider
         old_size = ActionMailer::Base.deliveries.size
         @user.activate!
-
-        expect(ActionMailer::Base.deliveries.size).to eq old_size
       end
     end
   end
 
   describe "OAuth with user activation features"  do
-    before(:all) do
-      if SORCERY_ORM == :active_record
-        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
-        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activity_logging")
-        User.reset_column_information
-      end
 
+    let(:user) { double('user', id: 42) }
+
+    before(:all) do
       sorcery_reload!([:activity_logging, :external])
     end
 
@@ -283,29 +269,31 @@ describe SorceryController, :active_record => true do
     %w(facebook github google liveid vk).each do |provider|
       context "when #{provider}" do
         before(:each) do
-          User.sorcery_adapter.delete_all
-          Authentication.sorcery_adapter.delete_all
           sorcery_controller_property_set(:register_login_time, true)
+          sorcery_controller_property_set(:register_logout_time, false)
+          sorcery_controller_property_set(:register_last_activity_time, false)
+          sorcery_controller_property_set(:register_last_ip_address, false)
           stub_all_oauth2_requests!
           sorcery_model_property_set(:authentications_class, Authentication)
-          create_new_external_user(provider.to_sym)
         end
 
         it "registers login time" do
           now = Time.now.in_time_zone
+          Timecop.freeze(now)
+          expect(User).to receive(:load_from_provider).and_return(user)
+          expect(user).to receive(:set_last_login_at).with(be_within(0.1).of(now))
           get "test_login_from_#{provider}".to_sym
-
-          expect(User.last.last_login_at).not_to be_nil
-          expect(User.last.last_login_at.to_s(:db)).to be >= now.to_s(:db)
-          expect(User.last.last_login_at.to_s(:db)).to be <= (now+2).to_s(:db)
+          Timecop.return
         end
 
         it "does not register login time if configured so" do
           sorcery_controller_property_set(:register_login_time, false)
           now = Time.now.in_time_zone
+          Timecop.freeze(now)
+          expect(User).to receive(:load_from_provider).and_return(user)
+          expect(user).to receive(:set_last_login_at).never
           get "test_login_from_#{provider}".to_sym
 
-          expect(User.last.last_login_at).to be_nil
         end
       end
     end
@@ -313,27 +301,17 @@ describe SorceryController, :active_record => true do
 
   describe "OAuth with session timeout features" do
     before(:all) do
-      if SORCERY_ORM == :active_record
-        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
-        User.reset_column_information
-      end
-
       sorcery_reload!([:session_timeout, :external])
     end
 
-    after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
-    end
+    let(:user) { double('user', id: 42) }
 
     %w(facebook github google liveid vk).each do |provider|
       context "when #{provider}" do
         before(:each) do
-          User.sorcery_adapter.delete_all
-          Authentication.sorcery_adapter.delete_all
           sorcery_model_property_set(:authentications_class, Authentication)
           sorcery_controller_property_set(:session_timeout,0.5)
           stub_all_oauth2_requests!
-          create_new_external_user(provider.to_sym)
         end
 
         after(:each) do
@@ -341,6 +319,7 @@ describe SorceryController, :active_record => true do
         end
 
         it "does not reset session before session timeout" do
+          expect(User).to receive(:load_from_provider).with(provider.to_sym, '123').and_return(user)
           get "test_login_from_#{provider}".to_sym
 
           expect(session[:user_id]).not_to be_nil
@@ -348,7 +327,9 @@ describe SorceryController, :active_record => true do
         end
 
         it "resets session after session timeout" do
+          expect(User).to receive(:load_from_provider).with(provider.to_sym, '123').and_return(user)
           get "test_login_from_#{provider}".to_sym
+          expect(session[:user_id]).to eq 42
           Timecop.travel(Time.now.in_time_zone+0.6)
           get :test_should_be_logged_in
 

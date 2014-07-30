@@ -45,6 +45,10 @@ module Sorcery
                                         config.remember_me_token_expires_at_attribute_name => Time.now.in_time_zone + config.remember_me_for)
           end
 
+          def has_remember_me_token?
+            self.send(sorcery_config.remember_me_token_attribute_name).present?
+          end
+
           # You shouldn't really use this one yourself - it's called by the controller's 'forget_me!' method.
           def forget_me!
             config = sorcery_config

@@ -126,7 +126,9 @@ module Sorcery
       end
 
       def login_from_session
-        @current_user = (user_class.sorcery_adapter.find_by_id(session[:user_id]) if session[:user_id]) || nil
+        @current_user = if session[:user_id]
+                          user_class.sorcery_adapter.find_by_id(session[:user_id])
+                        end
       end
 
       def after_login!(user, credentials = [])

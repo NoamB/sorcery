@@ -20,6 +20,8 @@ module Sorcery
       end
 
       def increment(attr)
+        @model[attr] ||= 0
+        @model[attr] += 1
         @model.class.increment(@model.id, attr => 1)
       end
 

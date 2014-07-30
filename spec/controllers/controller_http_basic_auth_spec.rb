@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SorceryController do
 
-  let(:user) { create_new_user }
+  let(:user) { double("user", id: 42, email: 'bla@bla.com') }
 
   describe  "with http basic auth features" do
     before(:all) do
@@ -26,6 +26,7 @@ describe SorceryController do
       allow(subject).to receive(:register_last_activity_time_to_db)
 
       @request.env["HTTP_AUTHORIZATION"] = "Basic #{Base64::encode64("#{user.email}:secret")}"
+      expect(User).to receive('authenticate').with('bla@bla.com', 'secret').and_return(user)
       get :test_http_basic_auth, nil, http_authentication_used: true
 
       expect(response).to be_a_success
@@ -33,6 +34,7 @@ describe SorceryController do
 
     it "fails authentication if credentials are wrong" do
       @request.env["HTTP_AUTHORIZATION"] = "Basic #{Base64::encode64("#{user.email}:wrong!")}"
+      expect(User).to receive('authenticate').with('bla@bla.com', 'wrong!').and_return(nil)
       get :test_http_basic_auth, nil, http_authentication_used: true
 
       expect(response).to redirect_to root_url
@@ -56,9 +58,11 @@ describe SorceryController do
       allow(controller).to receive(:register_last_activity_time_to_db)
 
       @request.env["HTTP_AUTHORIZATION"] = "Basic #{Base64::encode64("#{user.email}:secret")}"
+      expect(User).to receive('authenticate').with('bla@bla.com', 'secret').and_return(user)
+
       get :test_http_basic_auth, nil, http_authentication_used: true
 
-      expect(session[:user_id]).to be User.sorcery_adapter.find_by_email(user.email).id
+      expect(session[:user_id]).to be 42
     end
   end
 end
