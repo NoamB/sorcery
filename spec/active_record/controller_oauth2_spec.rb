@@ -92,7 +92,7 @@ describe SorceryController, :active_record => true do
       expect(flash[:notice]).to eq "Success!"
     end
 
-    [:github, :google, :liveid].each do |provider|
+    [:github, :google, :liveid, :vk].each do |provider|
 
       describe "with #{provider}" do
 
@@ -123,7 +123,7 @@ describe SorceryController, :active_record => true do
           expect(flash[:alert]).to eq "Failed!"
         end
 
-        it "on successful login_from the user is redirected to the url he originally wanted (github)" do
+        it "on successful login_from the user is redirected to the url he originally wanted (#{provider})" do
           # dirty hack for rails 4
           allow(subject).to receive(:register_last_activity_time_to_db)
 
@@ -142,8 +142,8 @@ describe SorceryController, :active_record => true do
   describe "OAuth with User Activation features" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
-      sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
-      sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid])
+      sorcery_reload!([:user_activation, :external], :user_activation_mailer => ::SorceryMailer)
+      sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid, :vk])
       sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
       sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
       sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
@@ -156,7 +156,9 @@ describe SorceryController, :active_record => true do
       sorcery_controller_external_property_set(:liveid, :key, "eYVNBjBDi33aa9GkA3w")
       sorcery_controller_external_property_set(:liveid, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
       sorcery_controller_external_property_set(:liveid, :callback_url, "http://blabla.com")
-
+      sorcery_controller_external_property_set(:vk, :key, "eYVNBjBDi33aa9GkA3w")
+      sorcery_controller_external_property_set(:vk, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+      sorcery_controller_external_property_set(:vk, :callback_url, "http://blabla.com")
     end
 
     after(:all) do
@@ -183,15 +185,14 @@ describe SorceryController, :active_record => true do
       expect(ActionMailer::Base.deliveries.size).to eq old_size
     end
 
-  # provider: github
-    [:github, :google, :liveid].each do |provider|
-      it "does not send activation email to external users (github)" do
+    [:github, :google, :liveid, :vk].each do |provider|
+      it "does not send activation email to external users (#{provider})" do
         old_size = ActionMailer::Base.deliveries.size
         create_new_external_user provider
         expect(ActionMailer::Base.deliveries.size).to eq old_size
       end
 
-      it "does not send external users an activation success email (github)" do
+      it "does not send external users an activation success email (#{provider})" do
         sorcery_model_property_set(:activation_success_email_method_name, nil)
         create_new_external_user provider
         old_size = ActionMailer::Base.deliveries.size
@@ -215,7 +216,7 @@ describe SorceryController, :active_record => true do
       ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activity_logging")
     end
 
-    %w(facebook github google liveid).each do |provider|
+    %w(facebook github google liveid vk).each do |provider|
       context "when #{provider}" do
         before(:each) do
           User.sorcery_adapter.delete_all
@@ -257,7 +258,7 @@ describe SorceryController, :active_record => true do
       ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
     end
 
-    %w(facebook github google liveid).each do |provider|
+    %w(facebook github google liveid vk).each do |provider|
       context "when #{provider}" do
         before(:each) do
           User.sorcery_adapter.delete_all
@@ -310,13 +311,24 @@ describe SorceryController, :active_record => true do
       "locale"=>"en_US",
       "languages"=>[{"id"=>"108405449189952", "name"=>"Hebrew"}, {"id"=>"106059522759137", "name"=>"English"}, {"id"=>"112624162082677", "name"=>"Russian"}],
       "verified"=>true,
-      "updated_time"=>"2011-02-16T20:59:38+0000"}.to_json }
+      "updated_time"=>"2011-02-16T20:59:38+0000",
+      # response for VK auth
+      "response"=>[
+          {
+            "uid"=>"123",
+            "first_name"=>"Noam",
+            "last_name"=>"Ben Ari"
+            }
+        ]}.to_json }
     allow(access_token).to receive(:get) { response }
+    allow(access_token).to receive(:token) { "187041a618229fdaf16613e96e1caabc1e86e46bbfad228de41520e63fe45873684c365a14417289599f3" }
+    # access_token params for VK auth
+    allow(access_token).to receive(:params) { { "user_id"=>"100500", "email"=>"nbenari@gmail.com" } }
     allow_any_instance_of(OAuth2::Strategy::AuthCode).to receive(:get_token) { access_token }
   end
 
   def set_external_property
-    sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid])
+    sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid, :vk])
     sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
@@ -329,14 +341,19 @@ describe SorceryController, :active_record => true do
     sorcery_controller_external_property_set(:liveid, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:liveid, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:liveid, :callback_url, "http://blabla.com")
+    sorcery_controller_external_property_set(:vk, :key, "eYVNBjBDi33aa9GkA3w")
+    sorcery_controller_external_property_set(:vk, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+    sorcery_controller_external_property_set(:vk, :callback_url, "http://blabla.com")
   end
 
   def provider_url(provider)
     {
       github: "https://github.com/login/oauth/authorize?client_id=#{::Sorcery::Controller::Config.github.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=&state=",
       google: "https://accounts.google.com/o/oauth2/auth?client_id=#{::Sorcery::Controller::Config.google.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=",
-      liveid: "https://oauth.live.com/authorize?client_id=#{::Sorcery::Controller::Config.liveid.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=wl.basic+wl.emails+wl.offline_access&state="
+      liveid: "https://oauth.live.com/authorize?client_id=#{::Sorcery::Controller::Config.liveid.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=wl.basic+wl.emails+wl.offline_access&state=",
+      vk: "https://oauth.vk.com/authorize?client_id=#{::Sorcery::Controller::Config.vk.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=#{::Sorcery::Controller::Config.vk.scope}&state="
     }[provider]
   end
 
 end
+
