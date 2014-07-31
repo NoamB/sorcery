@@ -58,9 +58,6 @@ explaining and the rest are commented:
     @user.external? # external users, such as facebook/twitter etc.
     User.authenticates_with_sorcery!
 
-    # activity logging
-    current_users
-
     # http basic auth
     require_login_from_http_basic # this is a before filter
 

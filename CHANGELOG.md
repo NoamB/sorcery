@@ -5,6 +5,7 @@
 * `find_by_provider_and_uid` method was replaced with `find_by_oauth_credentials`
 * Sorcery::VERSION constant was added to allow easy version check
 * `@user.setup_activation` method was made to be public
+* `current_users` method is deprecated
 
 ## 0.8.6
 
