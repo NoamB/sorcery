@@ -164,6 +164,20 @@ module Sorcery
             return user
           end
 
+          def build_from(provider_name)
+            sorcery_fetch_user_hash provider_name
+            config = user_class.sorcery_config
+
+            attrs = user_attrs(@provider.user_info_mapping, @user_hash)
+
+            @user = user_class.new
+            attrs.each do |k,v|
+              @user.send(:"#{k}=", v)
+            end
+            @user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name)
+            @user
+          end
+          
           # this method automatically creates a new user from the data in the external user hash.
           # The mappings from user hash fields to user db fields are set at controller config.
           # If the hash field you would like to map is nested, use slashes. For example, Given a hash like:
