@@ -91,21 +91,21 @@ shared_examples_for "rails_3_reset_password_model" do
     end
 
     it "load_from_reset_password_token returns user when token is found" do
-      user.deliver_reset_password_instructions!
+      user.generate_reset_password_token!
       updated_user  = User.sorcery_adapter.find(user.id)
 
       expect(User.load_from_reset_password_token user.reset_password_token).to eq updated_user
     end
 
     it "load_from_reset_password_token does NOT return user when token is NOT found" do
-      user.deliver_reset_password_instructions!
+      user.generate_reset_password_token!
 
       expect(User.load_from_reset_password_token "a").to be_nil
     end
 
     it "load_from_reset_password_token returns user when token is found and not expired" do
       sorcery_model_property_set(:reset_password_expiration_period, 500)
-      user.deliver_reset_password_instructions!
+      user.generate_reset_password_token!
       updated_user  = User.sorcery_adapter.find(user.id)
 
       expect(User.load_from_reset_password_token user.reset_password_token).to eq updated_user
@@ -113,7 +113,7 @@ shared_examples_for "rails_3_reset_password_model" do
 
     it "load_from_reset_password_token does NOT return user when token is found and expired" do
       sorcery_model_property_set(:reset_password_expiration_period, 0.1)
-      user.deliver_reset_password_instructions!
+      user.generate_reset_password_token!
       Timecop.travel(Time.now.in_time_zone+0.5)
 
       expect(User.load_from_reset_password_token user.reset_password_token).to be_nil
@@ -121,7 +121,7 @@ shared_examples_for "rails_3_reset_password_model" do
 
     it "load_from_reset_password_token is always valid if expiration period is nil" do
       sorcery_model_property_set(:reset_password_expiration_period, nil)
-      user.deliver_reset_password_instructions!
+      user.generate_reset_password_token!
       updated_user  = User.sorcery_adapter.find(user.id)
 
       expect(User.load_from_reset_password_token user.reset_password_token).to eq updated_user
