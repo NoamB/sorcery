@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 ENV["RAILS_ENV"] ||= 'test'
 
-SORCERY_ORM = (ENV["SORCERY_ORM"] || :active_record).to_sym
+SORCERY_ORM = :active_record
 
 # require 'simplecov'
 # SimpleCov.root File.join(File.dirname(__FILE__), '..', 'lib')
@@ -30,10 +30,6 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
   config.include RSpec::Rails::ControllerExampleGroup, :file_path => /controller(.)*_spec.rb$/
-  config.filter_run_excluding :active_record => SORCERY_ORM.to_sym != :active_record
-  config.filter_run_excluding :mongo_mapper => SORCERY_ORM.to_sym != :mongo_mapper
-  config.filter_run_excluding :data_mapper => SORCERY_ORM.to_sym != :data_mapper
-  config.filter_run_excluding :mongoid => SORCERY_ORM.to_sym != :mongoid
   config.mock_with :rspec
 
   config.use_transactional_fixtures = true

@@ -79,30 +79,5 @@ module Sorcery
     end
   end
 
-  if defined?(Mongoid)
-    require 'sorcery/adapters/mongoid_adapter'
-    Mongoid::Document::ClassMethods.send :include, Sorcery::Model
-
-    Mongoid::Document.send :define_method, :sorcery_adapter do
-      @sorcery_adapter ||= Sorcery::Adapters::MongoidAdapter.new(self)
-    end
-
-    Mongoid::Document::ClassMethods.send :define_method, :sorcery_adapter do
-      Sorcery::Adapters::MongoidAdapter.from(self)
-    end
-  end
-
-  if defined?(MongoMapper)
-    require 'sorcery/adapters/mongo_mapper_adapter'
-    MongoMapper::Document.send(:plugin, Sorcery::Adapters::MongoMapperAdapter::Wrapper)
-  end
-
-  if defined?(DataMapper)
-    require 'sorcery/adapters/data_mapper_adapter'
-    DataMapper::Model.append_extensions(Sorcery::Model)
-
-    DataMapper::Model.append_inclusions(Sorcery::Adapters::DataMapperAdapter::Wrapper)
-  end
-
   require 'sorcery/engine' if defined?(Rails)
 end
