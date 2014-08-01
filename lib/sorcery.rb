@@ -4,12 +4,14 @@ module Sorcery
 
   require 'sorcery/model'
 
+  module Adapters
+    require 'sorcery/adapters/base_adapter'
+  end
+
   module Model
     require 'sorcery/model/temporary_token'
     require 'sorcery/model/config'
 
-    module Adapters
-    end
 
     module Submodules
       require 'sorcery/model/submodules/user_activation'
