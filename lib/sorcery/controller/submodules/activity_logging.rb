@@ -40,14 +40,9 @@ module Sorcery
         module InstanceMethods
           # Returns an array of the active users.
           def current_users
+            ActiveSupport::Deprecation.warn("Sorcery: `current_users` method is deprecated. Read more on Github: https://github.com/NoamB/sorcery/issues/602")
+
             user_class.current_users
-            # A possible patch here:
-            # we'll add the current_user to the users list if he's not in it
-            # (can happen when he was inactive for more than activity timeout):
-            #
-            #   users.unshift!(current_user) if logged_in? && users.find {|u| u.id == current_user.id}.nil?
-            #
-            # disadvantages: can hurt performance.
           end
 
           protected
