@@ -198,6 +198,10 @@ shared_examples_for "sorcery_controller" do
 
       expect(assigns[:result]).to eq User.first
     end
+    
+    it "auto_login(user) raises exception if user is not persisted" do
+      expect { subject.auto_login(User.new) }.to raise_error
+    end
   end
 
 end
