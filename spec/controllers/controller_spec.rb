@@ -27,17 +27,15 @@ describe SorceryController do
 
   # ----------------- PLUGIN ACTIVATED -----------------------
   context "when activated with sorcery" do
-    let!(:user) { create_new_user }
+    let(:user) { double('user', id: 42) }
 
     before(:all) do
       sorcery_reload!
-      User.sorcery_adapter.delete_all
     end
 
     after(:each) do
       Sorcery::Controller::Config.reset!
       sorcery_reload!
-      User.sorcery_adapter.delete_all
       sorcery_controller_property_set(:user_class, User)
       sorcery_model_property_set(:username_attribute_names, [:email])
     end
@@ -51,13 +49,17 @@ describe SorceryController do
     specify { should respond_to(:current_user) }
 
     it "login(username,password) returns the user when success and set the session with user.id" do
+      expect(User).to receive(:authenticate).with('bla@bla.com', 'secret').and_return(user)
+
       get :test_login, :email => 'bla@bla.com', :password => 'secret'
 
       expect(assigns[:user]).to eq user
-      expect(session[:user_id]).to eq user.id
+      expect(session[:user_id]).to eq 42
     end
 
     it "login(email,password) returns the user when success and set the session with user.id" do
+      expect(User).to receive(:authenticate).with('bla@bla.com', 'secret').and_return(user)
+
       get :test_login, :email => 'bla@bla.com', :password => 'secret'
 
       expect(assigns[:user]).to eq user
@@ -65,6 +67,8 @@ describe SorceryController do
     end
 
     it "login(username,password) returns nil and not set the session when failure" do
+      expect(User).to receive(:authenticate).with('bla@bla.com', 'opensesame!').and_return(nil)
+
       get :test_login, :email => 'bla@bla.com', :password => 'opensesame!'
 
       expect(assigns[:user]).to be_nil
@@ -72,49 +76,52 @@ describe SorceryController do
     end
 
     it "login(email,password) returns the user when success and set the session with the _csrf_token" do
+      expect(User).to receive(:authenticate).with('bla@bla.com', 'secret').and_return(user)
       get :test_login, :email => 'bla@bla.com', :password => 'secret'
 
       expect(session[:_csrf_token]).not_to be_nil
     end
 
     it "login(username,password) returns nil and not set the session when upper case username" do
-      skip('DM Adapter dependant') if SORCERY_ORM == :data_mapper
       get :test_login, :email => 'BLA@BLA.COM', :password => 'secret'
 
       expect(assigns[:user]).to be_nil
       expect(session[:user_id]).to be_nil
     end
 
+    # TODO: move test to model
     it "login(username,password) returns the user and set the session with user.id when upper case username and config is downcase before authenticating" do
       sorcery_model_property_set(:downcase_username_before_authenticating, true)
+      expect(User).to receive(:authenticate).with('BLA@BLA.COM', 'secret').and_return(user)
       get :test_login, :email => 'BLA@BLA.COM', :password => 'secret'
 
       expect(assigns[:user]).to eq user
       expect(session[:user_id]).to eq user.id
     end
 
+    # TODO: move test to model
     it "login(username,password) returns nil and not set the session when user was created with upper case username, config is default, and log in username is lower case" do
-      skip('DM Adapter dependant') if SORCERY_ORM == :data_mapper
-      create_new_user({:username => "", :email => "BLA1@BLA.COM", :password => 'secret1'})
+      expect(User).to receive(:authenticate).with('bla1@bla.com', 'secret1').and_return(nil)
       get :test_login, :email => 'bla1@bla.com', :password => 'secret1'
 
       expect(assigns[:user]).to be_nil
       expect(session[:user_id]).to be_nil
     end
 
+    # TODO: move test to model
     it "login(username,password) returns the user and set the session with user.id when user was created with upper case username and config is downcase before authenticating" do
-      skip('DM Adapter dependant') if SORCERY_ORM == :data_mapper
       sorcery_model_property_set(:downcase_username_before_authenticating, true)
-      new_user = create_new_user({:username => "", :email => "BLA1@BLA.COM", :password => 'secret1'})
+      expect(User).to receive(:authenticate).with('bla1@bla.com', 'secret1').and_return(user)
       get :test_login, :email => 'bla1@bla.com', :password => 'secret1'
 
-      expect(assigns[:user]).to eq new_user
-      expect(session[:user_id]).to eq new_user.id
+      expect(assigns[:user]).to eq user
+      expect(session[:user_id]).to eq user.id
     end
 
     it "logout clears the session" do
       cookies[:remember_me_token] = nil
       session[:user_id] = user.id
+      expect(User.sorcery_adapter).to receive(:find_by_id).with(42) { user }
       get :test_logout
 
       expect(session[:user_id]).to be_nil
@@ -122,6 +129,7 @@ describe SorceryController do
 
     it "logged_in? returns true if logged in" do
       session[:user_id] = user.id
+      expect(User.sorcery_adapter).to receive(:find_by_id).with(42) { user }
 
       expect(subject.logged_in?).to be true
     end
@@ -133,14 +141,15 @@ describe SorceryController do
     end
 
     it "current_user returns the user instance if logged in" do
-      create_new_user
       session[:user_id] = user.id
+      expect(User.sorcery_adapter).to receive(:find_by_id).with(42) { user }
 
       2.times { expect(subject.current_user).to eq user } # memoized!
     end
 
     it "current_user returns false if not logged in" do
       session[:user_id] = nil
+      expect(User.sorcery_adapter).to_not receive(:find_by_id)
 
       2.times { expect(subject.current_user).to be_nil } # memoized!
     end
@@ -195,9 +204,11 @@ describe SorceryController do
       expect(session[:user_id]).to be_nil
       expect(subject.current_user).to be_nil
 
+      expect(User).to receive(:first) { user }
+
       get :test_auto_login
 
-      expect(assigns[:result]).to eq User.first
+      expect(assigns[:result]).to eq user
     end
   end
 
