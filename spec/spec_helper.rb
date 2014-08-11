@@ -14,8 +14,6 @@ require 'rspec'
 require 'rails/all'
 require 'rspec/rails'
 require 'timecop'
-# require 'generator_spec'
-# require 'generator_spec/generator_example_group'
 
 def setup_orm; end
 def teardown_orm; end
@@ -44,6 +42,4 @@ RSpec.configure do |config|
 
   config.include ::Sorcery::TestHelpers::Internal
   config.include ::Sorcery::TestHelpers::Internal::Rails
-
-  # config.include ::GeneratorSpec::GeneratorExampleGroup, :type => :generator
 end
