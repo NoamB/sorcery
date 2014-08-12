@@ -232,7 +232,8 @@ class SorceryController < ActionController::Base
     login_from(provider)
     @user = create_from(provider) do |user|
       # check uniqueness of email
-      User.where(email: user.email).empty?
+      # User.where(email: user.email).empty?
+      false
     end
     if @user
       redirect_to 'bla', notice: 'Success!'

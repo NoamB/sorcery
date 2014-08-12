@@ -44,9 +44,53 @@ module Sorcery
             authentication = config.authentications_class.sorcery_adapter.find_by_oauth_credentials(provider, uid)
             user = sorcery_adapter.find_by_id(authentication.send(config.authentications_user_id_attribute_name)) if authentication
           end
+
+          def create_and_validate_from_provider(provider, uid, attrs)
+            user = new(attrs)
+            user.send(sorcery_config.authentications_class.to_s.downcase.pluralize).build(
+              sorcery_config.provider_uid_attribute_name => uid,
+              sorcery_config.provider_attribute_name => provider
+            )
+            saved = user.sorcery_adapter.save
+            [user, saved]
+          end
+
+          def create_from_provider(provider, uid, attrs)
+            user = new
+            attrs.each do |k,v|
+              user.send(:"#{k}=", v)
+            end
+
+            if block_given?
+              return false unless yield user
+            end
+
+            sorcery_adapter.transaction do
+              user.sorcery_adapter.save(:validate => false)
+              sorcery_config.authentications_class.create!(
+                sorcery_config.authentications_user_id_attribute_name => user.id,
+                sorcery_config.provider_attribute_name => provider,
+                sorcery_config.provider_uid_attribute_name => uid
+              )
+            end
+            user
+          end
         end
 
         module InstanceMethods
+          def add_provider_to_user(provider, uid)
+            authentications = sorcery_config.authentications_class.name.underscore.pluralize
+            # first check to see if user has a particular authentication already
+            if sorcery_adapter.find_authentication_by_oauth_credentials(authentications, provider, uid).nil?
+              user = send(authentications).build(sorcery_config.provider_uid_attribute_name => uid,
+                                                 sorcery_config.provider_attribute_name => provider)
+              user.sorcery_adapter.save(validate: false)
+            else
+              user = false
+            end
+
+            user
+          end
 
         end
 

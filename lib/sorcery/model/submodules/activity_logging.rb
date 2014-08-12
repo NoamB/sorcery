@@ -9,6 +9,7 @@ module Sorcery
       module ActivityLogging
         def self.included(base)
           base.extend(ClassMethods)
+          base.send(:include, InstanceMethods)
 
           base.sorcery_config.class_eval do
             attr_accessor :last_login_at_attribute_name,                  # last login attribute name.
@@ -29,6 +30,24 @@ module Sorcery
           end
 
           base.sorcery_config.after_config << :define_activity_logging_fields
+        end
+
+        module InstanceMethods
+          def set_last_login_at(time)
+            sorcery_adapter.update_attribute(sorcery_config.last_login_at_attribute_name, time)
+          end
+
+          def set_last_logout_at(time)
+            sorcery_adapter.update_attribute(sorcery_config.last_logout_at_attribute_name, time)
+          end
+
+          def set_last_activity_at(time)
+            sorcery_adapter.update_attribute(sorcery_config.last_activity_at_attribute_name, time)
+          end
+
+          def set_last_ip_addess(ip_address)
+            sorcery_adapter.update_attribute(sorcery_config.last_login_from_ip_address_name, ip_address)
+          end
         end
 
         module ClassMethods

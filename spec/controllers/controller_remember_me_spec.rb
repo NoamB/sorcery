@@ -1,29 +1,32 @@
 require 'spec_helper'
 
-describe SorceryController, :active_record => true do
+describe SorceryController do
 
-  let!(:user) { create_new_user }
+  let!(:user) { double('user', id: 42) }
 
   # ----------------- REMEMBER ME -----------------------
   context "with remember me features" do
 
     before(:all) do
-      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/remember_me")
-      User.reset_column_information
       sorcery_reload!([:remember_me])
-    end
-
-    after(:all) do
-      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/remember_me")
     end
 
     after(:each) do
       session = nil
       cookies = nil
-      User.sorcery_adapter.delete_all
+    end
+
+    before(:each) do
+      allow(user).to receive(:remember_me_token)
+      allow(user).to receive(:remember_me_token_expires_at)
+      allow(user).to receive_message_chain(:sorcery_config, :remember_me_token_attribute_name).and_return(:remember_me_token)
+      allow(user).to receive_message_chain(:sorcery_config, :remember_me_token_expires_at_attribute_name).and_return(:remember_me_token_expires_at)
     end
 
     it "sets cookie on remember_me!" do
+      expect(User).to receive(:authenticate).with('bla@bla.com', 'secret').and_return(user)
+      expect(user).to receive(:remember_me!)
+
       post :test_login_with_remember, :email => 'bla@bla.com', :password => 'secret'
 
       expect(cookies.signed["remember_me_token"]).to eq assigns[:current_user].remember_me_token
@@ -37,6 +40,10 @@ describe SorceryController, :active_record => true do
     end
 
     it "login(email,password,remember_me) logs user in and remembers" do
+      expect(User).to receive(:authenticate).with('bla@bla.com', 'secret', '1').and_return(user)
+      expect(user).to receive(:remember_me!)
+      expect(user).to receive(:remember_me_token).and_return('abracadabra').twice
+
       post :test_login_with_remember_in_login, :email => 'bla@bla.com', :password => 'secret', :remember => "1"
 
       expect(cookies.signed["remember_me_token"]).not_to be_nil
@@ -45,6 +52,10 @@ describe SorceryController, :active_record => true do
 
     it "logout also calls forget_me!" do
       session[:user_id] = user.id
+      expect(User.sorcery_adapter).to receive(:find_by_id).with(user.id).and_return(user)
+      expect(user).to receive(:remember_me!)
+      expect(user).to receive(:forget_me!)
+
       get :test_logout_with_remember
 
       expect(cookies["remember_me_token"]).to be_nil
@@ -52,11 +63,19 @@ describe SorceryController, :active_record => true do
 
     it "logs user in from cookie" do
       session[:user_id] = user.id
+      expect(User.sorcery_adapter).to receive(:find_by_id).with(user.id).and_return(user)
+      expect(user).to receive(:remember_me!)
+      expect(user).to receive(:remember_me_token).and_return('token').twice
+      expect(user).to receive(:has_remember_me_token?) { true }
+
       subject.remember_me!
       subject.instance_eval do
         remove_instance_variable :@current_user
       end
       session[:user_id] = nil
+
+      expect(User.sorcery_adapter).to receive(:find_by_remember_me_token).with('token').and_return(user)
+
       get :test_login_from_cookie
 
       expect(assigns[:current_user]).to eq user
@@ -87,7 +106,9 @@ describe SorceryController, :active_record => true do
 
     it "auto_login(user, true) logs in an user instance with remembering" do
       session[:user_id] = nil
+      expect(user).to receive(:remember_me!)
       subject.auto_login(user, true)
+
       get :test_login_from_cookie
 
       expect(assigns[:current_user]).to eq user
