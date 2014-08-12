@@ -11,6 +11,9 @@
 * `@user.setup_activation` method was made to be public
 * `current_users` method is deprecated
 * Fetching email from VK auth, thanks to @makaroni4
+* Add logged_in? method to test_helpers
+* #locked? method is now public API
+* Introduces a new User instance method `generate_reset_password_token` to generate a new reset password token without sending an email
 
 ## 0.8.6
 
