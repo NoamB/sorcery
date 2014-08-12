@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0 (not released yet)
+
+* Adapters (Mongoid, MongoMapper, DataMapper) are now separated from the core Sorcery repo and moved under `sorcery-rails` organization. Special thanks to @juike!
+
 ## 0.8.7 (not released yet)
 
 * `find_by_provider_and_uid` method was replaced with `find_by_oauth_credentials`
