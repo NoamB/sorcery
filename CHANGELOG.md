@@ -10,6 +10,7 @@
 * Sorcery::VERSION constant was added to allow easy version check
 * `@user.setup_activation` method was made to be public
 * `current_users` method is deprecated
+* Fetching email from VK auth, thanks to @makaroni4
 
 ## 0.8.6
 
