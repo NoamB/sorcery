@@ -10,6 +10,9 @@ Inspired by restful_authentication, Authlogic and Devise. Crypto code taken
 almost unchanged from Authlogic. OAuth code inspired by OmniAuth and Ryan
 Bates's railscasts about it.
 
+**What's happening now?** We are rewriting Sorcery with decoupled DB adapters and using modern Rails 4 patterns. The next release (1.0) will be containing some API-breaking changes. Development is going right in the `master` branch.
+We'll continue releasing `0.8.x` branch with security and bug fixes until November 2014.
+
 **Rails 4 status:** [Sorcery 0.8.6](http://rubygems.org/gems/sorcery/versions/0.8.6) is fully tested and ready for Rails 4.0 and 4.1.
 
 https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication
