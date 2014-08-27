@@ -27,6 +27,12 @@ Rails.application.config.sorcery.configure do |config|
   # config.cookie_domain =
 
 
+  # Allow the remember_me cookie to be set through AJAX
+  # Default: `true`
+  #
+  # config.remember_me_httponly =
+
+
   # -- session timeout --
   # How long in seconds to keep the session alive.
   # Default: `3600`
@@ -427,11 +433,7 @@ Rails.application.config.sorcery.configure do |config|
     # user.provider_uid_attribute_name =
   end
 
-  # These lines must come after the 'user config' block.
+  # This line must come after the 'user config' block.
   # Define which model authenticates with sorcery.
   config.user_class = "<%= model_class_name %>"
-
-  # Allow the remember_me cookie to settable through AJAX
-  # Default: `true`
-  # config.remember_me_httponly =
 end
