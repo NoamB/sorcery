@@ -86,6 +86,15 @@ Rails.application.config.sorcery.configure do |config|
   # config.ca_file =
 
 
+  # For information about the Instagram API:
+  # - note that in their docs and console `client_id` correspond to `key`
+  #
+  # config.instagram.key = "8e4eeace2cfb4823bc1d49537f3a7a5b"
+  # config.instagram.secret = "edd2fce451914c828124c0eeaa674bae"
+  # config.instagram.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=instagram"
+  # config.instagram.user_info_mapping = {name: "username", instagram_id: "id"}
+  #
+  #
   # For information about LinkedIn API:
   # - user info fields go to https://developer.linkedin.com/documents/profile-fields
   # - access permissions go to https://developer.linkedin.com/documents/authentication#granting
