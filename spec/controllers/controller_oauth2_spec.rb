@@ -332,7 +332,7 @@ describe SorceryController, :active_record => true do
         it "resets session after session timeout" do
           expect(User).to receive(:load_from_provider).with(provider.to_sym, '123').and_return(user)
           get "test_login_from_#{provider}".to_sym
-          expect(session[:user_id]).to eq 42
+          expect(session[:user_id]).to eq "42"
           Timecop.travel(Time.now.in_time_zone+0.6)
           get :test_should_be_logged_in
 
