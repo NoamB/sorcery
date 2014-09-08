@@ -137,7 +137,7 @@ describe SorceryController, :active_record => true do
       expect(flash[:notice]).to eq "Success!"
     end
 
-    [:github, :google, :liveid, :vk].each do |provider|
+    [:github, :google, :liveid, :vk, :instagram].each do |provider|
 
       describe "with #{provider}" do
 
@@ -190,11 +190,14 @@ describe SorceryController, :active_record => true do
       end
 
       sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
-      sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid, :vk])
+      sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid, :vk, :instagram])
 
       sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
       sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
       sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
+      sorcery_controller_external_property_set(:instagram, :key, "eYVNBjBDi33aa9GkA3w")
+      sorcery_controller_external_property_set(:instagram, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+      sorcery_controller_external_property_set(:instagram, :callback_url, "http://blabla.com")
       sorcery_controller_external_property_set(:github, :key, "eYVNBjBDi33aa9GkA3w")
       sorcery_controller_external_property_set(:github, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
       sorcery_controller_external_property_set(:github, :callback_url, "http://blabla.com")
@@ -235,7 +238,7 @@ describe SorceryController, :active_record => true do
       expect(ActionMailer::Base.deliveries.size).to eq old_size
     end
 
-    [:github, :google, :liveid, :vk].each do |provider|
+    [:github, :google, :liveid, :vk, :instagram].each do |provider|
       it "does not send activation email to external users (#{provider})" do
         old_size = ActionMailer::Base.deliveries.size
         create_new_external_user provider
@@ -266,7 +269,7 @@ describe SorceryController, :active_record => true do
       end
     end
 
-    %w(facebook github google liveid vk).each do |provider|
+    %w(facebook github google liveid vk instagram).each do |provider|
       context "when #{provider}" do
         before(:each) do
           sorcery_controller_property_set(:register_login_time, true)
@@ -306,7 +309,7 @@ describe SorceryController, :active_record => true do
 
     let(:user) { double('user', id: 42) }
 
-    %w(facebook github google liveid vk).each do |provider|
+    %w(facebook github google liveid vk instagram).each do |provider|
       context "when #{provider}" do
         before(:each) do
           sorcery_model_property_set(:authentications_class, Authentication)
@@ -343,31 +346,50 @@ describe SorceryController, :active_record => true do
   def stub_all_oauth2_requests!
     access_token    = double(OAuth2::AccessToken)
     allow(access_token).to receive(:token_param=)
+    allow(access_token).to receive(:[]).with(:client_id){
+      "eYVNBjBDi33aa9GkA3w"
+    }
     response        = double(OAuth2::Response)
-    allow(response).to receive(:body) { {
-      "id"=>"123",
-      "name"=>"Noam Ben Ari",
-      "first_name"=>"Noam",
-      "last_name"=>"Ben Ari",
-      "link"=>"http://www.facebook.com/nbenari1",
-      "hometown"=>{"id"=>"110619208966868", "name"=>"Haifa, Israel"},
-      "location"=>{"id"=>"106906559341067", "name"=>"Pardes Hanah, Hefa, Israel"},
-      "bio"=>"I'm a new daddy, and enjoying it!",
-      "gender"=>"male",
-      "email"=>"nbenari@gmail.com",
-      "timezone"=>2,
-      "locale"=>"en_US",
-      "languages"=>[{"id"=>"108405449189952", "name"=>"Hebrew"}, {"id"=>"106059522759137", "name"=>"English"}, {"id"=>"112624162082677", "name"=>"Russian"}],
-      "verified"=>true,
-      "updated_time"=>"2011-02-16T20:59:38+0000",
-      # response for VK auth
-      "response"=>[
-          {
-            "uid"=>"123",
-            "first_name"=>"Noam",
-            "last_name"=>"Ben Ari"
-            }
-        ]}.to_json }
+    allow(response).to receive(:body) {
+      {
+        "id"=>"123",
+        "name"=>"Noam Ben Ari",
+        "first_name"=>"Noam",
+        "last_name"=>"Ben Ari",
+        "link"=>"http://www.facebook.com/nbenari1",
+        "hometown"=>{"id"=>"110619208966868", "name"=>"Haifa, Israel"},
+        "location"=>{"id"=>"106906559341067", "name"=>"Pardes Hanah, Hefa, Israel"},
+        "bio"=>"I'm a new daddy, and enjoying it!",
+        "gender"=>"male",
+        "email"=>"nbenari@gmail.com",
+        "timezone"=>2,
+        "locale"=>"en_US",
+        "languages"=>[{"id"=>"108405449189952", "name"=>"Hebrew"}, {"id"=>"106059522759137", "name"=>"English"}, {"id"=>"112624162082677", "name"=>"Russian"}],
+        "verified"=>true,
+        "updated_time"=>"2011-02-16T20:59:38+0000",
+        # response for VK auth
+        "response"=>[
+            {
+              "uid"=>"123",
+              "first_name"=>"Noam",
+              "last_name"=>"Ben Ari"
+              }
+        ],
+        # stubbed response for instagram oauth2;
+        # thankfully keyed by 'data', so doesn't interfere
+        # with all the other stubs here
+        "data" =>{
+          "username"=>"pnmahoney",
+          "bio"=>"turn WHAT down?",
+          "website"=>"",
+          "profile_picture"=>
+          "http://photos-d.ak.instagram.com/hphotos-ak-xpa1/10454121_417985815007395_867850883_a.jpg",
+          "full_name"=>"Patrick Mahoney",
+          "counts"=>{"media"=>2, "followed_by"=>100, "follows"=>71},
+          "id"=>"123"
+        }
+      }.to_json
+    }
     allow(access_token).to receive(:get) { response }
     allow(access_token).to receive(:token) { "187041a618229fdaf16613e96e1caabc1e86e46bbfad228de41520e63fe45873684c365a14417289599f3" }
     # access_token params for VK auth
@@ -376,10 +398,14 @@ describe SorceryController, :active_record => true do
   end
 
   def set_external_property
-    sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid, :vk])
+    sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid, :vk, :instagram])
     sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
+    sorcery_controller_external_property_set(:instagram, :key, "eYVNBjBDi33aa9GkA3w")
+    sorcery_controller_external_property_set(:instagram, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+    sorcery_controller_external_property_set(:instagram, :callback_url, "http://blabla.com")
+    sorcery_controller_external_property_set(:instagram, :scope, ['basic'])
     sorcery_controller_external_property_set(:github, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:github, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:github, :callback_url, "http://blabla.com")
@@ -399,7 +425,8 @@ describe SorceryController, :active_record => true do
       github: "https://github.com/login/oauth/authorize?client_id=#{::Sorcery::Controller::Config.github.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=&state=",
       google: "https://accounts.google.com/o/oauth2/auth?client_id=#{::Sorcery::Controller::Config.google.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=",
       liveid: "https://oauth.live.com/authorize?client_id=#{::Sorcery::Controller::Config.liveid.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=wl.basic+wl.emails+wl.offline_access&state=",
-      vk: "https://oauth.vk.com/authorize?client_id=#{::Sorcery::Controller::Config.vk.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=#{::Sorcery::Controller::Config.vk.scope}&state="
+      vk: "https://oauth.vk.com/authorize?client_id=#{::Sorcery::Controller::Config.vk.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=#{::Sorcery::Controller::Config.vk.scope}&state=",
+      instagram: "https://api.instagram.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.instagram.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=#{::Sorcery::Controller::Config.instagram.scope}&state="
     }[provider]
   end
 

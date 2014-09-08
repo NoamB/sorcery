@@ -46,10 +46,23 @@ module Sorcery
       # given `user_info_mapping` to specify
       #   {:db_attribute_name => 'instagram_attr_name'}
       # so that Sorcery can build AR model from attr names
+      #
+      # NOTE: instead of just getting the user info
+      # from the access_token (which already returns them),
+      # testing strategy relies on querying user_info_path
       def get_user_hash(access_token)
+        call_api_params = {
+          :access_token => access_token.token,
+          :client_id => access_token[:client_id]
+        }
+        response = access_token.get(
+          "#{user_info_path}?#{call_api_params.to_param}"
+        )
+
+
         _user_attrs = Hash.new
-        _user_attrs[:uid] = access_token['user']['id']
-        _user_attrs[:user_info] = access_token['user']
+        _user_attrs[:user_info] = JSON.parse(response.body)['data']
+        _user_attrs[:uid] = _user_attrs[:user_info]['id']
         _user_attrs
       end
 
