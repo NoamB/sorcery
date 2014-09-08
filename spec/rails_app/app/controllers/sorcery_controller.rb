@@ -76,6 +76,10 @@ class SorceryController < ActionController::Base
     render text: 'HTTP Basic Auth'
   end
 
+  def login_at_test_instagram
+    login_at(:instagram)
+  end
+
   def login_at_test_twitter
     login_at(:twitter)
   end
@@ -108,6 +112,14 @@ class SorceryController < ActionController::Base
 
   def login_at_test_with_state
     login_at(:facebook, {state: 'bla'})
+  end
+
+  def test_login_from_instagram
+    if @user = login_from(:instagram)
+      redirect_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
   end
 
   def test_login_from_twitter
@@ -163,6 +175,14 @@ class SorceryController < ActionController::Base
   def test_login_from_jira
     if @user = login_from(:jira)
       redirect_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
+  def test_return_to_with_external_instagram
+    if @user = login_from(:instagram)
+      redirect_back_or_to 'bla', notice: 'Success!'
     else
       redirect_to 'blu', alert: 'Failed!'
     end
