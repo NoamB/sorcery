@@ -35,93 +35,116 @@ can write your own authentication flow. It was built with a few goals in mind:
 
 Hopefully, I've achieved this. If not, let me know.
 
-## Useful Links:
+## Useful Links
 
-Railscast: http://railscasts.com/episodes/283-authentication-with-sorcery
+[Documentation](http://rubydoc.info/gems/sorcery) | 
+[Railscast](http://railscasts.com/episodes/283-authentication-with-sorcery) | [Simple tutorial](https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication) | [Example Rails 3 app](https://github.com/NoamB/sorcery-example-app)
 
-Example Rails 3 app using sorcery:
-https://github.com/NoamB/sorcery-example-app
-
-Documentation: http://rubydoc.info/gems/sorcery
-
-Check out the tutorials in the github wiki!
+Check out the tutorials in the [Wiki](https://github.com/NoamB/sorcery/wiki) for more!
 
 ## API Summary
 
 Below is a summary of the library methods. Most method names are self
 explaining and the rest are commented:
 
-    # core
-    require_login # this is a before filter
-    login(email, password, remember_me = false)
-    auto_login(user)# login without credentials
-    logout
-    logged_in?      # available to view
-    current_user    # available to view
-    redirect_back_or_to # used when a user tries to access a page while logged out, is asked to login, and we want to return him back to the page he originally wanted.
-    @user.external? # external users, such as facebook/twitter etc.
-    User.authenticates_with_sorcery!
 
-    # http basic auth
-    require_login_from_http_basic # this is a before filter
+### core
+```ruby
+require_login # this is a before filter
+login(email, password, remember_me = false)
+auto_login(user)# login without credentials
+logout
+logged_in?      # available to view
+current_user    # available to view
+redirect_back_or_to # used when a user tries to access a page while logged out, is asked to login, and we want to return him back to the page he originally wanted.
+@user.external? # external users, such as facebook/twitter etc.
+User.authenticates_with_sorcery!
+```
 
-    # external
-    login_at(provider) # sends the user to an external service (twitter etc.) to authenticate.
-    login_from(provider) # tries to login from the external provider's callback.
-    create_from(provider) # create the user in the local app db.
+### http basic auth
+```ruby
+require_login_from_http_basic # this is a before filter
+```
 
-    # remember me
-    auto_login(user, should_remember=false)  # login without credentials, optional remember_me
-    remember_me!
-    forget_me!
+### external
+```ruby
+login_at(provider) # sends the user to an external service (twitter etc.) to authenticate.
+login_from(provider) # tries to login from the external provider's callback.
+create_from(provider) # create the user in the local app db.
+```
 
-    # reset password
-    User.load_from_reset_password_token(token)
-    @user.generate_reset_password_token! # if you want to send the email by youself
-    @user.deliver_reset_password_instructions! # generates the token and sends the email
-    @user.change_password!(new_password)
+### remember me
+```ruby
+auto_login(user, should_remember=false)  # login without credentials, optional remember_me
+remember_me!
+forget_me!
+```
 
-    # user activation
-    User.load_from_activation_token(token)
-    @user.setup_activation
-    @user.activate!
+### reset password
+```ruby
+User.load_from_reset_password_token(token)
+@user.generate_reset_password_token! # if you want to send the email by youself
+@user.deliver_reset_password_instructions! # generates the token and sends the email
+@user.change_password!(new_password)
+```
+
+### user activation
+```ruby
+User.load_from_activation_token(token)
+@user.setup_activation
+@user.activate!
+```
 
 Please see the tutorials in the github wiki for detailed usage information.
 
-## Installation:
+## Installation
 
 If using bundler, first add 'sorcery' to your Gemfile:
 
-    gem "sorcery"
+```ruby
+gem "sorcery"
+```
 
 And run
 
-    bundle install
+```ruby
+bundle install
+```
 
 Otherwise simply
 
-    gem install sorcery
+```ruby
+gem install sorcery
+```
 
-## Rails configuration:
+## Rails configuration
 
-    rails generate sorcery:install
+```bash
+rails generate sorcery:install
+```
 
 This will generate the core migration file, the initializer file and the
 'User' model class.
 
-    rails generate sorcery:install remember_me reset_password
+```bash
+rails generate sorcery:install remember_me reset_password
+```
 
 This will generate the migrations files for remember_me and reset_password
 submodules and will create the initializer file (and add submodules to it),
 and create the 'User' model class.
 
-    rails generate sorcery:install --model Person
+```bash
+rails generate sorcery:install --model Person
+```
 
 This will generate the core migration file, the initializer and change the
 model class (in the initializer and migration files) to the class 'Person'
 (and its pluralized version, 'people')
 
-    rails generate sorcery:install http_basic_auth external remember_me --only-submodules
+```bash
+rails generate sorcery:install http_basic_auth external remember_me --only-submodules
+```
 
 This will generate only the migration files for the specified submodules and
 will add them to the initializer file.
@@ -137,23 +160,25 @@ After implementing the `delayed_job` into your project add the code below at
 the end of the `config/initializers/sorcery.rb` file. After that all emails
 will be sent asynchronously.
 
-    module Sorcery
-      module Model
-        module InstanceMethods
-          def generic_send_email(method, mailer)
-            config = sorcery_config
-            mail = config.send(mailer).delay.send(config.send(method), self)
-          end
-        end
+```ruby
+module Sorcery
+  module Model
+    module InstanceMethods
+      def generic_send_email(method, mailer)
+        config = sorcery_config
+        mail = config.send(mailer).delay.send(config.send(method), self)
       end
     end
+  end
+end
+```
 
 Sidekiq and Resque integrations are coming soon.
 
 ## Single Table Inheritance (STI) Support
 STI is supported via a single setting in config/initializers/sorcery.rb.
 
-## Full Features List by module:
+## Full Features List by module
 
 **Core** (see [lib/sorcery/model.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model.rb) and
 [lib/sorcery/controller.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller.rb)):
@@ -224,7 +249,7 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 *   configurable db field names and authentications table.
 
 
-## Next Planned Features:
+## Next Planned Features
 
 I've got some thoughts which include (unordered):
 
@@ -272,10 +297,12 @@ Important notes while upgrading:
 *   If you are upgrading from <= **0.8.5** and you're using Sorcery test helpers,
     you need to change the way you include them to following code:
 
-        RSpec.configure do |config|
-          config.include Sorcery::TestHelpers::Rails::Controller, type: :controller
-          config.include Sorcery::TestHelpers::Rails::Integration, type: :feature
-        end
+    ```ruby
+    RSpec.configure do |config|
+      config.include Sorcery::TestHelpers::Rails::Controller, type: :controller
+      config.include Sorcery::TestHelpers::Rails::Integration, type: :feature
+    end
+    ```
 
 *   If are upgrading to **0.8.2** and use activity_logging feature with
     ActiveRecord, you will have to add a new column
@@ -284,12 +311,15 @@ Important notes while upgrading:
 *   Sinatra support existed until **v0.7.0** (including), but was dropped
     later due to being a maintenance nightmare.
 *   If upgrading from <= **0.6.1 to >= **0.7.0** you need to change
-    'username_attribute_name' to 'username_attribute_names' in initializer.
+    'username
+    _attribute_name' to 'username_attribute_names' in initializer.
 *   If upgrading from <= **v0.5.1** to >= **v0.5.2** you need to explicitly
     set your user_class model in the initializer file.
 
-        # This line must come after the 'user config' block.
-        config.user_class = User
+    ```ruby
+    # This line must come after the 'user config' block.
+    config.user_class = User
+    ```
 
 
 ## Contributing to sorcery
