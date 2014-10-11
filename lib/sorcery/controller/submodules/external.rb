@@ -15,6 +15,7 @@ module Sorcery
           require 'sorcery/providers/liveid'
           require 'sorcery/providers/xing'
           require 'sorcery/providers/github'
+          require 'sorcery/providers/heroku'
           require 'sorcery/providers/google'
           require 'sorcery/providers/jira'
 
