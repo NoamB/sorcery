@@ -33,7 +33,7 @@ module Sorcery
       def get_user_hash(access_token)
         response = access_token.get(user_info_path)
         body = JSON.parse(response.body)
-        {}.tap do |h|
+        user_hash(access_token).tap do |h|
           h[:user_info] = body
           h[:uid] = body['id'].to_s
           h[:email] = body['email'].to_s
