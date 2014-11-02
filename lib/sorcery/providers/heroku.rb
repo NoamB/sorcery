@@ -5,8 +5,8 @@ module Sorcery
 
     # config.heroku.key = <key>
     # config.heroku.secret = <secret>
-    # config.heroku.callback_url = "{<host>/oauth/callback?provider=heroku"
-    # config.heroku.scope = "global"
+    # config.heroku.callback_url = "<host>/oauth/callback?provider=heroku"
+    # config.heroku.scope = "read"
     # config.heroku.user_info_mapping = {:email => "email", :name => "email" }
 
     # NOTE:
@@ -33,7 +33,7 @@ module Sorcery
       def get_user_hash(access_token)
         response = access_token.get(user_info_path)
         body = JSON.parse(response.body)
-        user_hash(access_token).tap do |h|
+        auth_hash(access_token).tap do |h|
           h[:user_info] = body
           h[:uid] = body['id'].to_s
           h[:email] = body['email'].to_s

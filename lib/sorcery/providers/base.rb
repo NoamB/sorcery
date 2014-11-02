@@ -5,7 +5,7 @@ module Sorcery
       attr_reader   :access_token
 
       attr_accessor :callback_url, :key, :original_callback_url, :secret,
-                    :site, :state, :user_info_mapping, :user_hash
+                    :site, :state, :user_info_mapping
 
       def has_callback?; true; end
 
@@ -13,10 +13,12 @@ module Sorcery
         @user_info_mapping = {}
       end
 
-      def user_hash(access_token, hash={})
+      def auth_hash(access_token, hash={})
         if access_token
-          hash.merge!({ token: access_token.token }) if access_token.respond_to?(:token)
-          hash.merge!({ refresh_token: access_token.refresh_token }) if access_token.respond_to?(:refresh_token)
+          hash[:token] = access_token.token if access_token.respond_to?(:token)
+          hash[:refresh_token] = access_token.refresh_token if access_token.respond_to?(:refresh_token)
+          hash[:expires_at] = access_token.expires_at if access_token.respond_to?(:expires_at)
+          hash[:expires_in] = access_token.expires_at if access_token.respond_to?(:expires_in)
         end
         hash
       end
