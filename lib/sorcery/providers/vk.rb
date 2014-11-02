@@ -10,15 +10,15 @@ module Sorcery
 
       include Protocols::Oauth2
 
-      attr_accessor :auth_path, :token_path, :user_info_url, :scope
+      attr_accessor :user_info_url, :scope
 
       def initialize
         super
 
         @site           = 'https://oauth.vk.com/'
         @user_info_url  = 'https://api.vk.com/method/getProfiles'
-        @auth_path      = '/authorize'
-        @token_path     = '/access_token'
+        @auth_url      = '/authorize'
+        @token_url     = '/access_token'
         @scope          = 'email'
       end
 
@@ -41,21 +41,6 @@ module Sorcery
           user_hash[:user_info]['email'] = access_token.params['email']
         end
         user_hash
-      end
-
-      # calculates and returns the url to which the user should be redirected,
-      # to get authenticated at the external provider's site.
-      def login_url(params, session)
-        self.authorize_url({ authorize_url: auth_path })
-      end
-
-      # tries to login the user from access token
-      def process_callback(params, session)
-        args = {}.tap do |a|
-          a[:code] = params[:code] if params[:code]
-        end
-
-        get_access_token(args, token_url: token_path, token_method: :post)
       end
 
     end
