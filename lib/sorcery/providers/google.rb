@@ -25,7 +25,7 @@ module Sorcery
       def get_user_hash(access_token)
         response = access_token.get(user_info_url)
 
-        {}.tap do |h|
+        auth_hash(access_token).tap do |h|
           h[:user_info] = JSON.parse(response.body)
           h[:uid] = h[:user_info]['id']
         end

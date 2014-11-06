@@ -23,7 +23,7 @@ module Sorcery
       end
 
       def get_user_hash(access_token)
-        user_hash = {}
+        user_hash = auth_hash(access_token)
 
         params = {
           access_token: access_token.token,

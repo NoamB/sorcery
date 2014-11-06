@@ -244,7 +244,7 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 
 **External** (see [lib/sorcery/controller/submodules/external.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/external.rb)):
 
-*   OAuth1 and OAuth2 support (currently: Twitter, Facebook, Github, Google,
+*   OAuth1 and OAuth2 support (currently: Twitter, Facebook, Github, Google, Heroku,
     LinkedIn, VK, LiveID and Xing)
 *   configurable db field names and authentications table.
 
