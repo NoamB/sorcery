@@ -217,6 +217,21 @@ shared_examples_for "rails_3_core_model" do
     end
   end
 
+  describe "password validation" do
+
+    let(:user_with_pass) { create_new_user({:username => 'foo_bar', :email => "foo@bar.com", :password => 'foobar'})}
+
+    specify { expect(user_with_pass).to respond_to :valid_password? }
+    
+    it "returns true if password is correct" do
+      expect(user_with_pass.valid_password?("foobar")).to be true
+    end
+  
+    it "returns false if password is incorrect" do
+      expect(user_with_pass.valid_password?("foobug")).to be false
+    end
+  end
+
   describe "special encryption cases" do
     before(:all) do
       sorcery_reload!()

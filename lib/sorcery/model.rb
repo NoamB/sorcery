@@ -94,8 +94,7 @@ module Sorcery
 
         set_encryption_attributes
 
-        _salt = user.send(@sorcery_config.salt_attribute_name) if user && !@sorcery_config.salt_attribute_name.nil? && !@sorcery_config.encryption_provider.nil?
-        user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && credentials_match?(user.send(@sorcery_config.crypted_password_attribute_name),credentials[1],_salt)
+        user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && user.valid_password?(credentials[1])
       end
 
       # encrypt tokens using current encryption_provider.
@@ -114,13 +113,7 @@ module Sorcery
         @sorcery_config.encryption_provider.stretches = @sorcery_config.stretches if @sorcery_config.encryption_provider.respond_to?(:stretches) && @sorcery_config.stretches
         @sorcery_config.encryption_provider.join_token = @sorcery_config.salt_join_token if @sorcery_config.encryption_provider.respond_to?(:join_token) && @sorcery_config.salt_join_token
       end
-
-      # Calls the configured encryption provider to compare the supplied password with the encrypted one.
-      def credentials_match?(crypted, *tokens)
-        return crypted == tokens.join if @sorcery_config.encryption_provider.nil?
-        @sorcery_config.encryption_provider.matches?(crypted, *tokens)
-      end
-
+      
       def add_config_inheritance
         self.class_eval do
           def self.inherited(subclass)
@@ -147,6 +140,16 @@ module Sorcery
       # or that he is external, and his credentials are saved elsewhere (twitter/facebook etc.).
       def external?
         send(sorcery_config.crypted_password_attribute_name).nil?
+      end
+
+      # Calls the configured encryption provider to compare the supplied password with the encrypted one.
+      def valid_password?(pass)
+        _crypted = self.send(sorcery_config.crypted_password_attribute_name)  
+        return _crypted == pass if sorcery_config.encryption_provider.nil?
+
+        _salt = self.send(sorcery_config.salt_attribute_name) unless sorcery_config.salt_attribute_name.nil?
+
+        sorcery_config.encryption_provider.matches?(_crypted, pass, _salt)
       end
 
       protected
