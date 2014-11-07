@@ -16,6 +16,7 @@ AppRoot::Application.routes.draw do
     get :test_add_second_provider
     get :test_return_to_with_external
     get :test_login_from
+    get :test_login_from_instagram
     get :test_login_from_twitter
     get :test_login_from_facebook
     get :test_login_from_github
@@ -24,6 +25,7 @@ AppRoot::Application.routes.draw do
     get :test_login_from_vk
     get :test_login_from_jira
     get :login_at_test
+    get :login_at_test_instagram
     get :login_at_test_twitter
     get :login_at_test_facebook
     get :login_at_test_github
@@ -32,6 +34,7 @@ AppRoot::Application.routes.draw do
     get :login_at_test_vk
     get :login_at_test_jira
     get :test_return_to_with_external
+    get :test_return_to_with_external_instagram
     get :test_return_to_with_external_twitter
     get :test_return_to_with_external_facebook
     get :test_return_to_with_external_github
