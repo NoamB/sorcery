@@ -99,6 +99,11 @@ module Sorcery
         def find_by_sorcery_token(token_attr_name, token)
           @klass.where(token_attr_name => token).first
         end
+
+        def get_current_users
+          raise "this method is unavailable for MongoMapper"
+        end
+
       end
     end
   end

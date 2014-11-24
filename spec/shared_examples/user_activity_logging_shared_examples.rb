@@ -33,16 +33,19 @@ shared_examples_for "rails_3_activity_logging_model" do
       let(:user) { create_new_user }
 
       it "is empty when no users are logged in" do
+        skip('unavailable in MongoMapper') if SORCERY_ORM == :mongo_mapper
         expect(User.current_users).to be_empty
       end
 
       it "holds the user object when 1 user is logged in" do
+        skip('unavailable in MongoMapper') if SORCERY_ORM == :mongo_mapper
         user.set_last_activity_at(Time.now.in_time_zone)
 
         expect(User.current_users).to match([User.sorcery_adapter.find(user.id)])
       end
 
       it "'current_users' shows all current_users, whether they have logged out before or not." do
+        skip('unavailable in MongoMapper') if SORCERY_ORM == :mongo_mapper
         User.sorcery_adapter.delete_all
         user1 = create_new_user({:username => 'gizmo1', :email => "bla1@bla.com", :password => 'secret1'})
         user2 = create_new_user({:username => 'gizmo2', :email => "bla2@bla.com", :password => 'secret2'})
