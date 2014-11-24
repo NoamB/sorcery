@@ -1,9 +1,9 @@
 module Sorcery
   module Providers
-    # This class adds support for OAuth with salseforce.com.
+    # This class adds support for OAuth with salesforce.com.
     #
-    #   config.salseforce.key = <key>
-    #   config.salseforce.secret = <secret>
+    #   config.salesforce.key = <key>
+    #   config.salesforce.secret = <secret>
     #   ...
     #
     class Salesforce < Base
