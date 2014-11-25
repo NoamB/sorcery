@@ -23,11 +23,10 @@ module Sorcery
       def get_user_hash(access_token)
         user_info_url = access_token.params['id']
         response = access_token.get(user_info_url)
-# works up to this point, and the response gets the right data, but it doesn't login or create the user...
 
         auth_hash(access_token).tap do |h|
           h[:user_info] = JSON.parse(response.body)
-          h[:uid] = h[:user_info]['id']
+          h[:uid] = h[:user_info]['user_id']
         end
       end
 
