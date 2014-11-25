@@ -158,9 +158,17 @@ Rails.application.config.sorcery.configure do |config|
   # config.jira.signature_method =  "RSA-SHA1"
   # config.jira.private_key_file = "rsakey.pem"
 
+  # For information about Salesforce API:
+  # https://developer.salesforce.com/signup &
+  # https://www.salesforce.com/us/developer/docs/api_rest/
+  # Salesforce callback_url must be https. You can run the following to generate self-signed ssl cert
+  # openssl req -new -newkey rsa:2048 -sha1 -days 365 -nodes -x509 -keyout server.key -out server.crt
+  # Make sure you have configured the application link properly
   # config.salesforce.key = '123123'
   # config.salesforce.secret = 'acb123'
-  # config.salesforce.callback_url = ""
+  # config.salesforce.callback_url = "https://127.0.0.1:9292/oauth/callback?provider=salesforce"
+  # config.salesforce.scope = "full"
+  # config.salesforce.user_info_mapping = {:email => "email"}
 
   # --- user config ---
   config.user_config do |user|
