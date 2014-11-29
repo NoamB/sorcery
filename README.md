@@ -37,7 +37,7 @@ Hopefully, I've achieved this. If not, let me know.
 
 ## Useful Links
 
-[Documentation](http://rubydoc.info/gems/sorcery) | 
+[Documentation](http://rubydoc.info/gems/sorcery) |
 [Railscast](http://railscasts.com/episodes/283-authentication-with-sorcery) | [Simple tutorial](https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication) | [Example Rails 3 app](https://github.com/NoamB/sorcery-example-app)
 
 Check out the tutorials in the [Wiki](https://github.com/NoamB/sorcery/wiki) for more!
@@ -245,7 +245,7 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 **External** (see [lib/sorcery/controller/submodules/external.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/external.rb)):
 
 *   OAuth1 and OAuth2 support (currently: Twitter, Facebook, Github, Google, Heroku,
-    LinkedIn, VK, LiveID and Xing)
+    LinkedIn, VK, LiveID, Xing, and Salesforce)
 *   configurable db field names and authentications table.
 
 
