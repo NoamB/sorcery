@@ -177,7 +177,12 @@ module Sorcery
         config = sorcery_config
         mail = config.send(mailer).send(config.send(method),self)
         if defined?(ActionMailer) and config.send(mailer).kind_of?(Class) and config.send(mailer) < ActionMailer::Base
-          mail.deliver
+          # Rails 4.2 deprecates #deliver
+          if mail.respond_to?(:deliver_now)
+            mail.deliver_now
+          else
+            mail.deliver
+          end
         end
       end
     end
