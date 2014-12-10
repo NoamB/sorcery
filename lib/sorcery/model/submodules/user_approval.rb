@@ -25,8 +25,8 @@ module Sorcery
 
           base.class_eval do
             # don't setup approval if no password supplied - this user is created automatically
-            define_sorcery_callback :before, :create, :setup_approval, :if => Proc.new { |user| user.send(sorcery_config.password_attribute_name).present? }
-            define_sorcery_callback :after, :create, :send_waiting_approval_email!, :if => :send_approval_success_email?
+            sorcery_adapter.define_callback :before, :create, :setup_approval, :if => Proc.new { |user| user.send(sorcery_config.password_attribute_name).present? }
+            sorcery_adapter.define_callback :after, :create, :send_waiting_approval_email!, :if => :send_approval_success_email?
           end
 
           base.sorcery_config.after_config << :validate_mailer_defined
@@ -50,7 +50,7 @@ module Sorcery
 
           def define_user_approval_field
             self.class_eval do
-              define_sorcery_field sorcery_config.approval_state_attribute_name, String
+              sorcery_adapter.define_field sorcery_config.approval_state_attribute_name, String
             end
           end
         end
@@ -66,7 +66,7 @@ module Sorcery
             config = sorcery_config
             self.send(:"#{config.approval_state_attribute_name}=", "approved")
             send_approval_success_email! if send_approval_success_email?
-            sorcery_save(:validate => false, :raise_on_failure => true)
+            sorcery_adapter.save(:validate => false, :raise_on_failure => true)
           end
 
           protected

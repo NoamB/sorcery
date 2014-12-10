@@ -65,7 +65,7 @@ shared_examples_for "rails_3_approval_model" do
 
     it "change state to 'approved' on approval" do
       user.approve!
-      user2 = User.find(user.id) # go to db to make sure it was saved and not just in memory
+      user2 = User.sorcery_adapter.find(user.id) # go to db to make sure it was saved and not just in memory
 
       expect(user2.approval_state).to eq "approved"
     end
@@ -81,14 +81,14 @@ shared_examples_for "rails_3_approval_model" do
       it "calls send_waiting_approval_email! method of user" do
         expect(new_user).to receive(:send_waiting_approval_email!).once
 
-        new_user.sorcery_save(:raise_on_failure => true)
+        new_user.sorcery_adapter.save(:raise_on_failure => true)
       end
 
       it "subsequent saves do not send approval email" do
         user
         old_size = ActionMailer::Base.deliveries.size
         user.email = "Shauli"
-        user.sorcery_save(:raise_on_failure => true)
+        user.sorcery_adapter.save(:raise_on_failure => true)
 
         expect(ActionMailer::Base.deliveries.size).to eq old_size
       end
@@ -111,7 +111,7 @@ shared_examples_for "rails_3_approval_model" do
         user.approve!
         old_size = ActionMailer::Base.deliveries.size
         user.email = "Shauli"
-        user.sorcery_save(:raise_on_failure => true)
+        user.sorcery_adapter.save(:raise_on_failure => true)
 
         expect(ActionMailer::Base.deliveries.size).to eq old_size
       end
@@ -147,7 +147,7 @@ shared_examples_for "rails_3_approval_model" do
 
         expect(user).to receive(:send_waiting_approval_email!).never
 
-        user.sorcery_save(:raise_on_failure => true)
+        user.sorcery_adapter.save(:raise_on_failure => true)
       end
 
       it "does not send user an approval success email on successful approval" do
@@ -171,7 +171,7 @@ shared_examples_for "rails_3_approval_model" do
     end
 
     before(:each) do
-      User.delete_all
+      User.sorcery_adapter.delete_all
     end
 
     it "does not allow a not-approved user to authenticate" do
