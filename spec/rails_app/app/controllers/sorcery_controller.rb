@@ -98,6 +98,14 @@ class SorceryController < ActionController::Base
     login_at(:liveid)
   end
 
+  def login_at_test_jira
+    login_at(:jira)
+  end
+
+  def login_at_test_vk
+    login_at(:vk)
+  end
+
   def login_at_test_with_state
     login_at(:facebook, {state: 'bla'})
   end
@@ -144,8 +152,32 @@ class SorceryController < ActionController::Base
     end
   end
 
+  def test_login_from_vk
+    if @user = login_from(:vk)
+      redirect_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
+  def test_login_from_jira
+    if @user = login_from(:jira)
+      redirect_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
   def test_return_to_with_external_twitter
     if @user = login_from(:twitter)
+      redirect_back_or_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
+  def test_return_to_with_external_jira
+    if @user = login_from(:jira)
       redirect_back_or_to 'bla', notice: 'Success!'
     else
       redirect_to 'blu', alert: 'Failed!'
@@ -186,6 +218,14 @@ class SorceryController < ActionController::Base
     end
   end
 
+  def test_return_to_with_external_vk
+    if @user = login_from(:vk)
+      redirect_back_or_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
   def test_create_from_provider
     provider = params[:provider]
     login_from(provider)
@@ -212,7 +252,8 @@ class SorceryController < ActionController::Base
     login_from(provider)
     @user = create_from(provider) do |user|
       # check uniqueness of email
-      User.where(email: user.email).empty?
+      # User.where(email: user.email).empty?
+      false
     end
     if @user
       redirect_to 'bla', notice: 'Success!'

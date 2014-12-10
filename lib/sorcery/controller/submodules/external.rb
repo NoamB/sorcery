@@ -15,7 +15,9 @@ module Sorcery
           require 'sorcery/providers/liveid'
           require 'sorcery/providers/xing'
           require 'sorcery/providers/github'
+          require 'sorcery/providers/heroku'
           require 'sorcery/providers/google'
+          require 'sorcery/providers/jira'
 
           Config.module_eval do
             class << self
@@ -133,15 +135,7 @@ module Sorcery
             sorcery_fetch_user_hash provider_name
             config = user_class.sorcery_config
 
-            # first check to see if user has a particular authentication already
-            unless (current_user.send(config.authentications_class.name.underscore.pluralize).find_by_oauth_credentials(provider_name, @user_hash[:uid].to_s))
-              user = current_user.send(config.authentications_class.name.underscore.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name.to_s)
-              user.sorcery_save(:validate => false)
-            else
-              user = false
-            end
-
-            return user
+            current_user.add_provider_to_user(provider_name.to_s, @user_hash[:uid].to_s)
           end
 
           # Initialize new user from provider informations.
@@ -153,13 +147,12 @@ module Sorcery
 
             attrs = user_attrs(@provider.user_info_mapping, @user_hash)
 
-            user = user_class.new(attrs)
-            user.send(config.authentications_class.to_s.downcase.pluralize).build(config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name)
+            user, saved = user_class.create_and_validate_from_provider(provider_name, @user_hash[:uid], attrs)
 
             session[:incomplete_user] = {
               :provider => {config.provider_uid_attribute_name => @user_hash[:uid], config.provider_attribute_name => provider_name},
               :user_hash => attrs
-            } unless user.sorcery_save
+            } unless saved
 
             return user
           end
@@ -180,26 +173,12 @@ module Sorcery
           #
           #   create_from(provider) {|user| user.some_check }
           #
-          def create_from(provider_name)
+          def create_from(provider_name, &block)
             sorcery_fetch_user_hash provider_name
             config = user_class.sorcery_config
 
             attrs = user_attrs(@provider.user_info_mapping, @user_hash)
-
-            user_class.transaction do
-              @user = user_class.new()
-              attrs.each do |k,v|
-                @user.send(:"#{k}=", v)
-              end
-
-              if block_given?
-                return false unless yield @user
-              end
-
-              @user.sorcery_save(:validate => false)
-              user_class.sorcery_config.authentications_class.create!({config.authentications_user_id_attribute_name => @user.id, config.provider_attribute_name => provider_name, config.provider_uid_attribute_name => @user_hash[:uid]})
-            end
-            @user
+            @user = user_class.create_from_provider(provider_name, @user_hash[:uid], attrs, &block)
           end
 
           def user_attrs(user_info_mapping, user_hash)

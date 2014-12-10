@@ -69,12 +69,16 @@ shared_examples_for "rails_3_core_model" do
 
       expect(User.sorcery_config.stretches).to eq stretches
     end
+
+    it 'respond to username=' do
+      expect(User.new).to respond_to(:username=)
+    end
   end
 
   describe "when activated with sorcery" do
     before(:all) { sorcery_reload! }
-    before(:each) { User.delete_all }
-    
+    before(:each) { User.sorcery_adapter.delete_all }
+
     it "does not add authenticate method to base class", active_record: true do
       expect(ActiveRecord::Base).not_to respond_to(:authenticate) if defined?(ActiveRecord)
     end
@@ -131,7 +135,7 @@ shared_examples_for "rails_3_core_model" do
   describe "registration" do
 
     before(:all) { sorcery_reload! }
-    before(:each) { User.delete_all }
+    before(:each) { User.sorcery_adapter.delete_all }
 
     it "by default, encryption_provider is not nil" do
       expect(User.sorcery_config.encryption_provider).not_to be_nil
@@ -213,6 +217,21 @@ shared_examples_for "rails_3_core_model" do
     end
   end
 
+  describe "password validation" do
+
+    let(:user_with_pass) { create_new_user({:username => 'foo_bar', :email => "foo@bar.com", :password => 'foobar'})}
+
+    specify { expect(user_with_pass).to respond_to :valid_password? }
+    
+    it "returns true if password is correct" do
+      expect(user_with_pass.valid_password?("foobar")).to be true
+    end
+  
+    it "returns false if password is incorrect" do
+      expect(user_with_pass.valid_password?("foobug")).to be false
+    end
+  end
+
   describe "special encryption cases" do
     before(:all) do
       sorcery_reload!()
@@ -220,7 +239,7 @@ shared_examples_for "rails_3_core_model" do
     end
 
     before(:each) do
-      User.delete_all
+      User.sorcery_adapter.delete_all
     end
 
     after(:each) do
@@ -330,13 +349,13 @@ shared_examples_for "rails_3_core_model" do
   describe "ORM adapter" do
     before(:all) do
       sorcery_reload!()
-      User.delete_all
+      User.sorcery_adapter.delete_all
     end
 
     before(:each) { user }
 
     after(:each) do
-      User.delete_all
+      User.sorcery_adapter.delete_all
       User.sorcery_config.reset!
     end
 
@@ -344,17 +363,17 @@ shared_examples_for "rails_3_core_model" do
     it "find_by_username works as expected" do
       sorcery_model_property_set(:username_attribute_names, [:username])
 
-      expect(User.find_by_username "gizmo").to eq user
+      expect(User.sorcery_adapter.find_by_username "gizmo").to eq user
     end
 
     it "find_by_username works as expected with multiple username attributes" do
       sorcery_model_property_set(:username_attribute_names, [:username, :email])
 
-      expect(User.find_by_username "gizmo").to eq user
+      expect(User.sorcery_adapter.find_by_username "gizmo").to eq user
     end
 
     it "find_by_email works as expected" do
-      expect(User.find_by_email "bla@bla.com").to eq user
+      expect(User.sorcery_adapter.find_by_email "bla@bla.com").to eq user
     end
   end
 end
@@ -364,7 +383,7 @@ shared_examples_for "external_user" do
   let(:external_user) { create_new_external_user :twitter }
 
   before(:each) do
-    User.delete_all
+    User.sorcery_adapter.delete_all
   end
 
   it "responds to 'external?'" do
@@ -377,5 +396,87 @@ shared_examples_for "external_user" do
 
   it "external? is true for external users" do
     expect(external_user.external?).to be true
+  end
+
+  describe ".create_from_provider" do
+
+    before(:all) do
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+        User.reset_column_information
+      end
+
+      sorcery_reload!([:external])
+    end
+
+    after(:all) do
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+      end
+    end
+
+    it 'supports nested attributes' do
+      sorcery_model_property_set(:authentications_class, Authentication)
+
+      expect { User.create_from_provider('facebook', '123', {username: 'Noam Ben Ari'}) }.to change { User.count }.by(1)
+      expect(User.first.username).to eq 'Noam Ben Ari'
+    end
+
+    context 'with block' do
+      it 'create user when block return true' do
+        expect {
+          User.create_from_provider('facebook', '123', {username: 'Noam Ben Ari'}) { true }
+        }.to change { User.count }.by(1)
+      end
+
+      it 'does not create user when block return false' do
+        expect {
+          User.create_from_provider('facebook', '123', {username: 'Noam Ben Ari'}) { false }
+        }.not_to change { User.count }
+      end
+    end
+
+  end
+
+  describe 'activation' do
+    before(:all) do
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/external")
+        ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+      end
+
+      sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
+    end
+
+    after(:all) do
+      if SORCERY_ORM == :active_record
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+        ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/external")
+      end
+    end
+
+    after(:each) do
+      User.sorcery_adapter.delete_all
+    end
+
+    [:facebook, :github, :google, :liveid].each do |provider|
+
+      it "does not send activation email to external users" do
+        old_size = ActionMailer::Base.deliveries.size
+        create_new_external_user(provider)
+
+        expect(ActionMailer::Base.deliveries.size).to eq old_size
+      end
+
+      it "does not send external users an activation success email" do
+        sorcery_model_property_set(:activation_success_email_method_name, nil)
+        create_new_external_user(provider)
+        old_size = ActionMailer::Base.deliveries.size
+        @user.activate!
+
+        expect(ActionMailer::Base.deliveries.size).to eq old_size
+      end
+    end
+
   end
 end

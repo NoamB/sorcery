@@ -4,68 +4,37 @@ rvm:
   - 2.0.0
   - 2.1
 
-services: mongodb
-
 gemfile:
   - Gemfile
-  - Gemfile.rails4
-
-env:
-  - "SORCERY_ORM=active_record"
-  - "SORCERY_ORM=mongoid"
-  - "SORCERY_ORM=mongo_mapper"
-  - "SORCERY_ORM=datamapper"
 
 before_script:
   - mysql -e 'create database sorcery_test;'
 
 matrix:
-  exclude:
-    - rvm: 1.9.3
-      gemfile: Gemfile.rails4
-      env: "SORCERY_ORM=datamapper"
-
-    - rvm: 2.0.0
-      gemfile: Gemfile.rails4
-      env: "SORCERY_ORM=datamapper"
-
-    - rvm: 2.1
-      gemfile: Gemfile.rails4
-      env: "SORCERY_ORM=datamapper"
+  allow_failures:
+    - rvm: :jruby
 
   include:
     - rvm: 1.9.3
-      gemfile: gemfiles/mongoid-rails41.gemfile
-      env: "SORCERY_ORM=mongoid"
+      gemfile: gemfiles/active_record-rails41.gemfile
 
     - rvm: 2.0.0
-      gemfile: gemfiles/mongoid-rails41.gemfile
-      env: "SORCERY_ORM=mongoid"
+      gemfile: gemfiles/active_record-rails41.gemfile
 
     - rvm: 2.1
-      gemfile: gemfiles/mongoid-rails41.gemfile
-      env: "SORCERY_ORM=mongoid"
+      gemfile: gemfiles/active_record-rails41.gemfile
+
+    - rvm: jruby
+      gemfile: gemfiles/active_record-rails41.gemfile
 
     - rvm: 1.9.3
-      gemfile: gemfiles/mongo_mapper-rails41.gemfile
-      env: "SORCERY_ORM=mongo_mapper"
+      gemfile: gemfiles/active_record-rails40.gemfile
 
     - rvm: 2.0.0
-      gemfile: gemfiles/mongo_mapper-rails41.gemfile
-      env: "SORCERY_ORM=mongo_mapper"
+      gemfile: gemfiles/active_record-rails40.gemfile
 
     - rvm: 2.1
-      gemfile: gemfiles/mongo_mapper-rails41.gemfile
-      env: "SORCERY_ORM=mongo_mapper"
+      gemfile: gemfiles/active_record-rails40.gemfile
 
-    - rvm: 1.9.3
-      gemfile: gemfiles/active_record-rails41.gemfile
-      env: "SORCERY_ORM=active_record"
-
-    - rvm: 2.0.0
-      gemfile: gemfiles/active_record-rails41.gemfile
-      env: "SORCERY_ORM=active_record"
-
-    - rvm: 2.1
-      gemfile: gemfiles/active_record-rails41.gemfile
-      env: "SORCERY_ORM=active_record"
+    - rvm: jruby
+      gemfile: gemfiles/active_record-rails40.gemfile

@@ -4,12 +4,14 @@ module Sorcery
 
   require 'sorcery/model'
 
+  module Adapters
+    require 'sorcery/adapters/base_adapter'
+  end
+
   module Model
     require 'sorcery/model/temporary_token'
     require 'sorcery/model/config'
 
-    module Adapters
-    end
 
     module Submodules
       require 'sorcery/model/submodules/user_activation'
@@ -65,29 +67,20 @@ module Sorcery
 
   end
 
+  require 'sorcery/adapters/base_adapter'
+
   if defined?(ActiveRecord)
-    require 'sorcery/model/adapters/active_record'
+    require 'sorcery/adapters/active_record_adapter'
     ActiveRecord::Base.extend Sorcery::Model
-    ActiveRecord::Base.send :include, Sorcery::Model::Adapters::ActiveRecord
+
+    ActiveRecord::Base.send :define_method, :sorcery_adapter do
+      @sorcery_adapter ||= Sorcery::Adapters::ActiveRecordAdapter.new(self)
+    end
+
+    ActiveRecord::Base.send :define_singleton_method, :sorcery_adapter do
+      Sorcery::Adapters::ActiveRecordAdapter.from(self)
+    end
   end
 
-  if defined?(Mongoid)
-    require 'sorcery/model/adapters/mongoid'
-    Mongoid::Document::ClassMethods.send :include, Sorcery::Model
-    Mongoid::Document::ClassMethods.send :include, Sorcery::Model::Adapters::Mongoid::ClassMethods
-    Mongoid::Document.send :include, Sorcery::Model::Adapters::Mongoid::InstanceMethods
-  end
-
-  if defined?(MongoMapper)
-    require 'sorcery/model/adapters/mongo_mapper'
-    MongoMapper::Document.send(:plugin, Sorcery::Model::Adapters::MongoMapper)
-  end
-
-  if defined?(DataMapper)
-    require 'sorcery/model/adapters/datamapper'
-    DataMapper::Model.append_extensions(Sorcery::Model)
-    DataMapper::Model.append_inclusions(Sorcery::Model::Adapters::DataMapper)
-  end
-
-  require 'sorcery/engine' if defined?(Rails) && Rails::VERSION::MAJOR >= 3
+  require 'sorcery/engine' if defined?(Rails)
 end

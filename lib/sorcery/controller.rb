@@ -103,7 +103,7 @@ module Sorcery
       # @param [<User-Model>] user the user instance.
       # @return - do not depend on the return value.
       def auto_login(user, should_remember = false)
-        session[:user_id] = user.id
+        session[:user_id] = user.id.to_s
         @current_user = user
       end
 
@@ -126,7 +126,9 @@ module Sorcery
       end
 
       def login_from_session
-        @current_user = (user_class.find_by_id(session[:user_id]) if session[:user_id]) || nil
+        @current_user = if session[:user_id]
+                          user_class.sorcery_adapter.find_by_id(session[:user_id])
+                        end
       end
 
       def after_login!(user, credentials = [])

@@ -6,8 +6,8 @@ shared_examples_for "rails_3_oauth_model" do
   describe "loaded plugin configuration" do
 
     before(:all) do
-      Authentication.delete_all
-      User.delete_all
+      Authentication.sorcery_adapter.delete_all
+      User.sorcery_adapter.delete_all
 
       sorcery_reload!([:external])
       sorcery_controller_property_set(:external_providers, [:twitter])
