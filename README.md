@@ -354,6 +354,12 @@ email: shatrov@me.com
 
 twitter: @Kiiiir
 
+#### Grzegorz Witek
+
+email: arnvald.to@gmail.com
+
+twitter: @arnvald
+
 ## Copyright
 
 Copyright (c) 2010-2014 Noam Ben Ari (nbenari@gmail.com). See LICENSE.txt for
