@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.9.3'
 
   s.add_dependency "oauth", "~> 0.4", ">= 0.4.4"
-  s.add_dependency "oauth2", ">= 0.8.0", "< 1.0.0"
+  s.add_dependency "oauth2", ">= 0.8.0"
   s.add_dependency "bcrypt", "~> 3.1"
 
   s.add_development_dependency "abstract", ">= 1.0.0"
