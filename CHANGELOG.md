@@ -4,7 +4,7 @@
 
 * Adapters (Mongoid, MongoMapper, DataMapper) are now separated from the core Sorcery repo and moved under `sorcery-rails` organization. Special thanks to @juike!
 
-## 0.9.0 (not released yet)
+## 0.9.0
 
 * Sending emails works with Rails 4.2 (thanks to @wooly)
 * Added `valid_password?` method
