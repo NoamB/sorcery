@@ -10,10 +10,11 @@ Inspired by restful_authentication, Authlogic and Devise. Crypto code taken
 almost unchanged from Authlogic. OAuth code inspired by OmniAuth and Ryan
 Bates's railscasts about it.
 
-**What's happening now?** We are rewriting Sorcery with decoupled DB adapters and using modern Rails 4 patterns. The next release (1.0) will be containing some API-breaking changes. Development is going right in the `master` branch.
-We'll continue releasing `0.8.x` branch with security and bug fixes until November 2014.
+**What's happening now?** We are working on 1.0 version, which will include some API-breaking changes. It should be released about April 2015.
+Until then we'll continue releasing `0.9.x` version with bug fixed.
 
-**Rails 4 status:** [Sorcery 0.8.6](http://rubygems.org/gems/sorcery/versions/0.8.6) is fully tested and ready for Rails 4.0 and 4.1.
+**Rails 4 status:** [Sorcery 0.9.0](http://rubygems.org/gems/sorcery/versions/0.9.0) is fully tested and ready for Rails 4.0, 4.1 and 4.2.
+**Mongoid status:** Version 0.9.0 works with Mongoid 4.
 
 https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication
 
@@ -36,7 +37,6 @@ can write your own authentication flow. It was built with a few goals in mind:
 Hopefully, I've achieved this. If not, let me know.
 
 ## Useful Links
-
 [Documentation](http://rubydoc.info/gems/sorcery) |
 [Railscast](http://railscasts.com/episodes/283-authentication-with-sorcery) | [Simple tutorial](https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication) | [Example Rails 3 app](https://github.com/NoamB/sorcery-example-app)
 
@@ -293,6 +293,10 @@ attributes such as password and password_confirmation)
 ## Upgrading
 
 Important notes while upgrading:
+
+*   If you are upgrading from <= **0.8.6** and you use Sorcery model methods in your app,
+    you might need to change them from `user.method` to `user.sorcery_adapter.method` and from
+    `User.method` to `User.sorcery_adapter_method`
 
 *   If you are upgrading from <= **0.8.5** and you're using Sorcery test helpers,
     you need to change the way you include them to following code:
