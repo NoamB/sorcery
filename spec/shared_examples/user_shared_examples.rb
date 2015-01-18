@@ -96,17 +96,39 @@ shared_examples_for "rails_3_core_model" do
         expect(User.authenticate user.email, 'wrong!').to be nil
       end
 
-      context "with empty credentials" do
-        before do
-          sorcery_model_property_set(:downcase_username_before_authenticating, true)
-        end
-
+      context "downcasing username" do
         after do
           sorcery_reload!
         end
 
-        it "don't downcase empty credentials" do
-          expect(User.authenticate(nil, 'wrong!')).to be_falsy
+        context "when downcasing set to false" do
+          before do
+            sorcery_model_property_set(:downcase_username_before_authenticating, false)
+          end
+
+          it "does not find user with wrongly capitalized username" do
+            expect(User.authenticate(user.email.capitalize, 'secret')).to be_nil
+          end
+
+          it "finds user with correctly capitalized username" do
+            expect(User.authenticate(user.email, 'secret')).to eq user
+          end
+
+        end
+
+        context "when downcasing set to true" do
+          before do
+            sorcery_model_property_set(:downcase_username_before_authenticating, true)
+          end
+
+          it "does not find user with wrongly capitalized username" do
+            expect(User.authenticate(user.email.capitalize, 'secret')).to eq user
+          end
+
+          it "finds user with correctly capitalized username" do
+            expect(User.authenticate(user.email, 'secret')).to eq user
+          end
+
         end
       end
 
