@@ -87,42 +87,42 @@ shared_examples_for "rails_3_core_model" do
       expect(User).to respond_to :authenticate
     end
 
-    it "authenticate returns true if credentials are good" do
-      username = user.send(User.sorcery_config.username_attribute_names.first)
-
-      expect(User.authenticate username, 'secret').to be_truthy
-    end
-
-    it "authenticate returns nil if credentials are bad" do
-      username = user.send(User.sorcery_config.username_attribute_names.first)
-
-      expect(User.authenticate username, 'wrong!').to be nil
-    end
-
-    context "with empty credentials" do
-      before do
-        sorcery_model_property_set(:downcase_username_before_authenticating, true)
+    describe "#authenticate" do
+      it "returns user if credentials are good" do
+        expect(User.authenticate user.email, 'secret').to eq user
       end
 
-      after do
-        sorcery_reload!
+      it "returns nil if credentials are bad" do
+        expect(User.authenticate user.email, 'wrong!').to be nil
       end
 
-      it "don't downcase empty credentials" do
-        expect(User.authenticate(nil, 'wrong!')).to be_falsy
-      end
-    end
+      context "with empty credentials" do
+        before do
+          sorcery_model_property_set(:downcase_username_before_authenticating, true)
+        end
 
-    context "and model respond to active_for_authentication?" do
-      it "authenticate returns user if active_for_authentication? returns true" do
-        class User; def active_for_authentication?; return true; end; end
-        username = user.send(User.sorcery_config.username_attribute_names.first)
-        expect(User.authenticate username, 'secret').to be_truthy
+        after do
+          sorcery_reload!
+        end
+
+        it "don't downcase empty credentials" do
+          expect(User.authenticate(nil, 'wrong!')).to be_falsy
+        end
       end
-      it "authenticate returns nil if active_for_authentication? returns false" do
-        class User; def active_for_authentication?; return false; end; end
-        username = user.send(User.sorcery_config.username_attribute_names.first)
-        expect(User.authenticate username, 'secret').to be_nil
+
+      context "and model implements active_for_authentication?" do
+
+        it "authenticates returns user if active_for_authentication? returns true" do
+          allow_any_instance_of(User).to receive(:active_for_authentication?) { true }
+
+          expect(User.authenticate user.email, 'secret').to eq user
+        end
+
+        it "authenticate returns nil if active_for_authentication? returns false" do
+          allow_any_instance_of(User).to receive(:active_for_authentication?) { false }
+
+          expect(User.authenticate user.email, 'secret').to be_nil
+        end
       end
     end
 
