@@ -4,6 +4,11 @@
 
 * Adapters (Mongoid, MongoMapper, DataMapper) are now separated from the core Sorcery repo and moved under `sorcery-rails` organization. Special thanks to @juike!
 
+## 0.9.1 (not released yet)
+
+* Fixed fetching private emails from github (thanks to @saratovsource)
+* Added support for `active_for_authentication?` method (thanks to @gchaincl)
+
 ## 0.9.0
 
 * Sending emails works with Rails 4.2 (thanks to @wooly)
