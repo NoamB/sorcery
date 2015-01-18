@@ -56,9 +56,9 @@ module Sorcery
 
           # registers last logout time on every logout.
           # This runs as a hook just before a logout.
-          def register_logout_time_to_db(user)
+          def register_logout_time_to_db
             return unless Config.register_logout_time
-            user.set_last_logout_at(Time.now.in_time_zone)
+            current_user.set_last_logout_at(Time.now.in_time_zone)
           end
 
           # Updates last activity time on every request.

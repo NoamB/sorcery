@@ -19,7 +19,7 @@ module Sorcery
           end
           Config.login_sources << :login_from_cookie
           Config.after_login << :remember_me_if_asked_to
-          Config.after_logout << :forget_me!
+          Config.before_logout << :forget_me!
         end
 
         module InstanceMethods
