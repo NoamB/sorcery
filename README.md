@@ -59,6 +59,7 @@ logged_in?      # available to view
 current_user    # available to view
 redirect_back_or_to # used when a user tries to access a page while logged out, is asked to login, and we want to return him back to the page he originally wanted.
 @user.external? # external users, such as facebook/twitter etc.
+@user.active_for_authentication? # add this method to define behaviour that will prevent selected users from signing in
 User.authenticates_with_sorcery!
 ```
 
