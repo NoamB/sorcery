@@ -48,15 +48,6 @@ describe SorceryController do
 
     specify { should respond_to(:current_user) }
 
-    it "login(username,password) returns the user when success and set the session with user.id" do
-      expect(User).to receive(:authenticate).with('bla@bla.com', 'secret').and_return(user)
-
-      get :test_login, :email => 'bla@bla.com', :password => 'secret'
-
-      expect(assigns[:user]).to eq user
-      expect(session[:user_id]).to eq "42"
-    end
-
     it "login(email,password) returns the user when success and set the session with user.id" do
       expect(User).to receive(:authenticate).with('bla@bla.com', 'secret').and_return(user)
 
@@ -80,42 +71,6 @@ describe SorceryController do
       get :test_login, :email => 'bla@bla.com', :password => 'secret'
 
       expect(session[:_csrf_token]).not_to be_nil
-    end
-
-    it "login(username,password) returns nil and not set the session when upper case username" do
-      get :test_login, :email => 'BLA@BLA.COM', :password => 'secret'
-
-      expect(assigns[:user]).to be_nil
-      expect(session[:user_id]).to be_nil
-    end
-
-    # TODO: move test to model
-    it "login(username,password) returns the user and set the session with user.id when upper case username and config is downcase before authenticating" do
-      sorcery_model_property_set(:downcase_username_before_authenticating, true)
-      expect(User).to receive(:authenticate).with('BLA@BLA.COM', 'secret').and_return(user)
-      get :test_login, :email => 'BLA@BLA.COM', :password => 'secret'
-
-      expect(assigns[:user]).to eq user
-      expect(session[:user_id]).to eq user.id.to_s
-    end
-
-    # TODO: move test to model
-    it "login(username,password) returns nil and not set the session when user was created with upper case username, config is default, and log in username is lower case" do
-      expect(User).to receive(:authenticate).with('bla1@bla.com', 'secret1').and_return(nil)
-      get :test_login, :email => 'bla1@bla.com', :password => 'secret1'
-
-      expect(assigns[:user]).to be_nil
-      expect(session[:user_id]).to be_nil
-    end
-
-    # TODO: move test to model
-    it "login(username,password) returns the user and set the session with user.id when user was created with upper case username and config is downcase before authenticating" do
-      sorcery_model_property_set(:downcase_username_before_authenticating, true)
-      expect(User).to receive(:authenticate).with('bla1@bla.com', 'secret1').and_return(user)
-      get :test_login, :email => 'bla1@bla.com', :password => 'secret1'
-
-      expect(assigns[:user]).to eq user
-      expect(session[:user_id]).to eq user.id.to_s
     end
 
     it "logout clears the session" do
