@@ -48,68 +48,88 @@ describe SorceryController do
 
     specify { should respond_to(:current_user) }
 
-    it "login(email,password) returns the user when success and set the session with user.id" do
-      expect(User).to receive(:authenticate).with('bla@bla.com', 'secret').and_return(user)
-
-      get :test_login, :email => 'bla@bla.com', :password => 'secret'
-
-      expect(assigns[:user]).to eq user
-      expect(session[:user_id]).to eq user.id.to_s
-    end
-
-    it "login(username,password) returns nil and not set the session when failure" do
-      expect(User).to receive(:authenticate).with('bla@bla.com', 'opensesame!').and_return(nil)
-
-      get :test_login, :email => 'bla@bla.com', :password => 'opensesame!'
-
-      expect(assigns[:user]).to be_nil
-      expect(session[:user_id]).to be_nil
-    end
-
-    it "login(email,password) returns the user when success and set the session with the _csrf_token" do
-      expect(User).to receive(:authenticate).with('bla@bla.com', 'secret').and_return(user)
-      get :test_login, :email => 'bla@bla.com', :password => 'secret'
-
-      expect(session[:_csrf_token]).not_to be_nil
-    end
-
-    it "logout clears the session" do
-      cookies[:remember_me_token] = nil
-      session[:user_id] = user.id.to_s
-      expect(User.sorcery_adapter).to receive(:find_by_id).with("42") { user }
-      get :test_logout
-
-      expect(session[:user_id]).to be_nil
-    end
-
-    it "logged_in? returns true if logged in" do
-      session[:user_id] = user.id.to_s
-      expect(User.sorcery_adapter).to receive(:find_by_id).with("42") { user }
-
-      expect(subject.logged_in?).to be true
-    end
-
-    it "logged_in? returns false if not logged in" do
-      session[:user_id] = nil
-
-      expect(subject.logged_in?).to be false
-    end
-
-    it "current_user returns the user instance if logged in" do
-      session[:user_id] = user.id.to_s
-      expect(User.sorcery_adapter).to receive(:find_by_id).with("42") { user }
-
-      2.times { expect(subject.current_user).to eq user } # memoized!
-    end
-
-    it "current_user returns false if not logged in" do
-      session[:user_id] = nil
-      expect(User.sorcery_adapter).to_not receive(:find_by_id)
-
-      2.times { expect(subject.current_user).to be_nil } # memoized!
-    end
-
     specify { should respond_to(:require_login) }
+
+    describe "#login" do
+
+      context "when succeeds" do
+        before do
+          expect(User).to receive(:authenticate).with('bla@bla.com', 'secret').and_return(user)
+          get :test_login, :email => 'bla@bla.com', :password => 'secret'
+        end
+
+        it "assigns user to @user variable" do
+          expect(assigns[:user]).to eq user
+        end
+
+        it "writes user id in session" do
+          expect(session[:user_id]).to eq user.id.to_s
+        end
+
+        it "sets csrf token in session" do
+          expect(session[:_csrf_token]).not_to be_nil
+        end
+
+      end
+
+      context "when fails" do
+        before do
+          expect(User).to receive(:authenticate).with('bla@bla.com', 'opensesame!').and_return(nil)
+          get :test_login, :email => 'bla@bla.com', :password => 'opensesame!'
+        end
+
+        it "sets @user variable to nil" do
+          expect(assigns[:user]).to be_nil
+        end
+
+        it "sets user_id in session to nil" do
+          expect(session[:user_id]).to be_nil
+        end
+      end
+    end
+
+    describe "#logout" do
+      it "clears the session" do
+        cookies[:remember_me_token] = nil
+        session[:user_id] = user.id.to_s
+        expect(User.sorcery_adapter).to receive(:find_by_id).with("42") { user }
+        get :test_logout
+
+        expect(session[:user_id]).to be_nil
+      end
+    end
+
+    describe "#logged_in?" do
+      it "returns true when user is logged in" do
+        session[:user_id] = user.id.to_s
+        expect(User.sorcery_adapter).to receive(:find_by_id).with("42") { user }
+
+        expect(subject.logged_in?).to be true
+      end
+
+      it "returns false when user is not logged in" do
+        session[:user_id] = nil
+
+        expect(subject.logged_in?).to be false
+      end
+    end
+
+    describe "#current_user" do
+      it "current_user returns the user instance if logged in" do
+        session[:user_id] = user.id.to_s
+        expect(User.sorcery_adapter).to receive(:find_by_id).once.with("42") { user }
+
+        2.times { expect(subject.current_user).to eq user } # memoized!
+      end
+
+      it "current_user returns false if not logged in" do
+        session[:user_id] = nil
+        expect(User.sorcery_adapter).to_not receive(:find_by_id)
+
+        2.times { expect(subject.current_user).to be_nil } # memoized!
+      end
+    end
+
 
     it "calls the configured 'not_authenticated_action' when authenticate before_filter fails" do
       session[:user_id] = nil
