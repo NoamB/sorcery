@@ -295,6 +295,11 @@ attributes such as password and password_confirmation)
 
 Important notes while upgrading:
 
+*   If you are upgrading from <= **1.0.0**
+    
+    *  `before_logout` does not take arguments anymore (`current_user` still returns user at this point)
+    *  `after_logout` takes one argument (`user`) as `current_user` returns `nil` then
+
 *   If you are upgrading from <= **0.8.6** and you use Sorcery model methods in your app,
     you might need to change them from `user.method` to `user.sorcery_adapter.method` and from
     `User.method` to `User.sorcery_adapter_method`
