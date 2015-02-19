@@ -12,7 +12,7 @@ module Sorcery
 
       attr_reader   :mode, :param_name, :parse
       attr_accessor :access_permissions, :display, :scope, :token_url,
-                    :user_info_path, :authorized_url, :api_version
+                    :user_info_path, :auth_path, :api_version
 
       def initialize
         super
@@ -22,7 +22,7 @@ module Sorcery
         @scope          = 'email,offline_access'
         @display        = 'page'
         @token_url      = 'oauth/access_token'
-        @authorized_url = 'oauth/authorize'
+        @auth_path      = 'oauth/authorize'
         @mode           = :query
         @parse          = :query
         @param_name     = 'access_token'
@@ -50,7 +50,7 @@ module Sorcery
         # concatenates with "/", removing the Facebook api version
         options = {
           site:          File::join(@site, api_version.to_s),
-          authorize_url: authorized_url,
+          authorize_url: auth_path,
           token_url:     token_url
         }
 
