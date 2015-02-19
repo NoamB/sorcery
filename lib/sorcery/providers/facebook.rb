@@ -19,7 +19,7 @@ module Sorcery
 
         @site           = 'https://graph.facebook.com'
         @user_info_path = 'me'
-        @scope          = 'email,offline_access'
+        @scope          = 'email'
         @display        = 'page'
         @token_url      = 'oauth/access_token'
         @auth_path      = 'oauth/authorize'
