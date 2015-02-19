@@ -20,8 +20,6 @@ describe SorceryController do
       sorcery_reload!([:activity_logging])
     end
 
-    specify { expect(subject).to respond_to(:current_users) }
-
     before(:each) do
       allow(user).to receive(:username)
       allow(user).to receive_message_chain(:sorcery_config, :username_attribute_names, :first) { :username }
@@ -31,12 +29,6 @@ describe SorceryController do
       sorcery_controller_property_set(:register_login_time, false)
       sorcery_controller_property_set(:register_last_ip_address, false)
       sorcery_controller_property_set(:register_last_activity_time, false)
-    end
-
-    it "'current_users' should proxy to User.current_users" do
-      expect(User).to receive(:current_users).with(no_args)
-
-      subject.current_users
     end
 
 

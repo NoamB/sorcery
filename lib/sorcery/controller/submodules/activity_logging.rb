@@ -38,13 +38,6 @@ module Sorcery
         end
 
         module InstanceMethods
-          # Returns an array of the active users.
-          def current_users
-            ActiveSupport::Deprecation.warn("Sorcery: `current_users` method is deprecated. Read more on Github: https://github.com/NoamB/sorcery/issues/602")
-
-            user_class.current_users
-          end
-
           protected
 
           # registers last login time on every login.

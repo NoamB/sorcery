@@ -3,6 +3,7 @@
 ## 1.0 (not released yet)
 
 * Adapters (Mongoid, MongoMapper, DataMapper) are now separated from the core Sorcery repo and moved under `sorcery-rails` organization. Special thanks to @juike!
+* `current_users` method was removed
 
 ## 0.9.1 (not released yet)
 

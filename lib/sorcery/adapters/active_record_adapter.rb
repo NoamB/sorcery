@@ -100,15 +100,6 @@ module Sorcery
           @klass.where(@klass.sorcery_config.email_attribute_name => email).first
         end
 
-        def get_current_users
-          config = @klass.sorcery_config
-
-          @klass
-            .where("#{config.last_activity_at_attribute_name} IS NOT NULL") \
-            .where("#{config.last_logout_at_attribute_name} IS NULL OR #{config.last_activity_at_attribute_name} > #{config.last_logout_at_attribute_name}") \
-            .where("#{config.last_activity_at_attribute_name} > ? ", config.activity_timeout.seconds.ago.utc.to_s(:db))
-        end
-
         def transaction(&blk)
           @klass.tap(&blk)
         end

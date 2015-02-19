@@ -51,10 +51,6 @@ module Sorcery
         end
 
         module ClassMethods
-          # get all users with last_activity within timeout
-          def current_users
-            sorcery_adapter.get_current_users
-          end
 
           protected
           def define_activity_logging_fields

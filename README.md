@@ -238,7 +238,6 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 
 *   automatic logging of last login, last logout, last activity time and IP
     address for last login.
-*   an easy method of collecting the list of currently logged in users.
 *   configurable timeout by which to decide whether to include a user in the
     list of logged in users.
 
