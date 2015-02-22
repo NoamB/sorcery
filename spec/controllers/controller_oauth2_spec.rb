@@ -83,12 +83,18 @@ describe SorceryController, :active_record => true do
       it "login_at redirects correctly" do
         get :login_at_test_facebook
         expect(response).to be_a_redirect
-        expect(response).to redirect_to("https://graph.facebook.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email%2Coffline_access&state=")
+        expect(response).to redirect_to("https://graph.facebook.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email&state=")
       end
       it "logins with state" do
         get :login_at_test_with_state
         expect(response).to be_a_redirect
-        expect(response).to redirect_to("https://graph.facebook.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email%2Coffline_access&state=bla")
+        expect(response).to redirect_to("https://graph.facebook.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email&state=bla")
+      end
+      it "logins with Graph API version" do
+        sorcery_controller_external_property_set(:facebook, :api_version, "v2.2")
+        get :login_at_test_with_state
+        expect(response).to be_a_redirect
+        expect(response).to redirect_to("https://graph.facebook.com/v2.2/oauth/authorize?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email&state=bla")
       end
       after do
         sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
@@ -102,7 +108,7 @@ describe SorceryController, :active_record => true do
         create_new_user
         get :login_at_test2
         response.should be_a_redirect
-        response.should redirect_to("https://graph.facebook.com/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=email%2Coffline_access&display=page&state")
+        response.should redirect_to("https://graph.facebook.com/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=email&display=page&state")
       end
     end
 =end

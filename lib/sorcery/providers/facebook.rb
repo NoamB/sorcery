@@ -12,16 +12,17 @@ module Sorcery
 
       attr_reader   :mode, :param_name, :parse
       attr_accessor :access_permissions, :display, :scope, :token_url,
-                    :user_info_path
+                    :user_info_path, :auth_path, :api_version
 
       def initialize
         super
 
         @site           = 'https://graph.facebook.com'
-        @user_info_path = '/me'
-        @scope          = 'email,offline_access'
+        @user_info_path = 'me'
+        @scope          = 'email'
         @display        = 'page'
         @token_url      = 'oauth/access_token'
+        @auth_path      = 'oauth/authorize'
         @mode           = :query
         @parse          = :query
         @param_name     = 'access_token'
@@ -44,8 +45,17 @@ module Sorcery
 
       # overrides oauth2#authorize_url to allow customized scope.
       def authorize_url
+
+        # Fix: replace default oauth2 options, specially to prevent the Faraday gem which
+        # concatenates with "/", removing the Facebook api version
+        options = {
+          site:          File::join(@site, api_version.to_s),
+          authorize_url: auth_path,
+          token_url:     token_url
+        }
+
         @scope = access_permissions.present? ? access_permissions.join(',') : scope
-        super
+        super(options)
       end
 
       # tries to login the user from access token
