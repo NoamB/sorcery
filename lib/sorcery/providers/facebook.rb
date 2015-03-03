@@ -18,11 +18,12 @@ module Sorcery
         super
 
         @site           = 'https://graph.facebook.com'
+        @auth_site      = 'https://www.facebook.com'
         @user_info_path = 'me'
         @scope          = 'email'
         @display        = 'page'
         @token_url      = 'oauth/access_token'
-        @auth_path      = 'oauth/authorize'
+        @auth_path      = 'dialog/oauth'
         @mode           = :query
         @parse          = :query
         @param_name     = 'access_token'
@@ -50,7 +51,7 @@ module Sorcery
         # concatenates with "/", removing the Facebook api version
         options = {
           site:          File::join(@site, api_version.to_s),
-          authorize_url: auth_path,
+          authorize_url: File::join(@auth_site, api_version.to_s, auth_path),
           token_url:     token_url
         }
 
