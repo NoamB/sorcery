@@ -3,6 +3,8 @@
 [![Inline docs](http://inch-ci.org/github/NoamB/sorcery.png?branch=master)](http://inch-ci.org/github/NoamB/sorcery)
 
 # sorcery
+
+[![Join the chat at https://gitter.im/NoamB/sorcery](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NoamB/sorcery?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Magical Authentication for Rails 3 and 4. Supports ActiveRecord,
 DataMapper, Mongoid and MongoMapper.
 
