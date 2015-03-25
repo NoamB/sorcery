@@ -12,10 +12,5 @@ module Sorcery
       ActionController::Base.helper_method :current_user
       ActionController::Base.helper_method :logged_in?
     end
-    
-    rake_tasks do
-      load "sorcery/railties/tasks.rake"
-    end
-    
   end
 end
