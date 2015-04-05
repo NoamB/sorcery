@@ -85,33 +85,42 @@ describe SorceryController, :active_record => true do
         expect(response).to be_a_redirect
         expect(response).to redirect_to("https://www.facebook.com/dialog/oauth?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email&state=")
       end
+
       it "logins with state" do
         get :login_at_test_with_state
         expect(response).to be_a_redirect
         expect(response).to redirect_to("https://www.facebook.com/dialog/oauth?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email&state=bla")
       end
+
       it "logins with Graph API version" do
         sorcery_controller_external_property_set(:facebook, :api_version, "v2.2")
         get :login_at_test_with_state
         expect(response).to be_a_redirect
         expect(response).to redirect_to("https://www.facebook.com/v2.2/dialog/oauth?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email&state=bla")
       end
+
+      it "logins without state after login with state" do
+        get :login_at_test_with_state
+        expect(response).to redirect_to("https://www.facebook.com/v2.2/dialog/oauth?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email&state=bla")
+
+        get :login_at_test_facebook
+        expect(response).to redirect_to("https://www.facebook.com/v2.2/dialog/oauth?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email&state=")
+      end
+
       after do
         sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
       end
     end
 
-    #this test can never pass because of the previous test (the callback url can't change anymore)
-=begin
     context "when callback_url begin with http://" do
       it "login_at redirects correctly" do
         create_new_user
-        get :login_at_test2
-        response.should be_a_redirect
-        response.should redirect_to("https://graph.facebook.com/oauth/authorize?response_type=code&client_id=#{::Sorcery::Controller::Config.facebook.key}&redirect_uri=http%3A%2F%2Fblabla.com&scope=email&display=page&state")
+        get :login_at_test_facebook
+        expect(response).to be_a_redirect
+        expect(response).to redirect_to("https://www.facebook.com/v2.2/dialog/oauth?client_id=#{::Sorcery::Controller::Config.facebook.key}&display=page&redirect_uri=http%3A%2F%2Ftest.host%2Foauth%2Ftwitter%2Fcallback&response_type=code&scope=email&state=")
       end
     end
-=end
+
     it "'login_from' logins if user exists" do
       # dirty hack for rails 4
       allow(subject).to receive(:register_last_activity_time_to_db)
