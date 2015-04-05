@@ -61,7 +61,7 @@ module Sorcery
             @provider = sorcery_get_provider provider_name
             sorcery_fixup_callback_url @provider
             if @provider.respond_to?(:login_url) && @provider.has_callback?
-              @provider.state = args[:state] if args[:state]
+              @provider.state = args[:state]
               return @provider.login_url(params, session)
             else
               return nil
