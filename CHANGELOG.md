@@ -5,7 +5,7 @@
 * Adapters (Mongoid, MongoMapper, DataMapper) are now separated from the core Sorcery repo and moved under `sorcery-rails` organization. Special thanks to @juike!
 * `current_users` method was removed
 
-## 0.9.1 (not released yet)
+## 0.9.1
 
 * Fixed fetching private emails from github (thanks to @saratovsource)
 * Added support for `active_for_authentication?` method (thanks to @gchaincl)
