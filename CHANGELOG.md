@@ -9,6 +9,10 @@
 
 * Fixed fetching private emails from github (thanks to @saratovsource)
 * Added support for `active_for_authentication?` method (thanks to @gchaincl)
+* Fixed migration bug for `external` submodule (thanks to @skv-headless)
+* Added support for new Facebook Graph API (thanks to @mchaisse)
+* Fixed issue with Xing submodule (thanks to @yoyostile)
+* Fixed security bug with using `state` field in oAuth requests
 
 ## 0.9.0
 
