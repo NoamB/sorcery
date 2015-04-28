@@ -215,6 +215,7 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 
 *   Remember me with configurable expiration.
 *   configurable attribute names.
+*   configurable to persist globally (supporting multiple browsers at the same time), or starting anew after each login
 
 
 **Session Timeout** (see [lib/sorcery/controller/submodules/session_timeout.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/session_timeout.rb)):

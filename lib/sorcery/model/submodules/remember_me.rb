@@ -9,6 +9,7 @@ module Sorcery
           base.sorcery_config.class_eval do
             attr_accessor :remember_me_token_attribute_name,              # the attribute in the model class.
                           :remember_me_token_expires_at_attribute_name,   # the expires attribute in the model class.
+                          :remember_me_token_persist_globally,            # persist a single token globally for all logins/logouts (supporting multiple simultaneous browsers)
                           :remember_me_for                                # how long in seconds to remember.
 
           end
@@ -16,6 +17,7 @@ module Sorcery
           base.sorcery_config.instance_eval do
             @defaults.merge!(:@remember_me_token_attribute_name            => :remember_me_token,
                              :@remember_me_token_expires_at_attribute_name => :remember_me_token_expires_at,
+                             :@remember_me_token_persist_globally          => false,
                              :@remember_me_for                             => 7 * 60 * 60 * 24)
 
             reset!
@@ -41,8 +43,14 @@ module Sorcery
           # You shouldn't really use this one yourself - it's called by the controller's 'remember_me!' method.
           def remember_me!
             config = sorcery_config
-            self.sorcery_adapter.update_attributes(config.remember_me_token_attribute_name => TemporaryToken.generate_random_token,
-                                        config.remember_me_token_expires_at_attribute_name => Time.now.in_time_zone + config.remember_me_for)
+
+            update_options = { config.remember_me_token_expires_at_attribute_name => Time.now.in_time_zone + config.remember_me_for }
+
+            unless config.remember_me_token_persist_globally and has_remember_me_token?
+              update_options.merge!(config.remember_me_token_attribute_name => TemporaryToken.generate_random_token)
+            end
+
+            self.sorcery_adapter.update_attributes(update_options)
           end
 
           def has_remember_me_token?
@@ -52,8 +60,12 @@ module Sorcery
           # You shouldn't really use this one yourself - it's called by the controller's 'forget_me!' method.
           def forget_me!
             config = sorcery_config
-            self.sorcery_adapter.update_attributes(config.remember_me_token_attribute_name => nil,
-                                        config.remember_me_token_expires_at_attribute_name => nil)
+            if config.remember_me_token_persist_globally
+              true
+            else
+              self.sorcery_adapter.update_attributes(config.remember_me_token_attribute_name => nil,
+                                          config.remember_me_token_expires_at_attribute_name => nil)
+            end
           end
         end
       end
