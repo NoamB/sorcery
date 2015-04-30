@@ -58,14 +58,16 @@ module Sorcery
           end
 
           # You shouldn't really use this one yourself - it's called by the controller's 'forget_me!' method.
+          # We only clear the token value if remember_me_token_persist_globally = true.
           def forget_me!
+            sorcery_config.remember_me_token_persist_globally or force_forget_me!
+          end
+
+          # You shouldn't really use this one yourself - it's called by the controller's 'force_forget_me!' method.
+          def force_forget_me!
             config = sorcery_config
-            if config.remember_me_token_persist_globally
-              true
-            else
-              self.sorcery_adapter.update_attributes(config.remember_me_token_attribute_name => nil,
-                                          config.remember_me_token_expires_at_attribute_name => nil)
-            end
+            self.sorcery_adapter.update_attributes(config.remember_me_token_attribute_name => nil,
+                                        config.remember_me_token_expires_at_attribute_name => nil)
           end
         end
       end

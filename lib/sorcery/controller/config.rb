@@ -16,7 +16,9 @@ module Sorcery
                       :after_login,
                       :after_failed_login,
                       :before_logout,
-                      :after_logout
+                      :before_logout_all_sessions,
+                      :after_logout,
+                      :after_logout_all_sessions
 
         def init!
           @defaults = {
@@ -27,7 +29,9 @@ module Sorcery
             :@after_login                          => [],
             :@after_failed_login                   => [],
             :@before_logout                        => [],
+            :@before_logout_all_sessions           => [],
             :@after_logout                         => [],
+            :@after_logout_all_sessions            => [],
             :@save_return_to_url                   => true,
             :@cookie_domain                        => nil
           }

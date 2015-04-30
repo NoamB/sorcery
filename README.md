@@ -56,6 +56,7 @@ require_login # this is a before filter
 login(email, password, remember_me = false)
 auto_login(user)# login without credentials
 logout
+logout_all_sessions    # logs out the user, ensuring all tokens are cleared even if remember_me_token_persist_globally is true
 logged_in?      # available to view
 current_user    # available to view
 redirect_back_or_to # used when a user tries to access a page while logged out, is asked to login, and we want to return him back to the page he originally wanted.
@@ -81,6 +82,7 @@ create_from(provider) # create the user in the local app db.
 auto_login(user, should_remember=false)  # login without credentials, optional remember_me
 remember_me!
 forget_me!
+force_forget_me!   # completely forgets all sessions by clearing the token, even if remember_me_token_persist_globally is true
 ```
 
 ### reset password

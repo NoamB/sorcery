@@ -46,6 +46,12 @@ class SorceryController < ActionController::Base
     render nothing: true
   end
 
+  def test_logout_all_sessions_with_remember
+    remember_me!
+    logout_all_sessions
+    render nothing: true
+  end
+
   def test_login_with_remember
     @user = login(params[:email], params[:password])
     remember_me!

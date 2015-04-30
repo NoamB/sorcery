@@ -60,6 +60,17 @@ describe SorceryController do
       expect(cookies["remember_me_token"]).to be_nil
     end
 
+    it "logout_all_sessions also calls force_forget_me!" do
+      session[:user_id] = user.id.to_s
+			expect(User.sorcery_adapter).to receive(:find_by_id).with(user.id.to_s).and_return(user)
+      expect(user).to receive(:remember_me!)
+      expect(user).to receive(:forget_me!)
+      expect(user).to receive(:force_forget_me!)
+      get :test_logout_all_sessions_with_remember
+
+      expect(cookies["remember_me_token"]).to be_nil
+    end
+
     it "logs user in from cookie" do
 			session[:user_id] = user.id.to_s
 			expect(User.sorcery_adapter).to receive(:find_by_id).with(user.id.to_s).and_return(user)
