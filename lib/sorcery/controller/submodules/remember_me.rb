@@ -20,7 +20,6 @@ module Sorcery
           Config.login_sources << :login_from_cookie
           Config.after_login << :remember_me_if_asked_to
           Config.before_logout << :forget_me!
-          Config.before_logout_all_sessions << :force_forget_me!
         end
 
         module InstanceMethods
@@ -40,6 +39,14 @@ module Sorcery
           def force_forget_me!
             current_user.force_forget_me!
             cookies.delete(:remember_me_token, :domain => Config.cookie_domain)
+          end
+
+          # Logs out and forces forgetting the remember me token
+          def logout_all_sessions
+            if logged_in?
+              force_forget_me!
+              logout
+            end
           end
 
           # Override.

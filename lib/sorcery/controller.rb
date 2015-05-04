@@ -67,19 +67,6 @@ module Sorcery
         end
       end
 
-      # Completely resets the session and runs hooks before and after.
-      def logout_all_sessions
-        if logged_in?
-          user = current_user
-          before_logout!
-          before_logout_all_sessions!
-          @current_user = nil
-          reset_sorcery_session
-          after_logout_all_sessions!(user)
-          after_logout!(user)
-        end
-      end
-
       def logged_in?
         !!current_user
       end
@@ -156,16 +143,8 @@ module Sorcery
         Config.before_logout.each {|c| self.send(c)}
       end
 
-      def before_logout_all_sessions!
-        Config.before_logout_all_sessions.each {|c| self.send(c)}
-      end
-
       def after_logout!(user)
         Config.after_logout.each {|c| self.send(c, user)}
-      end
-
-      def after_logout_all_sessions!(user)
-        Config.after_logout_all_sessions.each {|c| self.send(c, user)}
       end
 
       def user_class
