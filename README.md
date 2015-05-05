@@ -82,7 +82,6 @@ auto_login(user, should_remember=false)  # login without credentials, optional r
 remember_me!
 forget_me!
 force_forget_me!    # completely forgets all sessions by clearing the token, even if remember_me_token_persist_globally is true
-logout_all_sessions # logs out the user, ensuring all tokens are cleared even if remember_me_token_persist_globally is true
 ```
 
 ### reset password

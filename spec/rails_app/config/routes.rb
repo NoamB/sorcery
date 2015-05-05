@@ -11,7 +11,7 @@ AppRoot::Application.routes.draw do
     get :test_login_from_cookie
     get :test_login_from
     get :test_logout_with_remember
-    get :test_logout_all_sessions_with_remember
+    get :test_logout_with_force_forget_me
     get :test_should_be_logged_in
     get :test_create_from_provider
     get :test_add_second_provider

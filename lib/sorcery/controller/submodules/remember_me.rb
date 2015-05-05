@@ -41,14 +41,6 @@ module Sorcery
             cookies.delete(:remember_me_token, :domain => Config.cookie_domain)
           end
 
-          # Logs out and forces forgetting the remember me token
-          def logout_all_sessions
-            if logged_in?
-              force_forget_me!
-              logout
-            end
-          end
-
           # Override.
           # logins a user instance, and optionally remembers him.
           def auto_login(user, should_remember = false)
