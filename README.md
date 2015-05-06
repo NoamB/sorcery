@@ -81,6 +81,7 @@ create_from(provider) # create the user in the local app db.
 auto_login(user, should_remember=false)  # login without credentials, optional remember_me
 remember_me!
 forget_me!
+force_forget_me!    # completely forgets all sessions by clearing the token, even if remember_me_token_persist_globally is true
 ```
 
 ### reset password
@@ -215,6 +216,7 @@ STI is supported via a single setting in config/initializers/sorcery.rb.
 
 *   Remember me with configurable expiration.
 *   configurable attribute names.
+*   configurable to persist globally (supporting multiple browsers at the same time), or starting anew after each login
 
 
 **Session Timeout** (see [lib/sorcery/controller/submodules/session_timeout.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/session_timeout.rb)):

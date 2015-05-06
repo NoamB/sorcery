@@ -254,6 +254,13 @@ Rails.application.config.sorcery.configure do |config|
     # user.remember_me_for =
 
 
+    # when true sorcery will persist a single remember me token for all
+    # logins/logouts (supporting remembering on multiple browsers simultaneously).
+    # Default: false
+    #
+    # user.remember_me_token_persist_globally =
+
+
     # -- user_activation --
     # the attribute name to hold activation state (active/pending).
     # Default: `:activation_state`

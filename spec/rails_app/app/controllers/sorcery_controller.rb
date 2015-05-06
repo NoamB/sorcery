@@ -4,7 +4,7 @@ class SorceryController < ActionController::Base
   protect_from_forgery
 
   before_filter :require_login_from_http_basic, only: [:test_http_basic_auth]
-  before_filter :require_login, only: [:test_logout, :test_should_be_logged_in, :some_action]
+  before_filter :require_login, only: [:test_logout, :test_logout_with_force_forget_me, :test_should_be_logged_in, :some_action]
 
   def index
   end
@@ -42,6 +42,13 @@ class SorceryController < ActionController::Base
 
   def test_logout_with_remember
     remember_me!
+    logout
+    render nothing: true
+  end
+
+  def test_logout_with_force_forget_me
+    remember_me!
+    force_forget_me!
     logout
     render nothing: true
   end

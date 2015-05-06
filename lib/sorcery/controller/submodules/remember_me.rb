@@ -29,9 +29,15 @@ module Sorcery
             set_remember_me_cookie!(current_user)
           end
 
-          # Clears the cookie and clears the token from the db.
+          # Clears the cookie, and depending on the value of remember_me_token_persist_globally, may clear the token value.
           def forget_me!
             current_user.forget_me!
+            cookies.delete(:remember_me_token, :domain => Config.cookie_domain)
+          end
+
+          # Clears the cookie, and clears the token value.
+          def force_forget_me!
+            current_user.force_forget_me!
             cookies.delete(:remember_me_token, :domain => Config.cookie_domain)
           end
 
