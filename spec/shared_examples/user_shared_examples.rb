@@ -273,13 +273,21 @@ shared_examples_for "rails_3_core_model" do
   end
 
   describe "generic send email" do
-    before do
-      @mail = double('mail')
-      allow(::SorceryMailer).to receive(:activation_success_email).and_return(@mail)
+    before(:all) do
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+      User.reset_column_information
 
       sorcery_reload!([:user_activation, :user_activation_mailer, :activation_needed_email_method_name, :deliver_later_enabled],
       user_activation_mailer: SorceryMailer ,activation_needed_email_method_name: nil, deliver_later_enabled: true)
-      user = create_new_user
+    end
+
+    after(:all) do
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+    end
+
+    before do
+      @mail = double('mail')
+      allow(::SorceryMailer).to receive(:activation_success_email).and_return(@mail)
     end
 
     it "using deliver_later if enabled and rails support" do
