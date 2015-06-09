@@ -70,6 +70,11 @@ shared_examples_for "rails_3_core_model" do
       expect(User.sorcery_config.stretches).to eq stretches
     end
 
+    it "enables configuration option 'deliver_later_enabled" do
+      sorcery_model_property_set(:deliver_later_enabled, true)
+      expect(User.sorcery_config.deliver_later_enabled).to eq true
+    end
+
     it 'respond to username=' do
       expect(User.new).to respond_to(:username=)
     end
@@ -264,6 +269,30 @@ shared_examples_for "rails_3_core_model" do
   
     it "returns false if password is incorrect" do
       expect(user_with_pass.valid_password?("foobug")).to be false
+    end
+  end
+
+  describe "generic send email" do
+    before do
+      @mail = double('mail')
+      allow(::SorceryMailer).to receive(:activation_success_email).and_return(@mail)
+
+      sorcery_reload!([:user_activation, :user_activation_mailer, :activation_needed_email_method_name, :deliver_later_enabled],
+      user_activation_mailer: SorceryMailer ,activation_needed_email_method_name: nil, deliver_later_enabled: true)
+      user = create_new_user
+    end
+
+    it "using deliver_later if enabled and rails support" do
+      allow(@mail).to receive(:respond_to?).with(:deliver_later) { true }
+      expect(@mail).to receive(:deliver_later).once
+      user.activate!
+    end
+
+    it "using deliver_now if rails not support" do
+      allow(@mail).to receive(:respond_to?).with(:deliver_later) { false }
+      allow(@mail).to receive(:respond_to?).with(:deliver_now) { true }
+      expect(@mail).to receive(:deliver_now).once
+      user.activate!
     end
   end
 

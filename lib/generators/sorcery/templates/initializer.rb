@@ -299,6 +299,13 @@ Rails.application.config.sorcery.configure do |config|
     #
     # user.activation_mailer_disabled =
 
+    # when true sorcery will send email activation
+    # asynchronously using deliver_later if exists
+    # otherwise deliver synchronously
+    # Default: `false`
+    #
+    # user.deliver_later_enabled =
+
 
     # activation needed email method on your mailer class.
     # Default: `:activation_needed_email`

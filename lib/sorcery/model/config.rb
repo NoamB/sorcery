@@ -29,6 +29,11 @@ module Sorcery
                     :before_authenticate,               # an array of method names to call before authentication
                                                         # completes. used internally.
 
+                    :deliver_later_enabled,             # when true sorcery will send email activation
+                                                        # asynchronously using deliver_later if exists
+                                                        # otherwise deliver synchronously
+
+
                     :after_config                       # an array of method names to call after configuration by user.
                                                         # used internally.
 
@@ -36,11 +41,10 @@ module Sorcery
                     :custom_encryption_provider,        # use an external encryption class.
                     :encryption_algorithm               # encryption algorithm name. See 'encryption_algorithm=' below
                                                         # for available options.
-
       def initialize
         @defaults = {
           :@submodules                           => [],
-          :@username_attribute_names              => [:email],
+          :@username_attribute_names             => [:email],
           :@password_attribute_name              => :password,
           :@downcase_username_before_authenticating => false,
           :@email_attribute_name                 => :email,
@@ -54,7 +58,8 @@ module Sorcery
           :@stretches                            => nil,
           :@subclasses_inherit_config            => false,
           :@before_authenticate                  => [],
-          :@after_config                         => []
+          :@after_config                         => [],
+          :@deliver_later_enabled                => false,
         }
         reset!
       end
