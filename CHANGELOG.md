@@ -4,6 +4,7 @@
 
 * Adapters (Mongoid, MongoMapper, DataMapper) are now separated from the core Sorcery repo and moved under `sorcery-rails` organization. Special thanks to @juike!
 * `current_users` method was removed
+* Added `logged_in?` `logged_out?` `online?` to activity_logging instance methods
 
 ## 0.9.1
 

@@ -17,7 +17,7 @@ module Sorcery
                           :last_activity_at_attribute_name,               # last activity attribute name.
                           :last_login_from_ip_address_name,               # last activity login source
                           :activity_timeout                               # how long since last activity is
-                                                                          #the user defined logged out?
+                                                                          # the user defined offline
           end
 
           base.sorcery_config.instance_eval do
@@ -48,6 +48,26 @@ module Sorcery
           def set_last_ip_addess(ip_address)
             sorcery_adapter.update_attribute(sorcery_config.last_login_from_ip_address_name, ip_address)
           end
+
+          # online method shows if user is active (logout action makes user inactive too)
+          def online?
+            return false if self.send(sorcery_config.last_activity_at_attribute_name).nil?
+
+            logged_in? and self.send(sorcery_config.last_activity_at_attribute_name) > sorcery_config.activity_timeout.seconds.ago
+          end
+
+          #  shows if user is logged in, but it not show if user is online - see online?
+          def logged_in?
+            return false if self.send(sorcery_config.last_login_at_attribute_name).nil?
+            return true if self.send(sorcery_config.last_login_at_attribute_name).present? and self.send(sorcery_config.last_logout_at_attribute_name).nil?
+
+            self.send(sorcery_config.last_login_at_attribute_name) > self.send(sorcery_config.last_logout_at_attribute_name)
+          end
+
+          def logged_out?
+            not logged_in?
+          end
+
         end
 
         module ClassMethods
