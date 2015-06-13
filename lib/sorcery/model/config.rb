@@ -102,9 +102,7 @@ module Sorcery
       end
 
       def rails_version_bigger_than_or_equal?(version)
-        rails_version = Rails.version.split('.')
-        version = version.split('.')
-        rails_version[0] >= version[0] && rails_version[1] >= version[1]
+        Gem::Version.new("4.2.0") <= Gem::Version.new(Rails.version)
       end
 
     end
