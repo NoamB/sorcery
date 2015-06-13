@@ -71,8 +71,8 @@ shared_examples_for "rails_3_core_model" do
     end
 
     it "enables configuration option 'deliver_later_enabled" do
-      sorcery_model_property_set(:deliver_later_enabled, true)
-      expect(User.sorcery_config.deliver_later_enabled).to eq true
+      sorcery_model_property_set(:email_delivery_method, :deliver_later)
+      expect(User.sorcery_config.email_delivery_method).to eq :deliver_later
     end
 
     it 'respond to username=' do
@@ -276,9 +276,6 @@ shared_examples_for "rails_3_core_model" do
     before(:all) do
       ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
       User.reset_column_information
-
-      sorcery_reload!([:user_activation, :user_activation_mailer, :activation_needed_email_method_name, :deliver_later_enabled],
-      user_activation_mailer: SorceryMailer ,activation_needed_email_method_name: nil, deliver_later_enabled: true)
     end
 
     after(:all) do
@@ -290,17 +287,30 @@ shared_examples_for "rails_3_core_model" do
       allow(::SorceryMailer).to receive(:activation_success_email).and_return(@mail)
     end
 
-    it "using deliver_later if enabled and rails support" do
-      allow(@mail).to receive(:respond_to?).with(:deliver_later) { true }
+    it "use deliver_later" do
+      sorcery_reload!([:user_activation, :user_activation_mailer, :activation_needed_email_method_name, :email_delivery_method],
+      user_activation_mailer: SorceryMailer ,activation_needed_email_method_name: nil, email_delivery_method: :deliver_later)
+
       expect(@mail).to receive(:deliver_later).once
       user.activate!
     end
 
-    it "using deliver_now if rails not support" do
-      allow(@mail).to receive(:respond_to?).with(:deliver_later) { false }
-      allow(@mail).to receive(:respond_to?).with(:deliver_now) { true }
-      expect(@mail).to receive(:deliver_now).once
-      user.activate!
+    describe 'email_delivery_method is default' do
+      it "use deliver_now if rails version 4.2+" do
+        allow(Rails).to receive(:version).and_return('4.2.0')
+        sorcery_reload!([:user_activation, :user_activation_mailer, :activation_needed_email_method_name],
+        user_activation_mailer: SorceryMailer ,activation_needed_email_method_name: nil)
+        expect(@mail).to receive(:deliver_now).once
+        user.activate!
+      end
+
+      it "use deliver if rails version < 4.2" do
+        allow(Rails).to receive(:version).and_return('4.1.0')
+        sorcery_reload!([:user_activation, :user_activation_mailer, :activation_needed_email_method_name],
+        user_activation_mailer: SorceryMailer ,activation_needed_email_method_name: nil)
+        expect(@mail).to receive(:deliver).once
+        user.activate!
+      end
     end
   end
 

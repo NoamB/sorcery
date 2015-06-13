@@ -29,9 +29,10 @@ module Sorcery
                     :before_authenticate,               # an array of method names to call before authentication
                                                         # completes. used internally.
 
-                    :deliver_later_enabled,             # when true sorcery will send email activation
-                                                        # asynchronously using deliver_later if exists
-                                                        # otherwise deliver synchronously
+                    :email_delivery_method,             # method to send email related
+                                                        # options: `:deliver_later`, `:deliver_now`, `:deliver`
+                                                        # Default: :deliver (Rails version < 4.2) or :deliver_now (Rails version 4.2+)
+                                                        # method to send email related
 
 
                     :after_config                       # an array of method names to call after configuration by user.
@@ -59,7 +60,7 @@ module Sorcery
           :@subclasses_inherit_config            => false,
           :@before_authenticate                  => [],
           :@after_config                         => [],
-          :@deliver_later_enabled                => false,
+          :@email_delivery_method                => default_email_delivery_method,
         }
         reset!
       end
@@ -92,6 +93,18 @@ module Sorcery
         when :custom then @custom_encryption_provider
         else raise ArgumentError.new("Encryption algorithm supplied, #{algo}, is invalid")
         end
+      end
+
+      private
+      def default_email_delivery_method
+        # Rails 4.2 deprecates #deliver
+        rails_version_bigger_than_or_equal?('4.2.0') ? :deliver_now  : :deliver
+      end
+
+      def rails_version_bigger_than_or_equal?(version)
+        rails_version = Rails.version.split('.')
+        version = version.split('.')
+        rails_version[0] >= version[0] && rails_version[1] >= version[1]
       end
 
     end
