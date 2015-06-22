@@ -70,6 +70,11 @@ shared_examples_for "rails_3_core_model" do
       expect(User.sorcery_config.stretches).to eq stretches
     end
 
+    it "enables configuration option 'deliver_later_enabled" do
+      sorcery_model_property_set(:email_delivery_method, :deliver_later)
+      expect(User.sorcery_config.email_delivery_method).to eq :deliver_later
+    end
+
     it 'respond to username=' do
       expect(User.new).to respond_to(:username=)
     end
@@ -264,6 +269,48 @@ shared_examples_for "rails_3_core_model" do
   
     it "returns false if password is incorrect" do
       expect(user_with_pass.valid_password?("foobug")).to be false
+    end
+  end
+
+  describe "generic send email" do
+    before(:all) do
+      ActiveRecord::Migrator.migrate("#{Rails.root}/db/migrate/activation")
+      User.reset_column_information
+    end
+
+    after(:all) do
+      ActiveRecord::Migrator.rollback("#{Rails.root}/db/migrate/activation")
+    end
+
+    before do
+      @mail = double('mail')
+      allow(::SorceryMailer).to receive(:activation_success_email).and_return(@mail)
+    end
+
+    it "use deliver_later" do
+      sorcery_reload!([:user_activation, :user_activation_mailer, :activation_needed_email_method_name, :email_delivery_method],
+      user_activation_mailer: SorceryMailer ,activation_needed_email_method_name: nil, email_delivery_method: :deliver_later)
+
+      expect(@mail).to receive(:deliver_later).once
+      user.activate!
+    end
+
+    describe 'email_delivery_method is default' do
+      it "use deliver_now if rails version 4.2+" do
+        allow(Rails).to receive(:version).and_return('4.2.0')
+        sorcery_reload!([:user_activation, :user_activation_mailer, :activation_needed_email_method_name],
+        user_activation_mailer: SorceryMailer ,activation_needed_email_method_name: nil)
+        expect(@mail).to receive(:deliver_now).once
+        user.activate!
+      end
+
+      it "use deliver if rails version < 4.2" do
+        allow(Rails).to receive(:version).and_return('4.1.0')
+        sorcery_reload!([:user_activation, :user_activation_mailer, :activation_needed_email_method_name],
+        user_activation_mailer: SorceryMailer ,activation_needed_email_method_name: nil)
+        expect(@mail).to receive(:deliver).once
+        user.activate!
+      end
     end
   end
 

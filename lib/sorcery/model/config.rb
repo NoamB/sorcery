@@ -29,6 +29,12 @@ module Sorcery
                     :before_authenticate,               # an array of method names to call before authentication
                                                         # completes. used internally.
 
+                    :email_delivery_method,             # method to send email related
+                                                        # options: `:deliver_later`, `:deliver_now`, `:deliver`
+                                                        # Default: :deliver (Rails version < 4.2) or :deliver_now (Rails version 4.2+)
+                                                        # method to send email related
+
+
                     :after_config                       # an array of method names to call after configuration by user.
                                                         # used internally.
 
@@ -36,11 +42,10 @@ module Sorcery
                     :custom_encryption_provider,        # use an external encryption class.
                     :encryption_algorithm               # encryption algorithm name. See 'encryption_algorithm=' below
                                                         # for available options.
-
       def initialize
         @defaults = {
           :@submodules                           => [],
-          :@username_attribute_names              => [:email],
+          :@username_attribute_names             => [:email],
           :@password_attribute_name              => :password,
           :@downcase_username_before_authenticating => false,
           :@email_attribute_name                 => :email,
@@ -54,7 +59,8 @@ module Sorcery
           :@stretches                            => nil,
           :@subclasses_inherit_config            => false,
           :@before_authenticate                  => [],
-          :@after_config                         => []
+          :@after_config                         => [],
+          :@email_delivery_method                => default_email_delivery_method,
         }
         reset!
       end
@@ -87,6 +93,16 @@ module Sorcery
         when :custom then @custom_encryption_provider
         else raise ArgumentError.new("Encryption algorithm supplied, #{algo}, is invalid")
         end
+      end
+
+      private
+      def default_email_delivery_method
+        # Rails 4.2 deprecates #deliver
+        rails_version_bigger_than_or_equal?('4.2.0') ? :deliver_now  : :deliver
+      end
+
+      def rails_version_bigger_than_or_equal?(version)
+        Gem::Version.new(version) <= Gem::Version.new(Rails.version)
       end
 
     end
