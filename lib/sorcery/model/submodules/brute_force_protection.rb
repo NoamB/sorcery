@@ -116,7 +116,10 @@ module Sorcery
             if !self.unlocked? && config.login_lock_time_period != 0
               self.unlock! if self.send(config.lock_expires_at_attribute_name) <= Time.now.in_time_zone
             end
-            unlocked?
+
+            return false, :locked unless unlocked?
+
+            true
           end
         end
       end

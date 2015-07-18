@@ -81,10 +81,12 @@ module Sorcery
       # Takes a username and password,
       # Finds the user by the username and compares the user's password to the one supplied to the method.
       # returns the user if success, nil otherwise.
-      def authenticate(*credentials)
+      def authenticate(*credentials, &block)
         raise ArgumentError, "at least 2 arguments required" if credentials.size < 2
 
-        return false if credentials[0].blank?
+        if credentials[0].blank?
+          return authentication_failed(:invalid_login, false, &block)
+        end
 
         if @sorcery_config.downcase_username_before_authenticating
           credentials[0].downcase!
@@ -93,12 +95,26 @@ module Sorcery
         user = sorcery_adapter.find_by_credentials(credentials)
 
         if user.respond_to?(:active_for_authentication?)
-          return nil if !user.active_for_authentication?
+          unless user.active_for_authentication?
+            return authentication_failed(:inactive, &block)
+          end
         end
 
         set_encryption_attributes
 
-        user if user && @sorcery_config.before_authenticate.all? {|c| user.send(c)} && user.valid_password?(credentials[1])
+        return authentication_failed(:invalid_login, &block) unless user
+
+        @sorcery_config.before_authenticate.each do |callback|
+          success, reason = user.send(callback)
+
+          return authentication_failed(reason, &block) unless success
+        end
+
+        unless user.valid_password?(credentials[1])
+          return authentication_failed(:invalid_password, &block)
+        end
+
+        block_given? ? block.call(user, nil) : user
       end
 
       # encrypt tokens using current encryption_provider.
@@ -113,11 +129,17 @@ module Sorcery
 
       protected
 
+      def authentication_failed(reason, return_value = nil, &block)
+        block.call(nil, reason) if block_given?
+
+        return return_value
+      end
+
       def set_encryption_attributes()
         @sorcery_config.encryption_provider.stretches = @sorcery_config.stretches if @sorcery_config.encryption_provider.respond_to?(:stretches) && @sorcery_config.stretches
         @sorcery_config.encryption_provider.join_token = @sorcery_config.salt_join_token if @sorcery_config.encryption_provider.respond_to?(:join_token) && @sorcery_config.salt_join_token
       end
-      
+
       def add_config_inheritance
         self.class_eval do
           def self.inherited(subclass)
@@ -148,7 +170,7 @@ module Sorcery
 
       # Calls the configured encryption provider to compare the supplied password with the encrypted one.
       def valid_password?(pass)
-        _crypted = self.send(sorcery_config.crypted_password_attribute_name)  
+        _crypted = self.send(sorcery_config.crypted_password_attribute_name)
         return _crypted == pass if sorcery_config.encryption_provider.nil?
 
         _salt = self.send(sorcery_config.salt_attribute_name) unless sorcery_config.salt_attribute_name.nil?
