@@ -205,21 +205,21 @@ shared_examples_for "rails_3_activation_model" do
       Timecop.return
     end
 
-    it "load_from_activation_token returns user when token is found" do
+    it "returns user when token is found" do
       expect(User.load_from_activation_token user.activation_token).to eq user
     end
 
-    it "load_from_activation_token does NOT return user when token is NOT found" do
+    it "does NOT return user when token is NOT found" do
       expect(User.load_from_activation_token "a").to be_nil
     end
 
-    it "load_from_activation_token returas user when token is found and not expired" do
+    it "returns user when token is found and not expired" do
       sorcery_model_property_set(:activation_token_expiration_period, 500)
 
       expect(User.load_from_activation_token user.activation_token).to eq user
     end
 
-    it "load_from_activation_token does NOT return user when token is found and expired" do
+    it "does NOT return user when token is found and expired" do
       sorcery_model_property_set(:activation_token_expiration_period, 0.1)
       user
 
@@ -228,12 +228,12 @@ shared_examples_for "rails_3_activation_model" do
       expect(User.load_from_activation_token user.activation_token).to be_nil
     end
 
-    it "load_from_activation_token returns nil if token is blank" do
+    it "returns nil if token is blank" do
       expect(User.load_from_activation_token nil).to be_nil
       expect(User.load_from_activation_token "").to be_nil
     end
 
-    it "load_from_activation_token is always valid if expiration period is nil" do
+    it "is always valid if expiration period is nil" do
       sorcery_model_property_set(:activation_token_expiration_period, nil)
 
       expect(User.load_from_activation_token user.activation_token).to eq user
