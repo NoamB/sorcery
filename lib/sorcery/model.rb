@@ -96,7 +96,7 @@ module Sorcery
 
         if user.respond_to?(:active_for_authentication?)
           unless user.active_for_authentication?
-            return authentication_failed(:inactive, &block)
+            return authentication_failed(:inactive, nil, user, &block)
           end
         end
 
@@ -129,8 +129,8 @@ module Sorcery
 
       protected
 
-      def authentication_failed(reason, return_value = nil, &block)
-        block.call(nil, reason) if block_given?
+      def authentication_failed(reason, return_value = nil, user = nil, &block)
+        block.call(user, reason) if block_given?
 
         return return_value
       end

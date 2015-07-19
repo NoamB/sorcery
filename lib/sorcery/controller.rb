@@ -35,7 +35,7 @@ module Sorcery
           if failure_reason
             after_failed_login!(credentials)
 
-            block.call(nil, failure_reason) if block_given?
+            block.call(user, failure_reason) if block_given?
 
             return nil
           end
