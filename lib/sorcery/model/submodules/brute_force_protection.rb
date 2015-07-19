@@ -41,10 +41,11 @@ module Sorcery
         end
 
         module ClassMethods
-          def load_from_unlock_token(token)
-            return nil if token.blank?
-            user = sorcery_adapter.find_by_token(sorcery_config.unlock_token_attribute_name,token)
-            user
+          # This doesn't check to see if the account is still locked.
+          def load_from_unlock_token(token, &block)
+            load_from_token(token,
+                            sorcery_config.unlock_token_attribute_name,
+                            &block)
           end
 
           protected

@@ -70,10 +70,10 @@ module Sorcery
         module ClassMethods
           # Find user by token, also checks for expiration.
           # Returns the user if token found and is valid.
-          def load_from_activation_token(token)
+          def load_from_activation_token(token, &block)
             token_attr_name = @sorcery_config.activation_token_attribute_name
             token_expiration_date_attr = @sorcery_config.activation_token_expires_at_attribute_name
-            load_from_token(token, token_attr_name, token_expiration_date_attr)
+            load_from_token(token, token_attr_name, token_expiration_date_attr, &block)
           end
 
           protected
