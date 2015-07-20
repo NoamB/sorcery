@@ -194,6 +194,27 @@ shared_examples_for "rails_3_activation_model" do
 
       expect(User.authenticate user.email, 'secret').to be_truthy
     end
+
+    context 'in block mode' do
+      it "does not allow a non-active user to authenticate" do
+        sorcery_model_property_set(:prevent_non_active_users_to_login, true)
+
+        User.authenticate(user.email, 'secret') do |user2, failure|
+          expect(user2).to eq user
+          expect(user2.activation_state).to eq 'pending'
+          expect(failure).to eq :inactive
+        end
+      end
+
+      it "allows a non-active user to authenticate if configured so" do
+        sorcery_model_property_set(:prevent_non_active_users_to_login, false)
+
+        User.authenticate(user.email, 'secret') do |user2, failure|
+          expect(user2).to eq user
+          expect(failure).to be_nil
+        end
+      end
+    end
   end
 
   describe "load_from_activation_token" do

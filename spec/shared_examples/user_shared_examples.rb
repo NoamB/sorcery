@@ -101,6 +101,31 @@ shared_examples_for "rails_3_core_model" do
         expect(User.authenticate user.email, 'wrong!').to be nil
       end
 
+      context 'in block mode' do
+        it 'yields the user if credentials are good' do
+          User.authenticate(user.email, 'secret') do |user2, failure|
+            expect(user2).to eq user
+            expect(failure).to be_nil
+          end
+        end
+
+        it 'yields the user and proper error if credentials are bad' do
+          User.authenticate(user.email, 'wrong!') do |user2, failure|
+            expect(user2).to eq user
+            expect(failure).to eq :invalid_password
+          end
+        end
+
+        it 'yields the proper error if no user exists' do
+          [nil, '', 'not@a.user'].each do |email|
+            User.authenticate(email, 'wrong!') do |user2, failure|
+              expect(user2).to be_nil
+              expect(failure).to eq :invalid_login
+            end
+          end
+        end
+      end
+
       context "downcasing username" do
         after do
           sorcery_reload!
@@ -262,11 +287,11 @@ shared_examples_for "rails_3_core_model" do
     let(:user_with_pass) { create_new_user({:username => 'foo_bar', :email => "foo@bar.com", :password => 'foobar'})}
 
     specify { expect(user_with_pass).to respond_to :valid_password? }
-    
+
     it "returns true if password is correct" do
       expect(user_with_pass.valid_password?("foobar")).to be true
     end
-  
+
     it "returns false if password is incorrect" do
       expect(user_with_pass.valid_password?("foobug")).to be false
     end
