@@ -73,7 +73,7 @@ Rails.application.config.sorcery.configure do |config|
 
 
   # -- external --
-  # What providers are supported by this app, i.e. [:twitter, :facebook, :github, :linkedin, :xing, :google, :liveid, :salesforce] .
+  # What providers are supported by this app, i.e. [:twitter, :facebook, :github, :linkedin, :xing, :google, :liveid, :salesforce, :yahoojp] .
   # Default: `[]`
   #
   # config.external_providers =
@@ -171,6 +171,12 @@ Rails.application.config.sorcery.configure do |config|
   # config.salesforce.callback_url = "https://127.0.0.1:9292/oauth/callback?provider=salesforce"
   # config.salesforce.scope = "full"
   # config.salesforce.user_info_mapping = {:email => "email"}
+
+  # For information about Yahoo! JAPAN: http://developer.yahoo.co.jp/yconnect/
+  # config.yahoojp.key = ''
+  # config.yahoojp.secret = ''
+  # config.yahoojp.callback_url = 'http://0.0.0.0:3000/oauth/callback?provider=yahoojp'
+  # config.yahoojp.scope = 'openid email'
 
   # --- user config ---
   config.user_config do |user|
