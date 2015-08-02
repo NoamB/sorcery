@@ -90,6 +90,7 @@ module Sorcery
         when :sha512 then CryptoProviders::SHA512
         when :aes256 then CryptoProviders::AES256
         when :bcrypt then CryptoProviders::BCrypt
+        when :scrypt then CryptoProviders::SCrypt
         when :custom then @custom_encryption_provider
         else raise ArgumentError.new("Encryption algorithm supplied, #{algo}, is invalid")
         end

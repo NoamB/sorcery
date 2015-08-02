@@ -195,4 +195,29 @@ describe "Crypto Providers wrappers" do
 
   end
 
+  describe Sorcery::CryptoProviders::SCrypt do
+    before(:all) do
+      @password = SCrypt::Password.create('Noam Ben-Ari')
+    end
+
+    it "should be comparable with original secret" do
+      expect( SCrypt::Password.new( Sorcery::CryptoProviders::SCrypt.encrypt('Noam Ben-Ari') ) ).to eq 'Noam Ben-Ari'
+    end
+
+    it "matches? returns true when matches" do
+      expect( Sorcery::CryptoProviders::SCrypt.matches?(@password, 'Noam Ben-Ari') ).to be true
+    end
+
+    it "matches? returns false when no match" do
+      expect( Sorcery::CryptoProviders::SCrypt.matches?(@password, 'Some Dude') ).to be false
+    end
+
+    it "properly uses key_len" do
+      expect( Sorcery::CryptoProviders::SCrypt.encrypt('Noam Ben-Ari').length).to eq 90
+      Sorcery::CryptoProviders::SCrypt.key_len = 512
+      expect( Sorcery::CryptoProviders::SCrypt.encrypt('Noam Ben-Ari').length).to eq 1050
+      Sorcery::CryptoProviders::SCrypt.reset!
+    end
+  end
+
 end
