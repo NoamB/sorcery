@@ -95,13 +95,15 @@ module Sorcery
 
           # generates a reset code with expiration and sends an email to the user.
           def deliver_reset_password_instructions!
+            mail = false
             config = sorcery_config
             # hammering protection
             return false if config.reset_password_time_between_emails.present? && self.send(config.reset_password_email_sent_at_attribute_name) && self.send(config.reset_password_email_sent_at_attribute_name) > config.reset_password_time_between_emails.seconds.ago.utc
             self.class.sorcery_adapter.transaction do
               generate_reset_password_token!
-              send_reset_password_email! unless config.reset_password_mailer_disabled
+              mail = send_reset_password_email! unless config.reset_password_mailer_disabled
             end
+            mail
           end
 
           # Clears token and tries to update the new password for the user.
