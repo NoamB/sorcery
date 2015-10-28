@@ -405,6 +405,7 @@ describe SorceryController, :active_record => true do
     sorcery_controller_external_property_set(:google, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:google, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:google, :callback_url, "http://blabla.com")
+    sorcery_controller_external_property_set(:google, :auth_params, access_type: :offline)
     sorcery_controller_external_property_set(:liveid, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:liveid, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:liveid, :callback_url, "http://blabla.com")
@@ -419,7 +420,7 @@ describe SorceryController, :active_record => true do
   def provider_url(provider)
     {
       github: "https://github.com/login/oauth/authorize?client_id=#{::Sorcery::Controller::Config.github.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=&state=",
-      google: "https://accounts.google.com/o/oauth2/auth?client_id=#{::Sorcery::Controller::Config.google.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=",
+      google: "https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id=#{::Sorcery::Controller::Config.google.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=",
       liveid: "https://oauth.live.com/authorize?client_id=#{::Sorcery::Controller::Config.liveid.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=wl.basic+wl.emails+wl.offline_access&state=",
       vk: "https://oauth.vk.com/authorize?client_id=#{::Sorcery::Controller::Config.vk.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=#{::Sorcery::Controller::Config.vk.scope}&state=",
       salesforce: "https://login.salesforce.com/services/oauth2/authorize?client_id=#{::Sorcery::Controller::Config.salesforce.key}&display=&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=#{::Sorcery::Controller::Config.salesforce.scope}&state="
