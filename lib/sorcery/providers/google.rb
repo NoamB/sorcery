@@ -10,7 +10,7 @@ module Sorcery
 
       include Protocols::Oauth2
 
-      attr_accessor :auth_url, :scope, :token_url, :user_info_url
+      attr_accessor :auth_url, :scope, :token_url, :user_info_url, :auth_params
 
       def initialize
         super
@@ -34,7 +34,7 @@ module Sorcery
       # calculates and returns the url to which the user should be redirected,
       # to get authenticated at the external provider's site.
       def login_url(params, session)
-        authorize_url({ authorize_url: auth_url })
+        authorize_url({ authorize_url: auth_url_with_params })
       end
 
       # tries to login the user from access token
@@ -46,6 +46,11 @@ module Sorcery
         get_access_token(args, token_url: token_url, token_method: :post)
       end
 
+      private
+      def auth_url_with_params
+        param_string = Faraday::Utils::ParamsHash[auth_params || {}].to_query
+        [auth_url, param_string].join('?')
+      end
     end
   end
 end
