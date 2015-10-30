@@ -29,7 +29,7 @@ describe SorceryController do
 
       post :test_login_with_remember, :email => 'bla@bla.com', :password => 'secret'
 
-      expect(cookies.signed["remember_me_token"]).to eq assigns[:current_user].remember_me_token
+      expect(cookies.signed["remember_me_token"]).to eq assigns[:sorcery_current_user].remember_me_token
     end
 
     it "clears cookie on forget_me!" do
@@ -76,7 +76,7 @@ describe SorceryController do
 
       subject.remember_me!
       subject.instance_eval do
-        remove_instance_variable :@current_user
+        remove_instance_variable :@sorcery_current_user
       end
       session[:user_id] = nil
 
@@ -84,7 +84,7 @@ describe SorceryController do
 
       get :test_login_from_cookie
 
-      expect(assigns[:current_user]).to eq user
+      expect(assigns[:sorcery_current_user]).to eq user
     end
 
     it "doest not remember_me! when not asked to, even if third parameter is used" do
@@ -106,7 +106,7 @@ describe SorceryController do
       subject.auto_login(user)
       get :test_login_from_cookie
 
-      expect(assigns[:current_user]).to eq user
+      expect(assigns[:sorcery_current_user]).to eq user
       expect(cookies["remember_me_token"]).to be_nil
     end
 
@@ -117,7 +117,7 @@ describe SorceryController do
 
       get :test_login_from_cookie
 
-      expect(assigns[:current_user]).to eq user
+      expect(assigns[:sorcery_current_user]).to eq user
       expect(cookies["remember_me_token"]).not_to be_nil
     end
   end

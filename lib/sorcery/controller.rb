@@ -29,7 +29,7 @@ module Sorcery
       # Takes credentials and returns a user on successful authentication.
       # Runs hooks after login or failed login.
       def login(*credentials)
-        @current_user = nil
+        @sorcery_current_user = nil
         user = user_class.authenticate(*credentials)
         if user
           old_session = session.dup.to_hash
@@ -41,7 +41,7 @@ module Sorcery
 
           auto_login(user)
           after_login!(user, credentials)
-          current_user
+          sorcery_current_user
         else
           after_failed_login!(credentials)
           nil
@@ -59,29 +59,38 @@ module Sorcery
       # Resets the session and runs hooks before and after.
       def logout
         if logged_in?
-          user = current_user
+          user = sorcery_current_user
           before_logout!
-          @current_user = nil
+          @sorcery_current_user = nil
           reset_sorcery_session
           after_logout!(user)
         end
       end
 
       def logged_in?
-        !!current_user
+        !!sorcery_current_user
       end
 
       # attempts to auto-login from the sources defined (session, basic_auth, cookie, etc.)
       # returns the logged in user if found, nil if not
-      def current_user
-        unless defined?(@current_user)
-          @current_user = login_from_session || login_from_other_sources || nil
+      def sorcery_current_user
+        unless defined?(@sorcery_current_user)
+          @sorcery_current_user = login_from_session || login_from_other_sources || nil
         end
-        @current_user
+        @sorcery_current_user
+      end
+
+      def sorcery_current_user=(user)
+        @sorcery_current_user = user
+      end
+
+      # Backward compatibility
+      def current_user
+        sorcery_current_user
       end
 
       def current_user=(user)
-        @current_user = user
+        sorcery_current_user = user
       end
 
       # used when a user tries to access a page while logged out, is asked to login,
@@ -104,13 +113,13 @@ module Sorcery
       # @return - do not depend on the return value.
       def auto_login(user, should_remember = false)
         session[:user_id] = user.id.to_s
-        @current_user = user
+        @sorcery_current_user = user
       end
 
       # Overwrite Rails' handle unverified request
       def handle_unverified_request
         cookies[:remember_me_token] = nil
-        @current_user = nil
+        @sorcery_current_user = nil
         super # call the default behaviour which resets the session
       end
 
@@ -126,7 +135,7 @@ module Sorcery
       end
 
       def login_from_session
-        @current_user = if session[:user_id]
+        @sorcery_current_user = if session[:user_id]
                           user_class.sorcery_adapter.find_by_id(session[:user_id])
                         end
       end

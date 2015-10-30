@@ -14,7 +14,7 @@ class SorceryController < ActionController::Base
   end
 
   def some_action_making_a_non_persisted_change_to_the_user
-    current_user.email = 'to_be_ignored'
+    sorcery_current_user.email = 'to_be_ignored'
     render nothing: true
   end
 
@@ -26,7 +26,7 @@ class SorceryController < ActionController::Base
   def test_auto_login
     @user = User.first
     auto_login(@user)
-    @result = current_user
+    @result = sorcery_current_user
     render nothing: true
   end
 
@@ -67,7 +67,7 @@ class SorceryController < ActionController::Base
   end
 
   def test_login_from_cookie
-    @user = current_user
+    @user = sorcery_current_user
     render nothing: true
   end
 
