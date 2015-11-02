@@ -40,7 +40,7 @@ Hopefully, I've achieved this. If not, let me know.
 
 ## Useful Links
 [Documentation](http://rubydoc.info/gems/sorcery) |
-[Railscast](http://railscasts.com/episodes/283-authentication-with-sorcery) | [Simple tutorial](https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication) | [Example Rails 3 app](https://github.com/NoamB/sorcery-example-app)
+[Railscast](http://railscasts.com/episodes/283-authentication-with-sorcery) | [Simple tutorial](https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication) | [Example Rails 4 app](https://github.com/NoamB/sorcery-example-app)
 
 Check out the tutorials in the [Wiki](https://github.com/NoamB/sorcery/wiki) for more!
 
