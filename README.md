@@ -13,7 +13,7 @@ almost unchanged from Authlogic. OAuth code inspired by OmniAuth and Ryan
 Bates's railscasts about it.
 
 **What's happening now?** We are working on 1.0 version, which will include some API-breaking changes. It should be released about April 2015.
-Until then we'll continue releasing `0.9.x` version with bug fixed.
+Until then we'll continue releasing `0.9.x` version with bug fixes.
 
 **Rails 4 status:** [Sorcery 0.9.0](http://rubygems.org/gems/sorcery/versions/0.9.0) is fully tested and ready for Rails 4.0, 4.1 and 4.2.
 **Mongoid status:** Version 0.9.0 works with Mongoid 4.
