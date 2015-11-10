@@ -40,7 +40,7 @@ Hopefully, I've achieved this. If not, let me know.
 
 ## Useful Links
 [Documentation](http://rubydoc.info/gems/sorcery) |
-[Railscast](http://railscasts.com/episodes/283-authentication-with-sorcery) | [Simple tutorial](https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication) | [Example Rails 3 app](https://github.com/NoamB/sorcery-example-app)
+[Railscast](http://railscasts.com/episodes/283-authentication-with-sorcery) | [Simple tutorial](https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication) | [Example Rails 4 app](https://github.com/NoamB/sorcery-example-app)
 
 Check out the tutorials in the [Wiki](https://github.com/NoamB/sorcery/wiki) for more!
 
@@ -300,7 +300,7 @@ attributes such as password and password_confirmation)
 Important notes while upgrading:
 
 *   If you are upgrading from <= **1.0.0**
-    
+
     *  `before_logout` does not take arguments anymore (`current_user` still returns user at this point)
     *  `after_logout` takes one argument (`user`) as `current_user` returns `nil` then
 
