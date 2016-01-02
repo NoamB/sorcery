@@ -16,6 +16,7 @@ shared_examples_for "rails_3_reset_password_model" do
 
       specify { expect(user).to respond_to :deliver_reset_password_instructions! }
 
+      specify { expect(user).to respond_to :change_password }
       specify { expect(user).to respond_to :change_password! }
 
       it "responds to .load_from_reset_password_token" do
@@ -142,7 +143,7 @@ shared_examples_for "rails_3_reset_password_model" do
 
     it "'deliver_reset_password_instructions! returns a Mail::Message object" do
       expect(user.deliver_reset_password_instructions!).to be_an_instance_of Mail::Message
-    end 
+    end
 
     it "the reset_password_token is random" do
       sorcery_model_property_set(:reset_password_time_between_emails, 0)
@@ -238,13 +239,22 @@ shared_examples_for "rails_3_reset_password_model" do
       end
     end
 
+    it "when change_password is called, deletes reset_password_token" do
+      user.deliver_reset_password_instructions!
+
+      expect(user.reset_password_token).not_to be_nil
+
+      user.change_password("blabulsdf")
+
+      expect(user.reset_password_token).to be_nil
+    end
+
     it "when change_password! is called, deletes reset_password_token" do
       user.deliver_reset_password_instructions!
 
       expect(user.reset_password_token).not_to be_nil
 
       user.change_password!("blabulsdf")
-      user.save!
 
       expect(user.reset_password_token).to be_nil
     end
