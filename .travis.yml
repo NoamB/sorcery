@@ -3,6 +3,8 @@ rvm:
   - 1.9.3
   - 2.0.0
   - 2.1
+  - 2.2
+  - 2.3
 
 gemfile:
   - Gemfile
@@ -15,6 +17,18 @@ matrix:
     - rvm: :jruby
 
   include:
+    - rvm: jruby
+      gemfile: gemfiles/active_record-rails42.gemfile
+
+    - rvm: 2.1
+      gemfile: gemfiles/active_record-rails42.gemfile
+
+    - rvm: 2.2
+      gemfile: gemfiles/active_record-rails42.gemfile
+
+    - rvm: 2.3
+      gemfile: gemfiles/active_record-rails42.gemfile
+
     - rvm: 1.9.3
       gemfile: gemfiles/active_record-rails41.gemfile
 
@@ -22,6 +36,12 @@ matrix:
       gemfile: gemfiles/active_record-rails41.gemfile
 
     - rvm: 2.1
+      gemfile: gemfiles/active_record-rails41.gemfile
+
+    - rvm: 2.2
+      gemfile: gemfiles/active_record-rails41.gemfile
+
+    - rvm: 2.3
       gemfile: gemfiles/active_record-rails41.gemfile
 
     - rvm: jruby
