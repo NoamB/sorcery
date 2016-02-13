@@ -181,7 +181,7 @@ end
 Sidekiq and Resque integrations are coming soon.
 
 ## Single Table Inheritance (STI) Support
-STI is supported via a single setting in config/initializers/sorcery.rb.
+STI is supported via the `user.subclasses_inherit_config` setting in config/initializers/sorcery.rb.
 
 ## Full Features List by module
 
