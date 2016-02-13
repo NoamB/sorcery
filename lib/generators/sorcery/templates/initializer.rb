@@ -172,6 +172,11 @@ Rails.application.config.sorcery.configure do |config|
   # config.salesforce.scope = "full"
   # config.salesforce.user_info_mapping = {:email => "email"}
 
+  # config.flickr.key = "00000000000000000000000000000000"
+  # config.flickr.secret = "1111111111111111"
+  # config.flickr.callback_url = "http://example.com/oauth/callback?provider=flickr"
+  # config.flickr.user_info_mapping = { name: 'user/nsid' }
+
   # --- user config ---
   config.user_config do |user|
     # -- core --

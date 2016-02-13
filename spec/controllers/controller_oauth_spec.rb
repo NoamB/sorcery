@@ -27,7 +27,7 @@ describe SorceryController do
 
   before(:all) do
     sorcery_reload!([:external])
-    sorcery_controller_property_set(:external_providers, [:twitter, :jira])
+    sorcery_controller_property_set(:external_providers, [:twitter, :jira, :flickr])
     sorcery_controller_external_property_set(:twitter, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:twitter, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:twitter, :callback_url, "http://blabla.com")
@@ -38,6 +38,10 @@ describe SorceryController do
     sorcery_controller_external_property_set(:jira, :signature_method, "RSA-SHA1")
     sorcery_controller_external_property_set(:jira, :private_key_file, "myrsakey.pem")
     sorcery_controller_external_property_set(:jira, :callback_url, "http://myappusingjira.com/home")
+
+    sorcery_controller_external_property_set(:flickr, :key, "00000000000000000000000000000000")
+    sorcery_controller_external_property_set(:flickr, :secret, "1111111111111111")
+    sorcery_controller_external_property_set(:flickr, :callback_url, "http://not-really-exist.com")
   end
 
   # ----------------- OAuth -----------------------
@@ -93,6 +97,14 @@ describe SorceryController do
     context "when jira" do
       it "user logins successfully" do
         get :login_at_test_jira
+        expect(session[:request_token]).not_to be_nil
+        expect(response).to be_a_redirect
+      end
+    end
+
+    context "when flickr" do
+      it "user logins successfully" do
+        get :login_at_test_flickr
         expect(session[:request_token]).not_to be_nil
         expect(response).to be_a_redirect
       end
