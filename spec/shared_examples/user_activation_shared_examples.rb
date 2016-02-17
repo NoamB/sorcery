@@ -149,6 +149,7 @@ shared_examples_for "rails_3_activation_model" do
 
       it "does not send the user an activation email" do
         old_size = ActionMailer::Base.deliveries.size
+        create_new_user
 
         expect(ActionMailer::Base.deliveries.size).to eq old_size
       end
