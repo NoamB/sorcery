@@ -31,7 +31,9 @@ module Sorcery
       end
 
       def get_user_hash(access_token)
-        fields = self.user_info_fields.join(',')
+        fields = !self.user_info_fields.nil? ? 
+          self.user_info_fields.join(',')
+          : ""
         response = access_token.get("#{@user_info_path}:(id,#{fields})", 'x-li-format' => 'json')
 
         auth_hash(access_token).tap do |h|
