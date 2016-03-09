@@ -34,7 +34,11 @@ module Sorcery
           Config.after_login    << :register_login_time_to_db
           Config.after_login    << :register_last_ip_address
           Config.before_logout  << :register_logout_time_to_db
-          base.after_filter :register_last_activity_time_to_db
+          if Rails::VERSION::MAJOR >= 4
+            base.after_action :register_last_activity_time_to_db
+          else
+            base.after_filter :register_last_activity_time_to_db
+          end
         end
 
         module InstanceMethods

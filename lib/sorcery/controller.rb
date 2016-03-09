@@ -16,7 +16,7 @@ module Sorcery
     end
 
     module InstanceMethods
-      # To be used as before_filter.
+      # To be used as before_action.
       # Will trigger auto-login attempts via the call to logged_in?
       # If all attempts to auto-login fail, the failure callback will be called.
       def require_login
