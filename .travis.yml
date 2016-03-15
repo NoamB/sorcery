@@ -12,6 +12,9 @@ gemfile:
 before_script:
   - mysql -e 'create database sorcery_test;'
 
+before_install:
+  - rvm get stable --auto-dotfiles
+
 matrix:
   allow_failures:
     - rvm: :jruby
