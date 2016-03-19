@@ -1,60 +1,41 @@
 language: ruby
 rvm:
+  - jruby
   - 1.9.3
   - 2.0.0
   - 2.1
   - 2.2
-  - 2.3
+  - 2.3.0
 
 gemfile:
   - Gemfile
+  - gemfiles/active_record-rails40.gemfile
+  - gemfiles/active_record-rails41.gemfile
+  - gemfiles/active_record-rails42.gemfile
 
 before_script:
   - mysql -e 'create database sorcery_test;'
+
+before_install:
+  - rvm get stable --auto-dotfiles
+  - gem update bundler
 
 matrix:
   allow_failures:
     - rvm: :jruby
 
-  include:
-    - rvm: jruby
-      gemfile: gemfiles/active_record-rails42.gemfile
-
-    - rvm: 2.1
-      gemfile: gemfiles/active_record-rails42.gemfile
-
-    - rvm: 2.2
-      gemfile: gemfiles/active_record-rails42.gemfile
-
-    - rvm: 2.3
-      gemfile: gemfiles/active_record-rails42.gemfile
-
+  exclude:
     - rvm: 1.9.3
-      gemfile: gemfiles/active_record-rails41.gemfile
+      gemfile: gemfiles/active_record-rails42.gemfile
 
     - rvm: 2.0.0
-      gemfile: gemfiles/active_record-rails41.gemfile
+      gemfile: gemfiles/active_record-rails42.gemfile
 
-    - rvm: 2.1
-      gemfile: gemfiles/active_record-rails41.gemfile
+    - rvm: jruby
+      gemfile: Gemfile
 
     - rvm: 2.2
-      gemfile: gemfiles/active_record-rails41.gemfile
-
-    - rvm: 2.3
-      gemfile: gemfiles/active_record-rails41.gemfile
-
-    - rvm: jruby
-      gemfile: gemfiles/active_record-rails41.gemfile
-
-    - rvm: 1.9.3
       gemfile: gemfiles/active_record-rails40.gemfile
 
-    - rvm: 2.0.0
-      gemfile: gemfiles/active_record-rails40.gemfile
-
-    - rvm: 2.1
-      gemfile: gemfiles/active_record-rails40.gemfile
-
-    - rvm: jruby
+    - rvm: 2.3.0
       gemfile: gemfiles/active_record-rails40.gemfile
