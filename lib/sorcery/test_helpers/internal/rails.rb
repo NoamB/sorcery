@@ -56,11 +56,11 @@ module Sorcery
         end
 
         # This helper is used to fake multiple users signing in in tests.
-        # It does so by clearing @current_user, thus allowing a new user to login,
+        # It does so by clearing @sorcery_current_user, thus allowing a new user to login,
         # all this without calling the :logout action explicitly.
         # A dirty dirty hack.
         def clear_user_without_logout
-          subject.instance_variable_set(:@current_user,nil)
+          subject.instance_variable_set(:@sorcery_current_user,nil)
         end
       end
     end

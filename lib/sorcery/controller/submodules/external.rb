@@ -136,7 +136,7 @@ module Sorcery
             sorcery_fetch_user_hash provider_name
             config = user_class.sorcery_config
 
-            current_user.add_provider_to_user(provider_name.to_s, @user_hash[:uid].to_s)
+            sorcery_current_user.add_provider_to_user(provider_name.to_s, @user_hash[:uid].to_s)
           end
 
           # Initialize new user from provider informations.
