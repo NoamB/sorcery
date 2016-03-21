@@ -45,7 +45,7 @@ module Sorcery
             sorcery_adapter.update_attribute(sorcery_config.last_activity_at_attribute_name, time)
           end
 
-          def set_last_ip_addess(ip_address)
+          def set_last_ip_address(ip_address)
             sorcery_adapter.update_attribute(sorcery_config.last_login_from_ip_address_name, ip_address)
           end
 

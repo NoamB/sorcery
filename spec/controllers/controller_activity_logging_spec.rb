@@ -69,7 +69,7 @@ describe SorceryController do
 
     it "logs last IP address when logged in" do
       sorcery_controller_property_set(:register_last_ip_address, true)
-      expect(user).to receive(:set_last_ip_addess).with('0.0.0.0')
+      expect(user).to receive(:set_last_ip_address).with('0.0.0.0')
 
       login_user(user)
     end
@@ -107,7 +107,7 @@ describe SorceryController do
 
     it "does not register last IP address if configured so" do
       sorcery_controller_property_set(:register_last_ip_address, false)
-      expect(user).to receive(:set_last_ip_addess).never
+      expect(user).to receive(:set_last_ip_address).never
 
       login_user(user)
     end
