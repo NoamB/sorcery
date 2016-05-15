@@ -4,17 +4,22 @@
 
 # sorcery
 
+## MAINTAINER NEEDED
+
+Currently Sorcery project is not actively maintained. I (@arnvald) try to keep looking at issues and help with any problems, but I don't develop the library anymore.
+Therefore if you are interested in taking over the project, please check this issue: [https://github.com/NoamB/sorcery/issues/777](https://github.com/NoamB/sorcery/issues/777)
+
+## Project
+
 [![Join the chat at https://gitter.im/NoamB/sorcery](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NoamB/sorcery?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-Magical Authentication for Rails 3 and 4. Supports ActiveRecord,
+Magical Authentication for Rails. Supports ActiveRecord,
 DataMapper, Mongoid and MongoMapper.
 
 Inspired by restful_authentication, Authlogic and Devise. Crypto code taken
 almost unchanged from Authlogic. OAuth code inspired by OmniAuth and Ryan
 Bates's railscasts about it.
 
-**What's happening now?** We are working on 1.0 version, which will include some API-breaking changes. It should be released about April 2015.
-Until then we'll continue releasing `0.9.x` version with bug fixes.
-
+**Rails 5 status:** [Sorcery 0.9.1](http://rubygems.org/gems/sorcery/versions/0.9.0) should work fine with Rails 5. We can't guarantee it at this point, though, so please open an issue for any problem with Rails 5.
 **Rails 4 status:** [Sorcery 0.9.0](http://rubygems.org/gems/sorcery/versions/0.9.0) is fully tested and ready for Rails 4.0, 4.1 and 4.2.
 **Mongoid status:** Version 0.9.0 works with Mongoid 4.
 
