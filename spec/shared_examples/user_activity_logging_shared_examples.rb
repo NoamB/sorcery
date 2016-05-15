@@ -53,11 +53,11 @@ shared_examples_for "rails_3_activity_logging_model" do
       user.set_last_activity_at(now)
     end
 
-    it '.set_last_ip_addess update last_login_from_ip_address' do
+    it '.set_last_ip_address update last_login_from_ip_address' do
       user = create_new_user
       expect(user.sorcery_adapter).to receive(:update_attribute).with(:last_login_from_ip_address, '0.0.0.0')
 
-      user.set_last_ip_addess('0.0.0.0')
+      user.set_last_ip_address('0.0.0.0')
     end
 
     it 'show if user logged in' do
