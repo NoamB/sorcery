@@ -259,6 +259,16 @@ shared_examples_for "rails_3_reset_password_model" do
       expect(user.reset_password_token).to be_nil
     end
 
+    it "raises error when failing to change_password!" do
+      # insure that the model will fail validation on this test
+      update_model do
+        validates :password, length: { minimum: 1 }
+      end
+
+      expect { user.change_password!('') }.to\
+        raise_error ActiveRecord::RecordInvalid
+    end
+
     it "returns false if time between emails has not passed since last email" do
       sorcery_model_property_set(:reset_password_time_between_emails, 10000)
       user.deliver_reset_password_instructions!
