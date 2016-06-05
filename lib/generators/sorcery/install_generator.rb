@@ -69,6 +69,7 @@ module Sorcery
           submodules.each do |submodule|
             unless submodule == "http_basic_auth" || submodule == "session_timeout" || submodule == "core"
               migration_template "migration/#{submodule}.rb", "db/migrate/sorcery_#{submodule}.rb"
+              warn("Please add oauth/oauth2 dependencies to your Gemfile") if submodule == "external"
             end
           end
         end
