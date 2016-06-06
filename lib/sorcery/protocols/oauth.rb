@@ -1,5 +1,3 @@
-require 'oauth'
-
 module Sorcery
   module Protocols
     module Oauth
