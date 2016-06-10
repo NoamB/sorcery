@@ -53,7 +53,7 @@ module Sorcery
         def token_response(options = {}, &block)
           block.call(options[:user], options[:failure]) if block_given?
 
-          options[:return_value]
+          [options[:user], options[:return_value]]
         end
       end
     end
