@@ -94,14 +94,18 @@ module Sorcery
 
         user = sorcery_adapter.find_by_credentials(credentials)
 
-        if user.respond_to?(:active_for_authentication?) && !user.active_for_authentication?
-          return authentication_response(failure: :inactive, user: user, &block)
+        unless user
+          return authentication_response(failure: :invalid_login, &block)
         end
 
         set_encryption_attributes
 
-        unless user
-          return authentication_response(failure: :invalid_login, &block)
+        unless user.valid_password?(credentials[1])
+          return authentication_response(user: user, failure: :invalid_password, &block)
+        end
+
+        if user.respond_to?(:active_for_authentication?) && !user.active_for_authentication?
+          return authentication_response(failure: :inactive, user: user, &block)
         end
 
         @sorcery_config.before_authenticate.each do |callback|
@@ -110,10 +114,6 @@ module Sorcery
           unless success
             return authentication_response(user: user, failure: reason, &block)
           end
-        end
-
-        unless user.valid_password?(credentials[1])
-          return authentication_response(user: user, failure: :invalid_password, &block)
         end
 
         authentication_response(user: user, return_value: user, &block)
