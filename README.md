@@ -82,6 +82,24 @@ login_from(provider) # tries to login from the external provider's callback.
 create_from(provider) # create the user in the local app db.
 ```
 
+As of version 1.X the `oauth` and `oauth2` gems are not going to be bundled automatically.  
+You need to bundle the gems you need if you want to use the external module.  
+Here is a table of the external providers and their dependencies:  
+
+| Provider   | dependency |
+|------------|------------|
+| Facebook   | oauth2     |
+| Github     | oauth2     |
+| Google     | oauth2     |
+| Heroku     | oauth2     |
+| LiveId     | oauth2     |
+| SalesForce | oauth2     |
+| VK         | oauth2     |
+| Twitter    | oauth      |
+| Jira       | oauth      |
+| LinkedIn   | oauth      |
+| Xing       | oauth      |
+
 ### remember me
 ```ruby
 auto_login(user, should_remember=false)  # login without credentials, optional remember_me
@@ -308,6 +326,8 @@ Important notes while upgrading:
 
     *  `before_logout` does not take arguments anymore (`current_user` still returns user at this point)
     *  `after_logout` takes one argument (`user`) as `current_user` returns `nil` then
+    *  `oauth` and `oauth2` gems are not automatically bundled anymore, you need to add them to use the external module
+    *  `change_password!` now raises exception when it fails, to keep old behaviour change it to `change_password`
 
 *   If you are upgrading from <= **0.8.6** and you use Sorcery model methods in your app,
     you might need to change them from `user.method` to `user.sorcery_adapter.method` and from
