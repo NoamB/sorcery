@@ -21,7 +21,7 @@ module Sorcery
             merge_session_timeout_defaults!
           end
           Config.after_login << :register_login_time
-          base.prepend_before_filter :validate_session
+          base.prepend_before_action :validate_session
         end
 
         module InstanceMethods
