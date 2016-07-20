@@ -97,6 +97,10 @@ class SorceryController < ActionController::Base
     login_at(:github)
   end
 
+  def login_at_test_paypal
+    login_at(:paypal)
+  end
+
   def login_at_test_google
     login_at(:google)
   end
@@ -141,6 +145,14 @@ class SorceryController < ActionController::Base
 
   def test_login_from_github
     if @user = login_from(:github)
+      redirect_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
+  def test_login_from_paypal
+    if @user = login_from(:paypal)
       redirect_to 'bla', notice: 'Success!'
     else
       redirect_to 'blu', alert: 'Failed!'
@@ -215,6 +227,14 @@ class SorceryController < ActionController::Base
 
   def test_return_to_with_external_github
     if @user = login_from(:github)
+      redirect_back_or_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
+  def test_return_to_with_external_paypal
+    if @user = login_from(:paypal)
       redirect_back_or_to 'bla', notice: 'Success!'
     else
       redirect_to 'blu', alert: 'Failed!'

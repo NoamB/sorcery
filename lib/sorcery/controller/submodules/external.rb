@@ -19,6 +19,7 @@ module Sorcery
           require 'sorcery/providers/google'
           require 'sorcery/providers/jira'
           require 'sorcery/providers/salesforce'
+          require 'sorcery/providers/paypal'
 
           Config.module_eval do
             class << self
