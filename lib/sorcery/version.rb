@@ -1,3 +1,3 @@
 module Sorcery
-  VERSION = "0.10.14"
+  VERSION = "0.9.1"
 end
