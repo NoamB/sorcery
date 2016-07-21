@@ -112,6 +112,8 @@ module Sorcery
             sorcery_adapter.save(:validate => false, :raise_on_failure => true)
           end
 
+          attr_accessor :skip_activation_needed_email, :skip_activation_success_email
+
           protected
 
           # called automatically after user initial creation.
@@ -127,14 +129,14 @@ module Sorcery
             !external? && (
               !(sorcery_config.activation_success_email_method_name.nil? ||
                 sorcery_config.activation_mailer_disabled == true)
-            )
+            ) && !skip_activation_success_email
           end
 
           def send_activation_needed_email?
             !external? && (
               !(sorcery_config.activation_needed_email_method_name.nil? ||
                 sorcery_config.activation_mailer_disabled == true)
-            )
+            ) && !skip_activation_needed_email
           end
 
           def prevent_non_active_login

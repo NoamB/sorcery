@@ -140,6 +140,48 @@ shared_examples_for "rails_3_activation_model" do
 
         expect(ActionMailer::Base.deliveries.size).to eq old_size
       end
+
+      context "activation_needed_email is skipped" do
+        before(:each) do
+          @user = build_new_user
+          @user.skip_activation_needed_email = true
+        end
+
+        it "does not send the user an activation email" do
+          old_size = ActionMailer::Base.deliveries.size
+
+          @user.sorcery_adapter.save(:raise_on_failure => true)
+
+          expect(ActionMailer::Base.deliveries.size).to eq old_size
+        end
+
+        it "does not call send_activation_needed_email! method of user" do
+          expect(@user).to receive(:send_activation_needed_email!).never
+
+          @user.sorcery_adapter.save(:raise_on_failure => true)
+        end
+
+        it "calls send_activation_success_email! method of user on activation" do
+          expect(@user).to receive(:send_activation_success_email!).never
+
+          @user.activate!
+        end
+      end
+
+      context "activation_success_email is skipped" do
+        before(:each) do
+          @user = build_new_user
+          @user.skip_activation_success_email = true
+        end
+
+        it "does not send the user an activation success email on successful activation" do
+          old_size = ActionMailer::Base.deliveries.size
+
+          @user.activate!
+
+          expect(ActionMailer::Base.deliveries.size).to eq old_size
+        end
+      end
     end
 
     context "mailer has been disabled" do
@@ -149,6 +191,7 @@ shared_examples_for "rails_3_activation_model" do
 
       it "does not send the user an activation email" do
         old_size = ActionMailer::Base.deliveries.size
+        create_new_user
 
         expect(ActionMailer::Base.deliveries.size).to eq old_size
       end
