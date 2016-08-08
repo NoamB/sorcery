@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/NoamB/sorcery.svg?branch=master)](https://travis-ci.org/NoamB/sorcery)
 [![Code Climate](https://codeclimate.com/github/NoamB/sorcery.png)](https://codeclimate.com/github/NoamB/sorcery)
 [![Inline docs](http://inch-ci.org/github/NoamB/sorcery.png?branch=master)](http://inch-ci.org/github/NoamB/sorcery)
+[![Security](https://hakiri.io/github/NoamB/sorcery/master.svg)](https://hakiri.io/github/NoamB/sorcery/master)
 
 # sorcery
 
