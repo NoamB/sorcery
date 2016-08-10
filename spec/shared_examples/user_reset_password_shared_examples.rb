@@ -256,6 +256,13 @@ shared_examples_for "rails_3_reset_password_model" do
       expect(user.deliver_reset_password_instructions!).to be false
     end
 
+    it "'reset_password_attempt_expired?' returns false if time between emails has not passed since last email" do
+      sorcery_model_property_set(:reset_password_time_between_emails, 10000)
+      user.deliver_reset_password_instructions!
+
+      expect(user.reset_password_attempt_expired?).to be false
+    end
+
     it "encrypts properly on reset" do
       user.deliver_reset_password_instructions!
       user.change_password!("blagu")
