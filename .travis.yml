@@ -6,6 +6,10 @@ rvm:
   - 2.2
   - 2.3.0
 
+env:
+  global:
+    - JRUBY_OPTS="--2.0"
+
 gemfile:
   - Gemfile
   - gemfiles/active_record-rails40.gemfile
@@ -29,7 +33,6 @@ matrix:
 
     - rvm: jruby
       gemfile: Gemfile
-      env: JRUBY_OPTS="--2.0"
 
     - rvm: 2.2
       gemfile: gemfiles/active_record-rails40.gemfile
