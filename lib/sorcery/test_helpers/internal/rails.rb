@@ -17,7 +17,7 @@ module Sorcery
           ::Sorcery::Controller::Config.init!
           ::Sorcery::Controller::Config.reset!
 
-          # remove all plugin before_filters so they won't fail other tests.
+          # remove all plugin before_actions so they won't fail other tests.
           # I don't like this way, but I didn't find another.
           # hopefully it won't break until Rails 4.
           chain = if Gem::Version.new(::Rails::VERSION::STRING) >= Gem::Version.new("4.1.0")
