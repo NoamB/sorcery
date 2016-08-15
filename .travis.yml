@@ -1,11 +1,14 @@
 language: ruby
 rvm:
   - jruby
-  - 1.9.3
   - 2.0.0
   - 2.1
   - 2.2
   - 2.3.0
+
+env:
+  global:
+    - JRUBY_OPTS="--2.0"
 
 gemfile:
   - Gemfile
@@ -25,9 +28,6 @@ matrix:
     - rvm: :jruby
 
   exclude:
-    - rvm: 1.9.3
-      gemfile: gemfiles/active_record-rails42.gemfile
-
     - rvm: 2.0.0
       gemfile: gemfiles/active_record-rails42.gemfile
 
