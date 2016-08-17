@@ -1,4 +1,4 @@
-class SorceryActivityLogging < ActiveRecord::Migration
+class SorceryActivityLogging < <%= migration_class_name %>
   def change
     add_column :<%= model_class_name.tableize %>, :last_login_at,     :datetime, :default => nil
     add_column :<%= model_class_name.tableize %>, :last_logout_at,    :datetime, :default => nil

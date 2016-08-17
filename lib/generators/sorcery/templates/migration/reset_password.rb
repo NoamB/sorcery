@@ -1,4 +1,4 @@
-class SorceryResetPassword < ActiveRecord::Migration
+class SorceryResetPassword < <%= migration_class_name %>
   def change
     add_column :<%= model_class_name.tableize %>, :reset_password_token, :string, :default => nil
     add_column :<%= model_class_name.tableize %>, :reset_password_token_expires_at, :datetime, :default => nil
