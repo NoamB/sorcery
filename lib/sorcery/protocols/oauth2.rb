@@ -24,7 +24,8 @@ module Sorcery
           args[:code],
           {
             redirect_uri: @callback_url,
-            parse: options.delete(:parse)
+            parse: options.delete(:parse),
+            headers: options.delete(:headers)
           },
           options
         )

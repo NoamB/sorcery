@@ -255,7 +255,7 @@ STI is supported via the `user.subclasses_inherit_config` setting in config/init
 **External** (see [lib/sorcery/controller/submodules/external.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/external.rb)):
 
 *   OAuth1 and OAuth2 support (currently: Twitter, Facebook, Github, Google, Heroku,
-    LinkedIn, VK, LiveID, Xing, and Salesforce)
+    LinkedIn, VK, LiveID, Xing, Salesforce and Yahoo! JAPAN)
 *   configurable db field names and authentications table.
 
 
