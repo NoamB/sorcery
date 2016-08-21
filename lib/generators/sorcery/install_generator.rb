@@ -63,12 +63,12 @@ module Sorcery
       def copy_migration_files
         # Copy core migration file in all cases except when you pass --only-submodules.
         return unless defined?(Sorcery::Generators::InstallGenerator::ActiveRecord)
-        migration_template "migration/core.rb", "db/migrate/sorcery_core.rb" unless only_submodules?
+        migration_template "migration/core.rb", "db/migrate/sorcery_core.rb", migration_class_name: migration_class_name unless only_submodules?
 
         if submodules
           submodules.each do |submodule|
             unless submodule == "http_basic_auth" || submodule == "session_timeout" || submodule == "core"
-              migration_template "migration/#{submodule}.rb", "db/migrate/sorcery_#{submodule}.rb"
+              migration_template "migration/#{submodule}.rb", "db/migrate/sorcery_#{submodule}.rb", migration_class_name: migration_class_name
             end
           end
         end
@@ -88,6 +88,14 @@ module Sorcery
       private
       def only_submodules?
         options[:migrations] || options[:only_submodules]
+      end
+
+      def migration_class_name
+        if Rails::VERSION::MAJOR >= 5
+          "ActiveRecord::Migration[#{Rails::VERSION::MAJOR}.#{Rails::VERSION::MINOR}]"
+        else
+          "ActiveRecord::Migration"
+        end
       end
 
     end

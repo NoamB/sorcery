@@ -1,4 +1,4 @@
-class SorceryBruteForceProtection < ActiveRecord::Migration
+class SorceryBruteForceProtection < <%= migration_class_name %>
   def change
     add_column :<%= model_class_name.tableize %>, :failed_logins_count, :integer, :default => 0
     add_column :<%= model_class_name.tableize %>, :lock_expires_at, :datetime, :default => nil
