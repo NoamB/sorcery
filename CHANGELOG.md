@@ -6,6 +6,8 @@
 * `current_users` method was removed
 * Added `logged_in?` `logged_out?` `online?` to activity_logging instance methods
 * PayPal provider added to external submodule
+* Deprecated Rails 3
+  * Deprecated using `callback_filter` in favor of `callback_action`
 
 ## 0.9.1
 

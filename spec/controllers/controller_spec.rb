@@ -131,7 +131,7 @@ describe SorceryController do
     end
 
 
-    it "calls the configured 'not_authenticated_action' when authenticate before_filter fails" do
+    it "calls the configured 'not_authenticated_action' when authenticate before_action fails" do
       session[:user_id] = nil
       sorcery_controller_property_set(:not_authenticated_action, :test_not_authenticated_action)
       get :test_logout
@@ -139,14 +139,14 @@ describe SorceryController do
       expect(response.body).to eq "test_not_authenticated_action"
     end
 
-    it "require_login before_filter saves the url that the user originally wanted" do
+    it "require_login before_action saves the url that the user originally wanted" do
       get :some_action
 
       expect(session[:return_to_url]).to eq "http://test.host/some_action"
       expect(response).to redirect_to("http://test.host/")
     end
 
-    it "require_login before_filter does not save the url that the user originally wanted upon all non-get http methods" do
+    it "require_login before_action does not save the url that the user originally wanted upon all non-get http methods" do
       [:post, :put, :delete].each do |m|
         self.send(m, :some_action)
 
