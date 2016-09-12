@@ -21,11 +21,7 @@ module Sorcery
             merge_session_timeout_defaults!
           end
           Config.after_login << :register_login_time
-          if Rails::VERSION::MAJOR >= 4
-            base.prepend_before_action :validate_session
-          else
-            base.prepend_before_filter :validate_session
-          end
+          base.prepend_before_action :validate_session
         end
 
         module InstanceMethods

@@ -8,6 +8,7 @@
 * PayPal provider added to external submodule
 * Deprecated Rails 3
   * Deprecated using `callback_filter` in favor of `callback_action`
+  * Added null: false to migrations
 
 ## 0.9.1
 

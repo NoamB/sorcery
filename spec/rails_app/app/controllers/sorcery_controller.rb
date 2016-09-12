@@ -3,13 +3,8 @@ require 'oauth'
 class SorceryController < ActionController::Base
   protect_from_forgery
 
-  if Rails::VERSION::MAJOR >= 4
-    before_action :require_login_from_http_basic, only: [:test_http_basic_auth]
-    before_action :require_login, only: [:test_logout, :test_logout_with_force_forget_me, :test_should_be_logged_in, :some_action]
-  else
-    before_filter :require_login_from_http_basic, only: [:test_http_basic_auth]
-    before_filter :require_login, only: [:test_logout, :test_logout_with_force_forget_me, :test_should_be_logged_in, :some_action]
-  end
+  before_action :require_login_from_http_basic, only: [:test_http_basic_auth]
+  before_action :require_login, only: [:test_logout, :test_logout_with_force_forget_me, :test_should_be_logged_in, :some_action]
 
   def index
   end
