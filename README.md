@@ -21,7 +21,7 @@ Inspired by restful_authentication, Authlogic and Devise. Crypto code taken
 almost unchanged from Authlogic. OAuth code inspired by OmniAuth and Ryan
 Bates's railscasts about it.
 
-**Rails 5 status:** [Sorcery 0.9.1](http://rubygems.org/gems/sorcery/versions/0.9.0) should work fine with Rails 5. We can't guarantee it at this point, though, so please open an issue for any problem with Rails 5.
+**Rails 5 status:** [Sorcery 0.9.1](http://rubygems.org/gems/sorcery/versions/0.9.1) should work fine with Rails 5. We can't guarantee it at this point, though, so please open an issue for any problem with Rails 5.
 **Rails 4 status:** [Sorcery 0.9.0](http://rubygems.org/gems/sorcery/versions/0.9.0) is fully tested and ready for Rails 4.0, 4.1 and 4.2.
 **Mongoid status:** Version 0.9.0 works with Mongoid 4.
 
