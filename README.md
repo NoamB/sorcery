@@ -1,8 +1,11 @@
-[![Build Status](https://travis-ci.org/NoamB/sorcery.svg?branch=master)](https://travis-ci.org/NoamB/sorcery)
-[![Code Climate](https://codeclimate.com/github/NoamB/sorcery/badges/gpa.svg)](https://codeclimate.com/github/NoamB/sorcery)
-[![Inline docs](http://inch-ci.org/github/NoamB/sorcery.svg?branch=master)](http://inch-ci.org/github/NoamB/sorcery)
+# Sorcery: Magical Authentication
 
-# sorcery
+[![Gem Version](https://badge.fury.io/rb/sorcery.svg)](https://rubygems.org/gems/sorcery)
+[![Gem Downloads](https://img.shields.io/gem/dt/sorcery.svg)](https://rubygems.org/gems/sorcery)
+[![Build Status](https://travis-ci.org/NoamB/sorcery.svg?branch=master)](https://travis-ci.org/NoamB/sorcery)
+[![Code Climate](https://codeclimate.com/github/NoamB/sorcery.png)](https://codeclimate.com/github/NoamB/sorcery)
+[![Inline docs](http://inch-ci.org/github/NoamB/sorcery.png?branch=master)](http://inch-ci.org/github/NoamB/sorcery)
+[![Join the chat at https://gitter.im/NoamB/sorcery](https://badges.gitter.im/join_chat.svg)](https://gitter.im/NoamB/sorcery?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## MAINTAINER NEEDED
 
@@ -11,7 +14,6 @@ Therefore if you are interested in taking over the project, please check this is
 
 ## Project
 
-[![Join the chat at https://gitter.im/NoamB/sorcery](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NoamB/sorcery?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Magical Authentication for Rails. Supports ActiveRecord,
 DataMapper, Mongoid and MongoMapper.
 
