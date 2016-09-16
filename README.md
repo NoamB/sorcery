@@ -1,8 +1,11 @@
+# Sorcery: Magical Authentication
+
+[![Gem Version](https://badge.fury.io/rb/sorcery.svg)](https://rubygems.org/gems/sorcery)
+[![Gem Downloads](https://img.shields.io/gem/dt/sorcery.svg)](https://rubygems.org/gems/sorcery)
 [![Build Status](https://travis-ci.org/NoamB/sorcery.svg?branch=master)](https://travis-ci.org/NoamB/sorcery)
 [![Code Climate](https://codeclimate.com/github/NoamB/sorcery.png)](https://codeclimate.com/github/NoamB/sorcery)
 [![Inline docs](http://inch-ci.org/github/NoamB/sorcery.png?branch=master)](http://inch-ci.org/github/NoamB/sorcery)
-
-# sorcery
+[![Join the chat at https://gitter.im/NoamB/sorcery](https://badges.gitter.im/join_chat.svg)](https://gitter.im/NoamB/sorcery?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## MAINTAINER NEEDED
 
@@ -11,7 +14,6 @@ Therefore if you are interested in taking over the project, please check this is
 
 ## Project
 
-[![Join the chat at https://gitter.im/NoamB/sorcery](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NoamB/sorcery?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Magical Authentication for Rails. Supports ActiveRecord,
 DataMapper, Mongoid and MongoMapper.
 
@@ -19,8 +21,10 @@ Inspired by restful_authentication, Authlogic and Devise. Crypto code taken
 almost unchanged from Authlogic. OAuth code inspired by OmniAuth and Ryan
 Bates's railscasts about it.
 
-**Rails 5 status:** [Sorcery 0.9.1](http://rubygems.org/gems/sorcery/versions/0.9.0) should work fine with Rails 5. We can't guarantee it at this point, though, so please open an issue for any problem with Rails 5.
+**Rails 5 status:** [Sorcery 0.9.1](http://rubygems.org/gems/sorcery/versions/0.9.1) should work fine with Rails 5. We can't guarantee it at this point, though, so please open an issue for any problem with Rails 5.
+
 **Rails 4 status:** [Sorcery 0.9.0](http://rubygems.org/gems/sorcery/versions/0.9.0) is fully tested and ready for Rails 4.0, 4.1 and 4.2.
+
 **Mongoid status:** Version 0.9.0 works with Mongoid 4.
 
 https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication
