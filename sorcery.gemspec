@@ -20,10 +20,10 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.0.0'
 
-  s.add_dependency "oauth", "~> 0.4", ">= 0.4.4"
-  s.add_dependency "oauth2", ">= 0.8.0"
   s.add_dependency "bcrypt", "~> 3.1"
 
+  s.add_development_dependency "oauth", "~> 0.4", ">= 0.4.4"
+  s.add_development_dependency "oauth2", ">= 0.8.0"
   s.add_development_dependency "abstract", ">= 1.0.0"
   s.add_development_dependency "json", ">= 1.7.7"
   s.add_development_dependency "yard", "~> 0.6.0"

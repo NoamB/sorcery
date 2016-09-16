@@ -7,6 +7,13 @@ module Sorcery
         def self.included(base)
           base.send(:include, InstanceMethods)
 
+          begin
+            require 'oauth'
+            require 'oauth2'
+          rescue LoadError
+            warn("\tPlease add oauth/oauth2 dependencies to your Gemfile")
+          end
+
           require 'sorcery/providers/base'
           require 'sorcery/providers/facebook'
           require 'sorcery/providers/twitter'
