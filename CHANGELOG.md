@@ -4,6 +4,10 @@
 
 * Adapters (Mongoid, MongoMapper, DataMapper) are now separated from the core Sorcery repo and moved under `sorcery-rails` organization. Special thanks to @juike!
 
+## 0.9.2
+
+* Add deprecation warning for Ruby <2.0 and Rails <4.0
+
 ## 0.9.1
 
 * Fixed fetching private emails from github (thanks to @saratovsource)
