@@ -4,14 +4,14 @@ class CreateAuthenticationsAndUserProviders < ActiveRecord::Migration
       t.integer :user_id, null: false
       t.string :provider, :uid, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :user_providers do |t|
       t.integer :user_id, null: false
       t.string :provider, :uid, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 

@@ -57,7 +57,7 @@ explaining and the rest are commented:
 
 ### core
 ```ruby
-require_login # this is a before filter
+require_login # this is a before action
 login(email, password, remember_me = false)
 auto_login(user)# login without credentials
 logout
@@ -72,7 +72,7 @@ User.authenticates_with_sorcery!
 
 ### http basic auth
 ```ruby
-require_login_from_http_basic # this is a before filter
+require_login_from_http_basic # this is a before action
 ```
 
 ### external
@@ -239,7 +239,7 @@ STI is supported via the `user.subclasses_inherit_config` setting in config/init
 
 **Basic HTTP Authentication** (see [lib/sorcery/controller/submodules/http_basic_auth.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/http_basic_auth.rb)):
 
-*   A before filter for requesting authentication with HTTP Basic.
+*   A before action for requesting authentication with HTTP Basic.
 *   automatic login from HTTP Basic.
 *   automatic login is disabled if session key changed.
 
