@@ -96,6 +96,7 @@ User.load_from_reset_password_token(token)
 @user.generate_reset_password_token! # if you want to send the email by youself
 @user.deliver_reset_password_instructions! # generates the token and sends the email
 @user.change_password!(new_password)
+@user.reset_password_attempt_expired? # check if time between emails has not passed since last email
 ```
 
 ### user activation
