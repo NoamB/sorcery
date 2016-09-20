@@ -4,7 +4,7 @@ if RUBY_VERSION < '2.0.0'
   warn '[DEPRECATION] Sorcery 0.10.0 will deprecate Ruby 1.9.3 and lower, please upgrade to Ruby 2.0 or higher.'
 end
 
-if Rails::VERSION < '4.0.0'
+if Rails::VERSION::STRING < '4.0.0'
   warn '[DEPRECATION] Sorcery 0.10.0 will deprecate Rails 3.2 and lower, please upgrade to Rails 4.0 or higher.'
 end
 
