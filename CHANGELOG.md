@@ -6,6 +6,9 @@
 * `current_users` method was removed
 * Added `logged_in?` `logged_out?` `online?` to activity_logging instance methods
 * PayPal provider added to external submodule
+* Deprecated Rails 3
+  * Deprecated using `callback_filter` in favor of `callback_action`
+  * Added null: false to migrations
 * Update the `change_password!` to raise exception when it fails to save, and add `change_password` method with the current behaviour (return `false` when it fails)
 
 ## 0.9.1

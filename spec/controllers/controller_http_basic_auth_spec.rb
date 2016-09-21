@@ -15,7 +15,7 @@ describe SorceryController do
       logout_user
     end
 
-    it "requests basic authentication when before_filter is used" do
+    it "requests basic authentication when before_action is used" do
       get :test_http_basic_auth
 
       expect(response.status).to eq 401

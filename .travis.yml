@@ -25,7 +25,7 @@ before_install:
 
 matrix:
   allow_failures:
-    - rvm: :jruby
+    - rvm: jruby
 
   exclude:
     - rvm: 2.0.0
