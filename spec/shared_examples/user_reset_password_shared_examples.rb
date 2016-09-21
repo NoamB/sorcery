@@ -16,6 +16,7 @@ shared_examples_for "rails_3_reset_password_model" do
 
       specify { expect(user).to respond_to :deliver_reset_password_instructions! }
 
+      specify { expect(user).to respond_to :change_password }
       specify { expect(user).to respond_to :change_password! }
 
       it "responds to .load_from_reset_password_token" do
@@ -142,7 +143,7 @@ shared_examples_for "rails_3_reset_password_model" do
 
     it "'deliver_reset_password_instructions! returns a Mail::Message object" do
       expect(user.deliver_reset_password_instructions!).to be_an_instance_of Mail::Message
-    end 
+    end
 
     it "the reset_password_token is random" do
       sorcery_model_property_set(:reset_password_time_between_emails, 0)
@@ -238,15 +239,34 @@ shared_examples_for "rails_3_reset_password_model" do
       end
     end
 
+    it "when change_password is called, deletes reset_password_token" do
+      user.deliver_reset_password_instructions!
+
+      expect(user.reset_password_token).not_to be_nil
+
+      user.change_password("blabulsdf")
+
+      expect(user.reset_password_token).to be_nil
+    end
+
     it "when change_password! is called, deletes reset_password_token" do
       user.deliver_reset_password_instructions!
 
       expect(user.reset_password_token).not_to be_nil
 
       user.change_password!("blabulsdf")
-      user.save!
 
       expect(user.reset_password_token).to be_nil
+    end
+
+    it "raises error when failing to change_password!" do
+      # insure that the model will fail validation on this test
+      update_model do
+        validates :password, length: { minimum: 1 }
+      end
+
+      expect { user.change_password!('') }.to\
+        raise_error ActiveRecord::RecordInvalid
     end
 
     it "returns false if time between emails has not passed since last email" do

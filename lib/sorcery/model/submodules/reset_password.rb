@@ -107,10 +107,19 @@ module Sorcery
           end
 
           # Clears token and tries to update the new password for the user.
-          def change_password!(new_password)
+          # Returns false when it fails to save.
+          def change_password(new_password)
             clear_reset_password_token
             self.send(:"#{sorcery_config.password_attribute_name}=", new_password)
             sorcery_adapter.save
+          end
+
+          # Clears token and tries to update the new password for the user.
+          # Raises error when it fails to save.
+          def change_password!(new_password)
+            clear_reset_password_token
+            self.send(:"#{sorcery_config.password_attribute_name}=", new_password)
+            sorcery_adapter.save(:raise_on_failure => true)
           end
 
           protected

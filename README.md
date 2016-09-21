@@ -95,7 +95,8 @@ force_forget_me!    # completely forgets all sessions by clearing the token, eve
 User.load_from_reset_password_token(token)
 @user.generate_reset_password_token! # if you want to send the email by youself
 @user.deliver_reset_password_instructions! # generates the token and sends the email
-@user.change_password!(new_password)
+@user.change_password!(new_password) # will raise error on failure
+@user.change_password(new_password)  # will return false on failure
 ```
 
 ### user activation
