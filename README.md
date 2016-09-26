@@ -2,10 +2,10 @@
 
 [![Gem Version](https://badge.fury.io/rb/sorcery.svg)](https://rubygems.org/gems/sorcery)
 [![Gem Downloads](https://img.shields.io/gem/dt/sorcery.svg)](https://rubygems.org/gems/sorcery)
-[![Build Status](https://travis-ci.org/NoamB/sorcery.svg?branch=master)](https://travis-ci.org/NoamB/sorcery)
-[![Code Climate](https://codeclimate.com/github/NoamB/sorcery.png)](https://codeclimate.com/github/NoamB/sorcery)
-[![Inline docs](http://inch-ci.org/github/NoamB/sorcery.png?branch=master)](http://inch-ci.org/github/NoamB/sorcery)
-[![Join the chat at https://gitter.im/NoamB/sorcery](https://badges.gitter.im/join_chat.svg)](https://gitter.im/NoamB/sorcery?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/Sorcery/sorcery.svg?branch=master)](https://travis-ci.org/Sorcery/sorcery)
+[![Code Climate](https://codeclimate.com/github/Sorcery/sorcery.svg)](https://codeclimate.com/github/Sorcery/sorcery)
+[![Inline docs](http://inch-ci.org/github/Sorcery/sorcery.svg?branch=master)](http://inch-ci.org/github/Sorcery/sorcery)
+[![Join the chat at https://gitter.im/Sorcery/sorcery](https://badges.gitter.im/join_chat.svg)](https://gitter.im/Sorcery/sorcery?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Project
 
