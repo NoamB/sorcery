@@ -7,11 +7,6 @@
 [![Inline docs](http://inch-ci.org/github/NoamB/sorcery.png?branch=master)](http://inch-ci.org/github/NoamB/sorcery)
 [![Join the chat at https://gitter.im/NoamB/sorcery](https://badges.gitter.im/join_chat.svg)](https://gitter.im/NoamB/sorcery?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-## MAINTAINER NEEDED
-
-Currently Sorcery project is not actively maintained. I (@arnvald) try to keep looking at issues and help with any problems, but I don't develop the library anymore.
-Therefore if you are interested in taking over the project, please check this issue: [https://github.com/NoamB/sorcery/issues/777](https://github.com/NoamB/sorcery/issues/777)
-
 ## Project
 
 Magical Authentication for Rails. Supports ActiveRecord,
