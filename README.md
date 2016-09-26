@@ -22,7 +22,7 @@ Bates's railscasts about it.
 
 **Mongoid status:** Version 0.9.0 works with Mongoid 4.
 
-https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication
+https://github.com/Sorcery/sorcery/wiki/Simple-Password-Authentication
 
 ## Philosophy
 
@@ -43,10 +43,11 @@ can write your own authentication flow. It was built with a few goals in mind:
 Hopefully, I've achieved this. If not, let me know.
 
 ## Useful Links
-[Documentation](http://rubydoc.info/gems/sorcery) |
-[Railscast](http://railscasts.com/episodes/283-authentication-with-sorcery) | [Simple tutorial](https://github.com/NoamB/sorcery/wiki/Simple-Password-Authentication) | [Example Rails 4 app](https://github.com/NoamB/sorcery-example-app)
 
-Check out the tutorials in the [Wiki](https://github.com/NoamB/sorcery/wiki) for more!
+[Documentation](http://rubydoc.info/gems/sorcery) |
+[Railscast](http://railscasts.com/episodes/283-authentication-with-sorcery) | [Simple tutorial](https://github.com/Sorcery/sorcery/wiki/Simple-Password-Authentication) | [Example Rails 4 app](https://github.com/Sorcery/sorcery-example-app)
+
+Check out the tutorials in the [Wiki](https://github.com/Sorcery/sorcery/wiki) for more!
 
 ## API Summary
 
@@ -55,6 +56,7 @@ explaining and the rest are commented:
 
 
 ### core
+
 ```ruby
 require_login # this is a before action
 login(email, password, remember_me = false)
@@ -70,11 +72,13 @@ User.authenticates_with_sorcery!
 ```
 
 ### http basic auth
+
 ```ruby
 require_login_from_http_basic # this is a before action
 ```
 
 ### external
+
 ```ruby
 login_at(provider) # sends the user to an external service (twitter etc.) to authenticate.
 login_from(provider) # tries to login from the external provider's callback.
@@ -82,6 +86,7 @@ create_from(provider) # create the user in the local app db.
 ```
 
 ### remember me
+
 ```ruby
 auto_login(user, should_remember=false)  # login without credentials, optional remember_me
 remember_me!
@@ -90,6 +95,7 @@ force_forget_me!    # completely forgets all sessions by clearing the token, eve
 ```
 
 ### reset password
+
 ```ruby
 User.load_from_reset_password_token(token)
 @user.generate_reset_password_token! # if you want to send the email by youself
@@ -98,6 +104,7 @@ User.load_from_reset_password_token(token)
 ```
 
 ### user activation
+
 ```ruby
 User.load_from_activation_token(token)
 @user.setup_activation
@@ -185,12 +192,13 @@ end
 Sidekiq and Resque integrations are coming soon.
 
 ## Single Table Inheritance (STI) Support
+
 STI is supported via the `user.subclasses_inherit_config` setting in config/initializers/sorcery.rb.
 
 ## Full Features List by module
 
-**Core** (see [lib/sorcery/model.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model.rb) and
-[lib/sorcery/controller.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller.rb)):
+**Core** (see [lib/sorcery/model.rb](https://github.com/Sorcery/sorcery/blob/master/lib/sorcery/model.rb) and
+[lib/sorcery/controller.rb](https://github.com/Sorcery/sorcery/blob/master/lib/sorcery/controller.rb)):
 
 *   login/logout, optional return user to requested url on login, configurable
     redirect for non-logged-in users.
@@ -200,7 +208,7 @@ STI is supported via the `user.subclasses_inherit_config` setting in config/init
 *   allow multiple fields to serve as username.
 
 
-**User Activation** (see [lib/sorcery/model/submodules/user_activation.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/user_activation.rb)):
+**User Activation** (see [lib/sorcery/model/submodules/user_activation.rb](https://github.com/Sorcery/sorcery/blob/master/lib/sorcery/model/submodules/user_activation.rb)):
 
 *   User activation by email with optional success email.
 *   configurable attribute names.
@@ -209,7 +217,7 @@ STI is supported via the `user.subclasses_inherit_config` setting in config/init
 *   Optionally prevent non-active users to login.
 
 
-**Reset Password** (see [lib/sorcery/model/submodules/reset_password.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/reset_password.rb)):
+**Reset Password** (see [lib/sorcery/model/submodules/reset_password.rb](https://github.com/Sorcery/sorcery/blob/master/lib/sorcery/model/submodules/reset_password.rb)):
 
 *   Reset password with email verification.
 *   configurable mailer, method name, and attribute name.
@@ -217,33 +225,33 @@ STI is supported via the `user.subclasses_inherit_config` setting in config/init
 *   configurable time between emails (hammering protection).
 
 
-**Remember Me** (see [lib/sorcery/model/submodules/remember_me.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/remember_me.rb)):
+**Remember Me** (see [lib/sorcery/model/submodules/remember_me.rb](https://github.com/Sorcery/sorcery/blob/master/lib/sorcery/model/submodules/remember_me.rb)):
 
 *   Remember me with configurable expiration.
 *   configurable attribute names.
 *   configurable to persist globally (supporting multiple browsers at the same time), or starting anew after each login
 
 
-**Session Timeout** (see [lib/sorcery/controller/submodules/session_timeout.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/session_timeout.rb)):
+**Session Timeout** (see [lib/sorcery/controller/submodules/session_timeout.rb](https://github.com/Sorcery/sorcery/blob/master/lib/sorcery/controller/submodules/session_timeout.rb)):
 
 *   Configurable session timeout.
 *   Optionally session timeout will be calculated from last user action.
 
 
-**Brute Force Protection** (see [lib/sorcery/model/submodules/brute_force_protection.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/brute_force_protection.rb)):
+**Brute Force Protection** (see [lib/sorcery/model/submodules/brute_force_protection.rb](https://github.com/Sorcery/sorcery/blob/master/lib/sorcery/model/submodules/brute_force_protection.rb)):
 
 *   Brute force login hammering protection.
 *   configurable logins before lock and lock duration.
 
 
-**Basic HTTP Authentication** (see [lib/sorcery/controller/submodules/http_basic_auth.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/http_basic_auth.rb)):
+**Basic HTTP Authentication** (see [lib/sorcery/controller/submodules/http_basic_auth.rb](https://github.com/Sorcery/sorcery/blob/master/lib/sorcery/controller/submodules/http_basic_auth.rb)):
 
 *   A before action for requesting authentication with HTTP Basic.
 *   automatic login from HTTP Basic.
 *   automatic login is disabled if session key changed.
 
 
-**Activity Logging** (see [lib/sorcery/model/submodules/activity_logging.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/model/submodules/activity_logging.rb)):
+**Activity Logging** (see [lib/sorcery/model/submodules/activity_logging.rb](https://github.com/Sorcery/sorcery/blob/master/lib/sorcery/model/submodules/activity_logging.rb)):
 
 *   automatic logging of last login, last logout, last activity time and IP
     address for last login.
@@ -251,7 +259,7 @@ STI is supported via the `user.subclasses_inherit_config` setting in config/init
     list of logged in users.
 
 
-**External** (see [lib/sorcery/controller/submodules/external.rb](https://github.com/NoamB/sorcery/blob/master/lib/sorcery/controller/submodules/external.rb)):
+**External** (see [lib/sorcery/controller/submodules/external.rb](https://github.com/Sorcery/sorcery/blob/master/lib/sorcery/controller/submodules/external.rb)):
 
 *   OAuth1 and OAuth2 support (currently: Twitter, Facebook, Github, Google, Heroku,
     LinkedIn, VK, LiveID, Xing, and Salesforce)
