@@ -17,6 +17,9 @@ env:
 
 before_script:
   - mysql -e 'create database sorcery_test;'
+  
+before_install:
+  - gem update bundler
 
 matrix:
   allow_failures:
