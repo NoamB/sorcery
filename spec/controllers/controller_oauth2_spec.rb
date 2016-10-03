@@ -152,7 +152,7 @@ describe SorceryController, :active_record => true do
       expect(flash[:notice]).to eq "Success!"
     end
 
-    [:github, :google, :liveid, :vk, :salesforce, :paypal].each do |provider|
+    [:github, :google, :liveid, :vk, :salesforce, :paypal, :slack].each do |provider|
 
       describe "with #{provider}" do
 
@@ -205,7 +205,7 @@ describe SorceryController, :active_record => true do
       end
 
       sorcery_reload!([:user_activation,:external], :user_activation_mailer => ::SorceryMailer)
-      sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid, :vk, :salesforce, :paypal])
+      sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid, :vk, :salesforce, :paypal, :slack])
 
       sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
       sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
@@ -228,7 +228,12 @@ describe SorceryController, :active_record => true do
       sorcery_controller_external_property_set(:paypal, :key, "eYVNBjBDi33aa9GkA3w")
       sorcery_controller_external_property_set(:paypal, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
       sorcery_controller_external_property_set(:paypal, :callback_url, "http://blabla.com")
+      sorcery_controller_external_property_set(:slack, :key, "eYVNBjBDi33aa9GkA3w")
+      sorcery_controller_external_property_set(:slack, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+      sorcery_controller_external_property_set(:slack, :callback_url, "http://blabla.com")
     end
+
+
 
     after(:all) do
       if SORCERY_ORM == :active_record
@@ -287,7 +292,7 @@ describe SorceryController, :active_record => true do
       end
     end
 
-    %w(facebook github google liveid vk salesforce).each do |provider|
+    %w(facebook github google liveid vk salesforce slack).each do |provider|
       context "when #{provider}" do
         before(:each) do
           sorcery_controller_property_set(:register_login_time, true)
@@ -327,7 +332,7 @@ describe SorceryController, :active_record => true do
 
     let(:user) { double('user', id: 42) }
 
-    %w(facebook github google liveid vk salesforce).each do |provider|
+    %w(facebook github google liveid vk salesforce slack).each do |provider|
       context "when #{provider}" do
         before(:each) do
           sorcery_model_property_set(:authentications_class, Authentication)
@@ -389,7 +394,13 @@ describe SorceryController, :active_record => true do
             "first_name"=>"Noam",
             "last_name"=>"Ben Ari"
             }
-        ]}.to_json }
+        ],
+      "user": {
+          "name": "Sonny Whether",
+          "id": "123",
+          "email": "bobby@example.com"
+      }
+      }.to_json }
     allow(access_token).to receive(:get) { response }
     allow(access_token).to receive(:token) { "187041a618229fdaf16613e96e1caabc1e86e46bbfad228de41520e63fe45873684c365a14417289599f3" }
     # access_token params for VK auth
@@ -398,7 +409,7 @@ describe SorceryController, :active_record => true do
   end
 
   def set_external_property
-    sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid, :vk, :salesforce, :paypal])
+    sorcery_controller_property_set(:external_providers, [:facebook, :github, :google, :liveid, :vk, :salesforce, :paypal, :slack])
     sorcery_controller_external_property_set(:facebook, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:facebook, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:facebook, :callback_url, "http://blabla.com")
@@ -420,6 +431,9 @@ describe SorceryController, :active_record => true do
     sorcery_controller_external_property_set(:paypal, :key, "eYVNBjBDi33aa9GkA3w")
     sorcery_controller_external_property_set(:paypal, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
     sorcery_controller_external_property_set(:paypal, :callback_url, "http://blabla.com")
+    sorcery_controller_external_property_set(:slack, :key, "eYVNBjBDi33aa9GkA3w")
+    sorcery_controller_external_property_set(:slack, :secret, "XpbeSdCoaKSmQGSeokz5qcUATClRW5u08QWNfv71N8")
+    sorcery_controller_external_property_set(:slack, :callback_url, "http://blabla.com")
   end
 
   def provider_url(provider)
@@ -429,7 +443,8 @@ describe SorceryController, :active_record => true do
       google: "https://accounts.google.com/o/oauth2/auth?client_id=#{::Sorcery::Controller::Config.google.key}&display&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state",
       liveid: "https://oauth.live.com/authorize?client_id=#{::Sorcery::Controller::Config.liveid.key}&display&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=wl.basic+wl.emails+wl.offline_access&state",
       vk: "https://oauth.vk.com/authorize?client_id=#{::Sorcery::Controller::Config.vk.key}&display&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=#{::Sorcery::Controller::Config.vk.scope}&state",
-      salesforce: "https://login.salesforce.com/services/oauth2/authorize?client_id=#{::Sorcery::Controller::Config.salesforce.key}&display&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope#{'=' + ::Sorcery::Controller::Config.salesforce.scope unless ::Sorcery::Controller::Config.salesforce.scope.nil?}&state"
+      salesforce: "https://login.salesforce.com/services/oauth2/authorize?client_id=#{::Sorcery::Controller::Config.salesforce.key}&display&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope#{'=' + ::Sorcery::Controller::Config.salesforce.scope unless ::Sorcery::Controller::Config.salesforce.scope.nil?}&state",
+      slack: "https://slack.com/oauth/authorize?client_id=#{::Sorcery::Controller::Config.slack.key}&display&redirect_uri=http%3A%2F%2Fblabla.com&response_type=code&scope=identity.basic%2C+identity.email&state"
     }[provider]
   end
 end

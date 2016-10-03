@@ -73,7 +73,7 @@ Rails.application.config.sorcery.configure do |config|
 
 
   # -- external --
-  # What providers are supported by this app, i.e. [:twitter, :facebook, :github, :linkedin, :xing, :google, :liveid, :salesforce] .
+  # What providers are supported by this app, i.e. [:twitter, :facebook, :github, :linkedin, :xing, :google, :liveid, :salesforce, :slack] .
   # Default: `[]`
   #
   # config.external_providers =

@@ -1,11 +1,7 @@
 module Sorcery
   module Providers
-    # This class adds support for OAuth with github.com.
-    #
-    #   config.slack.key = <key>
-    #   config.slack.secret = <secret>
-    #   ...
-    #
+    # This class adds support for OAuth with slack.com.
+
     class Slack < Base
 
       include Protocols::Oauth2
@@ -45,14 +41,6 @@ module Sorcery
 
         get_access_token(args, token_url: token_url, token_method: :post)
       end
-
-      def primary_email(access_token)
-        response = access_token.get(user_info_path + "/emails")
-        emails = JSON.parse(response.body)
-        primary = emails.find{|i| i['primary'] }
-        primary && primary['email'] || emails.first && emails.first['email']
-      end
-
     end
   end
 end
