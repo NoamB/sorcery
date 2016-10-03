@@ -144,6 +144,11 @@ Rails.application.config.sorcery.configure do |config|
   # config.vk.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=vk"
   # config.vk.user_info_mapping = {:login => "domain", :name => "full_name"}
   #
+  #config.slack.callback_url = "http://0.0.0.0:3000/oauth/callback?provider=slack"
+  #config.slack.key = ''
+  #config.slack.secret = ''
+  #config.slack.user_info_mapping = {email: 'email'}
+  #
   # To use liveid in development mode you have to replace mydomain.com with
   # a valid domain even in development. To use a valid domain in development
   # simply add your domain in your /etc/hosts file in front of 127.0.0.1

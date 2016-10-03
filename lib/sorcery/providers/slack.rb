@@ -15,21 +15,19 @@ module Sorcery
       def initialize
         super
 
-        @scope          = nil
+        @scope          = 'identity.basic, identity.email'
         @site           = 'https://slack.com/'
-        @user_info_path = 'https://api.github.com/user'
+        @user_info_path = 'https://slack.com/api/users.identity'
         @auth_path      = '/oauth/authorize'
         @token_url      = '/api/oauth.access'
       end
 
       def get_user_hash(access_token)
-        response = access_token.get(user_info_path)
-
+        response = access_token.get(user_info_path, params: { token: access_token.token })
         auth_hash(access_token).tap do |h|
-          h[:user_info] = JSON.parse(response.body).tap do |uih|
-            uih['email'] = primary_email(access_token) if scope =~ /user/
-          end
-          h[:uid] = h[:user_info]['id']
+          h[:user_info] = JSON.parse(response.body)
+          h[:user_info]['email'] = h[:user_info]['user']['email']
+          h[:uid] = h[:user_info]['user']['id']
         end
       end
 
