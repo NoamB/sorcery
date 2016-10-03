@@ -395,10 +395,10 @@ describe SorceryController, :active_record => true do
             "last_name"=>"Ben Ari"
             }
         ],
-      "user": {
-          "name": "Sonny Whether",
-          "id": "123",
-          "email": "bobby@example.com"
+      "user"=> {
+          "name"=>"Sonny Whether",
+          "id"=>"123",
+          "email"=>"bobby@example.com"
       }
       }.to_json }
     allow(access_token).to receive(:get) { response }
