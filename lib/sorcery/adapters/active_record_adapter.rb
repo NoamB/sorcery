@@ -44,11 +44,11 @@ module Sorcery
             @user_config.provider_attribute_name     => provider
           }
 
-          @klass.where(conditions).first
+          scope_for_authentication.where(conditions).first
         end
 
         def find_by_remember_me_token(token)
-          @klass.where(@klass.sorcery_config.remember_me_token_attribute_name => token).first
+          scope_for_authentication.where(@klass.sorcery_config.remember_me_token_attribute_name => token).first
         end
 
         def find_by_credentials(credentials)
@@ -68,21 +68,21 @@ module Sorcery
             end
           end
 
-          @klass.where(relation).first
+          scope_for_authentication.where(relation).first
         end
 
         def find_by_token(token_attr_name, token)
           condition = @klass.arel_table[token_attr_name].eq(token)
 
-          @klass.where(condition).first
+          scope_for_authentication.where(condition).first
         end
 
         def find_by_activation_token(token)
-          @klass.where(@klass.sorcery_config.activation_token_attribute_name => token).first
+          scope_for_authentication.where(@klass.sorcery_config.activation_token_attribute_name => token).first
         end
 
         def find_by_id(id)
-          @klass.find_by_id(id)
+          scope_for_authentication.find_by_id(id)
         end
 
         def find_by_username(username)
@@ -91,13 +91,13 @@ module Sorcery
               username = username.downcase
             end
 
-            result = @klass.where(attribute => username).first
+            result = scope_for_authentication.where(attribute => username).first
             return result if result
           end
         end
 
         def find_by_email(email)
-          @klass.where(@klass.sorcery_config.email_attribute_name => email).first
+          scope_for_authentication.where(@klass.sorcery_config.email_attribute_name => email).first
         end
 
         def transaction(&blk)

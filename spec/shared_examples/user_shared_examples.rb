@@ -151,6 +151,21 @@ shared_examples_for "rails_3_core_model" do
           expect(User.authenticate user.email, 'secret').to be_nil
         end
       end
+
+      context "and model implements scope_for_authentication" do
+
+        it "authenticates returns user if this user is being found by scope" do
+          allow(User).to receive(:scope_for_authentication) { User.where({}) }
+
+          expect(User.authenticate user.email, 'secret').to eq user
+        end
+
+        it "authenticate returns nil if scope_for_authentication returns false" do
+          allow(User).to receive(:scope_for_authentication) { User.where('"1" = "2"') }
+
+          expect(User.authenticate user.email, 'secret').to be_nil
+        end
+      end
     end
 
     specify { expect(User).to respond_to(:encrypt) }

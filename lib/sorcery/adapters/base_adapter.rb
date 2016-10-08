@@ -25,6 +25,10 @@ module Sorcery
       def update_attribute(name, value)
         update_attributes(name => value)
       end
+
+      def self.scope_for_authentication
+        @klass.respond_to?(:scope_for_authentication) ? @klass.scope_for_authentication : @klass.where({})
+      end
     end
   end
 end
