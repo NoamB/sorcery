@@ -103,6 +103,11 @@ module Sorcery
             self.send(:"#{config.activation_token_expires_at_attribute_name}=", Time.now.in_time_zone + config.activation_token_expiration_period) if config.activation_token_expiration_period
           end
 
+          def setup_activation!
+            setup_activation
+            sorcery_adapter.save(:validate => false, :raise_on_failure => true)
+          end
+
           # clears activation code, sets the user as 'active' and optionaly sends a success email.
           def activate!
             config = sorcery_config
