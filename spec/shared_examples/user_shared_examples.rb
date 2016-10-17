@@ -262,11 +262,11 @@ shared_examples_for "rails_3_core_model" do
     let(:user_with_pass) { create_new_user({:username => 'foo_bar', :email => "foo@bar.com", :password => 'foobar'})}
 
     specify { expect(user_with_pass).to respond_to :valid_password? }
-    
+
     it "returns true if password is correct" do
       expect(user_with_pass.valid_password?("foobar")).to be true
     end
-  
+
     it "returns false if password is incorrect" do
       expect(user_with_pass.valid_password?("foobug")).to be false
     end
@@ -541,7 +541,7 @@ shared_examples_for "external_user" do
       User.sorcery_adapter.delete_all
     end
 
-    [:facebook, :github, :google, :liveid].each do |provider|
+    [:facebook, :github, :google, :liveid, :slack].each do |provider|
 
       it "does not send activation email to external users" do
         old_size = ActionMailer::Base.deliveries.size

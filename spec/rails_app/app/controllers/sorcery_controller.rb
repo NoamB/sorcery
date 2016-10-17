@@ -121,6 +121,10 @@ class SorceryController < ActionController::Base
     login_at(:salesforce)
   end
 
+  def login_at_test_slack
+    login_at(:slack)
+  end
+
   def login_at_test_with_state
     login_at(:facebook, {state: 'bla'})
   end
@@ -199,6 +203,14 @@ class SorceryController < ActionController::Base
     end
   end
 
+  def test_login_from_slack
+    if @user = login_from(:slack)
+      redirect_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
   def test_return_to_with_external_twitter
     if @user = login_from(:twitter)
       redirect_back_or_to 'bla', notice: 'Success!'
@@ -267,6 +279,14 @@ class SorceryController < ActionController::Base
 
   def test_return_to_with_external_salesforce
     if @user = login_from(:salesforce)
+      redirect_back_or_to 'bla', notice: 'Success!'
+    else
+      redirect_to 'blu', alert: 'Failed!'
+    end
+  end
+
+  def test_return_to_with_external_slack
+    if @user = login_from(:slack)
       redirect_back_or_to 'bla', notice: 'Success!'
     else
       redirect_to 'blu', alert: 'Failed!'
