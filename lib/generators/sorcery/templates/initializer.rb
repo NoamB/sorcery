@@ -381,6 +381,57 @@ Rails.application.config.sorcery.configure do |config|
     # user.reset_password_time_between_emails =
 
 
+    # -- magic_login --
+    # magic login code attribute name.
+    # Default: `:magic_login_token`
+    #
+    # user.magic_login_token_attribute_name =
+
+
+    # expires at attribute name.
+    # Default: `:magic_login_token_expires_at`
+    #
+    # user.magic_login_token_expires_at_attribute_name =
+
+
+    # when was email sent, used for hammering protection.
+    # Default: `:magic_login_email_sent_at`
+    #
+    # user.magic_login_email_sent_at_attribute_name =
+
+
+    # mailer class. Needed.
+    # Default: `nil`
+    #
+    # user.magic_login_mailer =
+
+
+    # magic login email method on your mailer class.
+    # Default: `:magic_login_email`
+    #
+    # user.magic_login_email_method_name =
+
+
+    # when true sorcery will not automatically
+    # email magic login details and allow you to
+    # manually handle how and when email is sent
+    # Default: `false`
+    #
+    # user.magic_login_mailer_disabled =
+
+
+    # how many seconds before the request expires. nil for never expires.
+    # Default: `nil`
+    #
+    # user.magic_login_expiration_period =
+
+
+    # hammering protection, how long in seconds to wait before allowing another email to be sent.
+    # Default: `5 * 60`
+    #
+    # user.magic_login_time_between_emails =
+
+
     # -- brute_force_protection --
     # Failed logins attribute name.
     # Default: `:failed_logins_count`

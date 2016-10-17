@@ -20,6 +20,7 @@ module Sorcery
       require 'sorcery/model/submodules/activity_logging'
       require 'sorcery/model/submodules/brute_force_protection'
       require 'sorcery/model/submodules/external'
+      require 'sorcery/model/submodules/magic_login'
     end
   end
 
