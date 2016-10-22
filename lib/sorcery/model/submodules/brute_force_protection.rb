@@ -41,10 +41,11 @@ module Sorcery
         end
 
         module ClassMethods
-          def load_from_unlock_token(token)
-            return nil if token.blank?
-            user = sorcery_adapter.find_by_token(sorcery_config.unlock_token_attribute_name,token)
-            user
+          # This doesn't check to see if the account is still locked.
+          def load_from_unlock_token(token, &block)
+            load_from_token(token,
+                            sorcery_config.unlock_token_attribute_name,
+                            &block)
           end
 
           protected
@@ -116,7 +117,10 @@ module Sorcery
             if !self.unlocked? && config.login_lock_time_period != 0
               self.unlock! if self.send(config.lock_expires_at_attribute_name) <= Time.now.in_time_zone
             end
-            unlocked?
+
+            return false, :locked unless unlocked?
+
+            true
           end
         end
       end

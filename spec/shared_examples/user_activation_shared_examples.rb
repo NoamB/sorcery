@@ -237,6 +237,27 @@ shared_examples_for "rails_3_activation_model" do
 
       expect(User.authenticate user.email, 'secret').to be_truthy
     end
+
+    context 'in block mode' do
+      it "does not allow a non-active user to authenticate" do
+        sorcery_model_property_set(:prevent_non_active_users_to_login, true)
+
+        User.authenticate(user.email, 'secret') do |user2, failure|
+          expect(user2).to eq user
+          expect(user2.activation_state).to eq 'pending'
+          expect(failure).to eq :inactive
+        end
+      end
+
+      it "allows a non-active user to authenticate if configured so" do
+        sorcery_model_property_set(:prevent_non_active_users_to_login, false)
+
+        User.authenticate(user.email, 'secret') do |user2, failure|
+          expect(user2).to eq user
+          expect(failure).to be_nil
+        end
+      end
+    end
   end
 
   describe "load_from_activation_token" do
@@ -248,21 +269,21 @@ shared_examples_for "rails_3_activation_model" do
       Timecop.return
     end
 
-    it "load_from_activation_token returns user when token is found" do
+    it "returns user when token is found" do
       expect(User.load_from_activation_token user.activation_token).to eq user
     end
 
-    it "load_from_activation_token does NOT return user when token is NOT found" do
+    it "does NOT return user when token is NOT found" do
       expect(User.load_from_activation_token "a").to be_nil
     end
 
-    it "load_from_activation_token returas user when token is found and not expired" do
+    it "returns user when token is found and not expired" do
       sorcery_model_property_set(:activation_token_expiration_period, 500)
 
       expect(User.load_from_activation_token user.activation_token).to eq user
     end
 
-    it "load_from_activation_token does NOT return user when token is found and expired" do
+    it "does NOT return user when token is found and expired" do
       sorcery_model_property_set(:activation_token_expiration_period, 0.1)
       user
 
@@ -271,15 +292,70 @@ shared_examples_for "rails_3_activation_model" do
       expect(User.load_from_activation_token user.activation_token).to be_nil
     end
 
-    it "load_from_activation_token returns nil if token is blank" do
+    it "returns nil if token is blank" do
       expect(User.load_from_activation_token nil).to be_nil
       expect(User.load_from_activation_token "").to be_nil
     end
 
-    it "load_from_activation_token is always valid if expiration period is nil" do
+    it "is always valid if expiration period is nil" do
       sorcery_model_property_set(:activation_token_expiration_period, nil)
 
       expect(User.load_from_activation_token user.activation_token).to eq user
+    end
+
+    context 'in block mode' do
+      it 'yields user when token is found' do
+        User.load_from_activation_token(user.activation_token) do |user2, failure|
+          expect(user2).to eq user
+          expect(failure).to be_nil
+        end
+      end
+
+      it 'does NOT yield user when token is NOT found' do
+        User.load_from_activation_token('a') do |user2, failure|
+          expect(user2).to be_nil
+          expect(failure).to eq :user_not_found
+        end
+      end
+
+      it 'yields user when token is found and not expired' do
+        sorcery_model_property_set(:activation_token_expiration_period, 500)
+
+        User.load_from_activation_token(user.activation_token) do |user2, failure|
+          expect(user2).to eq user
+          expect(failure).to be_nil
+        end
+      end
+
+      it 'yields the user and failure reason when token is found and expired' do
+        sorcery_model_property_set(:activation_token_expiration_period, 0.1)
+        user
+
+        Timecop.travel(Time.now.in_time_zone + 0.5)
+
+        User.load_from_activation_token(user.activation_token) do |user2, failure|
+          expect(user2).to eq user
+          expect(failure).to eq :token_expired
+        end
+      end
+
+      it 'yields a failure reason if token is blank' do
+        [nil, ''].each do |token|
+          User.load_from_activation_token(token) do |user2, failure|
+            expect(user2).to be_nil
+            expect(failure).to eq :invalid_token
+          end
+        end
+      end
+
+      it 'is always valid if expiration period is nil' do
+        sorcery_model_property_set(:activation_token_expiration_period, nil)
+
+        User.load_from_activation_token(user.activation_token) do |user2, failure|
+          expect(user2).to eq user
+          expect(failure).to be_nil
+        end
+      end
     end
   end
 end

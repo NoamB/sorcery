@@ -28,23 +28,31 @@ module Sorcery
 
       # Takes credentials and returns a user on successful authentication.
       # Runs hooks after login or failed login.
-      def login(*credentials)
+      def login(*credentials, &block)
         @current_user = nil
-        user = user_class.authenticate(*credentials)
-        if user
+
+        user_class.authenticate(*credentials) do |user, failure_reason|
+          if failure_reason
+            after_failed_login!(credentials)
+
+            block.call(user, failure_reason) if block_given?
+
+            return nil
+          end
+
           old_session = session.dup.to_hash
           reset_sorcery_session
-          old_session.each_pair do |k,v|
+
+          old_session.each_pair do |k, v|
             session[k.to_sym] = v
           end
+
           form_authenticity_token
 
           auto_login(user)
           after_login!(user, credentials)
-          current_user
-        else
-          after_failed_login!(credentials)
-          nil
+
+          block_given? ? block.call(current_user, nil) : current_user
         end
       end
 
