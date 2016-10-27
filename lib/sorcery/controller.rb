@@ -109,7 +109,7 @@ module Sorcery
 
       # Overwrite Rails' handle unverified request
       def handle_unverified_request
-        cookies[:remember_me_token] = nil
+        cookies[Config.remember_me_token_key] = nil
         @current_user = nil
         super # call the default behaviour which resets the session
       end

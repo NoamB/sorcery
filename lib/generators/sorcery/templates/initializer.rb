@@ -177,6 +177,12 @@ Rails.application.config.sorcery.configure do |config|
   # config.salesforce.scope = "full"
   # config.salesforce.user_info_mapping = {:email => "email"}
 
+  # Set remember_me_token cookie key.
+  # Useful for remember_me in submodules.
+  # Default: `:remember_me_token`
+  #
+  # config.remember_me_token_key =
+
   # --- user config ---
   config.user_config do |user|
     # -- core --
