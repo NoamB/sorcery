@@ -87,7 +87,7 @@ module Sorcery
         return false if credentials[0].blank?
 
         if @sorcery_config.downcase_username_before_authenticating
-          credentials[0].downcase!
+          credentials[0] = credentials[0].downcase
         end
 
         user = sorcery_adapter.find_by_credentials(credentials)
@@ -117,7 +117,7 @@ module Sorcery
         @sorcery_config.encryption_provider.stretches = @sorcery_config.stretches if @sorcery_config.encryption_provider.respond_to?(:stretches) && @sorcery_config.stretches
         @sorcery_config.encryption_provider.join_token = @sorcery_config.salt_join_token if @sorcery_config.encryption_provider.respond_to?(:join_token) && @sorcery_config.salt_join_token
       end
-      
+
       def add_config_inheritance
         self.class_eval do
           def self.inherited(subclass)
@@ -148,7 +148,7 @@ module Sorcery
 
       # Calls the configured encryption provider to compare the supplied password with the encrypted one.
       def valid_password?(pass)
-        _crypted = self.send(sorcery_config.crypted_password_attribute_name)  
+        _crypted = self.send(sorcery_config.crypted_password_attribute_name)
         return _crypted == pass if sorcery_config.encryption_provider.nil?
 
         _salt = self.send(sorcery_config.salt_attribute_name) unless sorcery_config.salt_attribute_name.nil?
