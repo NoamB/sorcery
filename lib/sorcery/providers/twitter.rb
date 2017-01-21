@@ -25,6 +25,8 @@ module Sorcery
       end
 
       def get_user_hash(access_token)
+        # You must have been granted access to User email by Twitter and have set up your app to request email
+        @user_info_path = @user_info_path + '?include_email=true' if user_info_mapping.keys.include?(:email)
         response = access_token.get(user_info_path)
 
         auth_hash(access_token).tap do |h|
