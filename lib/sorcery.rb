@@ -63,7 +63,6 @@ module Sorcery
     module Internal
       require 'sorcery/test_helpers/internal/rails'
     end
-
   end
 
   require 'sorcery/adapters/base_adapter'
